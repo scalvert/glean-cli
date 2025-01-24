@@ -12,6 +12,7 @@ import (
 var (
 	host  string
 	token string
+	email string
 	clear bool
 	show  bool
 )
@@ -29,6 +30,9 @@ var configCmd = &cobra.Command{
 		  # Set Glean API token
 		  glean config --token your-token
 
+		  # Set Glean user email
+		  glean config --email user@company.com
+
 		  # Show current configuration
 		  glean config --show
 
@@ -44,6 +48,7 @@ var configCmd = &cobra.Command{
 
 			fmt.Println("Current configuration:")
 			fmt.Printf("  %-10s %s\n", "Host:", valueOrNotSet(cfg.GleanHost))
+			fmt.Printf("  %-10s %s\n", "Email:", valueOrNotSet(cfg.GleanEmail))
 
 			// Mask token if present
 			tokenDisplay := "[not set]"
@@ -62,11 +67,11 @@ var configCmd = &cobra.Command{
 			return nil
 		}
 
-		if host == "" && token == "" {
-			return fmt.Errorf("no configuration provided. Use --host or --token to set configuration")
+		if host == "" && token == "" && email == "" {
+			return fmt.Errorf("no configuration provided. Use --host, --token, or --email to set configuration")
 		}
 
-		if err := config.SaveConfig(host, token); err != nil {
+		if err := config.SaveConfig(host, token, email); err != nil {
 			return fmt.Errorf("failed to save configuration: %w", err)
 		}
 
@@ -87,6 +92,7 @@ func init() {
 
 	configCmd.Flags().StringVar(&host, "host", "", "Glean instance hostname (e.g., <instance>.glean.com)")
 	configCmd.Flags().StringVar(&token, "token", "", "Glean API token")
+	configCmd.Flags().StringVar(&email, "email", "", "Email address for API requests")
 	configCmd.Flags().BoolVar(&clear, "clear", false, "Clear all stored credentials")
 	configCmd.Flags().BoolVar(&show, "show", false, "Show current configuration")
 }

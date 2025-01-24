@@ -17,6 +17,10 @@ func GenerateOpenAPISpec(input, prompt, model string) (string, error) {
 		return "", fmt.Errorf("failed to load config: %w", err)
 	}
 
+	if cfg.GleanEmail == "" {
+		return "", fmt.Errorf("email not configured. Run 'glean config --email <your-email>'")
+	}
+
 	// Create Glean client
 	clientConfig := glean_client.NewConfiguration()
 	clientConfig.Host = cfg.GleanHost
@@ -71,6 +75,7 @@ func GenerateOpenAPISpec(input, prompt, model string) (string, error) {
 	// Create chat request with GPT agent config
 	req := client.ChatAPI.Chat(context.Background())
 	stream := false
+	req = req.XScioActas(cfg.GleanEmail) // Set the user email
 	req = req.Payload(glean_client.ChatRequest{
 		Messages: messages,
 		Stream:   &stream,
