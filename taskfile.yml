@@ -1,0 +1,14 @@
+version: '3'
+
+tasks:
+  generate-client:
+    cmds:
+      - rm -rf pkg/glean_client
+      - yes | npx @openapitools/openapi-generator-cli generate \
+          -i ~/Downloads/openapi.yaml \
+          -g go \
+          --additional-properties=packageName=glean_client \
+          -o pkg/glean_client
+      - rm -f pkg/glean_client/go.mod
+      - rm -f pkg/glean_client/go.sum
+      - rm -rf pkg/glean_client/test

@@ -1,4 +1,3 @@
-// cmd/api.go
 package cmd
 
 import (
@@ -9,7 +8,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// apiCmd represents the 'glean api' command
 var apiCmd = &cobra.Command{
 	Use:   "api",
 	Short: "Make calls to the Glean API",
@@ -22,9 +20,7 @@ var apiCmd = &cobra.Command{
 		  glean api --method GET /search
 	`),
 
-	// Example: glean api --method POST /endpoint
 	RunE: func(cmd *cobra.Command, args []string) error {
-		// Implementation for the 'api' command
 		method, _ := cmd.Flags().GetString("method")
 		endpoint := ""
 		if len(args) > 0 {
@@ -32,15 +28,12 @@ var apiCmd = &cobra.Command{
 		}
 
 		fmt.Printf("Invoking Glean API with method=%s, endpoint=%s\n", strings.ToUpper(method), endpoint)
-		// You can expand this to actually perform an HTTP request here.
 		return nil
 	},
 }
 
 func init() {
-	// Add apiCmd as a subcommand of rootCmd
 	rootCmd.AddCommand(apiCmd)
 
-	// Here we define flags. e.g., glean api --method GET /some/path
 	apiCmd.Flags().StringP("method", "X", "GET", "HTTP method to use (GET, POST, etc.)")
 }

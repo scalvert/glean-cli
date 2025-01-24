@@ -1,16 +1,22 @@
-// cmd/action_spec.go
 package cmd
 
 import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/MakeNowJust/heredoc"
+	"github.com/scalvert/glean-cli/pkg/llm"
 	"github.com/spf13/cobra"
 )
 
-var inputFile string
+var (
+	inputFile  string
+	outputFile string
+	prompt     string
+	model      string
+)
 
 var actionSpecCmd = &cobra.Command{
 	Use:   "action-spec",
@@ -20,53 +26,65 @@ var actionSpecCmd = &cobra.Command{
 		a curl command and generates an OpenAPI spec, simplifying the creation of Glean Actions.
 
 		Usage:
-		  glean generate action-spec -f input.txt
+		  # Generate from a file
+		  glean generate action-spec -f input.txt -o spec.yaml
+
+		  # Generate from stdin
 		  echo "curl example.com/api" | glean generate action-spec
+
+		  # Add custom instructions
+		  glean generate action-spec -f input.txt --prompt "Include rate limiting details"
 
 		Input Format:
 		  - A curl command
 		  - An API description in a simple format
 
 		Output:
-		  OpenAPI specification suitable for creating Glean Actions
+		  OpenAPI specification in YAML format
 	`),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		var scanner *bufio.Scanner
+		// Read input
+		var input string
 		if inputFile != "" {
-			f, err := os.Open(inputFile)
+			data, err := os.ReadFile(inputFile)
 			if err != nil {
-				return fmt.Errorf("could not open file: %w", err)
+				return fmt.Errorf("could not read file: %w", err)
 			}
-			defer f.Close()
-			scanner = bufio.NewScanner(f)
+			input = string(data)
 		} else {
 			// Read from stdin
 			stat, _ := os.Stdin.Stat()
 			if (stat.Mode() & os.ModeCharDevice) != 0 {
-				// No data is being piped in
 				return fmt.Errorf("no input found; please provide a file or pipe input to stdin")
 			}
-			scanner = bufio.NewScanner(os.Stdin)
+
+			scanner := bufio.NewScanner(os.Stdin)
+			var lines []string
+			for scanner.Scan() {
+				lines = append(lines, scanner.Text())
+			}
+			if err := scanner.Err(); err != nil {
+				return fmt.Errorf("error reading input: %w", err)
+			}
+			input = strings.Join(lines, "\n")
 		}
 
-		var inputLines []string
-		for scanner.Scan() {
-			line := scanner.Text()
-			inputLines = append(inputLines, line)
-		}
-		if err := scanner.Err(); err != nil {
-			return fmt.Errorf("error reading input: %w", err)
+		// Generate OpenAPI spec using LLM
+		spec, err := llm.GenerateOpenAPISpec(input, prompt, model)
+		if err != nil {
+			return fmt.Errorf("failed to generate OpenAPI spec: %w", err)
 		}
 
-		// For now, just print what was read
-		fmt.Println("Generating OpenAPI spec from the following lines:")
-		for _, line := range inputLines {
-			fmt.Println(line)
+		// Output result
+		if outputFile != "" {
+			if err := os.WriteFile(outputFile, []byte(spec), 0644); err != nil {
+				return fmt.Errorf("failed to write output file: %w", err)
+			}
+			fmt.Printf("OpenAPI spec written to %s\n", outputFile)
+		} else {
+			fmt.Println(spec)
 		}
 
-		// TODO: Actually parse the curl or API spec and convert to OpenAPI specification
-		// This is just a placeholder.
-		fmt.Println("\n(Placeholder) OpenAPI spec generated successfully.")
 		return nil
 	},
 }
@@ -74,6 +92,8 @@ var actionSpecCmd = &cobra.Command{
 func init() {
 	generateCmd.AddCommand(actionSpecCmd)
 
-	// For example, glean generate action-spec -f input.txt
 	actionSpecCmd.Flags().StringVarP(&inputFile, "file", "f", "", "Input file containing the API/curl command")
+	actionSpecCmd.Flags().StringVarP(&outputFile, "output", "o", "", "Output file for the OpenAPI spec (defaults to stdout)")
+	actionSpecCmd.Flags().StringVarP(&prompt, "prompt", "p", "", "Additional instructions for the LLM")
+	actionSpecCmd.Flags().StringVar(&model, "model", "gpt-4", "LLM model to use")
 }

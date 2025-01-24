@@ -1,4 +1,3 @@
-// cmd/generate.go
 package cmd
 
 import (
@@ -6,7 +5,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// generateCmd represents 'glean generate'
 var generateCmd = &cobra.Command{
 	Use:   "generate",
 	Short: "Generate resources or code for Glean",
@@ -14,7 +12,7 @@ var generateCmd = &cobra.Command{
 		Use this command to generate various resources,
 		such as OpenAPI specs, configurations, or other Glean-related assets.
 	`),
-	// If 'glean generate' is run by itself, just show help
+
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
 	},
