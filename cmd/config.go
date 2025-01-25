@@ -24,8 +24,9 @@ var configCmd = &cobra.Command{
 		Configure credentials for the Glean CLI.
 
 		Examples:
-		  # Set Glean host
-		  glean config --host instance.glean.com
+		  # Set Glean host (either format works)
+		  glean config --host linkedin
+		  glean config --host linkedin-be.glean.com
 
 		  # Set Glean API token
 		  glean config --token your-token
@@ -90,7 +91,7 @@ func valueOrNotSet(value string) string {
 func init() {
 	rootCmd.AddCommand(configCmd)
 
-	configCmd.Flags().StringVar(&host, "host", "", "Glean instance hostname (e.g., <instance>.glean.com)")
+	configCmd.Flags().StringVar(&host, "host", "", "Glean instance name or full hostname (e.g., 'linkedin' or 'linkedin-be.glean.com')")
 	configCmd.Flags().StringVar(&token, "token", "", "Glean API token")
 	configCmd.Flags().StringVar(&email, "email", "", "Email address for API requests")
 	configCmd.Flags().BoolVar(&clear, "clear", false, "Clear all stored credentials")

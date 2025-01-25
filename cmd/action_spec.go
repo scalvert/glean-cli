@@ -42,6 +42,8 @@ var actionSpecCmd = &cobra.Command{
 		Output:
 		  OpenAPI specification in YAML format
 	`),
+	SilenceUsage:  true,
+	SilenceErrors: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// Read input
 		var input string
@@ -72,7 +74,7 @@ var actionSpecCmd = &cobra.Command{
 		// Generate OpenAPI spec using LLM
 		spec, err := llm.GenerateOpenAPISpec(input, prompt, model)
 		if err != nil {
-			return fmt.Errorf("failed to generate OpenAPI spec: %w", err)
+			return err
 		}
 
 		// Output result

@@ -9,19 +9,16 @@ import (
 	"github.com/scalvert/glean-cli/pkg/glean_client"
 )
 
-// GenerateOpenAPISpec takes an API description or curl command and generates an OpenAPI spec
 func GenerateOpenAPISpec(input, prompt, model string) (string, error) {
-	// Load configuration
 	cfg, err := config.LoadConfig()
 	if err != nil {
-		return "", fmt.Errorf("failed to load config: %w", err)
+		return "", fmt.Errorf("configuration error: %w", err)
 	}
 
 	if cfg.GleanEmail == "" {
 		return "", fmt.Errorf("email not configured. Run 'glean config --email <your-email>'")
 	}
 
-	// Create Glean client
 	clientConfig := glean_client.NewConfiguration()
 	clientConfig.Host = cfg.GleanHost
 	clientConfig.Scheme = "https"
@@ -30,20 +27,19 @@ func GenerateOpenAPISpec(input, prompt, model string) (string, error) {
 	}
 	client := glean_client.NewAPIClient(clientConfig)
 
-	// Base prompt for OpenAPI generation
 	systemPrompt := heredoc.Doc(`
 		You are an expert at converting API descriptions and curl commands into OpenAPI specifications.
 		Generate a valid OpenAPI 3.0 specification in YAML format based on the input provided.
 		Include reasonable defaults for schema types and ensure the spec is complete and valid.
 		Focus on accuracy and practicality.
+
+		When returning the response, only return the OpenAPI spec, no other text, comments, and don't wrap the response in a code block.
 	`)
 
-	// Helper function to create string pointer
 	strPtr := func(s string) *string {
 		return &s
 	}
 
-	// Create chat messages
 	messages := []glean_client.ChatMessage{
 		{
 			Author:      strPtr("SYSTEM"),
@@ -72,10 +68,9 @@ func GenerateOpenAPISpec(input, prompt, model string) (string, error) {
 		})
 	}
 
-	// Create chat request with GPT agent config
 	req := client.ChatAPI.Chat(context.Background())
 	stream := false
-	req = req.XScioActas(cfg.GleanEmail) // Set the user email
+	req = req.XScioActas(cfg.GleanEmail)
 	req = req.Payload(glean_client.ChatRequest{
 		Messages: messages,
 		Stream:   &stream,
@@ -85,18 +80,15 @@ func GenerateOpenAPISpec(input, prompt, model string) (string, error) {
 		},
 	})
 
-	// Execute request
 	resp, _, err := req.Execute()
 	if err != nil {
-		return "", fmt.Errorf("failed to generate OpenAPI spec: %w", err)
+		return "", err
 	}
 
-	// Get the generated spec from the response
 	if len(resp.Messages) == 0 {
 		return "", fmt.Errorf("no response received from LLM")
 	}
 
-	// Combine all fragments from the last message
 	lastMessage := resp.Messages[len(resp.Messages)-1]
 	var spec string
 	for _, fragment := range lastMessage.Fragments {

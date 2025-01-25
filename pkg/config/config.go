@@ -1,6 +1,9 @@
 package config
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/zalando/go-keyring"
 )
 
@@ -15,6 +18,25 @@ type Config struct {
 	GleanHost  string
 	GleanToken string
 	GleanEmail string
+}
+
+// ValidateAndTransformHost validates the host format and transforms if needed
+func ValidateAndTransformHost(host string) (string, error) {
+	// If it's just the instance name, transform it
+	if !strings.Contains(host, ".") {
+		return fmt.Sprintf("%s-be.glean.com", host), nil
+	}
+
+	// Validate full hostname format
+	if !strings.HasSuffix(host, ".glean.com") {
+		return "", fmt.Errorf("invalid host format. Must be either 'instance' or 'instance-be.glean.com'")
+	}
+
+	if !strings.HasSuffix(strings.TrimSuffix(host, ".glean.com"), "-be") {
+		return "", fmt.Errorf("invalid host format. Must end with '-be.glean.com'")
+	}
+
+	return host, nil
 }
 
 // LoadConfig loads the configuration and returns error only if keyring access fails
@@ -41,7 +63,11 @@ func LoadConfig() (*Config, error) {
 
 func SaveConfig(host, token, email string) error {
 	if host != "" {
-		if err := keyring.Set(serviceName, hostKey, host); err != nil {
+		validHost, err := ValidateAndTransformHost(host)
+		if err != nil {
+			return err
+		}
+		if err := keyring.Set(serviceName, hostKey, validHost); err != nil {
 			return err
 		}
 	}
