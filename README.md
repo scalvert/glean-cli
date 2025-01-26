@@ -1,5 +1,7 @@
 # Glean CLI
 
+> ⚠️ **Note:** This project is currently under active development and may not be ready for production use. APIs and features may change without notice.
+
 A command-line interface for interacting with Glean's API and services. This CLI tool provides a seamless way to work with Glean from your terminal.
 
 ## Installation
