@@ -18,8 +18,8 @@ var (
 	model      string
 )
 
-var actionSpecCmd = &cobra.Command{
-	Use:   "action-spec",
+var openapiSpecCmd = &cobra.Command{
+	Use:   "openapi-spec",
 	Short: "Generate an OpenAPI spec from an API definition or curl command",
 	Long: heredoc.Doc(`
 		This command reads an input (either stdin or a file) describing an API endpoint or
@@ -27,13 +27,13 @@ var actionSpecCmd = &cobra.Command{
 
 		Usage:
 		  # Generate from a file
-		  glean generate action-spec -f input.txt -o spec.yaml
+		  glean generate openapi-spec -f input.txt -o spec.yaml
 
 		  # Generate from stdin
-		  echo "curl example.com/api" | glean generate action-spec
+		  echo "curl example.com/api" | glean generate openapi-spec
 
 		  # Add custom instructions
-		  glean generate action-spec -f input.txt --prompt "Include rate limiting details"
+		  glean generate openapi-spec -f input.txt --prompt "Include rate limiting details"
 
 		Input Format:
 		  - A curl command
@@ -95,10 +95,10 @@ var actionSpecCmd = &cobra.Command{
 }
 
 func init() {
-	generateCmd.AddCommand(actionSpecCmd)
+	generateCmd.AddCommand(openapiSpecCmd)
 
-	actionSpecCmd.Flags().StringVarP(&inputFile, "file", "f", "", "Input file containing the API/curl command")
-	actionSpecCmd.Flags().StringVarP(&outputFile, "output", "o", "", "Output file for the OpenAPI spec (defaults to stdout)")
-	actionSpecCmd.Flags().StringVarP(&prompt, "prompt", "p", "", "Additional instructions for the LLM")
-	actionSpecCmd.Flags().StringVar(&model, "model", "gpt-4", "LLM model to use")
+	openapiSpecCmd.Flags().StringVarP(&inputFile, "file", "f", "", "Input file containing the API/curl command")
+	openapiSpecCmd.Flags().StringVarP(&outputFile, "output", "o", "", "Output file for the OpenAPI spec (defaults to stdout)")
+	openapiSpecCmd.Flags().StringVarP(&prompt, "prompt", "p", "", "Additional instructions for the LLM")
+	openapiSpecCmd.Flags().StringVar(&model, "model", "gpt-4", "LLM model to use")
 }

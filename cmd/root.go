@@ -14,7 +14,6 @@ var rootCmd = &cobra.Command{
 		To get started, run 'glean --help'.
 	`),
 	Run: func(cmd *cobra.Command, args []string) {
-		// If no subcommand is provided, show help by default
 		cmd.Help()
 	},
 }
