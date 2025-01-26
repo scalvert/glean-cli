@@ -20,14 +20,11 @@ type Config struct {
 	GleanEmail string
 }
 
-// ValidateAndTransformHost validates the host format and transforms if needed
 func ValidateAndTransformHost(host string) (string, error) {
-	// If it's just the instance name, transform it
 	if !strings.Contains(host, ".") {
 		return fmt.Sprintf("%s-be.glean.com", host), nil
 	}
 
-	// Validate full hostname format
 	if !strings.HasSuffix(host, ".glean.com") {
 		return "", fmt.Errorf("invalid host format. Must be either 'instance' or 'instance-be.glean.com'")
 	}
@@ -39,21 +36,17 @@ func ValidateAndTransformHost(host string) (string, error) {
 	return host, nil
 }
 
-// LoadConfig loads the configuration and returns error only if keyring access fails
 func LoadConfig() (*Config, error) {
 	cfg := &Config{}
 
-	// Load host
 	if host, err := keyring.Get(serviceName, hostKey); err == nil {
 		cfg.GleanHost = host
 	}
 
-	// Load token
 	if token, err := keyring.Get(serviceName, tokenKey); err == nil {
 		cfg.GleanToken = token
 	}
 
-	// Load email
 	if email, err := keyring.Get(serviceName, emailKey); err == nil {
 		cfg.GleanEmail = email
 	}

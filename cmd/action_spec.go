@@ -45,39 +45,42 @@ var actionSpecCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		// Read input
 		var input string
+
 		if inputFile != "" {
 			data, err := os.ReadFile(inputFile)
+
 			if err != nil {
 				return fmt.Errorf("could not read file: %w", err)
 			}
 			input = string(data)
 		} else {
-			// Read from stdin
 			stat, _ := os.Stdin.Stat()
+
 			if (stat.Mode() & os.ModeCharDevice) != 0 {
 				return fmt.Errorf("no input found; please provide a file or pipe input to stdin")
 			}
 
 			scanner := bufio.NewScanner(os.Stdin)
+
 			var lines []string
+
 			for scanner.Scan() {
 				lines = append(lines, scanner.Text())
 			}
+
 			if err := scanner.Err(); err != nil {
 				return fmt.Errorf("error reading input: %w", err)
 			}
+
 			input = strings.Join(lines, "\n")
 		}
 
-		// Generate OpenAPI spec using LLM
 		spec, err := llm.GenerateOpenAPISpec(input, prompt, model)
 		if err != nil {
 			return err
 		}
 
-		// Output result
 		if outputFile != "" {
 			if err := os.WriteFile(outputFile, []byte(spec), 0644); err != nil {
 				return fmt.Errorf("failed to write output file: %w", err)
