@@ -1,0 +1,116 @@
+package http
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"strings"
+
+	"github.com/scalvert/glean-cli/pkg/config"
+)
+
+// Client wraps http.Client with Glean-specific functionality
+type Client struct {
+	http    *http.Client
+	cfg     *config.Config
+	baseURL string
+}
+
+// NewClient creates a new HTTP client with the given configuration
+func NewClient(cfg *config.Config) (*Client, error) {
+	if cfg.GleanHost == "" {
+		return nil, fmt.Errorf("Glean host not configured. Run 'glean config --host <host>' to set it")
+	}
+
+	baseURL := fmt.Sprintf("https://%s-be.glean.com", cfg.GleanHost)
+	if strings.Contains(cfg.GleanHost, ".") {
+		baseURL = fmt.Sprintf("https://%s", cfg.GleanHost)
+	}
+
+	return &Client{
+		http:    &http.Client{},
+		cfg:     cfg,
+		baseURL: baseURL,
+	}, nil
+}
+
+// Request represents an HTTP request to be made
+type Request struct {
+	Method  string
+	Path    string
+	Body    interface{}
+	Headers map[string]string
+}
+
+// GetFullURL returns the complete URL for the request
+func (c *Client) GetFullURL(path string) string {
+	// Ensure path starts with /rest/api/v1/
+	if !strings.HasPrefix(path, "/rest/api/v1/") {
+		path = fmt.Sprintf("/rest/api/v1/%s", strings.TrimPrefix(path, "/"))
+	}
+	return fmt.Sprintf("%s%s", strings.TrimRight(c.baseURL, "/"), path)
+}
+
+// SendRequest executes the HTTP request and returns the response
+func (c *Client) SendRequest(req *Request) ([]byte, error) {
+	url := c.GetFullURL(req.Path)
+
+	var bodyReader io.Reader
+	if req.Body != nil {
+		bodyBytes, err := json.Marshal(req.Body)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling request body: %w", err)
+		}
+		bodyReader = bytes.NewReader(bodyBytes)
+	}
+
+	httpReq, err := http.NewRequest(req.Method, url, bodyReader)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/json")
+	if c.cfg.GleanToken != "" {
+		httpReq.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.cfg.GleanToken))
+	}
+	if c.cfg.GleanEmail != "" {
+		httpReq.Header.Set("X-Scio-Actas", c.cfg.GleanEmail)
+	}
+	httpReq.Header.Set("X-Glean-Auth-Type", "string")
+
+	// Add custom headers
+	for k, v := range req.Headers {
+		httpReq.Header.Set(k, v)
+	}
+
+	resp, err := c.http.Do(httpReq)
+	if err != nil {
+		return nil, fmt.Errorf("error making request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error reading response body: %w", err)
+	}
+
+	if resp.StatusCode >= 400 {
+		var errorResp struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}
+		if err := json.Unmarshal(body, &errorResp); err == nil {
+			if errorResp.Message != "" {
+				return nil, fmt.Errorf("API error (%d): %s", resp.StatusCode, errorResp.Message)
+			}
+			if errorResp.Error != "" {
+				return nil, fmt.Errorf("API error (%d): %s", resp.StatusCode, errorResp.Error)
+			}
+		}
+		return nil, fmt.Errorf("API error (%d): %s", resp.StatusCode, string(body))
+	}
+
+	return body, nil
+}
