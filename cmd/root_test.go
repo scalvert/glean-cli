@@ -2,6 +2,9 @@ package cmd
 
 import (
 	"bytes"
+	"io"
+	"os"
+	"strings"
 	"testing"
 
 	"github.com/spf13/cobra"
@@ -60,18 +63,30 @@ To get started, run 'glean --help'.`,
 }
 
 func TestExecute(t *testing.T) {
-	// Save original stdout
-	oldOut := rootCmd.OutOrStdout()
+	// Redirect stdout to capture output
+	old := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	// Reset stdout after test
 	defer func() {
-		rootCmd.SetOut(oldOut)
+		os.Stdout = old
 	}()
 
-	// Create a buffer to capture output
-	b := bytes.NewBufferString("")
-	rootCmd.SetOut(b)
+	// Execute with help flag
+	os.Args = []string{"glean", "--help"}
+	if err := Execute(); err != nil {
+		t.Errorf("Execute() error = %v", err)
+	}
 
-	// Execute with no args should show help
-	err := Execute()
-	assert.NoError(t, err)
-	assert.Contains(t, b.String(), "Work seamlessly with Glean from your command line")
+	// Close writer and read output
+	w.Close()
+	var buf bytes.Buffer
+	io.Copy(&buf, r)
+	output := buf.String()
+
+	// Check output contains expected text
+	if !strings.Contains(output, "Work seamlessly with Glean from your command line") {
+		t.Errorf("Expected help text not found in output")
+	}
 }
