@@ -47,13 +47,13 @@ Make direct calls to the Glean API endpoints.
 
 ```bash
 # Make a GET request
-glean api /search
+glean api <endpoint>
 
-# Make a POST request
-glean api --method POST /users
+# Make a POST request with a request body
+glean api <endpoint> --method POST --raw-field '{"key": "value"}'
 
-# Make a custom request
-glean api -X PUT /update
+# Make a request with a different HTTP method
+glean api <endpoint> --method PUT --raw-field '{"key": "value"}'
 ```
 
 ### `glean generate`
@@ -121,7 +121,6 @@ All requests automatically include the necessary authentication headers and foll
 ### Requirements
 
 - Go 1.19 or higher
-- Make (optional)
 
 ### Building from Source
 
@@ -145,5 +144,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 ```
-
-</rewritten_file>
