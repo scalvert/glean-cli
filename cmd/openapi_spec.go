@@ -82,7 +82,7 @@ var openapiSpecCmd = &cobra.Command{
 		}
 
 		if outputFile != "" {
-			if err := os.WriteFile(outputFile, []byte(spec), 0644); err != nil {
+			if err := os.WriteFile(outputFile, []byte(spec), 0600); err != nil {
 				return fmt.Errorf("failed to write output file: %w", err)
 			}
 			fmt.Printf("OpenAPI spec written to %s\n", outputFile)

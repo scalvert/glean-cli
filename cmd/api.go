@@ -82,27 +82,31 @@ func newApiCmd() *cobra.Command {
 
 			endpoint := args[0]
 
-			var body interface{}
+			var body map[string]interface{}
 			if opts.requestBody != "" {
-				if err := json.Unmarshal([]byte(opts.requestBody), &body); err != nil {
-					return fmt.Errorf("invalid JSON in request body: %w", err)
+				if jsonErr := json.Unmarshal([]byte(opts.requestBody), &body); jsonErr != nil {
+					return jsonErr
 				}
-			} else if opts.inputFile != "" {
-				data, err := os.ReadFile(opts.inputFile)
-				if err != nil {
-					return fmt.Errorf("failed to read input file: %w", err)
+			}
+
+			if opts.inputFile != "" {
+				data, readErr := os.ReadFile(opts.inputFile)
+				if readErr != nil {
+					return readErr
 				}
-				if err := json.Unmarshal(data, &body); err != nil {
-					return fmt.Errorf("invalid JSON in input file: %w", err)
+				if jsonErr := json.Unmarshal(data, &body); jsonErr != nil {
+					return jsonErr
 				}
-			} else if !isatty(os.Stdin.Fd()) {
-				data, err := io.ReadAll(os.Stdin)
-				if err != nil {
-					return fmt.Errorf("failed to read from stdin: %w", err)
+			}
+
+			if opts.inputFile == "" && opts.requestBody == "" {
+				stdinData, readErr := io.ReadAll(os.Stdin)
+				if readErr != nil {
+					return readErr
 				}
-				if len(data) > 0 {
-					if err := json.Unmarshal(data, &body); err != nil {
-						return fmt.Errorf("invalid JSON from stdin: %w", err)
+				if len(stdinData) > 0 {
+					if jsonErr := json.Unmarshal(stdinData, &body); jsonErr != nil {
+						return fmt.Errorf("invalid JSON from stdin: %w", jsonErr)
 					}
 				}
 			}

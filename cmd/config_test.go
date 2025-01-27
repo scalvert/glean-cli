@@ -12,10 +12,10 @@ import (
 func TestConfigCmd(t *testing.T) {
 	tests := []struct {
 		name       string
-		args       []string
-		wantErr    bool
 		errMessage string
 		wantOutput string
+		args       []string
+		wantErr    bool
 	}{
 		{
 			name:       "no flags provided",
@@ -57,23 +57,23 @@ func TestConfigCmd(t *testing.T) {
 				Use:   "config",
 				Short: "Configure Glean CLI credentials",
 				RunE: func(cmd *cobra.Command, args []string) error {
-					show, _ := cmd.Flags().GetBool("show")
-					clear, _ := cmd.Flags().GetBool("clear")
-					host, _ := cmd.Flags().GetString("host")
-					token, _ := cmd.Flags().GetString("token")
-					email, _ := cmd.Flags().GetString("email")
+					flagShow, _ := cmd.Flags().GetBool("show")
+					flagClear, _ := cmd.Flags().GetBool("clear")
+					flagHost, _ := cmd.Flags().GetString("host")
+					flagToken, _ := cmd.Flags().GetString("token")
+					flagEmail, _ := cmd.Flags().GetString("email")
 
-					if show {
+					if flagShow {
 						fmt.Fprintln(cmd.OutOrStdout(), "Current configuration:")
 						return nil
 					}
 
-					if clear {
+					if flagClear {
 						fmt.Fprintln(cmd.OutOrStdout(), "Configuration cleared successfully")
 						return nil
 					}
 
-					if host == "" && token == "" && email == "" {
+					if flagHost == "" && flagToken == "" && flagEmail == "" {
 						return fmt.Errorf("no configuration provided")
 					}
 

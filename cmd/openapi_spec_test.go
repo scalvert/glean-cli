@@ -13,13 +13,13 @@ import (
 
 func TestOpenapiSpecCmd(t *testing.T) {
 	tests := []struct {
-		name        string
-		args        []string
-		input       string
-		wantErr     bool
-		errMessage  string
 		setupFunc   func() error
 		cleanupFunc func() error
+		name        string
+		input       string
+		errMessage  string
+		args        []string
+		wantErr     bool
 	}{
 		{
 			name:       "no input provided",

@@ -12,9 +12,9 @@ import (
 func TestApiCmd(t *testing.T) {
 	tests := []struct {
 		name       string
+		wantOutput string
 		args       []string
 		wantErr    bool
-		wantOutput string
 	}{
 		{
 			name:       "default GET method",

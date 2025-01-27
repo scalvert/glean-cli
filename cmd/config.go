@@ -17,6 +17,8 @@ var (
 	show  bool
 )
 
+const notSetValue = "[not set]"
+
 var configCmd = &cobra.Command{
 	Use:   "config",
 	Short: "Configure Glean CLI credentials",
@@ -52,7 +54,7 @@ var configCmd = &cobra.Command{
 			fmt.Printf("  %-10s %s\n", "Email:", valueOrNotSet(cfg.GleanEmail))
 
 			// Mask token if present
-			tokenDisplay := "[not set]"
+			tokenDisplay := notSetValue
 			if cfg.GleanToken != "" {
 				tokenDisplay = cfg.GleanToken[0:4] + strings.Repeat("*", len(cfg.GleanToken)-4)
 			}

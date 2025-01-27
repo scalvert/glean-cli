@@ -38,10 +38,10 @@ func NewClient(cfg *config.Config) (*Client, error) {
 
 // Request represents an HTTP request to be made
 type Request struct {
-	Method  string
-	Path    string
 	Body    interface{}
 	Headers map[string]string
+	Method  string
+	Path    string
 }
 
 // GetFullURL returns the complete URL for the request

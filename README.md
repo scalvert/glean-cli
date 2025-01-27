@@ -121,7 +121,7 @@ All requests automatically include the necessary authentication headers and foll
 ### Requirements
 
 - Go 1.19 or higher
-- golangci-lint (install via `go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest`)
+- golangci-lint ([install](https://golangci-lint.run/welcome/install/#local-installation))
 
 ### Building from Source
 
