@@ -83,6 +83,39 @@ Options:
 - `-p, --prompt`: Additional instructions for the LLM
 - `--model`: LLM model to use (default: "gpt-4")
 
+## API Command
+
+The `api` command allows you to make authenticated HTTP requests to the Glean API. It handles authentication and provides a convenient way to interact with any of Glean's REST API endpoints documented at [developers.glean.com](https://developers.glean.com).
+
+### Request Options
+
+- `--method, -X`: Specify the HTTP method (default: GET)
+- `--raw-field`: Add a JSON string as the request body
+- `--input, -F`: Read request body from a file
+- `--preview`: Preview the request without sending it
+- `--no-color`: Disable colorized output (useful when piping to jq)
+- `--raw`: Print raw API response without formatting
+
+### Examples
+
+```bash
+# Preview a request
+glean api <endpoint> --method POST --raw-field '{"key": "value"}' --preview
+
+# Pipe results to jq
+glean api <endpoint> --no-color | jq '.'
+
+# Read request body from a file
+glean api <endpoint> --method POST --input params.json
+
+# Read request body from stdin
+echo '{"key": "value"}' | glean api <endpoint> --method POST
+```
+
+For available endpoints and their parameters, please refer to the [Glean API Documentation](https://developers.glean.com).
+
+All requests automatically include the necessary authentication headers and follow Glean's REST API conventions.
+
 ## Development
 
 ### Requirements
@@ -111,3 +144,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```
+
+</rewritten_file>
