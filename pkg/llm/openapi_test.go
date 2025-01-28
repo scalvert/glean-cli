@@ -13,8 +13,8 @@ import (
 )
 
 type mockClient struct {
-	response []byte
 	err      error
+	response []byte
 }
 
 func (m *mockClient) SendRequest(req *gleanhttp.Request) ([]byte, error) {
@@ -62,6 +62,18 @@ func setupTestConfig(t *testing.T) func() {
 	}
 }
 
+//nolint:govet // Ignoring fieldalignment as it's just an optimization
+type testCase struct {
+	mockResp    []byte
+	mockErr     error
+	name        string
+	input       string
+	prompt      string
+	model       string
+	errContains string
+	wantErr     bool
+}
+
 func TestGenerateOpenAPISpec(t *testing.T) {
 	cleanup := setupTestConfig(t)
 	defer cleanup()
@@ -85,16 +97,7 @@ func TestGenerateOpenAPISpec(t *testing.T) {
 	successRespBytes, err := json.Marshal(successResp)
 	require.NoError(t, err)
 
-	tests := []struct {
-		name        string
-		input       string
-		prompt      string
-		model       string
-		mockResp    []byte
-		mockErr     error
-		wantErr     bool
-		errContains string
-	}{
+	tests := []testCase{
 		{
 			name:        "empty input",
 			input:       "",

@@ -10,12 +10,12 @@ import (
 )
 
 type chatRequest struct {
-	Messages    []message `json:"messages"`
-	Stream      bool      `json:"stream"`
 	AgentConfig struct {
 		Agent string `json:"agent"`
 		Mode  string `json:"mode"`
 	} `json:"agentConfig"`
+	Messages []message `json:"messages"`
+	Stream   bool      `json:"stream"`
 }
 
 type message struct {

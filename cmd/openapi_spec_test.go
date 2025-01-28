@@ -14,8 +14,8 @@ import (
 )
 
 type mockClient struct {
-	response []byte
 	err      error
+	response []byte
 }
 
 func (m *mockClient) SendRequest(req *http.Request) ([]byte, error) {
@@ -67,6 +67,15 @@ type fragment struct {
 	Text string `json:"text"`
 }
 
+type testCase struct {
+	setupFiles  map[string]string
+	name        string
+	wantOutput  string
+	errContains string
+	args        []string
+	wantErr     bool
+}
+
 func TestOpenapiSpecCmd(t *testing.T) {
 	cleanup := setupTestConfig(t)
 	defer cleanup()
@@ -90,15 +99,7 @@ func TestOpenapiSpecCmd(t *testing.T) {
 	successRespBytes, err := json.Marshal(successResp)
 	require.NoError(t, err)
 
-	tests := []struct {
-		name        string
-		args        []string
-		input       string
-		setupFiles  map[string]string
-		wantErr     bool
-		errContains string
-		wantOutput  string
-	}{
+	tests := []testCase{
 		{
 			name:        "no input provided",
 			args:        []string{},

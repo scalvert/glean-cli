@@ -15,10 +15,15 @@ import (
 	"golang.org/x/term"
 )
 
+const (
+	FormatJSON = "json"
+	FormatYAML = "yaml"
+)
+
 // Options represents configuration for output formatting
 type Options struct {
+	Format  string
 	NoColor bool
-	Format  string // json, yaml, etc.
 }
 
 // Write formats and writes the content to the writer with optional syntax highlighting
@@ -41,7 +46,7 @@ func shouldColorize(opts Options) bool {
 
 func writeRaw(w io.Writer, content []byte, format string) error {
 	switch format {
-	case "json":
+	case FormatJSON:
 		var prettyJSON bytes.Buffer
 		if err := json.Indent(&prettyJSON, content, "", "  "); err != nil {
 			return fmt.Errorf("failed to format JSON: %w", err)
@@ -57,7 +62,7 @@ func writeRaw(w io.Writer, content []byte, format string) error {
 func writeColorized(w io.Writer, content []byte, format string) error {
 	var lexer chroma.Lexer
 	switch format {
-	case "json":
+	case FormatJSON:
 		lexer = lexers.Get("json")
 	case "yaml":
 		lexer = lexers.Get("yaml")
