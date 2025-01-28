@@ -6,9 +6,29 @@ A command-line interface for interacting with Glean's API and services. This CLI
 
 ## Installation
 
+You can install the Glean CLI in several ways:
+
+### Using Homebrew (macOS and Linux)
+
+```bash
+brew install scalvert/tap/glean-cli
+```
+
+### Using Go
+
 ```bash
 go install github.com/scalvert/glean-cli@latest
 ```
+
+### Using Shell Script (macOS and Linux)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/scalvert/glean-cli/main/install.sh | sh
+```
+
+### Manual Installation
+
+You can also download the latest binary for your platform from the [releases page](https://github.com/scalvert/glean-cli/releases).
 
 ## Usage
 
