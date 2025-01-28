@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -13,7 +12,7 @@ import (
 	"github.com/briandowns/spinner"
 	"github.com/scalvert/glean-cli/pkg/config"
 	"github.com/scalvert/glean-cli/pkg/http"
-	"github.com/scalvert/glean-cli/pkg/jsoncolor"
+	"github.com/scalvert/glean-cli/pkg/output"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 )
@@ -139,22 +138,10 @@ func newApiCmd() *cobra.Command {
 				return err
 			}
 
-			if opts.raw || opts.noColor {
-				// For raw or no-color output, pretty print without colors
-				var prettyJSON bytes.Buffer
-				if err := json.Indent(&prettyJSON, resp, "", "  "); err != nil {
-					return fmt.Errorf("failed to format JSON response: %w", err)
-				}
-				fmt.Println(prettyJSON.String())
-				return nil
-			}
-
-			// Use colorized JSON output
-			if err := jsoncolor.Write(os.Stdout, bytes.NewReader(resp), "  "); err != nil {
-				return fmt.Errorf("failed to format JSON response: %w", err)
-			}
-
-			return nil
+			return output.Write(os.Stdout, resp, output.Options{
+				NoColor: opts.raw || opts.noColor,
+				Format:  "json",
+			})
 		},
 	}
 
@@ -204,17 +191,10 @@ func previewRequest(req *http.Request, noColor bool) error {
 			return fmt.Errorf("failed to format request body: %w", err)
 		}
 
-		if noColor {
-			var prettyJSON bytes.Buffer
-			if err := json.Indent(&prettyJSON, bodyBytes, "  ", "  "); err != nil {
-				return fmt.Errorf("failed to format request body: %w", err)
-			}
-			fmt.Println(prettyJSON.String())
-		} else {
-			if err := jsoncolor.Write(os.Stdout, bytes.NewReader(bodyBytes), "  "); err != nil {
-				return fmt.Errorf("failed to format request body: %w", err)
-			}
-		}
+		return output.Write(os.Stdout, bodyBytes, output.Options{
+			NoColor: noColor,
+			Format:  "json",
+		})
 	}
 
 	return nil

@@ -11,15 +11,34 @@ import (
 	"github.com/scalvert/glean-cli/pkg/config"
 )
 
-// Client wraps http.Client with Glean-specific functionality
-type Client struct {
+// Client is the interface for making HTTP requests
+type Client interface {
+	SendRequest(req *Request) ([]byte, error)
+	GetFullURL(path string) string
+}
+
+// client wraps http.Client with Glean-specific functionality
+type client struct {
 	http    *http.Client
 	cfg     *config.Config
 	baseURL string
 }
 
+// For testing
+var (
+	NewClientFunc = defaultNewClient
+)
+
 // NewClient creates a new HTTP client with the given configuration
-func NewClient(cfg *config.Config) (*Client, error) {
+func NewClient(cfg *config.Config) (Client, error) {
+	if cfg == nil {
+		return nil, fmt.Errorf("config cannot be nil")
+	}
+	return NewClientFunc(cfg)
+}
+
+// defaultNewClient is the default implementation of NewClient
+func defaultNewClient(cfg *config.Config) (Client, error) {
 	if cfg.GleanHost == "" {
 		return nil, fmt.Errorf("Glean host not configured. Run 'glean config --host <host>' to set it")
 	}
@@ -29,7 +48,7 @@ func NewClient(cfg *config.Config) (*Client, error) {
 		baseURL = fmt.Sprintf("https://%s", cfg.GleanHost)
 	}
 
-	return &Client{
+	return &client{
 		http:    &http.Client{},
 		cfg:     cfg,
 		baseURL: baseURL,
@@ -45,7 +64,7 @@ type Request struct {
 }
 
 // GetFullURL returns the complete URL for the request
-func (c *Client) GetFullURL(path string) string {
+func (c *client) GetFullURL(path string) string {
 	// Ensure path starts with /rest/api/v1/
 	if !strings.HasPrefix(path, "/rest/api/v1/") {
 		path = fmt.Sprintf("/rest/api/v1/%s", strings.TrimPrefix(path, "/"))
@@ -54,7 +73,7 @@ func (c *Client) GetFullURL(path string) string {
 }
 
 // SendRequest executes the HTTP request and returns the response
-func (c *Client) SendRequest(req *Request) ([]byte, error) {
+func (c *client) SendRequest(req *Request) ([]byte, error) {
 	url := c.GetFullURL(req.Path)
 
 	var bodyReader io.Reader

@@ -1,14 +1,43 @@
 version: '3'
 
 tasks:
-  generate-client:
+  default:
+    silent: true
     cmds:
-      - rm -rf pkg/glean_client
-      - yes | npx @openapitools/openapi-generator-cli generate \
-          -i ~/Downloads/openapi.yaml \
-          -g go \
-          --additional-properties=packageName=glean_client \
-          -o pkg/glean_client
-      - rm -f pkg/glean_client/go.mod
-      - rm -f pkg/glean_client/go.sum
-      - rm -rf pkg/glean_client/test
+      - echo $'To list all tasks run:\n\n\t task --list-all\n'
+      - task --list --sort=none
+
+  check:
+    desc: Run all checks (used in CI)
+    cmds:
+      - task: lint
+      - task: test
+      - task: build
+
+  clean:
+    cmds:
+      - rm -f glean
+      - go clean
+      - rm -rf dist/
+
+  build:
+    cmds:
+      - go build -o glean
+
+  test:
+    cmds:
+      - go test ./... -v
+
+  lint:
+    cmds:
+      - golangci-lint run
+
+  lint:fix:
+    cmds:
+      - golangci-lint run --fix
+
+
+  install:
+    desc: Install the CLI locally
+    cmds:
+      - go install
