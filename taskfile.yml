@@ -47,9 +47,15 @@ tasks:
       # Ensure we're on main and up to date
       - git checkout main
       - git pull origin main
+      - git fetch --tags
 
       # Run checks
       - task: check
+
+      # Show current version and commits since last release
+      - echo "Current version is $(svu current)"
+      - echo "Commits since last release:"
+      - git log $(svu current)..HEAD --oneline
 
       # Get the next version
       - echo "Next version will be $(svu next)"
