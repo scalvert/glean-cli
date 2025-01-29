@@ -29,13 +29,13 @@ jobs:
           version: latest
           args: release --clean
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
       - name: Update Homebrew tap
         if: success()
         uses: dawidd6/action-homebrew-bump-formula@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_PAT }}
           tap: scalvert/homebrew-tap
           formula: glean-cli
           tag: ${{ github.ref_name }}

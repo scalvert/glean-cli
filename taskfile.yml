@@ -43,28 +43,63 @@ tasks:
 
   release:
     desc: Create and push a new release
+    vars:
+      VERSION: '{{.VERSION | default ""}}'
+      FORCE: '{{.FORCE | default "false"}}'
     cmds:
       # Ensure we're on main and up to date
       - git checkout main
       - git pull origin main
+      - git fetch --tags
 
       # Run checks
       - task: check
 
-      # Get the next version
-      - echo "Next version will be $(svu next)"
-      - echo "Press Ctrl+C to cancel or wait 5 seconds to continue..."
-      - sleep 5
+      # Show current version and commits since last release
+      - echo "Current version is $(svu current)"
+      - echo "Commits since last release:"
+      - git log $(svu current)..HEAD --oneline
 
-      # Create and push the tag
+      # Get and validate the version, create and push tag
       - |
-        version=$(svu next)
-        git tag -a $version -m "Release $version"
-        git push origin $version
+        # Set version
+        if [ -n "{{.VERSION}}" ]; then
+          version="{{.VERSION}}"
+          # Validate version format (vX.Y.Z where X,Y,Z are numbers)
+          if ! echo "$version" | grep -qE "^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$"; then
+            echo "Error: Version must be in format vX.Y.Z where X,Y,Z are numbers (e.g. v1.2.3)"
+            exit 1
+          fi
+          echo "Using specified version: $version"
+        else
+          version=$(svu next)
+          echo "Next version will be $version"
+        fi
 
-      # Instructions for monitoring
-      - echo "Release process started!"
-      - echo "Monitor the release at https://github.com/scalvert/glean-cli/actions"
+        # Confirm before proceeding
+        echo "Press Ctrl+C to cancel or wait 5 seconds to continue..."
+        sleep 5
+
+        # Handle existing tag if force is true
+        if [ "{{.FORCE}}" = "true" ]; then
+          if git rev-parse "$version" >/dev/null 2>&1; then
+            echo "Force flag set. Removing existing tag $version"
+            git tag -d "$version"
+            git push origin ":refs/tags/$version"
+          fi
+        fi
+
+        # Create and push the tag
+        if [ "{{.FORCE}}" = "true" ]; then
+          git tag -f -a "$version" -m "Release $version"
+        else
+          git tag -a "$version" -m "Release $version"
+        fi
+        git push origin "$version" --force
+
+        # Instructions for monitoring
+        echo "Release process started!"
+        echo "Monitor the release at https://github.com/scalvert/glean-cli/actions"
     preconditions:
       - sh: "git diff-index --quiet HEAD"
         msg: "Working directory is not clean. Please commit or stash changes first."
