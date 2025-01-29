@@ -36,8 +36,37 @@ tasks:
     cmds:
       - golangci-lint run --fix
 
-
   install:
     desc: Install the CLI locally
     cmds:
       - go install
+
+  release:
+    desc: Create and push a new release
+    cmds:
+      # Ensure we're on main and up to date
+      - git checkout main
+      - git pull origin main
+
+      # Run checks
+      - task: check
+
+      # Get the next version
+      - echo "Next version will be $(svu next)"
+      - echo "Press Ctrl+C to cancel or wait 5 seconds to continue..."
+      - sleep 5
+
+      # Create and push the tag
+      - |
+        version=$(svu next)
+        git tag -a $version -m "Release $version"
+        git push origin $version
+
+      # Instructions for monitoring
+      - echo "Release process started!"
+      - echo "Monitor the release at https://github.com/scalvert/glean-cli/actions"
+    preconditions:
+      - sh: "git diff-index --quiet HEAD"
+        msg: "Working directory is not clean. Please commit or stash changes first."
+      - sh: "command -v svu"
+        msg: "svu is not installed. Run: go install github.com/caarlos0/svu@latest"
