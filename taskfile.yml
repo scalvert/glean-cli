@@ -1,5 +1,8 @@
 version: '3'
 
+vars:
+  VERBOSE: '{{default "false" .VERBOSE}}'
+
 tasks:
   default:
     silent: true
@@ -9,40 +12,48 @@ tasks:
 
   check:
     desc: Run all checks (used in CI)
+    silent: '{{ne .VERBOSE "true"}}'
     cmds:
       - task: lint
       - task: test
       - task: build
 
   clean:
+    silent: '{{ne .VERBOSE "true"}}'
     cmds:
       - rm -f glean
       - go clean
       - rm -rf dist/
 
   build:
+    silent: '{{ne .VERBOSE "true"}}'
     cmds:
       - go build -o glean
 
   test:
+    silent: '{{ne .VERBOSE "true"}}'
     cmds:
       - go test ./... -v
 
   lint:
+    silent: '{{ne .VERBOSE "true"}}'
     cmds:
       - golangci-lint run
 
   lint:fix:
+    silent: '{{ne .VERBOSE "true"}}'
     cmds:
       - golangci-lint run --fix
 
   install:
     desc: Install the CLI locally
+    silent: '{{ne .VERBOSE "true"}}'
     cmds:
       - go install
 
   release:
     desc: Create and push a new release
+    silent: '{{ne .VERBOSE "true"}}'
     vars:
       VERSION: '{{.VERSION | default ""}}'
       FORCE: '{{.FORCE | default "false"}}'
