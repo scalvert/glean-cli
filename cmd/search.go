@@ -476,18 +476,24 @@ func runSearch(cmd *cobra.Command, opts *SearchOptions) error {
 
 		tty, err := tty.Open()
 		if err != nil {
-			return fmt.Errorf("failed to open tty: %w", err)
-		}
-		defer tty.Close()
+			// Fallback for non-TTY environments (like CI)
+			var input string
+			fmt.Scanln(&input)
+			if input == "q" || input == "Q" {
+				fmt.Fprintln(cmd.OutOrStdout())
+				break
+			}
+		} else {
+			defer tty.Close()
+			r, err := tty.ReadRune()
+			if err != nil {
+				return fmt.Errorf("failed to read input: %w", err)
+			}
 
-		r, err := tty.ReadRune()
-		if err != nil {
-			return fmt.Errorf("failed to read input: %w", err)
-		}
-
-		if r == 'q' || r == 'Q' {
-			fmt.Fprintln(cmd.OutOrStdout())
-			break
+			if r == 'q' || r == 'Q' {
+				fmt.Fprintln(cmd.OutOrStdout())
+				break
+			}
 		}
 
 		response, err = performSearch(client, opts, response.Cursor, response.TrackingToken)
