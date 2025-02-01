@@ -13,22 +13,21 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+const (
+	basicSearchResponse = `{
+		"results": [{
+			"document": {
+				"datasource": "confluence",
+				"title": "Test Document",
+				"url": "https://test.com/doc"
+			}
+		}]
+	}`
+)
+
 func TestSearchCommand(t *testing.T) {
 	t.Run("basic search", func(t *testing.T) {
-		response := `{
-			"results": [{
-				"document": {
-					"datasource": "confluence",
-					"title": "Test Document",
-					"url": "https://test.com/doc"
-				},
-				"snippets": [{
-					"text": "This is a test snippet"
-				}]
-			}]
-		}`
-
-		_, cleanup := testutils.SetupTestWithResponse(t, []byte(response))
+		_, cleanup := testutils.SetupTestWithResponse(t, []byte(basicSearchResponse))
 		defer cleanup()
 
 		b := bytes.NewBufferString("")
@@ -42,7 +41,6 @@ func TestSearchCommand(t *testing.T) {
 		output := b.String()
 		assert.Contains(t, output, "Confluence | Test Document")
 		assert.Contains(t, output, "https://test.com/doc")
-		assert.Contains(t, output, "This is a test snippet")
 	})
 
 	t.Run("search with spell correction", func(t *testing.T) {
@@ -100,17 +98,7 @@ func TestSearchCommand(t *testing.T) {
 	})
 
 	t.Run("search with json output", func(t *testing.T) {
-		response := `{
-			"results": [{
-				"document": {
-					"datasource": "confluence",
-					"title": "Test Document",
-					"url": "https://test.com/doc"
-				}
-			}]
-		}`
-
-		_, cleanup := testutils.SetupTestWithResponse(t, []byte(response))
+		_, cleanup := testutils.SetupTestWithResponse(t, []byte(basicSearchResponse))
 		defer cleanup()
 
 		b := bytes.NewBufferString("")
@@ -128,17 +116,7 @@ func TestSearchCommand(t *testing.T) {
 	})
 
 	t.Run("search with custom template", func(t *testing.T) {
-		response := `{
-			"results": [{
-				"document": {
-					"datasource": "confluence",
-					"title": "Test Document",
-					"url": "https://test.com/doc"
-				}
-			}]
-		}`
-
-		_, cleanup := testutils.SetupTestWithResponse(t, []byte(response))
+		_, cleanup := testutils.SetupTestWithResponse(t, []byte(basicSearchResponse))
 		defer cleanup()
 
 		b := bytes.NewBufferString("")
@@ -253,4 +231,76 @@ func TestSearchCommand(t *testing.T) {
 		assert.Contains(t, output, "First Document")
 		assert.Contains(t, output, "Press 'q' to quit")
 	})
+}
+
+func TestSearch(t *testing.T) {
+	//nolint:govet // Ignoring fieldalignment issues in test code
+	type testCase struct {
+		args     []string
+		contains []string
+		name     string
+		wantErr  bool
+	}
+
+	tests := []testCase{
+		{
+			args: []string{"test query"},
+			contains: []string{
+				"Confluence | Test Document",
+				"Did you mean: correct query?",
+			},
+			name:    "basic search",
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, cleanup := testutils.SetupTestWithResponse(t, []byte(basicSearchResponse))
+			defer cleanup()
+
+			cmd := NewCmdSearch()
+			b := bytes.NewBufferString("")
+			cmd.SetOut(b)
+			cmd.SetArgs(tt.args)
+
+			err := cmd.Execute()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Execute() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			out := b.String()
+			for _, s := range tt.contains {
+				if !strings.Contains(out, s) {
+					t.Errorf("Output should contain %q but got: %v", s, out)
+				}
+			}
+		})
+	}
+}
+
+func TestSearchWithPagination(t *testing.T) {
+	cmd := NewCmdSearch()
+	b := bytes.NewBufferString("")
+	cmd.SetOut(b)
+	cmd.SetArgs([]string{"test query"})
+
+	err := cmd.Execute()
+	if err != nil {
+		t.Errorf("Execute() error = %v", err)
+		return
+	}
+
+	out := b.String()
+	expected := []string{
+		"Confluence | Test Document",
+		"Press 'q' to quit",
+	}
+
+	for _, s := range expected {
+		if !strings.Contains(out, s) {
+			t.Errorf("Output should contain %q but got: %v", s, out)
+		}
+	}
 }

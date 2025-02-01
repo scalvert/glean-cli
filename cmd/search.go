@@ -3,7 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"os"
+	"io"
 	"strings"
 	"text/template"
 	"time"
@@ -15,28 +15,23 @@ import (
 )
 
 type SearchOptions struct {
-	// Required
-	Query string `json:"query"`
-
-	// Optional top-level fields
-	Cursor            string              `json:"cursor,omitempty"`
-	DisableSpellcheck bool                `json:"disableSpellcheck,omitempty"`
 	InputDetails      *SearchInputDetails `json:"inputDetails,omitempty"`
-	MaxSnippetSize    int                 `json:"maxSnippetSize,omitempty"`
-	PageSize          int                 `json:"pageSize,omitempty"`
-	People            []Person            `json:"people,omitempty"`
-	RequestOptions    *RequestOptions     `json:"requestOptions,omitempty"`
-	ResultTabIds      []string            `json:"resultTabIds,omitempty"`
 	SessionInfo       *SessionInfo        `json:"sessionInfo,omitempty"`
 	SourceDocument    *Document           `json:"sourceDocument,omitempty"`
-	TimeoutMillis     int                 `json:"timeoutMillis,omitempty"`
-	Timestamp         string              `json:"timestamp,omitempty"`
-	TrackingToken     string              `json:"trackingToken,omitempty"`
-
-	// CLI-specific options (not part of API)
-	Template     string
-	OutputFormat string
-	NoColor      bool
+	RequestOptions    *RequestOptions     `json:"requestOptions,omitempty"`
+	Template          string
+	OutputFormat      string
+	Query             string   `json:"query"`
+	Cursor            string   `json:"cursor,omitempty"`
+	Timestamp         string   `json:"timestamp,omitempty"`
+	TrackingToken     string   `json:"trackingToken,omitempty"`
+	People            []Person `json:"people,omitempty"`
+	ResultTabIds      []string `json:"resultTabIds,omitempty"`
+	PageSize          int      `json:"pageSize,omitempty"`
+	MaxSnippetSize    int      `json:"maxSnippetSize,omitempty"`
+	TimeoutMillis     int      `json:"timeoutMillis,omitempty"`
+	DisableSpellcheck bool     `json:"disableSpellcheck,omitempty"`
+	NoColor           bool
 }
 
 type SearchInputDetails struct {
@@ -44,9 +39,9 @@ type SearchInputDetails struct {
 }
 
 type Person struct {
+	Metadata     *PersonMetadata `json:"metadata,omitempty"`
 	Name         string          `json:"name"`
 	ObfuscatedId string          `json:"obfuscatedId"`
-	Metadata     *PersonMetadata `json:"metadata,omitempty"`
 }
 
 type PersonMetadata struct {
@@ -58,23 +53,23 @@ type RelatedDocument struct {
 }
 
 type RequestOptions struct {
-	FacetBucketSize              int                 `json:"facetBucketSize"`
-	AuthTokens                   []AuthToken         `json:"authTokens,omitempty"`
-	DatasourceFilter             string              `json:"datasourceFilter,omitempty"`
-	DatasourcesFilter            []string            `json:"datasourcesFilter,omitempty"`
-	DefaultFacets                []string            `json:"defaultFacets,omitempty"`
-	DisableQueryAutocorrect      bool                `json:"disableQueryAutocorrect,omitempty"`
-	DisableSpellcheck            bool                `json:"disableSpellcheck,omitempty"`
 	Exclusions                   *RestrictionFilters `json:"exclusions,omitempty"`
 	FacetBucketFilter            *FacetBucketFilter  `json:"facetBucketFilter,omitempty"`
+	Inclusions                   *RestrictionFilters `json:"inclusions,omitempty"`
+	DatasourceFilter             string              `json:"datasourceFilter,omitempty"`
 	FacetFilters                 []FacetFilter       `json:"facetFilters,omitempty"`
 	FacetFilterSets              []FacetFilterSet    `json:"facetFilterSets,omitempty"`
-	FetchAllDatasourceCounts     bool                `json:"fetchAllDatasourceCounts,omitempty"`
-	Inclusions                   *RestrictionFilters `json:"inclusions,omitempty"`
-	QueryOverridesFacetFilters   bool                `json:"queryOverridesFacetFilters,omitempty"`
+	AuthTokens                   []AuthToken         `json:"authTokens,omitempty"`
 	ResponseHints                []string            `json:"responseHints,omitempty"`
-	ReturnLlmContentOverSnippets bool                `json:"returnLlmContentOverSnippets,omitempty"`
+	DefaultFacets                []string            `json:"defaultFacets,omitempty"`
+	DatasourcesFilter            []string            `json:"datasourcesFilter,omitempty"`
+	FacetBucketSize              int                 `json:"facetBucketSize"`
 	TimezoneOffset               int                 `json:"timezoneOffset,omitempty"`
+	DisableQueryAutocorrect      bool                `json:"disableQueryAutocorrect,omitempty"`
+	DisableSpellcheck            bool                `json:"disableSpellcheck,omitempty"`
+	FetchAllDatasourceCounts     bool                `json:"fetchAllDatasourceCounts,omitempty"`
+	QueryOverridesFacetFilters   bool                `json:"queryOverridesFacetFilters,omitempty"`
+	ReturnLlmContentOverSnippets bool                `json:"returnLlmContentOverSnippets,omitempty"`
 }
 
 type AuthToken struct {
@@ -111,13 +106,13 @@ type SessionInfo struct {
 }
 
 type Document struct {
+	ParentDocument *Document         `json:"parentDocument,omitempty"`
+	Metadata       *DocumentMetadata `json:"metadata"`
 	ID             string            `json:"id"`
 	Datasource     string            `json:"datasource"`
 	DocType        string            `json:"docType"`
-	ParentDocument *Document         `json:"parentDocument,omitempty"`
 	Title          string            `json:"title"`
 	URL            string            `json:"url"`
-	Metadata       *DocumentMetadata `json:"metadata"`
 }
 
 type DocumentMetadata struct {
@@ -152,30 +147,6 @@ type Shortcut struct {
 	ViewPrefix     string `json:"viewPrefix"`
 	Alias          string `json:"alias"`
 	Title          string `json:"title"`
-}
-
-var searchOpts = &SearchOptions{
-	RequestOptions: &RequestOptions{
-		FacetBucketSize: 10,
-		ResponseHints:   []string{"RESULTS", "QUERY_METADATA"},
-	},
-}
-
-func formatDatasource(s string) string {
-	if s == "nonindexedshortcut" {
-		return "GoLink"
-	}
-
-	words := []rune(s)
-	if len(words) > 0 {
-		words[0] = []rune(strings.ToUpper(string(words[0])))[0]
-	}
-	for i := 1; i < len(words); i++ {
-		if words[i-1] == ' ' {
-			words[i] = []rune(strings.ToUpper(string(words[i])))[0]
-		}
-	}
-	return string(words)
 }
 
 var defaultTemplate = `{{- range $i, $result := .Results -}}
@@ -257,21 +228,13 @@ type ErrorMessage struct {
 }
 
 type FacetResult struct {
-	Buckets      []FacetBucket `json:"buckets"`
-	SourceName   string        `json:"sourceName"`
-	OperatorName string        `json:"operatorName"`
-	ObjectType   string        `json:"objectType"`
+	FieldName string        `json:"fieldName"`
+	Buckets   []FacetBucket `json:"buckets"`
 }
 
 type FacetBucket struct {
-	Percentage float64     `json:"percentage"`
-	Count      int         `json:"count"`
-	Value      BucketValue `json:"value"`
-}
-
-type BucketValue struct {
-	StringValue  string `json:"stringValue,omitempty"`
-	IntegerValue int    `json:"integerValue,omitempty"`
+	Value string `json:"value"`
+	Count int    `json:"count"`
 }
 
 type GeneratedQna struct {
@@ -288,10 +251,9 @@ type ResultsDescription struct {
 }
 
 type ResultTab struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	Count       int    `json:"count"`
-	Description string `json:"description,omitempty"`
+	TabId       string `json:"tabId"`
+	TabName     string `json:"tabName"`
+	ResultCount int    `json:"resultCount"`
 }
 
 type StructuredResult struct {
@@ -300,25 +262,25 @@ type StructuredResult struct {
 }
 
 type SearchResponse struct {
-	ResponseTrackingToken        string                  `json:"responseTrackingToken"`
-	TrackingToken                string                  `json:"trackingToken"`
-	SessionInfo                  *SessionInfo            `json:"sessionInfo"`
-	Results                      []SearchResult          `json:"results"`
-	HasMoreResults               bool                    `json:"hasMoreResults"`
-	Cursor                       string                  `json:"cursor"`
 	ErrorInfo                    *ErrorInfo              `json:"errorInfo,omitempty"`
-	ExperimentIds                []int64                 `json:"experimentIds,omitempty"`
-	FacetResults                 []FacetResult           `json:"facetResults,omitempty"`
-	GeneratedQna                 *GeneratedQna           `json:"generatedQnaResult,omitempty"`
-	Metadata                     *SearchResponseMetadata `json:"metadata,omitempty"`
-	RequestID                    string                  `json:"requestID,omitempty"`
+	SessionInfo                  *SessionInfo            `json:"sessionInfo"`
 	ResultsDescription           *ResultsDescription     `json:"resultsDescription,omitempty"`
+	Metadata                     *SearchResponseMetadata `json:"metadata,omitempty"`
+	GeneratedQna                 *GeneratedQna           `json:"generatedQnaResult,omitempty"`
+	TrackingToken                string                  `json:"trackingToken"`
+	ResponseTrackingToken        string                  `json:"responseTrackingToken"`
+	SuggestedSpellCorrectedQuery string                  `json:"suggestedSpellCorrectedQuery,omitempty"`
+	RewrittenQuery               string                  `json:"rewrittenQuery,omitempty"`
+	Cursor                       string                  `json:"cursor"`
+	RequestID                    string                  `json:"requestID,omitempty"`
+	FacetResults                 []FacetResult           `json:"facetResults,omitempty"`
+	Results                      []SearchResult          `json:"results"`
+	ExperimentIds                []int64                 `json:"experimentIds,omitempty"`
+	StructuredResults            []StructuredResult      `json:"structuredResults,omitempty"`
 	ResultTabIds                 []string                `json:"resultTabIds,omitempty"`
 	ResultTabs                   []ResultTab             `json:"resultTabs,omitempty"`
-	StructuredResults            []StructuredResult      `json:"structuredResults,omitempty"`
 	BackendTimeMillis            int                     `json:"backendTimeMillis,omitempty"`
-	RewrittenQuery               string                  `json:"rewrittenQuery,omitempty"`
-	SuggestedSpellCorrectedQuery string                  `json:"suggestedSpellCorrectedQuery,omitempty"`
+	HasMoreResults               bool                    `json:"hasMoreResults"`
 }
 
 type RewrittenFacetFilter struct {
@@ -327,28 +289,28 @@ type RewrittenFacetFilter struct {
 }
 
 type SearchResult struct {
-	TrackingToken          string                 `json:"trackingToken"`
 	Document               *Document              `json:"document"`
+	MustIncludeSuggestions map[string]interface{} `json:"mustIncludeSuggestions"`
+	DebugInfo              map[string]interface{} `json:"debugInfo"`
+	TrackingToken          string                 `json:"trackingToken"`
 	Title                  string                 `json:"title"`
 	URL                    string                 `json:"url"`
 	Snippets               []SearchSnippet        `json:"snippets"`
-	MustIncludeSuggestions map[string]interface{} `json:"mustIncludeSuggestions"`
-	DebugInfo              map[string]interface{} `json:"debugInfo"`
 }
 
 type SearchSnippet struct {
 	Snippet             string         `json:"snippet"`
 	MimeType            string         `json:"mimeType"`
 	Text                string         `json:"text"`
-	Ranges              []SnippetRange `json:"ranges,omitempty"`
 	URL                 string         `json:"url,omitempty"`
+	Ranges              []SnippetRange `json:"ranges,omitempty"`
 	SnippetTextOrdering int            `json:"snippetTextOrdering,omitempty"`
 }
 
 type SnippetRange struct {
+	Type       string `json:"type"`
 	StartIndex int    `json:"startIndex"`
 	EndIndex   int    `json:"endIndex"`
-	Type       string `json:"type"`
 }
 
 type SearchMetadata struct {
@@ -470,29 +432,33 @@ func runSearch(cmd *cobra.Command, opts *SearchOptions) error {
 		return fmt.Errorf("error executing template: %w", err)
 	}
 
-	// Handle pagination if there are more results
+	// Handle pagination if needed
+	var ttyInput *tty.TTY
 	for response.HasMoreResults {
-		fmt.Fprint(cmd.OutOrStdout(), "\n\nPress 'q' to quit, any other key to load more results...")
-
-		tty, err := tty.Open()
-		if err != nil {
-			// Fallback for non-TTY environments (like CI)
+		var readErr error
+		ttyInput, readErr = tty.Open()
+		if readErr != nil {
+			// Fall back to standard input if TTY is not available
+			fmt.Fprint(cmd.OutOrStdout(), "\n\nPress 'q' to quit, any other key to load more results...")
 			var input string
-			fmt.Scanln(&input)
+			if _, readErr := fmt.Scanln(&input); readErr != nil {
+				if readErr == io.EOF {
+					return nil // User pressed Ctrl+D
+				}
+				return fmt.Errorf("error reading input: %w", readErr)
+			}
 			if input == "q" || input == "Q" {
-				fmt.Fprintln(cmd.OutOrStdout())
-				break
+				return nil
 			}
 		} else {
-			defer tty.Close()
-			r, err := tty.ReadRune()
-			if err != nil {
-				return fmt.Errorf("failed to read input: %w", err)
+			defer ttyInput.Close()
+			fmt.Fprint(cmd.OutOrStdout(), "\n\nPress 'q' to quit, any other key to load more results...")
+			r, readErr := ttyInput.ReadRune()
+			if readErr != nil {
+				return fmt.Errorf("error reading input: %w", readErr)
 			}
-
 			if r == 'q' || r == 'Q' {
-				fmt.Fprintln(cmd.OutOrStdout())
-				break
+				return nil
 			}
 		}
 
@@ -587,8 +553,19 @@ func performSearch(client http.Client, opts *SearchOptions, cursor, trackingToke
 	return &searchResp, nil
 }
 
-func outputJSON(v interface{}) error {
-	encoder := json.NewEncoder(os.Stdout)
-	encoder.SetIndent("", "  ")
-	return encoder.Encode(v)
+func formatDatasource(s string) string {
+	if s == "nonindexedshortcut" {
+		return "GoLink"
+	}
+
+	words := []rune(s)
+	if len(words) > 0 {
+		words[0] = []rune(strings.ToUpper(string(words[0])))[0]
+	}
+	for i := 1; i < len(words); i++ {
+		if words[i-1] == ' ' {
+			words[i] = []rune(strings.ToUpper(string(words[i])))[0]
+		}
+	}
+	return string(words)
 }

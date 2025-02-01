@@ -10,15 +10,17 @@ import (
 
 // SetupTestConfig creates a test configuration and returns a cleanup function
 func SetupTestConfig(t *testing.T) func() {
-	tmpDir := t.TempDir()
-	configPath := filepath.Join(tmpDir, "config.json")
+	t.Helper()
+
+	configDir := t.TempDir()
+	configPath := filepath.Join(configDir, "config.json")
+
 	configData := `{
-		"glean_host": "test-company",
-		"glean_token": "test-token",
-		"glean_email": "test@example.com"
+		"host": "https://test.glean.com",
+		"token": "test-token"
 	}`
 
-	err := os.WriteFile(configPath, []byte(configData), 0644)
+	err := os.WriteFile(configPath, []byte(configData), 0600)
 	require.NoError(t, err)
 
 	oldConfigPath := os.Getenv("GLEAN_CONFIG_PATH")
