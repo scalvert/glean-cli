@@ -7,7 +7,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -32,19 +31,8 @@ func TestRootCmd(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Create a fresh command for each test
-			cmd := &cobra.Command{
-				Use:   "glean",
-				Short: "Glean CLI - A command-line interface for Glean operations.",
-				Long: `Work seamlessly with Glean from your command line.
-
-To get started, run 'glean --help'.`,
-				Run: func(cmd *cobra.Command, args []string) {
-					cmd.Help()
-				},
-			}
-
 			b := bytes.NewBufferString("")
+			cmd := NewCmdRoot()
 			cmd.SetOut(b)
 			cmd.SetErr(b)
 			cmd.SetArgs(tt.args)

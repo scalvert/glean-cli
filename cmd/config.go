@@ -9,78 +9,90 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
+const notSetValue = "[not set]"
+
+type ConfigOptions struct {
 	host  string
 	token string
 	email string
 	clear bool
 	show  bool
-)
+}
 
-const notSetValue = "[not set]"
+func NewCmdConfig() *cobra.Command {
+	opts := ConfigOptions{}
 
-var configCmd = &cobra.Command{
-	Use:   "config",
-	Short: "Configure Glean CLI credentials",
-	Long: heredoc.Doc(`
-		Configure credentials for the Glean CLI.
+	cmd := &cobra.Command{
+		Use:   "config",
+		Short: "Manage Glean CLI configuration",
+		Long: heredoc.Doc(`
+			Configure credentials for the Glean CLI.
 
-		Examples:
-		  # Set Glean host (either format works)
-		  glean config --host linkedin
-		  glean config --host linkedin-be.glean.com
+			Examples:
+			  # Set Glean host (either format works)
+			  glean config --host linkedin
+			  glean config --host linkedin-be.glean.com
 
-		  # Set Glean API token
-		  glean config --token your-token
+			  # Set Glean API token
+			  glean config --token your-token
 
-		  # Set Glean user email
-		  glean config --email user@company.com
+			  # Set Glean user email
+			  glean config --email user@company.com
 
-		  # Show current configuration
-		  glean config --show
+			  # Show current configuration
+			  glean config --show
 
-		  # Clear all stored credentials
-		  glean config --clear
-	`),
-	RunE: func(cmd *cobra.Command, args []string) error {
-		if show {
-			cfg, err := config.LoadConfig()
-			if err != nil {
-				return fmt.Errorf("failed to access keyring: %w", err)
+			  # Clear all stored credentials
+			  glean config --clear
+		`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if opts.show {
+				cfg, err := config.LoadConfig()
+				if err != nil {
+					return fmt.Errorf("failed to access keyring: %w", err)
+				}
+
+				fmt.Println("Current configuration:")
+				fmt.Printf("  %-10s %s\n", "Host:", valueOrNotSet(cfg.GleanHost))
+				fmt.Printf("  %-10s %s\n", "Email:", valueOrNotSet(cfg.GleanEmail))
+
+				// Mask token if present
+				tokenDisplay := notSetValue
+				if cfg.GleanToken != "" {
+					tokenDisplay = cfg.GleanToken[0:4] + strings.Repeat("*", len(cfg.GleanToken)-4)
+				}
+				fmt.Printf("  %-10s %s\n", "Token:", tokenDisplay)
+				return nil
 			}
 
-			fmt.Println("Current configuration:")
-			fmt.Printf("  %-10s %s\n", "Host:", valueOrNotSet(cfg.GleanHost))
-			fmt.Printf("  %-10s %s\n", "Email:", valueOrNotSet(cfg.GleanEmail))
-
-			// Mask token if present
-			tokenDisplay := notSetValue
-			if cfg.GleanToken != "" {
-				tokenDisplay = cfg.GleanToken[0:4] + strings.Repeat("*", len(cfg.GleanToken)-4)
+			if opts.clear {
+				if err := config.ClearConfig(); err != nil {
+					return fmt.Errorf("failed to clear configuration: %w", err)
+				}
+				fmt.Println("Configuration cleared successfully")
+				return nil
 			}
-			fmt.Printf("  %-10s %s\n", "Token:", tokenDisplay)
+
+			if opts.host == "" && opts.token == "" && opts.email == "" {
+				return fmt.Errorf("no configuration provided. Use --host, --token, or --email to set configuration")
+			}
+
+			if err := config.SaveConfig(opts.host, opts.token, opts.email); err != nil {
+				return fmt.Errorf("failed to save configuration: %w", err)
+			}
+
+			fmt.Println("Configuration saved successfully")
 			return nil
-		}
+		},
+	}
 
-		if clear {
-			if err := config.ClearConfig(); err != nil {
-				return fmt.Errorf("failed to clear configuration: %w", err)
-			}
-			fmt.Println("Configuration cleared successfully")
-			return nil
-		}
+	cmd.Flags().StringVar(&opts.host, "host", "", "Glean instance name or full hostname (e.g., 'linkedin' or 'linkedin-be.glean.com')")
+	cmd.Flags().StringVar(&opts.token, "token", "", "Glean API token")
+	cmd.Flags().StringVar(&opts.email, "email", "", "Email address for API requests")
+	cmd.Flags().BoolVar(&opts.clear, "clear", false, "Clear all stored credentials")
+	cmd.Flags().BoolVar(&opts.show, "show", false, "Show current configuration")
 
-		if host == "" && token == "" && email == "" {
-			return fmt.Errorf("no configuration provided. Use --host, --token, or --email to set configuration")
-		}
-
-		if err := config.SaveConfig(host, token, email); err != nil {
-			return fmt.Errorf("failed to save configuration: %w", err)
-		}
-
-		fmt.Println("Configuration saved successfully")
-		return nil
-	},
+	return cmd
 }
 
 func valueOrNotSet(value string) string {
@@ -88,14 +100,4 @@ func valueOrNotSet(value string) string {
 		return "[not set]"
 	}
 	return value
-}
-
-func init() {
-	rootCmd.AddCommand(configCmd)
-
-	configCmd.Flags().StringVar(&host, "host", "", "Glean instance name or full hostname (e.g., 'linkedin' or 'linkedin-be.glean.com')")
-	configCmd.Flags().StringVar(&token, "token", "", "Glean API token")
-	configCmd.Flags().StringVar(&email, "email", "", "Email address for API requests")
-	configCmd.Flags().BoolVar(&clear, "clear", false, "Clear all stored credentials")
-	configCmd.Flags().BoolVar(&show, "show", false, "Show current configuration")
 }

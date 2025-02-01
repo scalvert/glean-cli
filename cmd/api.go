@@ -17,7 +17,7 @@ import (
 	"golang.org/x/term"
 )
 
-type apiOptions struct {
+type APIOptions struct {
 	method      string
 	requestBody string
 	inputFile   string
@@ -26,12 +26,12 @@ type apiOptions struct {
 	noColor     bool
 }
 
-func newApiCmd() *cobra.Command {
-	opts := apiOptions{}
+func NewCmdAPI() *cobra.Command {
+	opts := APIOptions{}
 
 	cmd := &cobra.Command{
-		Use:   "api <endpoint>",
-		Short: "Make authenticated requests to the Glean API",
+		Use:   "api",
+		Short: "Make an authenticated HTTP request to the Glean API",
 		Long: heredoc.Doc(`
 			Makes an authenticated HTTP request to the Glean API and prints the response.
 
@@ -155,10 +155,6 @@ func newApiCmd() *cobra.Command {
 	return cmd
 }
 
-func init() {
-	rootCmd.AddCommand(newApiCmd())
-}
-
 func previewRequest(req *http.Request, noColor bool) error {
 	cfg, err := config.LoadConfig()
 	if err != nil {
@@ -200,7 +196,6 @@ func previewRequest(req *http.Request, noColor bool) error {
 	return nil
 }
 
-// maskToken masks most of the token characters for display
 func maskToken(token string) string {
 	if len(token) <= 8 {
 		return strings.Repeat("*", len(token))
@@ -208,7 +203,6 @@ func maskToken(token string) string {
 	return token[:4] + strings.Repeat("*", len(token)-8) + token[len(token)-4:]
 }
 
-// isatty returns true if the given file descriptor is a terminal
 func isatty(fd uintptr) bool {
 	return term.IsTerminal(int(fd))
 }

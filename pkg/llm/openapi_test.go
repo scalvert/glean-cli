@@ -8,30 +8,15 @@ import (
 
 	"github.com/scalvert/glean-cli/pkg/config"
 	gleanhttp "github.com/scalvert/glean-cli/pkg/http"
+	"github.com/scalvert/glean-cli/pkg/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-type mockClient struct {
-	err      error
-	response []byte
-}
-
-func (m *mockClient) SendRequest(req *gleanhttp.Request) ([]byte, error) {
-	if m.err != nil {
-		return nil, m.err
-	}
-	return m.response, nil
-}
-
-func (m *mockClient) GetFullURL(path string) string {
-	return "https://test-company-be.glean.com" + path
-}
-
 func setupMockClient(response []byte, err error) func() {
 	origFunc := gleanhttp.NewClientFunc
 	gleanhttp.NewClientFunc = func(cfg *config.Config) (gleanhttp.Client, error) {
-		return &mockClient{response: response, err: err}, nil
+		return &testutils.MockClient{Response: response, Err: err}, nil
 	}
 	return func() {
 		gleanhttp.NewClientFunc = origFunc

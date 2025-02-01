@@ -2,6 +2,8 @@ package config
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/zalando/go-keyring"
@@ -13,6 +15,16 @@ const (
 	tokenKey    = "token"
 	emailKey    = "email"
 )
+
+// ConfigPath is the path to the config file. This can be overridden for testing.
+var ConfigPath string
+
+func init() {
+	homeDir, err := os.UserHomeDir()
+	if err == nil {
+		ConfigPath = filepath.Join(homeDir, ".glean", "config.json")
+	}
+}
 
 type Config struct {
 	GleanHost  string
