@@ -8,6 +8,7 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/mattn/go-tty"
 	"github.com/scalvert/glean-cli/pkg/config"
 	"github.com/scalvert/glean-cli/pkg/http"
 	"github.com/spf13/cobra"
@@ -177,13 +178,18 @@ func formatDatasource(s string) string {
 	return string(words)
 }
 
-var defaultTemplate = `{{range $i, $result := .Results}}
-{{add $i 1}} {{formatDatasource $result.Document.Datasource}} | {{gleanBlue $result.Document.Title}}
+var defaultTemplate = `{{- range $i, $result := .Results -}}
+{{if $i}}
+
+{{end}}{{add $i 1}} {{formatDatasource $result.Document.Datasource}} | {{gleanBlue $result.Document.Title}}
 {{gleanYellow $result.Document.URL}}
-{{range $result.Snippets}}{{.Text}}
-{{end}}
-{{end}}{{if .SuggestedSpellCorrectedQuery}}Did you mean: {{.SuggestedSpellCorrectedQuery}}?{{end}}
-{{if .RewrittenQuery}}Showing results for: {{.RewrittenQuery}}{{end}}`
+{{- range $result.Snippets}}
+{{.Text}}{{end}}
+{{- end}}{{if .SuggestedSpellCorrectedQuery}}
+
+Did you mean: {{.SuggestedSpellCorrectedQuery}}?{{end}}{{if .RewrittenQuery}}
+
+Showing results for: {{.RewrittenQuery}}{{end}}`
 
 func NewCmdSearch() *cobra.Command {
 	opts := &SearchOptions{
@@ -466,10 +472,21 @@ func runSearch(cmd *cobra.Command, opts *SearchOptions) error {
 
 	// Handle pagination if there are more results
 	for response.HasMoreResults {
-		fmt.Fprint(cmd.OutOrStdout(), "\nPress 'q' to quit, any other key to load more results...")
-		var input string
-		fmt.Scanln(&input)
-		if input == "q" {
+		fmt.Fprint(cmd.OutOrStdout(), "\n\nPress 'q' to quit, any other key to load more results...")
+
+		tty, err := tty.Open()
+		if err != nil {
+			return fmt.Errorf("failed to open tty: %w", err)
+		}
+		defer tty.Close()
+
+		r, err := tty.ReadRune()
+		if err != nil {
+			return fmt.Errorf("failed to read input: %w", err)
+		}
+
+		if r == 'q' || r == 'Q' {
+			fmt.Fprintln(cmd.OutOrStdout())
 			break
 		}
 
