@@ -14,6 +14,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var testMode bool
+var testInput string
+
 type SearchOptions struct {
 	InputDetails      *SearchInputDetails `json:"inputDetails,omitempty"`
 	SessionInfo       *SessionInfo        `json:"sessionInfo,omitempty"`
@@ -433,13 +436,20 @@ func runSearch(cmd *cobra.Command, opts *SearchOptions) error {
 	}
 
 	// Handle pagination if needed
-	var ttyInput *tty.TTY
 	for response.HasMoreResults {
+		fmt.Fprint(cmd.OutOrStdout(), "\n\nPress 'q' to quit, any other key to load more results...")
+
+		if testMode {
+			if testInput == "q" || testInput == "Q" {
+				return nil
+			}
+			break
+		}
+
 		var readErr error
-		ttyInput, readErr = tty.Open()
+		ttyInput, readErr := tty.Open()
 		if readErr != nil {
 			// Fall back to standard input if TTY is not available
-			fmt.Fprint(cmd.OutOrStdout(), "\n\nPress 'q' to quit, any other key to load more results...")
 			var input string
 			if _, readErr := fmt.Scanln(&input); readErr != nil {
 				if readErr == io.EOF {
@@ -452,7 +462,6 @@ func runSearch(cmd *cobra.Command, opts *SearchOptions) error {
 			}
 		} else {
 			defer ttyInput.Close()
-			fmt.Fprint(cmd.OutOrStdout(), "\n\nPress 'q' to quit, any other key to load more results...")
 			r, readErr := ttyInput.ReadRune()
 			if readErr != nil {
 				return fmt.Errorf("error reading input: %w", readErr)

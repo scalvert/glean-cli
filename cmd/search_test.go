@@ -21,7 +21,8 @@ const (
 				"title": "Test Document",
 				"url": "https://test.com/doc"
 			}
-		}]
+		}],
+		"suggestedSpellCorrectedQuery": "correct query"
 	}`
 )
 
@@ -183,6 +184,18 @@ func TestSearchCommand(t *testing.T) {
 	})
 
 	t.Run("search with pagination", func(t *testing.T) {
+		// Save the original test mode and restore it after the test
+		origTestMode := testMode
+		origTestInput := testInput
+		defer func() {
+			testMode = origTestMode
+			testInput = origTestInput
+		}()
+
+		// Enable test mode
+		testMode = true
+		testInput = "q"
+
 		firstResponse := `{
 			"results": [{
 				"document": {
@@ -229,6 +242,7 @@ func TestSearchCommand(t *testing.T) {
 
 		output := b.String()
 		assert.Contains(t, output, "First Document")
+		assert.NotContains(t, output, "Second Document") // Should not get to second page
 		assert.Contains(t, output, "Press 'q' to quit")
 	})
 }
@@ -244,12 +258,12 @@ func TestSearch(t *testing.T) {
 
 	tests := []testCase{
 		{
-			args: []string{"test query"},
+			name: "basic search",
+			args: []string{"--no-color", "test query"},
 			contains: []string{
 				"Confluence | Test Document",
 				"Did you mean: correct query?",
 			},
-			name:    "basic search",
 			wantErr: false,
 		},
 	}
@@ -281,26 +295,64 @@ func TestSearch(t *testing.T) {
 }
 
 func TestSearchWithPagination(t *testing.T) {
-	cmd := NewCmdSearch()
+	// Save the original test mode and restore it after the test
+	origTestMode := testMode
+	origTestInput := testInput
+	defer func() {
+		testMode = origTestMode
+		testInput = origTestInput
+	}()
+
+	// Enable test mode
+	testMode = true
+	testInput = "q"
+
+	firstResponse := `{
+		"results": [{
+			"document": {
+				"datasource": "confluence",
+				"title": "First Document",
+				"url": "https://test.com/first"
+			}
+		}],
+		"hasMoreResults": true,
+		"cursor": "next-page"
+	}`
+
+	secondResponse := `{
+		"results": [{
+			"document": {
+				"datasource": "confluence",
+				"title": "Second Document",
+				"url": "https://test.com/second"
+			}
+		}],
+		"hasMoreResults": false
+	}`
+
+	cleanupConfig := testutils.SetupTestConfig(t)
+	defer cleanupConfig()
+
+	// Setup mock client with multiple responses
+	mock := &testutils.MockClient{
+		Responses: [][]byte{[]byte(firstResponse), []byte(secondResponse)},
+	}
+	origFunc := gleanhttp.NewClientFunc
+	gleanhttp.NewClientFunc = func(cfg *config.Config) (gleanhttp.Client, error) {
+		return mock, nil
+	}
+	defer func() { gleanhttp.NewClientFunc = origFunc }()
+
 	b := bytes.NewBufferString("")
+	cmd := NewCmdSearch()
 	cmd.SetOut(b)
-	cmd.SetArgs([]string{"test query"})
+	cmd.SetArgs([]string{"--no-color", "--page-size", "1", "test query"})
 
 	err := cmd.Execute()
-	if err != nil {
-		t.Errorf("Execute() error = %v", err)
-		return
-	}
+	require.NoError(t, err)
 
-	out := b.String()
-	expected := []string{
-		"Confluence | Test Document",
-		"Press 'q' to quit",
-	}
-
-	for _, s := range expected {
-		if !strings.Contains(out, s) {
-			t.Errorf("Output should contain %q but got: %v", s, out)
-		}
-	}
+	output := b.String()
+	assert.Contains(t, output, "First Document")
+	assert.NotContains(t, output, "Second Document") // Should not get to second page
+	assert.Contains(t, output, "Press 'q' to quit")
 }
