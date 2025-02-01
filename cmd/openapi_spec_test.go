@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/scalvert/glean-cli/pkg/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -25,6 +26,15 @@ type testCase struct {
 
 func TestOpenapiSpecCmd(t *testing.T) {
 	tempDir := t.TempDir()
+
+	// Mock response for LLM API call
+	mockResponse := `{
+		"messages": [{
+			"fragments": [{
+				"text": "openapi: 3.0.0\ninfo:\n  title: Test API\n  version: 1.0.0"
+			}]
+		}]
+	}`
 
 	type testCase struct {
 		name        string
@@ -82,6 +92,10 @@ func TestOpenapiSpecCmd(t *testing.T) {
 				err := os.WriteFile(filepath.Join(tempDir, path), []byte(content), 0644)
 				require.NoError(t, err)
 			}
+
+			// Set up mock client
+			_, cleanup := testutils.SetupTestWithResponse(t, []byte(mockResponse))
+			defer cleanup()
 
 			b := bytes.NewBufferString("")
 			cmd := NewCmdOpenAPISpec()
