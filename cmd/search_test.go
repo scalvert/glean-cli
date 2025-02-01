@@ -182,7 +182,7 @@ func TestSearchCommand(t *testing.T) {
 		response := `{
 			"results": [{
 				"document": {
-					"datasource": "golinks",
+					"datasource": "nonindexedshortcut",
 					"title": "Test GoLink",
 					"url": "https://test.com/go/link"
 				}

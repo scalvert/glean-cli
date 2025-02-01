@@ -429,7 +429,7 @@ func runSearch(cmd *cobra.Command, opts *SearchOptions) error {
 	}
 
 	if opts.OutputFormat == "json" {
-		return outputJSON(response)
+		return json.NewEncoder(cmd.OutOrStdout()).Encode(response)
 	}
 
 	// Use template for output
@@ -459,14 +459,14 @@ func runSearch(cmd *cobra.Command, opts *SearchOptions) error {
 	}
 
 	// Print initial results
-	err = t.Execute(os.Stdout, response)
+	err = t.Execute(cmd.OutOrStdout(), response)
 	if err != nil {
 		return fmt.Errorf("error executing template: %w", err)
 	}
 
 	// Handle pagination if there are more results
 	for response.HasMoreResults {
-		fmt.Print("\nPress 'q' to quit, any other key to load more results...")
+		fmt.Fprint(cmd.OutOrStdout(), "\nPress 'q' to quit, any other key to load more results...")
 		var input string
 		fmt.Scanln(&input)
 		if input == "q" {
@@ -478,7 +478,7 @@ func runSearch(cmd *cobra.Command, opts *SearchOptions) error {
 			return err
 		}
 
-		err = t.Execute(os.Stdout, response)
+		err = t.Execute(cmd.OutOrStdout(), response)
 		if err != nil {
 			return fmt.Errorf("error executing template: %w", err)
 		}
