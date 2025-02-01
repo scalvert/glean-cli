@@ -11,15 +11,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
+type OpenAPISpecOptions struct {
 	inputFile  string
 	outputFile string
 	prompt     string
 	model      string
 	noColor    bool
-)
+}
 
-func newOpenapiSpecCmd() *cobra.Command {
+func NewCmdOpenAPISpec() *cobra.Command {
+	opts := OpenAPISpecOptions{}
+
 	cmd := &cobra.Command{
 		Use:   "openapi-spec",
 		Short: "Generate an OpenAPI spec from an API definition or curl command",
@@ -55,7 +57,7 @@ func newOpenapiSpecCmd() *cobra.Command {
 			var input []byte
 			var err error
 
-			if inputFile == "-" || inputFile == "" {
+			if opts.inputFile == "-" || opts.inputFile == "" {
 				input, err = io.ReadAll(os.Stdin)
 				if err != nil {
 					return fmt.Errorf("failed to read from stdin: %w", err)
@@ -64,41 +66,37 @@ func newOpenapiSpecCmd() *cobra.Command {
 					return fmt.Errorf("no input provided")
 				}
 			} else {
-				input, err = os.ReadFile(inputFile)
+				input, err = os.ReadFile(opts.inputFile)
 				if err != nil {
 					return fmt.Errorf("failed to read input file: %w", err)
 				}
 			}
 
-			spec, err := llm.GenerateOpenAPISpec(string(input), prompt, model)
+			spec, err := llm.GenerateOpenAPISpec(string(input), opts.prompt, opts.model)
 			if err != nil {
 				return fmt.Errorf("failed to generate OpenAPI spec: %w", err)
 			}
 
-			if outputFile != "" {
-				if err := os.WriteFile(outputFile, []byte(spec), 0600); err != nil {
+			if opts.outputFile != "" {
+				if err := os.WriteFile(opts.outputFile, []byte(spec), 0600); err != nil {
 					return fmt.Errorf("failed to write output file: %w", err)
 				}
-				fmt.Fprintf(cmd.OutOrStdout(), "OpenAPI spec written to %s\n", outputFile)
+				fmt.Fprintf(cmd.OutOrStdout(), "OpenAPI spec written to %s\n", opts.outputFile)
 				return nil
 			}
 
 			return output.WriteString(cmd.OutOrStdout(), spec, output.Options{
-				NoColor: noColor,
+				NoColor: opts.noColor,
 				Format:  "yaml",
 			})
 		},
 	}
 
-	cmd.Flags().StringVarP(&inputFile, "file", "f", "", "Input file containing the API/curl command (use \"-\" for stdin)")
-	cmd.Flags().StringVarP(&outputFile, "output", "o", "", "Output file for the OpenAPI spec")
-	cmd.Flags().StringVarP(&prompt, "prompt", "p", "", "Additional instructions for the LLM")
-	cmd.Flags().StringVar(&model, "model", "gpt-4", "LLM model to use")
-	cmd.Flags().BoolVar(&noColor, "no-color", false, "Disable colorized output")
+	cmd.Flags().StringVarP(&opts.inputFile, "file", "f", "", "Input file containing the API/curl command (use \"-\" for stdin)")
+	cmd.Flags().StringVarP(&opts.outputFile, "output", "o", "", "Output file for the OpenAPI spec")
+	cmd.Flags().StringVarP(&opts.prompt, "prompt", "p", "", "Additional instructions for the LLM")
+	cmd.Flags().StringVar(&opts.model, "model", "gpt-4", "LLM model to use")
+	cmd.Flags().BoolVar(&opts.noColor, "no-color", false, "Disable colorized output")
 
 	return cmd
-}
-
-func init() {
-	generateCmd.AddCommand(newOpenapiSpecCmd())
 }

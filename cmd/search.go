@@ -35,6 +35,7 @@ type SearchOptions struct {
 	// CLI-specific options (not part of API)
 	Template     string
 	OutputFormat string
+	NoColor      bool
 }
 
 type SearchInputDetails struct {
@@ -164,7 +165,6 @@ func formatDatasource(s string) string {
 		return "GoLink"
 	}
 
-	// Title case the first letter of each word
 	words := []rune(s)
 	if len(words) > 0 {
 		words[0] = []rune(strings.ToUpper(string(words[0])))[0]
@@ -178,53 +178,66 @@ func formatDatasource(s string) string {
 }
 
 var defaultTemplate = `{{range $i, $result := .Results}}
-{{add $i 1}} {{formatDatasource $result.Document.Datasource}} | {{gleanBlue $result.Title}}
-{{gleanYellow $result.URL}}
+{{add $i 1}} {{formatDatasource $result.Document.Datasource}} | {{gleanBlue $result.Document.Title}}
+{{gleanYellow $result.Document.URL}}
 {{range $result.Snippets}}{{.Text}}
 {{end}}
 {{end}}{{if .SuggestedSpellCorrectedQuery}}Did you mean: {{.SuggestedSpellCorrectedQuery}}?{{end}}
 {{if .RewrittenQuery}}Showing results for: {{.RewrittenQuery}}{{end}}`
 
-var searchCmd = &cobra.Command{
-	Use:   "search [query]",
-	Short: "Search Glean for documents and content",
-	Long: `Search Glean's index for documents and content matching your query.
-Results are displayed in a user-friendly format and support pagination.
+func NewCmdSearch() *cobra.Command {
+	opts := &SearchOptions{
+		RequestOptions: &RequestOptions{
+			FacetBucketSize: 10,
+			ResponseHints:   []string{"RESULTS", "QUERY_METADATA"},
+		},
+	}
+
+	cmd := &cobra.Command{
+		Use:   "search [query]",
+		Short: "Search for content in your Glean instance",
+		Long: `Search for content in your Glean instance.
+
+You can search for any content that is indexed in your Glean instance.
+The results will be displayed in a formatted list by default.
 
 Example:
   glean search "vacation policy"
   glean search --page-size 20 "engineering docs"
-  glean search --template "{{range .Results}}{{.Title}}\\n{{end}}" "meeting notes"`,
-	Args: cobra.ExactArgs(1),
-	RunE: runSearch,
-}
-
-func init() {
-	rootCmd.AddCommand(searchCmd)
+  glean search --template "{{range .Results}}{{.Title}}\n{{end}}" "meeting notes"`,
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			opts.Query = args[0]
+			return runSearch(cmd, opts)
+		},
+	}
 
 	// Basic search options
-	searchCmd.Flags().IntVarP(&searchOpts.PageSize, "page-size", "n", 10, "Number of results per page")
-	searchCmd.Flags().BoolVar(&searchOpts.DisableSpellcheck, "disable-spellcheck", false, "Disable spellcheck suggestions")
-	searchCmd.Flags().IntVar(&searchOpts.MaxSnippetSize, "max-snippet-size", 200, "Maximum length of result snippets")
-	searchCmd.Flags().IntVar(&searchOpts.TimeoutMillis, "timeout", 30000, "Request timeout in milliseconds")
+	cmd.Flags().IntVarP(&opts.PageSize, "page-size", "n", 10, "Number of results per page")
+	cmd.Flags().BoolVar(&opts.DisableSpellcheck, "disable-spellcheck", false, "Disable spellcheck suggestions")
+	cmd.Flags().IntVar(&opts.MaxSnippetSize, "max-snippet-size", 200, "Maximum length of result snippets")
+	cmd.Flags().IntVar(&opts.TimeoutMillis, "timeout", 30000, "Request timeout in milliseconds")
 
 	// Output formatting
-	searchCmd.Flags().StringVarP(&searchOpts.Template, "template", "t", "", "Go template for formatting results")
-	searchCmd.Flags().StringVarP(&searchOpts.OutputFormat, "output", "o", "text", "Output format: text, json")
+	cmd.Flags().StringVarP(&opts.Template, "template", "t", "", "Go template for formatting results")
+	cmd.Flags().StringVarP(&opts.OutputFormat, "output", "o", "text", "Output format: text, json")
+	cmd.Flags().BoolVar(&opts.NoColor, "no-color", false, "Disable colorized output")
 
 	// Filtering options
-	searchCmd.Flags().StringSliceP("datasource", "d", nil, "Filter by datasource (can be specified multiple times)")
-	searchCmd.Flags().StringSliceP("type", "y", nil, "Filter by document type (can be specified multiple times)")
-	searchCmd.Flags().StringSliceP("person", "p", nil, "Filter by person email (can be specified multiple times)")
-	searchCmd.Flags().StringSlice("tab", nil, "Filter by result tab IDs (can be specified multiple times)")
+	cmd.Flags().StringSliceP("datasource", "d", nil, "Filter by datasource (can be specified multiple times)")
+	cmd.Flags().StringSliceP("type", "y", nil, "Filter by document type (can be specified multiple times)")
+	cmd.Flags().StringSliceP("person", "p", nil, "Filter by person email (can be specified multiple times)")
+	cmd.Flags().StringSlice("tab", nil, "Filter by result tab IDs (can be specified multiple times)")
 
 	// Advanced options
-	searchCmd.Flags().Bool("disable-query-autocorrect", false, "Disable automatic query corrections")
-	searchCmd.Flags().Bool("fetch-all-datasource-counts", false, "Return result counts for all supported datasources")
-	searchCmd.Flags().Bool("query-overrides-facet-filters", false, "Let query operators override facet filters")
-	searchCmd.Flags().Bool("return-llm-content", false, "Return expanded content for LLM usage")
-	searchCmd.Flags().StringSlice("response-hints", []string{"RESULTS", "QUERY_METADATA"}, "Response hints (RESULTS, QUERY_METADATA, etc)")
-	searchCmd.Flags().Int("facet-bucket-size", 10, "Maximum number of facet buckets to return")
+	cmd.Flags().Bool("disable-query-autocorrect", false, "Disable automatic query corrections")
+	cmd.Flags().Bool("fetch-all-datasource-counts", false, "Return result counts for all supported datasources")
+	cmd.Flags().Bool("query-overrides-facet-filters", false, "Let query operators override facet filters")
+	cmd.Flags().Bool("return-llm-content", false, "Return expanded content for LLM usage")
+	cmd.Flags().StringSlice("response-hints", []string{"RESULTS", "QUERY_METADATA"}, "Response hints (RESULTS, QUERY_METADATA, etc)")
+	cmd.Flags().Int("facet-bucket-size", 10, "Maximum number of facet buckets to return")
+
+	return cmd
 }
 
 // Additional response types
@@ -343,23 +356,20 @@ type SearchMetadata struct {
 	ObjectType string  `json:"objectType,omitempty"`
 }
 
-func runSearch(cmd *cobra.Command, args []string) error {
-	searchOpts.Query = args[0]
-
+func runSearch(cmd *cobra.Command, opts *SearchOptions) error {
 	// Handle facet filters
 	if datasources, err := cmd.Flags().GetStringSlice("datasource"); err == nil && len(datasources) > 0 {
-		addFacetFilter(searchOpts, "datasource", datasources)
+		addFacetFilter(opts, "datasource", datasources)
 	}
 	if types, err := cmd.Flags().GetStringSlice("type"); err == nil && len(types) > 0 {
-		addFacetFilter(searchOpts, "type", types)
+		addFacetFilter(opts, "type", types)
 	}
 
 	// Handle person filters
 	if people, err := cmd.Flags().GetStringSlice("person"); err == nil && len(people) > 0 {
-		searchOpts.People = make([]Person, len(people))
+		opts.People = make([]Person, len(people))
 		for i, email := range people {
-			// Note: In the search request, email can be used as obfuscatedId
-			searchOpts.People[i] = Person{
+			opts.People[i] = Person{
 				ObfuscatedId: email,
 			}
 		}
@@ -367,39 +377,39 @@ func runSearch(cmd *cobra.Command, args []string) error {
 
 	// Handle result tab filters
 	if tabs, err := cmd.Flags().GetStringSlice("tab"); err == nil && len(tabs) > 0 {
-		searchOpts.ResultTabIds = tabs
+		opts.ResultTabIds = tabs
 	}
 
 	// Handle advanced options
-	if searchOpts.RequestOptions == nil {
-		searchOpts.RequestOptions = &RequestOptions{}
+	if opts.RequestOptions == nil {
+		opts.RequestOptions = &RequestOptions{}
 	}
 
 	// Set timezone offset
-	searchOpts.RequestOptions.TimezoneOffset = getTimezoneOffset()
+	opts.RequestOptions.TimezoneOffset = getTimezoneOffset()
 
 	// Set facet bucket size
 	if size, err := cmd.Flags().GetInt("facet-bucket-size"); err == nil {
-		searchOpts.RequestOptions.FacetBucketSize = size
+		opts.RequestOptions.FacetBucketSize = size
 	}
 
 	// Set response hints
 	if hints, err := cmd.Flags().GetStringSlice("response-hints"); err == nil {
-		searchOpts.RequestOptions.ResponseHints = hints
+		opts.RequestOptions.ResponseHints = hints
 	}
 
 	// Set boolean flags
 	if disable, err := cmd.Flags().GetBool("disable-query-autocorrect"); err == nil {
-		searchOpts.RequestOptions.DisableQueryAutocorrect = disable
+		opts.RequestOptions.DisableQueryAutocorrect = disable
 	}
 	if fetch, err := cmd.Flags().GetBool("fetch-all-datasource-counts"); err == nil {
-		searchOpts.RequestOptions.FetchAllDatasourceCounts = fetch
+		opts.RequestOptions.FetchAllDatasourceCounts = fetch
 	}
 	if override, err := cmd.Flags().GetBool("query-overrides-facet-filters"); err == nil {
-		searchOpts.RequestOptions.QueryOverridesFacetFilters = override
+		opts.RequestOptions.QueryOverridesFacetFilters = override
 	}
 	if llm, err := cmd.Flags().GetBool("return-llm-content"); err == nil {
-		searchOpts.RequestOptions.ReturnLlmContentOverSnippets = llm
+		opts.RequestOptions.ReturnLlmContentOverSnippets = llm
 	}
 
 	cfg, err := config.LoadConfig()
@@ -413,24 +423,34 @@ func runSearch(cmd *cobra.Command, args []string) error {
 	}
 
 	// Initial search request
-	response, err := performSearch(client, searchOpts, "", "")
+	response, err := performSearch(client, opts, "", "")
 	if err != nil {
 		return err
 	}
 
-	if searchOpts.OutputFormat == "json" {
+	if opts.OutputFormat == "json" {
 		return outputJSON(response)
 	}
 
 	// Use template for output
 	tmpl := defaultTemplate
-	if searchOpts.Template != "" {
-		tmpl = searchOpts.Template
+	if opts.Template != "" {
+		tmpl = opts.Template
 	}
 
 	t, err := template.New("search").Funcs(template.FuncMap{
-		"gleanBlue":        gleanBlue,
-		"gleanYellow":      gleanYellow,
+		"gleanBlue": func(s string) string {
+			if opts.NoColor {
+				return s
+			}
+			return fmt.Sprintf("\033[38;2;82;105;255m%s\033[0m", s)
+		},
+		"gleanYellow": func(s string) string {
+			if opts.NoColor {
+				return s
+			}
+			return fmt.Sprintf("\033[38;2;236;240;115m%s\033[0m", s)
+		},
 		"add":              func(a, b int) int { return a + b },
 		"formatDatasource": formatDatasource,
 	}).Parse(tmpl)
@@ -453,7 +473,7 @@ func runSearch(cmd *cobra.Command, args []string) error {
 			break
 		}
 
-		response, err = performSearch(client, searchOpts, response.Cursor, response.TrackingToken)
+		response, err = performSearch(client, opts, response.Cursor, response.TrackingToken)
 		if err != nil {
 			return err
 		}
@@ -542,16 +562,6 @@ func performSearch(client http.Client, opts *SearchOptions, cursor, trackingToke
 	}
 
 	return &searchResp, nil
-}
-
-func gleanBlue(s string) string {
-	// Glean's primary blue color (from website)
-	return fmt.Sprintf("\033[38;2;82;105;255m%s\033[0m", s)
-}
-
-func gleanYellow(s string) string {
-	// Glean's accent yellow color (from website banner)
-	return fmt.Sprintf("\033[38;2;236;240;115m%s\033[0m", s)
 }
 
 func outputJSON(v interface{}) error {
