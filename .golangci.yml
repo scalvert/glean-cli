@@ -31,6 +31,8 @@ issues:
       linters:
         - gosec
         - errcheck
+    - path: _test\.go
+      text: "fieldalignment:"
   max-issues-per-linter: 0
   max-same-issues: 0
 

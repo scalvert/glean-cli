@@ -2,20 +2,28 @@ version: '3'
 
 tasks:
   default:
+    desc: List all tasks
     silent: true
     cmds:
       - echo $'To list all tasks run:\n\n\t task --list-all\n'
       - task --list --sort=none
 
-  check:
-    desc: Run all checks (used in CI)
+  setup:
+    desc: Install required global Go dependencies
     silent: true
     cmds:
-      - task: lint
-      - task: test
-      - task: build
+      - echo "Installing required Go dependencies..."
+      - go install github.com/caarlos0/svu@latest
+      - go install gotest.tools/gotestsum@latest
+      - go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+      - |
+        echo $'\nSetup complete! Installed:'
+        echo "- svu (for versioning)"
+        echo "- gotestsum (for test reporting)"
+        echo "- golangci-lint (for linting)"
 
   clean:
+    desc: Clean the build directory
     silent: true
     cmds:
       - rm -f glean
@@ -23,21 +31,39 @@ tasks:
       - rm -rf dist/
 
   build:
+    desc: Build the CLI
     silent: true
     cmds:
       - go build -o glean
 
+  test:all:
+    desc: Run all checks (used in CI)
+    silent: true
+    cmds:
+      - task: lint
+      - task: test:summary
+      - task: build
+
   test:
+    desc: Run Go tests
     silent: true
     cmds:
       - go test ./... -v
 
+  test:summary:
+    desc: Run Go tests with colorized output and a summary
+    cmds:
+      - gotestsum --format=short-verbose
+    silent: false
+
   lint:
+    desc: Run Go lint
     silent: true
     cmds:
       - golangci-lint run
 
   lint:fix:
+    desc: Run Go lint and fix
     silent: true
     cmds:
       - golangci-lint run --fix

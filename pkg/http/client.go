@@ -11,6 +11,11 @@ import (
 	"github.com/scalvert/glean-cli/pkg/config"
 )
 
+// HTTPClient defines the interface for making HTTP requests
+type HTTPClient interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
 // Client is the interface for making HTTP requests
 type Client interface {
 	SendRequest(req *Request) ([]byte, error)
@@ -19,7 +24,7 @@ type Client interface {
 
 // client wraps http.Client with Glean-specific functionality
 type client struct {
-	http    *http.Client
+	http    HTTPClient
 	cfg     *config.Config
 	baseURL string
 }
@@ -43,10 +48,11 @@ func defaultNewClient(cfg *config.Config) (Client, error) {
 		return nil, fmt.Errorf("Glean host not configured. Run 'glean config --host <host>' to set it")
 	}
 
-	baseURL := fmt.Sprintf("https://%s-be.glean.com", cfg.GleanHost)
-	if strings.Contains(cfg.GleanHost, ".") {
-		baseURL = fmt.Sprintf("https://%s", cfg.GleanHost)
+	if cfg.GleanToken == "" {
+		return nil, fmt.Errorf("Glean token not configured. Run 'glean config --token <token>' to set it")
 	}
+
+	baseURL := fmt.Sprintf("https://%s", cfg.GleanHost)
 
 	return &client{
 		http:    &http.Client{},

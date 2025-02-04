@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 
 	"github.com/alecthomas/chroma"
 	"github.com/alecthomas/chroma/formatters"
@@ -26,6 +27,9 @@ type Options struct {
 	NoColor bool
 }
 
+// For testing
+var isTerminalCheck = term.IsTerminal
+
 // Write formats and writes the content to the writer with optional syntax highlighting
 func Write(w io.Writer, content []byte, opts Options) error {
 	if !shouldColorize(opts) {
@@ -41,30 +45,56 @@ func WriteString(w io.Writer, content string, opts Options) error {
 }
 
 func shouldColorize(opts Options) bool {
-	return !opts.NoColor && term.IsTerminal(int(os.Stdout.Fd()))
+	return !opts.NoColor && isTerminalCheck(int(os.Stdout.Fd()))
 }
 
 func writeRaw(w io.Writer, content []byte, format string) error {
 	switch format {
 	case FormatJSON:
+		// Handle empty content
+		if len(content) == 0 {
+			_, err := fmt.Fprintln(w)
+			return err
+		}
 		var prettyJSON bytes.Buffer
 		if err := json.Indent(&prettyJSON, content, "", "  "); err != nil {
 			return fmt.Errorf("failed to format JSON: %w", err)
 		}
 		_, err := fmt.Fprintln(w, prettyJSON.String())
 		return err
+	case FormatYAML:
+		output := string(content)
+		if !strings.HasSuffix(output, "\n") {
+			output += "\n"
+		}
+		_, err := fmt.Fprint(w, output)
+		return err
 	default:
-		_, err := w.Write(content)
+		output := string(content)
+		if !strings.HasSuffix(output, "\n") {
+			output += "\n"
+		}
+		_, err := fmt.Fprint(w, output)
 		return err
 	}
 }
 
 func writeColorized(w io.Writer, content []byte, format string) error {
+	// Handle empty content
+	if len(content) == 0 {
+		_, err := fmt.Fprintln(w)
+		return err
+	}
+
 	var lexer chroma.Lexer
 	switch format {
 	case FormatJSON:
 		lexer = lexers.Get("json")
-	case "yaml":
+		// Try to validate JSON before colorizing
+		if !json.Valid(content) {
+			return fmt.Errorf("failed to format JSON: invalid JSON content")
+		}
+	case FormatYAML:
 		lexer = lexers.Get("yaml")
 	default:
 		lexer = lexers.Fallback
@@ -85,5 +115,16 @@ func writeColorized(w io.Writer, content []byte, format string) error {
 		return fmt.Errorf("failed to tokenize content: %w", err)
 	}
 
-	return formatter.Format(w, style, iterator)
+	if formatErr := formatter.Format(w, style, iterator); formatErr != nil {
+		return formatErr
+	}
+
+	// Add newline if not present
+	if format == FormatYAML || format == FormatJSON {
+		output := string(content)
+		if !strings.HasSuffix(output, "\n") {
+			_, err = fmt.Fprint(w, "\n")
+		}
+	}
+	return err
 }

@@ -9,6 +9,31 @@ import (
 	"github.com/zalando/go-keyring"
 )
 
+// keyringProvider defines the interface for keyring operations
+type keyringProvider interface {
+	Get(service, key string) (string, error)
+	Set(service, key, value string) error
+	Delete(service, key string) error
+}
+
+// systemKeyring implements keyringProvider using the system keyring
+type systemKeyring struct{}
+
+func (s *systemKeyring) Get(service, key string) (string, error) {
+	return keyring.Get(service, key)
+}
+
+func (s *systemKeyring) Set(service, key, value string) error {
+	return keyring.Set(service, key, value)
+}
+
+func (s *systemKeyring) Delete(service, key string) error {
+	return keyring.Delete(service, key)
+}
+
+// keyringImpl is the current keyring implementation, can be swapped for testing
+var keyringImpl keyringProvider = &systemKeyring{}
+
 const (
 	serviceName = "glean-cli"
 	hostKey     = "host"
@@ -51,15 +76,15 @@ func ValidateAndTransformHost(host string) (string, error) {
 func LoadConfig() (*Config, error) {
 	cfg := &Config{}
 
-	if host, err := keyring.Get(serviceName, hostKey); err == nil {
+	if host, err := keyringImpl.Get(serviceName, hostKey); err == nil {
 		cfg.GleanHost = host
 	}
 
-	if token, err := keyring.Get(serviceName, tokenKey); err == nil {
+	if token, err := keyringImpl.Get(serviceName, tokenKey); err == nil {
 		cfg.GleanToken = token
 	}
 
-	if email, err := keyring.Get(serviceName, emailKey); err == nil {
+	if email, err := keyringImpl.Get(serviceName, emailKey); err == nil {
 		cfg.GleanEmail = email
 	}
 
@@ -72,19 +97,19 @@ func SaveConfig(host, token, email string) error {
 		if err != nil {
 			return err
 		}
-		if err := keyring.Set(serviceName, hostKey, validHost); err != nil {
+		if err := keyringImpl.Set(serviceName, hostKey, validHost); err != nil {
 			return err
 		}
 	}
 
 	if token != "" {
-		if err := keyring.Set(serviceName, tokenKey, token); err != nil {
+		if err := keyringImpl.Set(serviceName, tokenKey, token); err != nil {
 			return err
 		}
 	}
 
 	if email != "" {
-		if err := keyring.Set(serviceName, emailKey, email); err != nil {
+		if err := keyringImpl.Set(serviceName, emailKey, email); err != nil {
 			return err
 		}
 	}
@@ -93,13 +118,13 @@ func SaveConfig(host, token, email string) error {
 }
 
 func ClearConfig() error {
-	if err := keyring.Delete(serviceName, hostKey); err != nil && err != keyring.ErrNotFound {
+	if err := keyringImpl.Delete(serviceName, hostKey); err != nil && err != keyring.ErrNotFound {
 		return err
 	}
-	if err := keyring.Delete(serviceName, tokenKey); err != nil && err != keyring.ErrNotFound {
+	if err := keyringImpl.Delete(serviceName, tokenKey); err != nil && err != keyring.ErrNotFound {
 		return err
 	}
-	if err := keyring.Delete(serviceName, emailKey); err != nil && err != keyring.ErrNotFound {
+	if err := keyringImpl.Delete(serviceName, emailKey); err != nil && err != keyring.ErrNotFound {
 		return err
 	}
 	return nil
