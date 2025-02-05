@@ -1,6 +1,9 @@
 package testutils
 
 import (
+	"bytes"
+	"io"
+
 	"github.com/scalvert/glean-cli/pkg/config"
 	"github.com/scalvert/glean-cli/pkg/http"
 )
@@ -26,6 +29,32 @@ func (m *MockClient) SendRequest(req *http.Request) ([]byte, error) {
 		return response, nil
 	}
 	return m.Response, nil
+}
+
+func (m *MockClient) SendStreamingRequest(req *http.Request) (io.ReadCloser, error) {
+	if m.Err != nil {
+		return nil, m.Err
+	}
+
+	var response []byte
+	if len(m.Responses) > 0 {
+		response = m.Responses[m.CallCount]
+		m.CallCount++
+		if m.CallCount >= len(m.Responses) {
+			m.CallCount = len(m.Responses) - 1
+		}
+	} else {
+		response = m.Response
+	}
+
+	// Ensure each line ends with a newline for proper streaming simulation
+	if !bytes.HasSuffix(response, []byte("\n")) {
+		response = append(response, '\n')
+	}
+
+	// Convert response to a ReadCloser that returns each line separately
+	// This simulates the streaming behavior where each line is a complete JSON object
+	return io.NopCloser(bytes.NewReader(response)), nil
 }
 
 func (m *MockClient) GetFullURL(path string) string {

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/scalvert/glean-cli/pkg/config"
@@ -59,7 +58,7 @@ func NewCmdConfig() *cobra.Command {
 				// Mask token if present
 				tokenDisplay := notSetValue
 				if cfg.GleanToken != "" {
-					tokenDisplay = cfg.GleanToken[0:4] + strings.Repeat("*", len(cfg.GleanToken)-4)
+					tokenDisplay = config.MaskToken(cfg.GleanToken)
 				}
 				fmt.Printf("  %-10s %s\n", "Token:", tokenDisplay)
 				return nil
