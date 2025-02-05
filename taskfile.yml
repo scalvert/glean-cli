@@ -86,8 +86,8 @@ tasks:
       - git pull origin main
       - git fetch --tags
 
-      # Run checks
-      - task: check
+      # Run all linters and tests 
+      - task: test:all
 
       # Show current version and commits since last release
       - echo "Current version is $(svu current)"
