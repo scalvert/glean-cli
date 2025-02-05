@@ -15,41 +15,48 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// ChatMessage represents a single message in a chat conversation.
+// It includes the author, message type, and text fragments.
 type ChatMessage struct {
-	Author      string `json:"author"`
-	MessageType string `json:"messageType"`
+	Author      string `json:"author"`      // Author of the message (USER or GLEAN_AI)
+	MessageType string `json:"messageType"` // Type of message (e.g., CONTENT)
 	Fragments   []struct {
-		Text string `json:"text"`
+		Text string `json:"text"` // Text content of the message fragment
 	} `json:"fragments"`
 }
 
+// ChatRequest represents a request to the Glean chat API.
+// It includes configuration for the chat session and message history.
 type ChatRequest struct {
-	AgentConfig   AgentConfig   `json:"agentConfig"`
-	ApplicationID string        `json:"applicationId,omitempty"`
-	ChatID        string        `json:"chatId,omitempty"`
-	Messages      []ChatMessage `json:"messages"`
-	TimeoutMillis int           `json:"timeoutMillis"`
-	Stream        bool          `json:"stream"`
-	SaveChat      bool          `json:"saveChat"`
+	AgentConfig   AgentConfig   `json:"agentConfig"`             // Configuration for the chat agent
+	ApplicationID string        `json:"applicationId,omitempty"` // Optional application identifier
+	ChatID        string        `json:"chatId,omitempty"`        // Optional chat session identifier
+	Messages      []ChatMessage `json:"messages"`                // List of messages in the conversation
+	TimeoutMillis int           `json:"timeoutMillis"`           // Request timeout in milliseconds
+	Stream        bool          `json:"stream"`                  // Whether to stream the response
+	SaveChat      bool          `json:"saveChat"`                // Whether to save the chat history
 }
 
+// AgentConfig configures the behavior of the chat agent.
 type AgentConfig struct {
-	Agent string `json:"agent"`
-	Mode  string `json:"mode"`
+	Agent string `json:"agent"` // Type of agent to use (e.g., GPT)
+	Mode  string `json:"mode"`  // Mode of operation (e.g., DEFAULT)
 }
 
+// ChatResponse represents a response from the Glean chat API.
+// It includes the chat session token and message content.
 type ChatResponse struct {
-	ChatSessionTrackingToken string `json:"chatSessionTrackingToken"`
+	ChatSessionTrackingToken string `json:"chatSessionTrackingToken"` // Token for tracking the chat session
 	Messages                 []struct {
-		Author    string `json:"author"`
+		Author    string `json:"author"` // Author of the message
 		Fragments []struct {
-			Text string `json:"text"`
+			Text string `json:"text"` // Text content of the fragment
 		} `json:"fragments"`
-		HasMoreFragments bool `json:"hasMoreFragments,omitempty"`
+		HasMoreFragments bool `json:"hasMoreFragments,omitempty"` // Whether more fragments are coming
 	} `json:"messages"`
 }
 
-// cleanMarkdown removes markdown formatting from text
+// cleanMarkdown removes markdown formatting from text to provide clean console output.
 func cleanMarkdown(text string) string {
 	// Remove bold/italic markers
 	text = regexp.MustCompile(`\*\*`).ReplaceAllString(text, "")

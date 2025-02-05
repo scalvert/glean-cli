@@ -1,3 +1,6 @@
+// Package http provides a high-level client for interacting with Glean's REST API.
+// It handles authentication, request formatting, and response parsing while providing
+// both standard and streaming request capabilities.
 package http
 
 import (
@@ -11,7 +14,7 @@ import (
 	"github.com/scalvert/glean-cli/pkg/config"
 )
 
-// Request represents an HTTP request to be made
+// Request represents a Glean API request with authentication and headers.
 type Request struct {
 	Body    interface{}
 	Headers map[string]string
@@ -20,15 +23,18 @@ type Request struct {
 	Stream  bool
 }
 
-// HTTPClient defines the interface for making HTTP requests
+// HTTPClient matches the standard library's http.Client interface for testing.
 type HTTPClient interface {
 	Do(req *http.Request) (*http.Response, error)
 }
 
-// Client is the interface for making HTTP requests
+// Client provides high-level access to Glean's HTTP API.
 type Client interface {
+	// SendRequest executes a single request and returns its response body.
 	SendRequest(req *Request) ([]byte, error)
+	// SendStreamingRequest executes a request that returns a stream of data.
 	SendStreamingRequest(req *Request) (io.ReadCloser, error)
+	// GetFullURL returns the complete API URL for a given path.
 	GetFullURL(path string) string
 }
 
@@ -39,12 +45,10 @@ type client struct {
 	baseURL string
 }
 
-// For testing
-var (
-	NewClientFunc = defaultNewClient
-)
+// For dependency injection in tests
+var NewClientFunc = defaultNewClient
 
-// NewClient creates a new HTTP client with the given configuration
+// NewClient creates a new authenticated Glean API client.
 func NewClient(cfg *config.Config) (Client, error) {
 	if cfg == nil {
 		return nil, fmt.Errorf("config cannot be nil")
@@ -71,16 +75,15 @@ func defaultNewClient(cfg *config.Config) (Client, error) {
 	}, nil
 }
 
-// GetFullURL returns the complete URL for the request
+// GetFullURL ensures the path includes the required /rest/api/v1/ prefix.
 func (c *client) GetFullURL(path string) string {
-	// Ensure path starts with /rest/api/v1/
 	if !strings.HasPrefix(path, "/rest/api/v1/") {
 		path = fmt.Sprintf("/rest/api/v1/%s", strings.TrimPrefix(path, "/"))
 	}
 	return fmt.Sprintf("%s%s", strings.TrimRight(c.baseURL, "/"), path)
 }
 
-// SendRequest executes the HTTP request and returns the response
+// SendRequest executes a single request and returns its response body.
 func (c *client) SendRequest(req *Request) ([]byte, error) {
 	url := c.GetFullURL(req.Path)
 

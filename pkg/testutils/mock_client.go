@@ -1,3 +1,5 @@
+// Package testutils provides testing utilities for the Glean CLI,
+// including mock implementations of interfaces and test setup helpers.
 package testutils
 
 import (
@@ -8,14 +10,21 @@ import (
 	"github.com/scalvert/glean-cli/pkg/http"
 )
 
-// MockClient is a test double that can return predefined responses
+// MockClient implements http.Client for testing with predefined responses.
+// It supports both single responses and sequences of responses for testing
+// multiple requests in order.
 type MockClient struct {
-	Err       error
-	Response  []byte
+	// Err is returned instead of Response if non-nil
+	Err error
+	// Response is returned for single-response scenarios
+	Response []byte
+	// Responses is used for multi-response scenarios, returning each response in sequence
 	Responses [][]byte
+	// CallCount tracks the number of requests made
 	CallCount int
 }
 
+// SendRequest returns the next response in the sequence or the single Response.
 func (m *MockClient) SendRequest(req *http.Request) ([]byte, error) {
 	if m.Err != nil {
 		return nil, m.Err
@@ -31,6 +40,8 @@ func (m *MockClient) SendRequest(req *http.Request) ([]byte, error) {
 	return m.Response, nil
 }
 
+// SendStreamingRequest simulates a streaming response by ensuring each response
+// ends with a newline, making it compatible with line-by-line readers.
 func (m *MockClient) SendStreamingRequest(req *http.Request) (io.ReadCloser, error) {
 	if m.Err != nil {
 		return nil, m.Err
@@ -47,21 +58,20 @@ func (m *MockClient) SendStreamingRequest(req *http.Request) (io.ReadCloser, err
 		response = m.Response
 	}
 
-	// Ensure each line ends with a newline for proper streaming simulation
 	if !bytes.HasSuffix(response, []byte("\n")) {
 		response = append(response, '\n')
 	}
 
-	// Convert response to a ReadCloser that returns each line separately
-	// This simulates the streaming behavior where each line is a complete JSON object
 	return io.NopCloser(bytes.NewReader(response)), nil
 }
 
+// GetFullURL returns a test URL with the given path.
 func (m *MockClient) GetFullURL(path string) string {
 	return "https://test-company-be.glean.com" + path
 }
 
-// SetupMockClient creates a new mock client and returns a cleanup function
+// SetupMockClient creates a mock client for testing and returns a cleanup function.
+// The cleanup function should be deferred to restore the original client factory.
 func SetupMockClient(response []byte, err error) (*MockClient, func()) {
 	mock := &MockClient{
 		Response: response,

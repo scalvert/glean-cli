@@ -1,4 +1,6 @@
-// Package output provides standardized colorized output functionality
+// Package output provides standardized output formatting with syntax highlighting
+// for various data formats like JSON and YAML. It handles terminal detection
+// and colorization based on the environment and user preferences.
 package output
 
 import (
@@ -19,18 +21,23 @@ import (
 // For testing
 var isTerminalCheck = term.IsTerminal
 
+// Format constants for supported output formats.
 const (
 	FormatJSON = "json"
 	FormatYAML = "yaml"
 )
 
-// Options represents configuration for output formatting
+// Options configures the output formatting behavior.
 type Options struct {
-	Format  string
+	// Format specifies the output format (json or yaml)
+	Format string
+	// NoColor disables syntax highlighting even in terminal environments
 	NoColor bool
 }
 
-// Write formats and writes the content to the writer with optional syntax highlighting
+// Write formats and writes content to the writer with optional syntax highlighting.
+// It supports JSON and YAML formats, automatically indenting and colorizing the output
+// when appropriate for the terminal environment.
 func Write(w io.Writer, content []byte, opts Options) error {
 	if !shouldColorize(opts) {
 		return writeRaw(w, content, opts.Format)
@@ -39,15 +46,20 @@ func Write(w io.Writer, content []byte, opts Options) error {
 	return writeColorized(w, content, opts.Format)
 }
 
-// WriteString is a convenience wrapper for Write that takes a string
+// WriteString is a convenience wrapper for Write that accepts a string input.
+// It converts the string to bytes and delegates to Write for formatting and output.
 func WriteString(w io.Writer, content string, opts Options) error {
 	return Write(w, []byte(content), opts)
 }
 
+// shouldColorize determines if syntax highlighting should be applied based on
+// the terminal environment and user preferences.
 func shouldColorize(opts Options) bool {
 	return !opts.NoColor && isTerminalCheck(int(os.Stdout.Fd()))
 }
 
+// writeRaw writes the content without syntax highlighting, handling indentation
+// and formatting based on the specified format.
 func writeRaw(w io.Writer, content []byte, format string) error {
 	switch format {
 	case FormatJSON:
@@ -79,6 +91,9 @@ func writeRaw(w io.Writer, content []byte, format string) error {
 	}
 }
 
+// writeColorized writes the content with syntax highlighting using chroma.
+// It handles lexer selection, formatting, and style application based on
+// the content format.
 func writeColorized(w io.Writer, content []byte, format string) error {
 	// Handle empty content
 	if len(content) == 0 {

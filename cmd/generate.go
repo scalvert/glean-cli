@@ -1,3 +1,4 @@
+// Package cmd implements the command-line interface for the Glean CLI.
 package cmd
 
 import (
@@ -8,6 +9,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// NewCmdGenerate creates and returns the generate command.
+// The generate command provides utilities for generating various resources
+// like OpenAPI specifications and other Glean-related assets.
 func NewCmdGenerate() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "generate",

@@ -16,10 +16,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Test mode configuration
+// Test mode configuration for automated testing
 var (
-	testMode  bool
-	testInput string
+	testMode  bool   // Whether we're running in test mode
+	testInput string // Simulated user input for testing
 )
 
 // Default template for search results
@@ -281,7 +281,9 @@ type SearchMetadata struct {
 	ObjectType string  `json:"objectType,omitempty"`
 }
 
-// NewCmdSearch creates and returns the search command
+// NewCmdSearch creates and returns the search command.
+// The search command allows users to search across their Glean instance,
+// with support for pagination, custom output formats, and filtering options.
 func NewCmdSearch() *cobra.Command {
 	opts := &SearchOptions{
 		RequestOptions: &RequestOptions{

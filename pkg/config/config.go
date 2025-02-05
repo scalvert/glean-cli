@@ -1,3 +1,5 @@
+// Package config manages the Glean CLI's configuration, providing secure storage
+// of credentials using the system keyring with fallback to file-based storage.
 package config
 
 import (
@@ -10,13 +12,17 @@ import (
 	"github.com/zalando/go-keyring"
 )
 
-// keyringImpl is the current keyring implementation, can be swapped for testing
-var keyringImpl keyringProvider = &systemKeyring{}
+// keyringProvider defines operations for secure credential storage.
+type keyringProvider interface {
+	Get(service, key string) (string, error)
+	Set(service, key, value string) error
+	Delete(service, key string) error
+}
 
-// ServiceName is the service name used for keyring operations
+// ServiceName is the service identifier used for keyring operations.
 var ServiceName = "glean-cli"
 
-// ConfigPath is the path to the config file. This can be overridden for testing.
+// ConfigPath is the path to the fallback config file.
 var ConfigPath string
 
 const (
@@ -25,17 +31,11 @@ const (
 	emailKey = "email"
 )
 
+// Config holds the Glean API credentials and connection settings.
 type Config struct {
 	GleanHost  string `json:"host"`
 	GleanToken string `json:"token"`
 	GleanEmail string `json:"email"`
-}
-
-// keyringProvider defines the interface for keyring operations
-type keyringProvider interface {
-	Get(service, key string) (string, error)
-	Set(service, key, value string) error
-	Delete(service, key string) error
 }
 
 // MaskToken masks a token by showing only the first and last 4 characters
@@ -47,6 +47,8 @@ func MaskToken(token string) string {
 	return token[:4] + strings.Repeat("*", len(token)-8) + token[len(token)-4:]
 }
 
+// ValidateAndTransformHost ensures the Glean host is in the correct format,
+// transforming short names (e.g., "linkedin") to full hostnames (e.g., "linkedin-be.glean.com").
 func ValidateAndTransformHost(host string) (string, error) {
 	if !strings.Contains(host, ".") {
 		return fmt.Sprintf("%s-be.glean.com", host), nil
@@ -63,12 +65,11 @@ func ValidateAndTransformHost(host string) (string, error) {
 	return host, nil
 }
 
-// LoadConfig loads the configuration from keyring first, falling back to config file
+// LoadConfig retrieves configuration from the system keyring, falling back to
+// file-based storage if keyring access fails.
 func LoadConfig() (*Config, error) {
-	// Try keyring first
 	cfg := loadFromKeyring()
 
-	// If no values were loaded from keyring, try config file
 	if cfg.GleanHost == "" && cfg.GleanToken == "" && cfg.GleanEmail == "" {
 		var err error
 		cfg, err = loadFromFile()
@@ -80,7 +81,8 @@ func LoadConfig() (*Config, error) {
 	return cfg, nil
 }
 
-// SaveConfig saves the configuration to both keyring and config file
+// SaveConfig stores configuration in both the system keyring and file storage.
+// It returns an error only if both storage methods fail.
 func SaveConfig(host, token, email string) error {
 	if host != "" {
 		validHost, err := ValidateAndTransformHost(host)
@@ -90,7 +92,6 @@ func SaveConfig(host, token, email string) error {
 		host = validHost
 	}
 
-	// Try to save to keyring first
 	var keyringErr error
 	if host != "" {
 		if err := keyringImpl.Set(ServiceName, hostKey, host); err != nil {
@@ -108,7 +109,6 @@ func SaveConfig(host, token, email string) error {
 		}
 	}
 
-	// Always try to save to file as well
 	cfg := &Config{}
 	existingCfg, err := loadFromFile()
 	if err == nil {
@@ -126,18 +126,16 @@ func SaveConfig(host, token, email string) error {
 	}
 
 	if err := saveToFile(cfg); err != nil && keyringErr != nil {
-		// Only return error if both storage methods failed
 		return fmt.Errorf("failed to save config: keyring error: %v, file error: %v", keyringErr, err)
 	}
 
 	return nil
 }
 
-// ClearConfig removes the configuration from both keyring and config file
+// ClearConfig removes all stored configuration from both keyring and file storage.
 func ClearConfig() error {
 	var keyringErr error
 
-	// Clear keyring
 	if err := keyringImpl.Delete(ServiceName, hostKey); err != nil && err != keyring.ErrNotFound {
 		keyringErr = err
 	}
@@ -148,7 +146,6 @@ func ClearConfig() error {
 		keyringErr = err
 	}
 
-	// Clear config file
 	if ConfigPath != "" {
 		if err := os.Remove(ConfigPath); err != nil && !os.IsNotExist(err) {
 			if keyringErr != nil {
@@ -165,7 +162,7 @@ func ClearConfig() error {
 	return nil
 }
 
-// systemKeyring implements keyringProvider using the system keyring
+// systemKeyring provides the default keyring implementation.
 type systemKeyring struct{}
 
 func (s *systemKeyring) Get(service, key string) (string, error) {
@@ -180,6 +177,8 @@ func (s *systemKeyring) Delete(service, key string) error {
 	return keyring.Delete(service, key)
 }
 
+var keyringImpl keyringProvider = &systemKeyring{}
+
 func init() {
 	homeDir, err := os.UserHomeDir()
 	if err == nil {
@@ -187,7 +186,6 @@ func init() {
 	}
 }
 
-// loadFromKeyring attempts to load config from the system keyring
 func loadFromKeyring() *Config {
 	cfg := &Config{}
 
@@ -206,7 +204,6 @@ func loadFromKeyring() *Config {
 	return cfg
 }
 
-// loadFromFile attempts to load config from the config file
 func loadFromFile() (*Config, error) {
 	if ConfigPath == "" {
 		return nil, fmt.Errorf("config path not set")
@@ -228,13 +225,11 @@ func loadFromFile() (*Config, error) {
 	return &cfg, nil
 }
 
-// saveToFile saves the config to the local config file
 func saveToFile(cfg *Config) error {
 	if ConfigPath == "" {
 		return fmt.Errorf("config path not set")
 	}
 
-	// Ensure the directory exists
 	if err := os.MkdirAll(filepath.Dir(ConfigPath), 0700); err != nil {
 		return fmt.Errorf("error creating config directory: %w", err)
 	}

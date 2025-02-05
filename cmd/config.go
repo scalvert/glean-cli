@@ -8,16 +8,22 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// notSetValue is displayed when a configuration value is not set
 const notSetValue = "[not set]"
 
+// ConfigOptions holds the configuration options for the config command.
+// It allows setting or clearing Glean credentials and connection settings.
 type ConfigOptions struct {
-	host  string
-	token string
-	email string
-	clear bool
-	show  bool
+	host  string // Glean instance hostname
+	token string // API token for authentication
+	email string // User's email address
+	clear bool   // Whether to clear all configuration
+	show  bool   // Whether to display current configuration
 }
 
+// NewCmdConfig creates and returns the config command.
+// The config command manages CLI configuration, including credentials
+// and connection settings, with support for secure storage.
 func NewCmdConfig() *cobra.Command {
 	opts := ConfigOptions{}
 

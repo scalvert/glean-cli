@@ -1,3 +1,6 @@
+// Package cmd implements the command-line interface for the Glean CLI.
+// It provides commands for interacting with Glean's API, managing configuration,
+// and performing various operations like search and chat.
 package cmd
 
 import (
@@ -8,9 +11,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// rootCmd is the root command for the Glean CLI
+// rootCmd represents the base command when called without any subcommands.
+// It provides help information and coordinates all subcommands.
 var rootCmd *cobra.Command
 
+// NewCmdRoot creates and returns the root command for the Glean CLI.
+// It sets up the base command structure and adds all subcommands.
 func NewCmdRoot() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "glean",
@@ -49,6 +55,8 @@ func NewCmdRoot() *cobra.Command {
 	return cmd
 }
 
+// Execute runs the root command and handles any errors.
+// It's the main entry point for the CLI application.
 func Execute() error {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)

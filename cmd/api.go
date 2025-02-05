@@ -16,15 +16,20 @@ import (
 	"golang.org/x/term"
 )
 
+// APIOptions holds configuration for the API command.
+// It controls the HTTP method, request body, and output formatting.
 type APIOptions struct {
-	method      string
-	requestBody string
-	inputFile   string
-	preview     bool
-	raw         bool
-	noColor     bool
+	method      string // HTTP method for the request (GET, POST, etc.)
+	requestBody string // Raw JSON string for the request body
+	inputFile   string // File path for request body input
+	preview     bool   // Whether to preview the request without sending
+	raw         bool   // Whether to output raw response without formatting
+	noColor     bool   // Whether to disable colored output
 }
 
+// NewCmdAPI creates and returns the api command.
+// The api command allows direct interaction with Glean's REST API endpoints,
+// supporting various HTTP methods and request body formats.
 func NewCmdAPI() *cobra.Command {
 	opts := APIOptions{}
 
