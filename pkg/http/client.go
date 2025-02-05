@@ -19,6 +19,7 @@ type HTTPClient interface {
 // Client is the interface for making HTTP requests
 type Client interface {
 	SendRequest(req *Request) ([]byte, error)
+	SendStreamingRequest(req *Request) (io.ReadCloser, error)
 	GetFullURL(path string) string
 }
 
@@ -67,6 +68,7 @@ type Request struct {
 	Headers map[string]string
 	Method  string
 	Path    string
+	Stream  bool
 }
 
 // GetFullURL returns the complete URL for the request
@@ -138,4 +140,66 @@ func (c *client) SendRequest(req *Request) ([]byte, error) {
 	}
 
 	return body, nil
+}
+
+// SendStreamingRequest executes the HTTP request and returns a streaming response
+func (c *client) SendStreamingRequest(req *Request) (io.ReadCloser, error) {
+	url := c.GetFullURL(req.Path)
+
+	var bodyReader io.Reader
+	if req.Body != nil {
+		bodyBytes, err := json.Marshal(req.Body)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling request body: %w", err)
+		}
+		bodyReader = bytes.NewReader(bodyBytes)
+	}
+
+	httpReq, err := http.NewRequest(req.Method, url, bodyReader)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/json")
+	if c.cfg.GleanToken != "" {
+		httpReq.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.cfg.GleanToken))
+	}
+	if c.cfg.GleanEmail != "" {
+		httpReq.Header.Set("X-Scio-Actas", c.cfg.GleanEmail)
+	}
+	httpReq.Header.Set("X-Glean-Auth-Type", "string")
+
+	// Add custom headers
+	for k, v := range req.Headers {
+		httpReq.Header.Set(k, v)
+	}
+
+	resp, err := c.http.Do(httpReq)
+	if err != nil {
+		return nil, fmt.Errorf("error making request: %w", err)
+	}
+
+	if resp.StatusCode >= 400 {
+		defer resp.Body.Close()
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return nil, fmt.Errorf("error reading error response: %w", err)
+		}
+
+		var errorResp struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}
+		if err := json.Unmarshal(body, &errorResp); err == nil {
+			if errorResp.Message != "" {
+				return nil, fmt.Errorf("API error (%d): %s", resp.StatusCode, errorResp.Message)
+			}
+			if errorResp.Error != "" {
+				return nil, fmt.Errorf("API error (%d): %s", resp.StatusCode, errorResp.Error)
+			}
+		}
+		return nil, fmt.Errorf("API error (%d): %s", resp.StatusCode, string(body))
+	}
+
+	return resp.Body, nil
 }

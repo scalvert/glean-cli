@@ -25,6 +25,10 @@ func NewCmdRoot() *cobra.Command {
 				fmt.Fprintf(os.Stderr, "Error displaying help: %v\n", err)
 			}
 		},
+		// Silence usage output when an error occurs
+		SilenceUsage: true,
+		// Ensure consistent error formatting
+		SilenceErrors: true,
 	}
 
 	// Add all subcommands
@@ -32,9 +36,15 @@ func NewCmdRoot() *cobra.Command {
 		NewCmdAPI(),
 		NewCmdConfig(),
 		NewCmdGenerate(),
-		NewCmdOpenAPISpec(),
 		NewCmdSearch(),
+		NewCmdChat(),
 	)
+
+	// Propagate settings to all subcommands
+	for _, subCmd := range cmd.Commands() {
+		subCmd.SilenceUsage = true
+		subCmd.SilenceErrors = true
+	}
 
 	return cmd
 }
@@ -44,5 +54,9 @@ func init() {
 }
 
 func Execute() error {
-	return rootCmd.Execute()
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		return err
+	}
+	return nil
 }
