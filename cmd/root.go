@@ -49,14 +49,14 @@ func NewCmdRoot() *cobra.Command {
 	return cmd
 }
 
-func init() {
-	rootCmd = NewCmdRoot()
-}
-
 func Execute() error {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		return err
 	}
 	return nil
+}
+
+func init() {
+	rootCmd = NewCmdRoot()
 }

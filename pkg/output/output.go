@@ -16,6 +16,9 @@ import (
 	"golang.org/x/term"
 )
 
+// For testing
+var isTerminalCheck = term.IsTerminal
+
 const (
 	FormatJSON = "json"
 	FormatYAML = "yaml"
@@ -26,9 +29,6 @@ type Options struct {
 	Format  string
 	NoColor bool
 }
-
-// For testing
-var isTerminalCheck = term.IsTerminal
 
 // Write formats and writes the content to the writer with optional syntax highlighting
 func Write(w io.Writer, content []byte, opts Options) error {

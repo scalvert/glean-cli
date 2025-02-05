@@ -11,6 +11,15 @@ import (
 	"github.com/scalvert/glean-cli/pkg/config"
 )
 
+// Request represents an HTTP request to be made
+type Request struct {
+	Body    interface{}
+	Headers map[string]string
+	Method  string
+	Path    string
+	Stream  bool
+}
+
 // HTTPClient defines the interface for making HTTP requests
 type HTTPClient interface {
 	Do(req *http.Request) (*http.Response, error)
@@ -60,15 +69,6 @@ func defaultNewClient(cfg *config.Config) (Client, error) {
 		cfg:     cfg,
 		baseURL: baseURL,
 	}, nil
-}
-
-// Request represents an HTTP request to be made
-type Request struct {
-	Body    interface{}
-	Headers map[string]string
-	Method  string
-	Path    string
-	Stream  bool
 }
 
 // GetFullURL returns the complete URL for the request

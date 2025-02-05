@@ -23,7 +23,6 @@ func NewCmdGenerate() *cobra.Command {
 		},
 	}
 
-	// Add subcommands
 	cmd.AddCommand(NewCmdOpenAPISpec())
 
 	return cmd
