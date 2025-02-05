@@ -248,7 +248,7 @@ func TestConfigOperations(t *testing.T) {
 		// Simulate keyring failure
 		mock.err = assert.AnError
 
-		// Create config directory with no write permissions
+		// Create config directory
 		configDir := filepath.Dir(configPath)
 		err := os.MkdirAll(configDir, 0700)
 		require.NoError(t, err)
@@ -256,12 +256,15 @@ func TestConfigOperations(t *testing.T) {
 		// Remove any existing config file
 		os.Remove(configPath)
 
-		// Make directory read-only
-		err = os.Chmod(configDir, 0500)
+		// Create a file instead of the config directory to make writes fail
+		err = os.Remove(configDir)
+		require.NoError(t, err)
+		err = os.WriteFile(configDir, []byte("not a directory"), 0600)
 		require.NoError(t, err)
 		defer func() {
-			// Restore permissions for cleanup
-			os.Chmod(configDir, 0700)
+			// Clean up for other tests
+			os.Remove(configDir)
+			os.MkdirAll(configDir, 0700)
 		}()
 
 		err = SaveConfig("linkedin", "test-token", "test@example.com")
