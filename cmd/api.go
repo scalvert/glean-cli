@@ -120,7 +120,7 @@ func NewCmdAPI() *cobra.Command {
 			}
 
 			// Only show spinner if we're in a terminal and not using --raw or --no-color
-			useSpinner := isatty(os.Stderr.Fd()) && !opts.raw && !opts.noColor
+			useSpinner := term.IsTerminal(int(os.Stderr.Fd())) && !opts.raw && !opts.noColor
 
 			var s *spinner.Spinner
 			if useSpinner {
@@ -193,8 +193,4 @@ func previewRequest(req *http.Request, noColor bool) error {
 	}
 
 	return nil
-}
-
-func isatty(fd uintptr) bool {
-	return term.IsTerminal(int(fd))
 }
