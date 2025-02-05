@@ -13,6 +13,7 @@ linters:
     - unconvert
     - goconst
     - unparam
+    - gocritic
 
 linters-settings:
   govet:
@@ -24,6 +25,10 @@ linters-settings:
     min-occurrences: 2
   misspell:
     locale: US
+  gocritic:
+    enabled-checks:
+      - docStub
+      - commentedOutCode
 
 issues:
   exclude-rules:
