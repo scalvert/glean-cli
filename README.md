@@ -1,4 +1,4 @@
-# Glean CLI
+# Glean CLI (unofficial)
 
 > ⚠️ **Note:** This project is currently under active development and may not be ready for production use. APIs and features may change without notice.
 
