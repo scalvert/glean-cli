@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/MakeNowJust/heredoc"
@@ -172,7 +171,7 @@ func previewRequest(req *http.Request, noColor bool) error {
 	fmt.Println("\nRequest Headers:")
 	fmt.Printf("  Content-Type: application/json\n")
 	if cfg.GleanToken != "" {
-		fmt.Printf("  Authorization: Bearer %s\n", maskToken(cfg.GleanToken))
+		fmt.Printf("  Authorization: Bearer %s\n", config.MaskToken(cfg.GleanToken))
 	}
 	if cfg.GleanEmail != "" {
 		fmt.Printf("  X-Glean-User-Email: %s\n", cfg.GleanEmail)
@@ -194,13 +193,6 @@ func previewRequest(req *http.Request, noColor bool) error {
 	}
 
 	return nil
-}
-
-func maskToken(token string) string {
-	if len(token) <= 8 {
-		return strings.Repeat("*", len(token))
-	}
-	return token[:4] + strings.Repeat("*", len(token)-8) + token[len(token)-4:]
 }
 
 func isatty(fd uintptr) bool {

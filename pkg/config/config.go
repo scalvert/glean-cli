@@ -10,6 +10,15 @@ import (
 	"github.com/zalando/go-keyring"
 )
 
+// MaskToken masks a token by showing only the first and last 4 characters
+// and replacing the rest with asterisks.
+func MaskToken(token string) string {
+	if len(token) <= 8 {
+		return strings.Repeat("*", len(token))
+	}
+	return token[:4] + strings.Repeat("*", len(token)-8) + token[len(token)-4:]
+}
+
 // keyringProvider defines the interface for keyring operations
 type keyringProvider interface {
 	Get(service, key string) (string, error)
