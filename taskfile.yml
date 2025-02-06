@@ -86,7 +86,7 @@ tasks:
       - git pull origin main
       - git fetch --tags
 
-      # Run all linters and tests 
+      # Run all linters and tests
       - task: test:all
 
       # Show current version and commits since last release
@@ -139,3 +139,12 @@ tasks:
         msg: "Working directory is not clean. Please commit or stash changes first."
       - sh: "command -v svu"
         msg: "svu is not installed. Run: go install github.com/caarlos0/svu@latest"
+
+  demo:
+    desc: Generate demo GIF for README
+    deps: [build]
+    silent: true
+    cmds:
+      - echo "Generating demo GIF using VHS..."
+      - vhs demo/glean.tape
+      - echo "Demo GIF generated at demo/readme.gif"
