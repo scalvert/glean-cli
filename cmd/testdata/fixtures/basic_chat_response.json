@@ -1,0 +1,5 @@
+{"messages":[{"author":"GLEAN_AI","fragments":[{"text":"Hello"}],"hasMoreFragments":false}],"chatSessionTrackingToken":"token1"}
+{"messages":[{"author":"GLEAN_AI","fragments":[{"text":"How"}],"hasMoreFragments":true}],"chatSessionTrackingToken":"token2"}
+{"messages":[{"author":"GLEAN_AI","fragments":[{"text":" can"}],"hasMoreFragments":true}],"chatSessionTrackingToken":"token3"}
+{"messages":[{"author":"GLEAN_AI","fragments":[{"text":" I"}],"hasMoreFragments":true}],"chatSessionTrackingToken":"token4"}
+{"messages":[{"author":"GLEAN_AI","fragments":[{"text":" help?"}],"hasMoreFragments":false}],"chatSessionTrackingToken":"token5"}

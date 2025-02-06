@@ -1,0 +1,4 @@
+{"messages":[{"author":"GLEAN_AI","fragments":[{"text":"First message"}],"hasMoreFragments":false}],"chatSessionTrackingToken":"token1"}
+{"messages":[{"author":"GLEAN_AI","fragments":[{"text":"Second message"}],"hasMoreFragments":false}],"chatSessionTrackingToken":"token2"}
+{invalid json line}
+{"messages":[{"author":"GLEAN_AI","fragments":[{"text":"Fourth message"}],"hasMoreFragments":false}],"chatSessionTrackingToken":"token4"}

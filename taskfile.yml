@@ -36,6 +36,12 @@ tasks:
     cmds:
       - go build -o glean
 
+  build:debug:
+    desc: Build the CLI with debug symbols
+    silent: true
+    cmds:
+      - go build -gcflags="all=-N -l" -o glean
+
   test:all:
     desc: Run all checks (used in CI)
     silent: true
@@ -55,6 +61,20 @@ tasks:
     cmds:
       - gotestsum --format=short-verbose
     silent: false
+
+  test:snapshot:
+    desc: Run tests and update snapshots
+    silent: true
+    cmds:
+      - echo "Running tests and updating snapshots..."
+      - UPDATE_SNAPSHOTS=true go test ./... -v
+      - |
+        if [ $? -eq 0 ]; then
+          echo "✓ Snapshots updated successfully"
+        else
+          echo "✗ Some tests failed. Please check the output above"
+          exit 1
+        fi
 
   lint:
     desc: Run Go lint

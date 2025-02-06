@@ -10,6 +10,7 @@ import (
 
 	"github.com/briandowns/spinner"
 	"github.com/mattn/go-tty"
+	"github.com/scalvert/glean-cli/pkg/api"
 	"github.com/scalvert/glean-cli/pkg/config"
 	"github.com/scalvert/glean-cli/pkg/http"
 	"github.com/scalvert/glean-cli/pkg/output"
@@ -37,52 +38,13 @@ Did you mean: {{.SuggestedSpellCorrectedQuery}}?{{end}}{{if .RewrittenQuery}}
 Showing results for: {{.RewrittenQuery}}{{end}}`
 
 // Core domain types
-type Document struct {
-	ParentDocument *Document         `json:"parentDocument,omitempty"`
-	Metadata       *DocumentMetadata `json:"metadata"`
-	ID             string            `json:"id"`
-	Datasource     string            `json:"datasource"`
-	DocType        string            `json:"docType"`
-	Title          string            `json:"title"`
-	URL            string            `json:"url"`
-}
-
-type DocumentMetadata struct {
-	Datasource         string                 `json:"datasource"`
-	DatasourceInstance string                 `json:"datasourceInstance"`
-	ObjectType         string                 `json:"objectType"`
-	Container          string                 `json:"container,omitempty"`
-	ContainerId        string                 `json:"containerId,omitempty"`
-	MimeType           string                 `json:"mimeType"`
-	DocumentId         string                 `json:"documentId"`
-	LoggingId          string                 `json:"loggingId"`
-	CreateTime         string                 `json:"createTime"`
-	UpdateTime         string                 `json:"updateTime"`
-	Author             *Person                `json:"author,omitempty"`
-	Owner              *Person                `json:"owner,omitempty"`
-	Visibility         string                 `json:"visibility"`
-	Status             string                 `json:"status,omitempty"`
-	AssignedTo         *Person                `json:"assignedTo,omitempty"`
-	DatasourceId       string                 `json:"datasourceId"`
-	Interactions       map[string]interface{} `json:"interactions"`
-	DocumentCategory   string                 `json:"documentCategory"`
-	CustomData         map[string]interface{} `json:"customData,omitempty"`
-	Shortcuts          []Shortcut             `json:"shortcuts,omitempty"`
-}
-
-type Person struct {
-	Metadata     *PersonMetadata `json:"metadata,omitempty"`
-	Name         string          `json:"name"`
-	ObfuscatedId string          `json:"obfuscatedId"`
-}
-
-type PersonMetadata struct {
-	RelatedDocuments []RelatedDocument `json:"relatedDocuments,omitempty"`
-}
-
-type RelatedDocument struct {
-	// Add fields as needed
-}
+type Document = api.Document
+type DocumentMetadata = api.DocumentMetadata
+type Person = api.Person
+type PersonMetadata = api.PersonMetadata
+type RelatedDocument = api.RelatedDocument
+type Shortcut = api.Shortcut
+type StructuredResult = api.StructuredResult
 
 // Request types
 type SearchOptions struct {
@@ -162,17 +124,6 @@ type SessionInfo struct {
 	TabId                string `json:"tabId,omitempty"`
 }
 
-type Shortcut struct {
-	InputAlias     string `json:"inputAlias"`
-	DestinationUrl string `json:"destinationUrl"`
-	Description    string `json:"description"`
-	CreateTime     string `json:"createTime"`
-	UpdateTime     string `json:"updateTime"`
-	ViewPrefix     string `json:"viewPrefix"`
-	Alias          string `json:"alias"`
-	Title          string `json:"title"`
-}
-
 // Additional response types
 type ErrorInfo struct {
 	ErrorMessages []ErrorMessage `json:"errorMessages,omitempty"`
@@ -211,11 +162,6 @@ type ResultTab struct {
 	TabId       string `json:"tabId"`
 	TabName     string `json:"tabName"`
 	ResultCount int    `json:"resultCount"`
-}
-
-type StructuredResult struct {
-	Type     string          `json:"type"`
-	Metadata json.RawMessage `json:"metadata,omitempty"`
 }
 
 type SearchResponse struct {

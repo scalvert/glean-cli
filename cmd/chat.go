@@ -6,76 +6,83 @@ import (
 	"fmt"
 	"io"
 	"regexp"
+	"sort"
 	"strings"
 	"time"
 
 	"github.com/briandowns/spinner"
+	"github.com/fatih/color"
+	"github.com/scalvert/glean-cli/pkg/api"
 	"github.com/scalvert/glean-cli/pkg/config"
 	"github.com/scalvert/glean-cli/pkg/http"
 	"github.com/spf13/cobra"
+	"golang.org/x/exp/maps"
 )
 
-// ChatMessage represents a single message in a chat conversation.
-// It includes the author, message type, and text fragments.
+const (
+	StageSearching ChatStageType = "Searching"
+	StageReading   ChatStageType = "Reading"
+	StageWriting   ChatStageType = "Writing"
+	StageSummary   ChatStageType = "" // Empty string since we use the exact text
+)
+
+var (
+	// greenCheck is used to color the checkmark in stage output
+	greenCheck = color.New(color.FgGreen).SprintFunc()
+
+	// summarizePattern matches variations of summarize/summarizing at start of text
+	summarizePattern = regexp.MustCompile(`^(?i)summariz(e|ing)\b`)
+)
+
+// ChatMessage represents a message in a chat conversation with fragments of text.
 type ChatMessage struct {
-	Author      string `json:"author"`      // Author of the message (USER or GLEAN_AI)
-	MessageType string `json:"messageType"` // Type of message (e.g., CONTENT)
+	Author      string `json:"author"`      // USER or GLEAN_AI
+	MessageType string `json:"messageType"` // e.g., CONTENT
 	Fragments   []struct {
-		Text string `json:"text"` // Text content of the message fragment
+		Text string `json:"text"`
 	} `json:"fragments"`
 }
 
 // ChatRequest represents a request to the Glean chat API.
-// It includes configuration for the chat session and message history.
 type ChatRequest struct {
-	AgentConfig   AgentConfig   `json:"agentConfig"`             // Configuration for the chat agent
-	ApplicationID string        `json:"applicationId,omitempty"` // Optional application identifier
-	ChatID        string        `json:"chatId,omitempty"`        // Optional chat session identifier
-	Messages      []ChatMessage `json:"messages"`                // List of messages in the conversation
-	TimeoutMillis int           `json:"timeoutMillis"`           // Request timeout in milliseconds
-	Stream        bool          `json:"stream"`                  // Whether to stream the response
-	SaveChat      bool          `json:"saveChat"`                // Whether to save the chat history
+	AgentConfig   AgentConfig   `json:"agentConfig"`
+	ApplicationID string        `json:"applicationId,omitempty"`
+	ChatID        string        `json:"chatId,omitempty"`
+	Messages      []ChatMessage `json:"messages"`
+	TimeoutMillis int           `json:"timeoutMillis"`
+	Stream        bool          `json:"stream"`
+	SaveChat      bool          `json:"saveChat"`
 }
 
 // AgentConfig configures the behavior of the chat agent.
 type AgentConfig struct {
-	Agent string `json:"agent"` // Type of agent to use (e.g., GPT)
-	Mode  string `json:"mode"`  // Mode of operation (e.g., DEFAULT)
+	Agent string `json:"agent"` // e.g., GPT
+	Mode  string `json:"mode"`  // e.g., DEFAULT
 }
 
 // ChatResponse represents a response from the Glean chat API.
-// It includes the chat session token and message content.
 type ChatResponse struct {
-	ChatSessionTrackingToken string `json:"chatSessionTrackingToken"` // Token for tracking the chat session
+	ChatSessionTrackingToken string `json:"chatSessionTrackingToken"`
 	Messages                 []struct {
-		Author    string `json:"author"` // Author of the message
+		Author    string `json:"author"`
 		Fragments []struct {
-			Text string `json:"text"` // Text content of the fragment
+			Text              string                 `json:"text"`
+			StructuredResults []api.StructuredResult `json:"structuredResults,omitempty"`
 		} `json:"fragments"`
-		HasMoreFragments bool `json:"hasMoreFragments,omitempty"` // Whether more fragments are coming
+		HasMoreFragments bool `json:"hasMoreFragments,omitempty"`
 	} `json:"messages"`
 }
 
-// cleanMarkdown removes markdown formatting from text to provide clean console output.
-func cleanMarkdown(text string) string {
-	// Remove bold/italic markers
-	text = regexp.MustCompile(`\*\*`).ReplaceAllString(text, "")
-	text = regexp.MustCompile(`\*`).ReplaceAllString(text, "")
-	text = regexp.MustCompile(`__`).ReplaceAllString(text, "")
-	text = regexp.MustCompile(`_`).ReplaceAllString(text, "")
-
-	// Convert markdown links to plain text
-	text = regexp.MustCompile(`\[([^\]]+)\]\([^)]+\)`).ReplaceAllString(text, "$1")
-
-	// Remove backticks
-	text = regexp.MustCompile("`").ReplaceAllString(text, "")
-
-	// Remove multiple blank lines
-	text = regexp.MustCompile(`\n\s*\n\s*\n`).ReplaceAllString(text, "\n\n")
-
-	return text
+// stageInfo represents a parsed chat stage
+type stageInfo struct {
+	stage  ChatStageType
+	detail string
 }
 
+// ChatStageType represents different stages of chat output
+type ChatStageType string
+
+// NewCmdChat creates and returns the chat command.
 func NewCmdChat() *cobra.Command {
 	var timeoutMillis int
 	var saveChat bool
@@ -103,6 +110,8 @@ Example:
 	return cmd
 }
 
+// executeChat handles the chat interaction with Glean's API, streaming the response
+// and formatting the output for the terminal.
 func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveChat bool) error {
 	cfg, err := config.LoadConfig()
 	if err != nil {
@@ -114,7 +123,6 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 		return err
 	}
 
-	// Create chat request
 	req := ChatRequest{
 		Messages: []ChatMessage{
 			{
@@ -136,13 +144,11 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 		TimeoutMillis: timeoutMillis,
 	}
 
-	// Convert request to JSON
 	jsonBytes, err := json.Marshal(req)
 	if err != nil {
 		return fmt.Errorf("error marshaling request: %w", err)
 	}
 
-	// Create HTTP request
 	httpReq := &http.Request{
 		Method: "POST",
 		Path:   "chat",
@@ -150,24 +156,23 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 		Stream: true,
 	}
 
-	// Start spinner
 	spin := spinner.New(spinner.CharSets[14], 100*time.Millisecond)
 	spin.Prefix = "Waiting for response "
 	spin.Start()
 	defer spin.Stop()
 
-	// Send request and get streaming response
 	responseBody, err := client.SendStreamingRequest(httpReq)
 	if err != nil {
 		return err
 	}
 	defer responseBody.Close()
 
-	// Create a reader for the streaming response
 	reader := bufio.NewReader(responseBody)
 	firstLine := true
+	isStageOutput := false
+	var searchStage *stageInfo
+	var readingStage *stageInfo
 
-	// Read response line by line
 	for {
 		line, err := reader.ReadString('\n')
 		if err == io.EOF {
@@ -177,32 +182,71 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 			return fmt.Errorf("error reading response: %w", err)
 		}
 
-		// Skip empty lines
 		line = strings.TrimSpace(line)
 		if line == "" {
 			continue
 		}
 
-		// Stop spinner after first line
 		if firstLine {
 			spin.Stop()
-			firstLine = false
 		}
 
-		// Parse and print the response
 		var chatResp ChatResponse
 		if err := json.Unmarshal([]byte(line), &chatResp); err != nil {
 			return fmt.Errorf("error parsing response line: %w", err)
 		}
 
-		// Print each message
 		for _, msg := range chatResp.Messages {
 			for _, fragment := range msg.Fragments {
-				cleanedText := cleanMarkdown(fragment.Text)
-				if cleanedText != "" {
-					fmt.Fprint(cmd.OutOrStdout(), cleanedText)
-					if !msg.HasMoreFragments {
-						fmt.Fprintln(cmd.OutOrStdout())
+				if len(fragment.StructuredResults) > 0 {
+					// Skip if we've already seen the reading stage text
+					if readingStage == nil {
+						fmt.Fprintln(cmd.OutOrStdout(), formatChatStage(StageReading, formatReadingStage(fragment.StructuredResults)))
+						isStageOutput = true
+					}
+					readingStage = nil
+					continue
+				}
+
+				if fragment.Text != "" {
+					if stage := isStage(fragment.Text); stage != nil {
+						if stage.stage == StageReading {
+							// Store reading stage to avoid duplicate output with structuredResults
+							readingStage = stage
+							continue
+						}
+						if stage.stage == StageSearching && stage.detail == "" {
+							// Store the searching stage to combine with next fragment
+							searchStage = stage
+							continue
+						}
+						fmt.Fprintln(cmd.OutOrStdout(), formatChatStage(stage.stage, stage.detail))
+						if stage.stage == StageSummary {
+							fmt.Fprintln(cmd.OutOrStdout())
+						}
+						if stage.stage != StageSummary {
+							isStageOutput = true
+						}
+					} else if searchStage != nil {
+						// This is the second fragment of a searching stage
+						fmt.Fprintln(cmd.OutOrStdout(), formatChatStage(searchStage.stage, fragment.Text))
+						searchStage = nil
+						isStageOutput = true
+					} else {
+						if isStageOutput {
+							fmt.Fprint(cmd.OutOrStdout(), formatChatResponse(fragment.Text))
+							isStageOutput = false
+						} else {
+							fmt.Fprint(cmd.OutOrStdout(), fragment.Text)
+							if !msg.HasMoreFragments {
+								fmt.Println()
+								// Add extra newline after the initial message
+								if firstLine {
+									fmt.Println()
+									firstLine = false
+								}
+							}
+						}
 					}
 				}
 			}
@@ -210,4 +254,90 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 	}
 
 	return nil
+}
+
+// formatChatStage formats a chat stage output with a colored checkmark and appropriate spacing.
+func formatChatStage(stage ChatStageType, detail string) string {
+	const checkmark = "✓"
+	if stage == StageSummary {
+		return fmt.Sprintf("%s %s", greenCheck(checkmark), detail)
+	}
+	return fmt.Sprintf("%s %s: %s", greenCheck(checkmark), stage, detail)
+}
+
+// formatChatResponse formats the final chat response with proper spacing and divider.
+func formatChatResponse(response string) string {
+	const divider = "\n----------------------------------------\n\n"
+	return fmt.Sprintf("%s%s", divider, response)
+}
+
+// isStage checks if a text fragment represents a chat stage and returns the stage info
+func isStage(text string) *stageInfo {
+	// Common stage patterns
+	stagePatterns := map[string]ChatStageType{
+		"**Searching:**": StageSearching,
+		"**Reading:**":   StageReading,
+		"**Writing:**":   StageWriting,
+	}
+
+	// Check for exact stage patterns first
+	for pattern, stageType := range stagePatterns {
+		if strings.HasPrefix(text, pattern) {
+			detail := strings.TrimPrefix(text, pattern)
+			// Special case for searching stage which may have an empty detail
+			// as it comes in a separate fragment
+			if stageType == StageSearching && strings.TrimSpace(detail) == "" {
+				return &stageInfo{stage: stageType}
+			}
+			detail = strings.TrimSpace(detail)
+			return &stageInfo{stage: stageType, detail: detail}
+		}
+	}
+
+	// Check for summarize/summarizing stage that comes after Writing stage
+	if summarizePattern.MatchString(text) {
+		return &stageInfo{stage: StageSummary, detail: text}
+	}
+
+	return nil
+}
+
+// formatReadingStage formats the reading stage with document details
+func formatReadingStage(sources []api.StructuredResult) string {
+	if len(sources) == 0 {
+		return "Reading: no sources found"
+	}
+
+	// Group sources by datasource for better organization
+	sourcesByType := make(map[string][]api.StructuredResult)
+	for _, source := range sources {
+		if source.Document != nil {
+			ds := source.Document.Metadata.Datasource
+			sourcesByType[ds] = append(sourcesByType[ds], source)
+		}
+	}
+
+	// Get sorted datasources for stable iteration
+	datasources := maps.Keys(sourcesByType)
+	sort.Strings(datasources)
+
+	var details []string
+	for _, ds := range datasources {
+		sources := sourcesByType[ds]
+		for _, source := range sources {
+			doc := source.Document
+			if doc.Title != "" {
+				details = append(details, fmt.Sprintf("%s: %s (%s)",
+					formatDatasource(ds),
+					doc.Title,
+					doc.URL))
+			} else {
+				details = append(details, fmt.Sprintf("%s: %s",
+					formatDatasource(ds),
+					doc.URL))
+			}
+		}
+	}
+
+	return strings.Join(details, "\n         ")
 }

@@ -1,0 +1,10 @@
+{
+  "messages": [
+    {
+      "author": "GLEAN_AI",
+      "fragments": [{ "text": "Not saved" }],
+      "hasMoreFragments": false
+    }
+  ],
+  "chatSessionTrackingToken": "token1"
+}
