@@ -1,177 +1,145 @@
-# Glean CLI (unofficial)
+# Glean CLI (Unofficial)
 
-> ⚠️ **Note:** This project is currently under active development and may not be ready for production use. APIs and features may change without notice.
+> Work seamlessly with Glean from your command line.
 
-A command-line interface for interacting with Glean's API and services. This CLI tool provides a seamless way to work with Glean from your terminal.
+![Glean CLI Demo](demo/readme.gif)
+
+The Glean CLI (`glean`) brings Glean's powerful search and AI capabilities directly to your terminal. Search across your company's knowledge, chat with Glean Assistant, and manage your configuration all from the comfort of your command line.
+
+## Features
+
+- 🔍 **Powerful Search**: Search across all your company's content with rich filtering options
+- 💬 **Interactive Chat**: Have natural conversations with Glean's AI about your company's knowledge
+- 🔐 **Secure Authentication**: Credentials are stored securely in your system's keyring
+- 🎨 **Beautiful Output**: Rich, colorized output with support for custom formatting
+- 🛠️ **API Access**: Direct access to Glean's REST API for power users
 
 ## Installation
 
-You can install the Glean CLI in several ways:
-
-### Using Homebrew (macOS and Linux)
-
 ```bash
+# Using homebrew
 brew install scalvert/tap/glean-cli
-```
 
-### Using Go
-
-```bash
-go install github.com/scalvert/glean-cli@latest
-```
-
-### Using Shell Script (macOS and Linux)
-
-```bash
+# Manual installation
 curl -fsSL https://raw.githubusercontent.com/scalvert/glean-cli/main/install.sh | sh
 ```
 
-### Manual Installation
+## Quick Start
 
-You can also download the latest binary for your platform from the [releases page](https://github.com/scalvert/glean-cli/releases).
-
-## Usage
-
+1. Configure your Glean credentials:
 ```bash
-glean [command] [flags]
+glean config --host your-company --token your-token
 ```
 
-## Available Commands
+2. Search for content:
+```bash
+# Basic search
+glean search "vacation policy"
 
-### `glean config`
+# Search with filters
+glean search --datasource confluence "engineering docs"
 
-Configure your Glean CLI credentials and settings.
+# Custom output format
+glean search --output json "meeting notes" | jq
+```
+
+3. Chat with Glean Assistant:
+```bash
+# Start a conversation
+glean chat "What are our company holidays?"
+
+# Extended chat session
+glean chat --timeout 60000 "Tell me about our engineering team"
+```
+
+## Commands
+
+- `glean search`: Search across your company's content
+  - Supports filtering by datasource, type, and people
+  - Custom output formatting with templates
+  - JSON output for scripting
+
+- `glean chat`: Have conversations with Glean Assistant
+  - Natural language interactions with your company's knowledge base
+  - Streaming responses with markdown rendering
+  - Configurable timeouts and response saving
+
+- `glean api`: Direct access to Glean's REST API
+  - Support for all HTTP methods
+  - Request preview
+  - Custom headers and authentication
+
+- `glean config`: Manage your configuration
+  - Secure credential storage
+  - Multiple configuration options
+  - Easy setup and updates
+
+## Examples
+
+### Advanced Search
 
 ```bash
-# Set Glean host
-glean config --host your-domain
-# or
-glean config --host your-domain-be.glean.com
+# Search with multiple filters
+glean search --datasource confluence,drive --type document "project planning"
 
-# Set Glean API token
+# Custom output template
+glean search --template "{{range .Results}}{{.Title}} - {{.URL}}\n{{end}}" "meeting notes"
+
+# Search with person filter
+glean search --person john@company.com "team updates"
+```
+
+### Interactive Chat
+
+```bash
+# Basic chat with Glean Assistant
+glean chat "What's our remote work policy?"
+
+# Extended timeout for longer responses
+glean chat --timeout 60000 "Tell me about our engineering team"
+
+# Disable saving chat history (enabled by default)
+glean chat --save=false "Tell me about our tech stack"
+```
+
+### API Access
+
+```bash
+# Get user information
+glean api users/me
+
+# Custom search request
+glean api search --method POST --raw-field '{"query": "engineering", "pageSize": 5}'
+
+# Preview API request
+glean api search --preview --method POST --raw-field '{"query": "docs"}'
+```
+
+## Configuration
+
+The CLI stores configuration securely using your system's keyring with fallback to file-based storage:
+
+```bash
+# Set Glean instance
+glean config --host your-company
+
+# Set API token
 glean config --token your-token
 
-# Set Glean user email
-glean config --email user@company.com
+# Set user email
+glean config --email you@company.com
 
-# Show current configuration
+# View current config
 glean config --show
 
-# Clear all stored credentials
+# Clear all settings
 glean config --clear
-```
-
-### `glean api`
-
-Make direct calls to the Glean API endpoints.
-
-```bash
-# Make a GET request
-glean api <endpoint>
-
-# Make a POST request with a request body
-glean api <endpoint> --method POST --raw-field '{"key": "value"}'
-
-# Make a request with a different HTTP method
-glean api <endpoint> --method PUT --raw-field '{"key": "value"}'
-```
-
-### `glean generate`
-
-Generate various resources and code for Glean integration.
-
-#### Subcommands:
-
-##### `glean generate openapi-spec`
-
-Generate OpenAPI specifications from API definitions or curl commands.
-
-```bash
-# Generate from a file
-glean generate openapi-spec -f input.txt -o spec.yaml
-
-# Generate from stdin
-echo "curl example.com/api" | glean generate openapi-spec
-
-# Add custom instructions
-glean generate openapi-spec -f input.txt --prompt "Include rate limiting details"
-```
-
-Options:
-- `-f, --file`: Input file containing the API/curl command
-- `-o, --output`: Output file for the OpenAPI spec (defaults to stdout)
-- `-p, --prompt`: Additional instructions for the LLM
-- `--model`: LLM model to use (default: "gpt-4")
-
-## API Command
-
-The `api` command allows you to make authenticated HTTP requests to the Glean API. It handles authentication and provides a convenient way to interact with any of Glean's REST API endpoints documented at [developers.glean.com](https://developers.glean.com).
-
-### Request Options
-
-- `--method, -X`: Specify the HTTP method (default: GET)
-- `--raw-field`: Add a JSON string as the request body
-- `--input, -F`: Read request body from a file
-- `--preview`: Preview the request without sending it
-- `--no-color`: Disable colorized output (useful when piping to jq)
-- `--raw`: Print raw API response without formatting
-
-### Examples
-
-```bash
-# Preview a request
-glean api <endpoint> --method POST --raw-field '{"key": "value"}' --preview
-
-# Pipe results to jq
-glean api <endpoint> --no-color | jq '.'
-
-# Read request body from a file
-glean api <endpoint> --method POST --input params.json
-
-# Read request body from stdin
-echo '{"key": "value"}' | glean api <endpoint> --method POST
-```
-
-For available endpoints and their parameters, please refer to the [Glean API Documentation](https://developers.glean.com).
-
-All requests automatically include the necessary authentication headers and follow Glean's REST API conventions.
-
-## Development
-
-### Requirements
-
-- Go 1.19 or higher
-- golangci-lint ([install](https://golangci-lint.run/welcome/install/#local-installation))
-
-### Building from Source
-
-```bash
-git clone https://github.com/scalvert/glean-cli.git
-cd glean-cli
-go build
-```
-
-### Running Tests
-
-```bash
-go test ./... -v
-```
-
-### Code Quality
-
-```bash
-# Run linters
-golangci-lint run
-
-# Fix auto-fixable issues
-golangci-lint run --fix
 ```
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-```
