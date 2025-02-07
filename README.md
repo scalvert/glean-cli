@@ -1,4 +1,4 @@
-# Glean CLI (Unofficial)
+# <img src="demo/glean-logo.png" width="32" height="32" style="vertical-align: middle"> Glean CLI (Unofficial)
 
 > Work seamlessly with Glean from your command line.
 

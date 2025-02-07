@@ -5,10 +5,10 @@ Set FontFamily "Monaco"
 Set TypingSpeed 50ms
 Set FontSize 20
 Set Width 1200
-Set Height 600
+Set Height 800
 Set Padding 20
 Set Margin 60
-Set MarginFill "#0d1117"
+Set MarginFill "#4339F2"
 Set Shell "bash"
 Set BorderRadius 10
 
