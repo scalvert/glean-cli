@@ -13,8 +13,8 @@ import (
 // Fixtures provides a way to load test fixtures from files
 type Fixtures struct {
 	t        *testing.T
-	basePath string
 	files    map[string][]byte
+	basePath string
 }
 
 // NewFixtures creates a new Fixtures instance with the given fixture files.
