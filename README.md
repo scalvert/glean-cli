@@ -1,4 +1,4 @@
-# <img src="demo/glean-logo.png" width="32" height="32" style="vertical-align: middle"> Glean CLI (Unofficial)
+# <img src="demo/glean-logo.png" width="28" height="28" style="vertical-align: middle; margin-right: 4px"> Glean CLI (Unofficial)
 
 > Work seamlessly with Glean from your command line.
 
