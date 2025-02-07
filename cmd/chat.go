@@ -5,18 +5,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"os"
 	"regexp"
 	"sort"
 	"strings"
 	"time"
 
 	"github.com/briandowns/spinner"
+	"github.com/charmbracelet/glamour"
 	"github.com/fatih/color"
 	"github.com/scalvert/glean-cli/pkg/api"
 	"github.com/scalvert/glean-cli/pkg/config"
 	"github.com/scalvert/glean-cli/pkg/http"
 	"github.com/spf13/cobra"
 	"golang.org/x/exp/maps"
+	"golang.org/x/term"
 )
 
 const (
@@ -172,6 +175,7 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 	isStageOutput := false
 	var searchStage *stageInfo
 	var readingStage *stageInfo
+	var completeResponse strings.Builder
 
 	for {
 		line, err := reader.ReadString('\n')
@@ -211,12 +215,10 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 				if fragment.Text != "" {
 					if stage := isStage(fragment.Text); stage != nil {
 						if stage.stage == StageReading {
-							// Store reading stage to avoid duplicate output with structuredResults
 							readingStage = stage
 							continue
 						}
 						if stage.stage == StageSearching && stage.detail == "" {
-							// Store the searching stage to combine with next fragment
 							searchStage = stage
 							continue
 						}
@@ -228,21 +230,23 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 							isStageOutput = true
 						}
 					} else if searchStage != nil {
-						// This is the second fragment of a searching stage
 						fmt.Fprintln(cmd.OutOrStdout(), formatChatStage(searchStage.stage, fragment.Text))
 						searchStage = nil
 						isStageOutput = true
 					} else {
 						if isStageOutput {
 							fmt.Fprint(cmd.OutOrStdout(), formatChatResponse(fragment.Text))
+							completeResponse.WriteString(fragment.Text)
 							isStageOutput = false
 						} else {
 							fmt.Fprint(cmd.OutOrStdout(), fragment.Text)
+							completeResponse.WriteString(fragment.Text)
 							if !msg.HasMoreFragments {
 								fmt.Println()
-								// Add extra newline after the initial message
+								completeResponse.WriteString("\n")
 								if firstLine {
 									fmt.Println()
+									completeResponse.WriteString("\n")
 									firstLine = false
 								}
 							}
@@ -251,6 +255,32 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 				}
 			}
 		}
+	}
+
+	// After streaming is complete, render the markdown version
+	if completeResponse.Len() > 0 {
+		// Clear the previous response
+		if fd := int(cmd.OutOrStdout().(*os.File).Fd()); term.IsTerminal(fd) {
+			// Move cursor up to the start of the response and clear to end
+			fmt.Fprintf(cmd.OutOrStdout(), "\033[%dA\033[J", strings.Count(completeResponse.String(), "\n"))
+		}
+
+		// Create a glamour renderer with GitHub dark theme
+		renderer, err := glamour.NewTermRenderer(
+			glamour.WithAutoStyle(),
+			glamour.WithWordWrap(100),
+		)
+		if err != nil {
+			return fmt.Errorf("failed to create markdown renderer: %w", err)
+		}
+
+		// Render the markdown
+		rendered, err := renderer.Render(completeResponse.String())
+		if err != nil {
+			return fmt.Errorf("failed to render markdown: %w", err)
+		}
+
+		fmt.Fprint(cmd.OutOrStdout(), rendered)
 	}
 
 	return nil

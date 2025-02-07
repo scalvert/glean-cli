@@ -11,8 +11,6 @@ Set Margin 60
 Set MarginFill "#0d1117"
 Set Shell "bash"
 Set BorderRadius 10
-Set UseStdout true
-Set UseStderr true
 
 # Initial pause
 Sleep 500ms
