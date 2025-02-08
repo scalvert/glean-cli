@@ -5,21 +5,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"os"
 	"regexp"
 	"sort"
 	"strings"
 	"time"
 
 	"github.com/briandowns/spinner"
-	"github.com/charmbracelet/glamour"
-	"github.com/fatih/color"
 	"github.com/scalvert/glean-cli/pkg/api"
 	"github.com/scalvert/glean-cli/pkg/config"
 	"github.com/scalvert/glean-cli/pkg/http"
+	"github.com/scalvert/glean-cli/pkg/theme"
 	"github.com/spf13/cobra"
 	"golang.org/x/exp/maps"
-	"golang.org/x/term"
 )
 
 const (
@@ -30,9 +27,6 @@ const (
 )
 
 var (
-	// greenCheck is used to color the checkmark in stage output
-	greenCheck = color.New(color.FgGreen).SprintFunc()
-
 	// summarizePattern matches variations of summarize/summarizing at start of text
 	summarizePattern = regexp.MustCompile(`^(?i)summariz(e|ing)\b`)
 )
@@ -175,7 +169,6 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 	isStageOutput := false
 	var searchStage *stageInfo
 	var readingStage *stageInfo
-	var completeResponse strings.Builder
 
 	for {
 		line, err := reader.ReadString('\n')
@@ -236,17 +229,13 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 					} else {
 						if isStageOutput {
 							fmt.Fprint(cmd.OutOrStdout(), formatChatResponse(fragment.Text))
-							completeResponse.WriteString(fragment.Text)
 							isStageOutput = false
 						} else {
 							fmt.Fprint(cmd.OutOrStdout(), fragment.Text)
-							completeResponse.WriteString(fragment.Text)
 							if !msg.HasMoreFragments {
 								fmt.Println()
-								completeResponse.WriteString("\n")
 								if firstLine {
 									fmt.Println()
-									completeResponse.WriteString("\n")
 									firstLine = false
 								}
 							}
@@ -257,42 +246,16 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 		}
 	}
 
-	// After streaming is complete, render the markdown version
-	if completeResponse.Len() > 0 {
-		// Clear the previous response
-		if fd := int(cmd.OutOrStdout().(*os.File).Fd()); term.IsTerminal(fd) {
-			// Move cursor up to the start of the response and clear to end
-			fmt.Fprintf(cmd.OutOrStdout(), "\033[%dA\033[J", strings.Count(completeResponse.String(), "\n"))
-		}
-
-		// Create a glamour renderer with GitHub dark theme
-		renderer, err := glamour.NewTermRenderer(
-			glamour.WithAutoStyle(),
-			glamour.WithWordWrap(100),
-		)
-		if err != nil {
-			return fmt.Errorf("failed to create markdown renderer: %w", err)
-		}
-
-		// Render the markdown
-		rendered, err := renderer.Render(completeResponse.String())
-		if err != nil {
-			return fmt.Errorf("failed to render markdown: %w", err)
-		}
-
-		fmt.Fprint(cmd.OutOrStdout(), rendered)
-	}
-
 	return nil
 }
 
 // formatChatStage formats a chat stage output with a colored checkmark and appropriate spacing.
 func formatChatStage(stage ChatStageType, detail string) string {
-	const checkmark = "✓"
+	const check = "✓"
 	if stage == StageSummary {
-		return fmt.Sprintf("%s %s", greenCheck(checkmark), detail)
+		return fmt.Sprintf("%s %s", theme.Blue(check), detail)
 	}
-	return fmt.Sprintf("%s %s: %s", greenCheck(checkmark), stage, detail)
+	return fmt.Sprintf("%s %s: %s", theme.Blue(check), stage, detail)
 }
 
 // formatChatResponse formats the final chat response with proper spacing and divider.
