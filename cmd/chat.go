@@ -79,6 +79,15 @@ type stageInfo struct {
 // ChatStageType represents different stages of chat output
 type ChatStageType string
 
+// ChatState holds the state for processing chat responses
+type ChatState struct {
+	cmd           *cobra.Command
+	searchStage   *stageInfo
+	readingStage  *stageInfo
+	isStageOutput bool
+	firstLine     bool
+}
+
 // NewCmdChat creates and returns the chat command.
 func NewCmdChat() *cobra.Command {
 	var timeoutMillis int
@@ -145,6 +154,77 @@ func sendChatRequest(client http.Client, question string, timeoutMillis int, sav
 	return client.SendStreamingRequest(httpReq)
 }
 
+// processFragment handles a single chat message fragment
+func (s *ChatState) processFragment(fragment struct {
+	Text              string                 `json:"text"`
+	StructuredResults []api.StructuredResult `json:"structuredResults,omitempty"`
+}, hasMoreFragments bool) {
+	if len(fragment.StructuredResults) > 0 {
+		if s.readingStage == nil {
+			fmt.Fprintln(s.cmd.OutOrStdout(), formatChatStage(StageReading, formatReadingStage(fragment.StructuredResults)))
+			s.isStageOutput = true
+		}
+		s.readingStage = nil
+		return
+	}
+
+	if fragment.Text == "" {
+		return
+	}
+
+	if stage := isStage(fragment.Text); stage != nil {
+		if stage.stage == StageReading {
+			s.readingStage = stage
+			return
+		}
+		if stage.stage == StageSearching && stage.detail == "" {
+			s.searchStage = stage
+			return
+		}
+		fmt.Fprintln(s.cmd.OutOrStdout(), formatChatStage(stage.stage, stage.detail))
+		if stage.stage == StageSummary {
+			fmt.Fprintln(s.cmd.OutOrStdout())
+		}
+		if stage.stage != StageSummary {
+			s.isStageOutput = true
+		}
+	} else if s.searchStage != nil {
+		fmt.Fprintln(s.cmd.OutOrStdout(), formatChatStage(s.searchStage.stage, fragment.Text))
+		s.searchStage = nil
+		s.isStageOutput = true
+	} else {
+		if s.isStageOutput {
+			fmt.Fprint(s.cmd.OutOrStdout(), formatChatResponse(fragment.Text))
+			s.isStageOutput = false
+		} else {
+			fmt.Fprint(s.cmd.OutOrStdout(), fragment.Text)
+			if !hasMoreFragments {
+				fmt.Println()
+				if s.firstLine {
+					fmt.Println()
+					s.firstLine = false
+				}
+			}
+		}
+	}
+}
+
+// processChatResponse processes a single line of chat response
+func (s *ChatState) processChatResponse(line string) error {
+	var chatResp ChatResponse
+	if err := json.Unmarshal([]byte(line), &chatResp); err != nil {
+		return fmt.Errorf("error parsing response line: %w", err)
+	}
+
+	for _, msg := range chatResp.Messages {
+		for _, fragment := range msg.Fragments {
+			s.processFragment(fragment, msg.HasMoreFragments)
+		}
+	}
+
+	return nil
+}
+
 // executeChat handles the chat interaction with Glean's API, streaming the response
 // and formatting the output for the terminal.
 func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveChat bool) error {
@@ -169,12 +249,12 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 	}
 	defer responseBody.Close()
 
-	reader := bufio.NewReader(responseBody)
-	firstLine := true
-	isStageOutput := false
-	var searchStage *stageInfo
-	var readingStage *stageInfo
+	state := &ChatState{
+		cmd:       cmd,
+		firstLine: true,
+	}
 
+	reader := bufio.NewReader(responseBody)
 	for {
 		line, err := reader.ReadString('\n')
 		if err == io.EOF {
@@ -189,65 +269,12 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 			continue
 		}
 
-		if firstLine {
+		if state.firstLine {
 			spin.Stop()
 		}
 
-		var chatResp ChatResponse
-		if err := json.Unmarshal([]byte(line), &chatResp); err != nil {
-			return fmt.Errorf("error parsing response line: %w", err)
-		}
-
-		for _, msg := range chatResp.Messages {
-			for _, fragment := range msg.Fragments {
-				if len(fragment.StructuredResults) > 0 {
-					// Skip if we've already seen the reading stage text
-					if readingStage == nil {
-						fmt.Fprintln(cmd.OutOrStdout(), formatChatStage(StageReading, formatReadingStage(fragment.StructuredResults)))
-						isStageOutput = true
-					}
-					readingStage = nil
-					continue
-				}
-
-				if fragment.Text != "" {
-					if stage := isStage(fragment.Text); stage != nil {
-						if stage.stage == StageReading {
-							readingStage = stage
-							continue
-						}
-						if stage.stage == StageSearching && stage.detail == "" {
-							searchStage = stage
-							continue
-						}
-						fmt.Fprintln(cmd.OutOrStdout(), formatChatStage(stage.stage, stage.detail))
-						if stage.stage == StageSummary {
-							fmt.Fprintln(cmd.OutOrStdout())
-						}
-						if stage.stage != StageSummary {
-							isStageOutput = true
-						}
-					} else if searchStage != nil {
-						fmt.Fprintln(cmd.OutOrStdout(), formatChatStage(searchStage.stage, fragment.Text))
-						searchStage = nil
-						isStageOutput = true
-					} else {
-						if isStageOutput {
-							fmt.Fprint(cmd.OutOrStdout(), formatChatResponse(fragment.Text))
-							isStageOutput = false
-						} else {
-							fmt.Fprint(cmd.OutOrStdout(), fragment.Text)
-							if !msg.HasMoreFragments {
-								fmt.Println()
-								if firstLine {
-									fmt.Println()
-									firstLine = false
-								}
-							}
-						}
-					}
-				}
-			}
+		if err := state.processChatResponse(line); err != nil {
+			return err
 		}
 	}
 
@@ -271,14 +298,12 @@ func formatChatResponse(response string) string {
 
 // isStage checks if a text fragment represents a chat stage and returns the stage info
 func isStage(text string) *stageInfo {
-	// Common stage patterns
 	stagePatterns := map[string]ChatStageType{
 		"**Searching:**": StageSearching,
 		"**Reading:**":   StageReading,
 		"**Writing:**":   StageWriting,
 	}
 
-	// Check for exact stage patterns first
 	for pattern, stageType := range stagePatterns {
 		if strings.HasPrefix(text, pattern) {
 			detail := strings.TrimPrefix(text, pattern)
@@ -292,7 +317,6 @@ func isStage(text string) *stageInfo {
 		}
 	}
 
-	// Check for summarize/summarizing stage that comes after Writing stage
 	if summarizePattern.MatchString(text) {
 		return &stageInfo{stage: StageSummary, detail: text}
 	}
@@ -315,7 +339,6 @@ func formatReadingStage(sources []api.StructuredResult) string {
 		}
 	}
 
-	// Get sorted datasources for stable iteration
 	datasources := maps.Keys(sourcesByType)
 	sort.Strings(datasources)
 
