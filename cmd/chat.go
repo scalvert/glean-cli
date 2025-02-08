@@ -107,19 +107,8 @@ Example:
 	return cmd
 }
 
-// executeChat handles the chat interaction with Glean's API, streaming the response
-// and formatting the output for the terminal.
-func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveChat bool) error {
-	cfg, err := config.LoadConfig()
-	if err != nil {
-		return fmt.Errorf("failed to load config: %w", err)
-	}
-
-	client, err := http.NewClient(cfg)
-	if err != nil {
-		return err
-	}
-
+// sendChatRequest creates and sends a chat request to the Glean API
+func sendChatRequest(client http.Client, question string, timeoutMillis int, saveChat bool) (io.ReadCloser, error) {
 	req := ChatRequest{
 		Messages: []ChatMessage{
 			{
@@ -143,7 +132,7 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 
 	jsonBytes, err := json.Marshal(req)
 	if err != nil {
-		return fmt.Errorf("error marshaling request: %w", err)
+		return nil, fmt.Errorf("error marshaling request: %w", err)
 	}
 
 	httpReq := &http.Request{
@@ -153,12 +142,28 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 		Stream: true,
 	}
 
+	return client.SendStreamingRequest(httpReq)
+}
+
+// executeChat handles the chat interaction with Glean's API, streaming the response
+// and formatting the output for the terminal.
+func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveChat bool) error {
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		return fmt.Errorf("failed to load config: %w", err)
+	}
+
+	client, err := http.NewClient(cfg)
+	if err != nil {
+		return err
+	}
+
 	spin := spinner.New(spinner.CharSets[14], 100*time.Millisecond)
 	spin.Prefix = "Waiting for response "
 	spin.Start()
 	defer spin.Stop()
 
-	responseBody, err := client.SendStreamingRequest(httpReq)
+	responseBody, err := sendChatRequest(client, question, timeoutMillis, saveChat)
 	if err != nil {
 		return err
 	}
