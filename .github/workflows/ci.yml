@@ -16,6 +16,11 @@ jobs:
         go-version: ['1.22']
 
     steps:
+      - name: Set git to use LF (for cross-platform snapshot testing)
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+
       - uses: actions/checkout@v4
 
       - name: Set up Go
