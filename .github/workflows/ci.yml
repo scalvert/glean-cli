@@ -13,9 +13,14 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        go-version: ['1.20', '1.21', '1.22']
+        go-version: ['1.22']
 
     steps:
+      - name: Set git to use LF (for cross-platform snapshot testing)
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+
       - uses: actions/checkout@v4
 
       - name: Set up Go
@@ -27,11 +32,14 @@ jobs:
       - name: Install dependencies
         run: go mod download
 
+      - name: Install gotestsum
+        run: go install gotest.tools/gotestsum@latest
+
       - name: Build
         run: go build -v ./...
 
       - name: Run tests
-        run: go test -v ./... -race -coverprofile=coverage.txt -covermode=atomic
+        run: gotestsum --format pkgname -- ./... -race -coverprofile=coverage.txt -covermode=atomic
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4

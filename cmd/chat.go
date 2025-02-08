@@ -5,21 +5,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"os"
 	"regexp"
 	"sort"
 	"strings"
 	"time"
 
 	"github.com/briandowns/spinner"
-	"github.com/charmbracelet/glamour"
-	"github.com/fatih/color"
 	"github.com/scalvert/glean-cli/pkg/api"
 	"github.com/scalvert/glean-cli/pkg/config"
 	"github.com/scalvert/glean-cli/pkg/http"
+	"github.com/scalvert/glean-cli/pkg/theme"
 	"github.com/spf13/cobra"
 	"golang.org/x/exp/maps"
-	"golang.org/x/term"
 )
 
 const (
@@ -30,9 +27,6 @@ const (
 )
 
 var (
-	// greenCheck is used to color the checkmark in stage output
-	greenCheck = color.New(color.FgGreen).SprintFunc()
-
 	// summarizePattern matches variations of summarize/summarizing at start of text
 	summarizePattern = regexp.MustCompile(`^(?i)summariz(e|ing)\b`)
 )
@@ -85,6 +79,15 @@ type stageInfo struct {
 // ChatStageType represents different stages of chat output
 type ChatStageType string
 
+// ChatState holds the state for processing chat responses
+type ChatState struct {
+	cmd           *cobra.Command
+	searchStage   *stageInfo
+	readingStage  *stageInfo
+	isStageOutput bool
+	firstLine     bool
+}
+
 // NewCmdChat creates and returns the chat command.
 func NewCmdChat() *cobra.Command {
 	var timeoutMillis int
@@ -113,19 +116,8 @@ Example:
 	return cmd
 }
 
-// executeChat handles the chat interaction with Glean's API, streaming the response
-// and formatting the output for the terminal.
-func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveChat bool) error {
-	cfg, err := config.LoadConfig()
-	if err != nil {
-		return fmt.Errorf("failed to load config: %w", err)
-	}
-
-	client, err := http.NewClient(cfg)
-	if err != nil {
-		return err
-	}
-
+// sendChatRequest creates and sends a chat request to the Glean API
+func sendChatRequest(client http.Client, question string, timeoutMillis int, saveChat bool) (io.ReadCloser, error) {
 	req := ChatRequest{
 		Messages: []ChatMessage{
 			{
@@ -149,7 +141,7 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 
 	jsonBytes, err := json.Marshal(req)
 	if err != nil {
-		return fmt.Errorf("error marshaling request: %w", err)
+		return nil, fmt.Errorf("error marshaling request: %w", err)
 	}
 
 	httpReq := &http.Request{
@@ -159,24 +151,110 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 		Stream: true,
 	}
 
+	return client.SendStreamingRequest(httpReq)
+}
+
+// processFragment handles a single chat message fragment
+func (s *ChatState) processFragment(fragment struct {
+	Text              string                 `json:"text"`
+	StructuredResults []api.StructuredResult `json:"structuredResults,omitempty"`
+}, hasMoreFragments bool) {
+	if len(fragment.StructuredResults) > 0 {
+		if s.readingStage == nil {
+			fmt.Fprintln(s.cmd.OutOrStdout(), formatChatStage(StageReading, formatReadingStage(fragment.StructuredResults)))
+			s.isStageOutput = true
+		}
+		s.readingStage = nil
+		return
+	}
+
+	if fragment.Text == "" {
+		return
+	}
+
+	if stage := isStage(fragment.Text); stage != nil {
+		if stage.stage == StageReading {
+			s.readingStage = stage
+			return
+		}
+		if stage.stage == StageSearching && stage.detail == "" {
+			s.searchStage = stage
+			return
+		}
+		fmt.Fprintln(s.cmd.OutOrStdout(), formatChatStage(stage.stage, stage.detail))
+		if stage.stage == StageSummary {
+			fmt.Fprintln(s.cmd.OutOrStdout())
+		}
+		if stage.stage != StageSummary {
+			s.isStageOutput = true
+		}
+	} else if s.searchStage != nil {
+		fmt.Fprintln(s.cmd.OutOrStdout(), formatChatStage(s.searchStage.stage, fragment.Text))
+		s.searchStage = nil
+		s.isStageOutput = true
+	} else {
+		if s.isStageOutput {
+			fmt.Fprint(s.cmd.OutOrStdout(), formatChatResponse(fragment.Text))
+			s.isStageOutput = false
+		} else {
+			fmt.Fprint(s.cmd.OutOrStdout(), fragment.Text)
+			if !hasMoreFragments {
+				fmt.Println()
+				if s.firstLine {
+					fmt.Println()
+					s.firstLine = false
+				}
+			}
+		}
+	}
+}
+
+// processChatResponse processes a single line of chat response
+func (s *ChatState) processChatResponse(line string) error {
+	var chatResp ChatResponse
+	if err := json.Unmarshal([]byte(line), &chatResp); err != nil {
+		return fmt.Errorf("error parsing response line: %w", err)
+	}
+
+	for _, msg := range chatResp.Messages {
+		for _, fragment := range msg.Fragments {
+			s.processFragment(fragment, msg.HasMoreFragments)
+		}
+	}
+
+	return nil
+}
+
+// executeChat handles the chat interaction with Glean's API, streaming the response
+// and formatting the output for the terminal.
+func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveChat bool) error {
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		return fmt.Errorf("failed to load config: %w", err)
+	}
+
+	client, err := http.NewClient(cfg)
+	if err != nil {
+		return err
+	}
+
 	spin := spinner.New(spinner.CharSets[14], 100*time.Millisecond)
 	spin.Prefix = "Waiting for response "
 	spin.Start()
 	defer spin.Stop()
 
-	responseBody, err := client.SendStreamingRequest(httpReq)
+	responseBody, err := sendChatRequest(client, question, timeoutMillis, saveChat)
 	if err != nil {
 		return err
 	}
 	defer responseBody.Close()
 
-	reader := bufio.NewReader(responseBody)
-	firstLine := true
-	isStageOutput := false
-	var searchStage *stageInfo
-	var readingStage *stageInfo
-	var completeResponse strings.Builder
+	state := &ChatState{
+		cmd:       cmd,
+		firstLine: true,
+	}
 
+	reader := bufio.NewReader(responseBody)
 	for {
 		line, err := reader.ReadString('\n')
 		if err == io.EOF {
@@ -191,96 +269,13 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 			continue
 		}
 
-		if firstLine {
+		if state.firstLine {
 			spin.Stop()
 		}
 
-		var chatResp ChatResponse
-		if err := json.Unmarshal([]byte(line), &chatResp); err != nil {
-			return fmt.Errorf("error parsing response line: %w", err)
+		if err := state.processChatResponse(line); err != nil {
+			return err
 		}
-
-		for _, msg := range chatResp.Messages {
-			for _, fragment := range msg.Fragments {
-				if len(fragment.StructuredResults) > 0 {
-					// Skip if we've already seen the reading stage text
-					if readingStage == nil {
-						fmt.Fprintln(cmd.OutOrStdout(), formatChatStage(StageReading, formatReadingStage(fragment.StructuredResults)))
-						isStageOutput = true
-					}
-					readingStage = nil
-					continue
-				}
-
-				if fragment.Text != "" {
-					if stage := isStage(fragment.Text); stage != nil {
-						if stage.stage == StageReading {
-							readingStage = stage
-							continue
-						}
-						if stage.stage == StageSearching && stage.detail == "" {
-							searchStage = stage
-							continue
-						}
-						fmt.Fprintln(cmd.OutOrStdout(), formatChatStage(stage.stage, stage.detail))
-						if stage.stage == StageSummary {
-							fmt.Fprintln(cmd.OutOrStdout())
-						}
-						if stage.stage != StageSummary {
-							isStageOutput = true
-						}
-					} else if searchStage != nil {
-						fmt.Fprintln(cmd.OutOrStdout(), formatChatStage(searchStage.stage, fragment.Text))
-						searchStage = nil
-						isStageOutput = true
-					} else {
-						if isStageOutput {
-							fmt.Fprint(cmd.OutOrStdout(), formatChatResponse(fragment.Text))
-							completeResponse.WriteString(fragment.Text)
-							isStageOutput = false
-						} else {
-							fmt.Fprint(cmd.OutOrStdout(), fragment.Text)
-							completeResponse.WriteString(fragment.Text)
-							if !msg.HasMoreFragments {
-								fmt.Println()
-								completeResponse.WriteString("\n")
-								if firstLine {
-									fmt.Println()
-									completeResponse.WriteString("\n")
-									firstLine = false
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	// After streaming is complete, render the markdown version
-	if completeResponse.Len() > 0 {
-		// Clear the previous response
-		if fd := int(cmd.OutOrStdout().(*os.File).Fd()); term.IsTerminal(fd) {
-			// Move cursor up to the start of the response and clear to end
-			fmt.Fprintf(cmd.OutOrStdout(), "\033[%dA\033[J", strings.Count(completeResponse.String(), "\n"))
-		}
-
-		// Create a glamour renderer with GitHub dark theme
-		renderer, err := glamour.NewTermRenderer(
-			glamour.WithAutoStyle(),
-			glamour.WithWordWrap(100),
-		)
-		if err != nil {
-			return fmt.Errorf("failed to create markdown renderer: %w", err)
-		}
-
-		// Render the markdown
-		rendered, err := renderer.Render(completeResponse.String())
-		if err != nil {
-			return fmt.Errorf("failed to render markdown: %w", err)
-		}
-
-		fmt.Fprint(cmd.OutOrStdout(), rendered)
 	}
 
 	return nil
@@ -288,11 +283,11 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 
 // formatChatStage formats a chat stage output with a colored checkmark and appropriate spacing.
 func formatChatStage(stage ChatStageType, detail string) string {
-	const checkmark = "✓"
+	const check = "✓"
 	if stage == StageSummary {
-		return fmt.Sprintf("%s %s", greenCheck(checkmark), detail)
+		return fmt.Sprintf("%s %s", theme.Blue(check), detail)
 	}
-	return fmt.Sprintf("%s %s: %s", greenCheck(checkmark), stage, detail)
+	return fmt.Sprintf("%s %s: %s", theme.Blue(check), stage, detail)
 }
 
 // formatChatResponse formats the final chat response with proper spacing and divider.
@@ -303,14 +298,12 @@ func formatChatResponse(response string) string {
 
 // isStage checks if a text fragment represents a chat stage and returns the stage info
 func isStage(text string) *stageInfo {
-	// Common stage patterns
 	stagePatterns := map[string]ChatStageType{
 		"**Searching:**": StageSearching,
 		"**Reading:**":   StageReading,
 		"**Writing:**":   StageWriting,
 	}
 
-	// Check for exact stage patterns first
 	for pattern, stageType := range stagePatterns {
 		if strings.HasPrefix(text, pattern) {
 			detail := strings.TrimPrefix(text, pattern)
@@ -324,7 +317,6 @@ func isStage(text string) *stageInfo {
 		}
 	}
 
-	// Check for summarize/summarizing stage that comes after Writing stage
 	if summarizePattern.MatchString(text) {
 		return &stageInfo{stage: StageSummary, detail: text}
 	}
@@ -347,7 +339,6 @@ func formatReadingStage(sources []api.StructuredResult) string {
 		}
 	}
 
-	// Get sorted datasources for stable iteration
 	datasources := maps.Keys(sourcesByType)
 	sort.Strings(datasources)
 
