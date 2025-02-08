@@ -14,6 +14,7 @@ import (
 	"github.com/scalvert/glean-cli/pkg/config"
 	"github.com/scalvert/glean-cli/pkg/http"
 	"github.com/scalvert/glean-cli/pkg/output"
+	"github.com/scalvert/glean-cli/pkg/theme"
 	"github.com/spf13/cobra"
 )
 
@@ -27,7 +28,7 @@ var (
 var defaultTemplate = `{{- range $i, $result := .Results -}}
 {{if $i}}
 
-{{end}}{{add $i 1}} {{formatDatasource $result.Document.Datasource}} | {{gleanBlue $result.Document.Title}}
+{{end}}{{gleanBlue (add $i 1)}} {{gleanBlue (formatDatasource $result.Document.Datasource)}} | {{bold $result.Document.Title}}
 {{gleanYellow $result.Document.URL}}
 {{- range $result.Snippets}}
 {{.Text}}{{end}}
@@ -385,22 +386,17 @@ func runSearch(cmd *cobra.Command, opts *SearchOptions) error {
 		tmpl = opts.Template
 	}
 
-	t, err := template.New("search").Funcs(template.FuncMap{
-		"gleanBlue": func(s string) string {
-			if opts.NoColor {
-				return s
-			}
-			return fmt.Sprintf("\033[38;2;82;105;255m%s\033[0m", s)
-		},
-		"gleanYellow": func(s string) string {
-			if opts.NoColor {
-				return s
-			}
-			return fmt.Sprintf("\033[38;2;236;240;115m%s\033[0m", s)
-		},
+	funcs := template.FuncMap{
 		"add":              func(a, b int) int { return a + b },
 		"formatDatasource": formatDatasource,
-	}).Parse(tmpl)
+	}
+
+	// Merge theme template functions with our custom functions
+	for k, v := range theme.TemplateFuncs(opts.NoColor) {
+		funcs[k] = v
+	}
+
+	t, err := template.New("search").Funcs(funcs).Parse(tmpl)
 	if err != nil {
 		return fmt.Errorf("error parsing template: %w", err)
 	}
