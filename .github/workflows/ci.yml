@@ -27,11 +27,14 @@ jobs:
       - name: Install dependencies
         run: go mod download
 
+      - name: Install gotestsum
+        run: go install gotest.tools/gotestsum@latest
+
       - name: Build
         run: go build -v ./...
 
       - name: Run tests
-        run: go test -v ./... -race -coverprofile=coverage.txt -covermode=atomic
+        run: gotestsum --format pkgname -- -race -coverprofile=coverage.txt -covermode=atomic ./...
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
