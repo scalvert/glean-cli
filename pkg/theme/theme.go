@@ -5,15 +5,16 @@ import (
 	"fmt"
 	"text/template"
 
+	"github.com/charmbracelet/lipgloss"
 	"github.com/fatih/color"
 )
 
-// Brand colors
+// Brand colors as hex strings
 const (
 	// Primary brand colors
-	GleanBlue   = "#4339F2" // Primary brand color
-	GleanYellow = "#DFFC6A" // Secondary brand color
-	GleanPurple = "#7C4DFF" // Accent color
+	GleanBlueHex   = "#4339F2" // Primary brand color
+	GleanYellowHex = "#DFFC6A" // Secondary brand color
+	GleanPurpleHex = "#7C4DFF" // Accent color
 
 	// Neutral colors for text and backgrounds
 	TextPrimary   = "#24292E" // Primary text color (dark)
@@ -21,8 +22,37 @@ const (
 	Background    = "#FFFFFF" // Background color
 )
 
+// Color represents a themed color with both terminal and TUI support
+type Color struct {
+	*color.Color
+}
+
+// Brand colors as Color objects
+var (
+	GleanBlue   = Color{color.New(color.FgHiBlue)}
+	GleanYellow = Color{color.New(color.FgHiYellow)}
+)
+
+// ToLipgloss converts the theme color to a Lipgloss color
+func (c Color) ToLipgloss() lipgloss.Color {
+	// Map our color values to lipgloss colors
+	switch c.Color {
+	case color.New(color.FgHiBlue):
+		return lipgloss.Color("39") // Bright blue
+	case color.New(color.FgHiYellow):
+		return lipgloss.Color("220") // Bright yellow
+	default:
+		return lipgloss.Color("") // No color
+	}
+}
+
+// SprintFunc returns a function that colorizes text
+func (c Color) SprintFunc() func(a ...interface{}) string {
+	return c.Color.SprintFunc()
+}
+
 // ColorFunc is a function that applies color to text
-type ColorFunc func(string) string
+type ColorFunc = func(a ...interface{}) string
 
 // StyleFunc returns a template function that applies styling based on noColor setting
 func StyleFunc(noColor bool, style ColorFunc) func(any) string {
@@ -30,29 +60,23 @@ func StyleFunc(noColor bool, style ColorFunc) func(any) string {
 		if noColor {
 			return fmt.Sprint(s)
 		}
-		return style(fmt.Sprint(s))
+		return style(s)
 	}
 }
 
 // Color functions for consistent styling
 var (
-	blueColor      = color.New(color.FgHiBlue).SprintFunc()
-	yellowColor    = color.New(color.FgHiYellow).SprintFunc()
-	secondaryColor = color.New(color.FgHiBlack).SprintFunc()
-
 	// Blue returns text styled with Glean's brand blue
-	Blue = func(s string) string { return blueColor(s) }
+	Blue = GleanBlue.SprintFunc()
 
 	// Yellow returns text styled with a muted version of Glean's yellow
-	Yellow = func(s string) string { return yellowColor(s) }
+	Yellow = GleanYellow.SprintFunc()
 
 	// Secondary returns text styled with a muted color for less emphasis
-	Secondary = func(s string) string { return secondaryColor(s) }
+	Secondary = color.New(color.FgHiBlack).SprintFunc()
 
 	// Bold returns text in bold
-	Bold = func(s string) string {
-		return fmt.Sprintf("\033[1m%s\033[0m", s)
-	}
+	Bold = color.New(color.Bold).SprintFunc()
 )
 
 // TemplateFuncs returns a map of template functions that respect color settings
