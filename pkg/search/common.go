@@ -3,14 +3,25 @@ package search
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
+	"os/exec"
 	"strings"
 	"time"
 
 	"github.com/charmbracelet/bubbles/list"
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/scalvert/glean-cli/pkg/http"
 	"github.com/scalvert/glean-cli/pkg/theme"
 	"github.com/scalvert/glean-cli/pkg/utils"
+)
+
+const (
+	keyLowerQ = "q"
+	keyUpperQ = "Q"
+	keyQuit   = "ctrl+c"
+	keyEsc    = "esc"
+	keySpace  = " "
 )
 
 // resultItem represents a search result in the list
@@ -108,11 +119,12 @@ func updateListWithResults(l *list.Model, response *Response, existingItems []li
 
 // updateListTitle updates the list title based on search response
 func updateListTitle(l *list.Model, response *Response, query string) {
-	if response.SuggestedSpellCorrectedQuery != "" {
+	switch {
+	case response.SuggestedSpellCorrectedQuery != "":
 		l.Title = fmt.Sprintf("Did you mean: %s?", response.SuggestedSpellCorrectedQuery)
-	} else if response.RewrittenQuery != "" {
+	case response.RewrittenQuery != "":
 		l.Title = fmt.Sprintf("Showing results for: %s", response.RewrittenQuery)
-	} else {
+	default:
 		l.Title = fmt.Sprintf("Search Results for: %s", query)
 	}
 }
@@ -194,4 +206,20 @@ func AddFacetFilter(opts *Options, fieldName string, values []string) {
 		}
 	}
 	opts.RequestOptions.FacetFilters = append(opts.RequestOptions.FacetFilters, filter)
+}
+
+// openURL opens a URL in the default browser after validating it
+func openURL(urlStr string) tea.Cmd {
+	// Validate URL
+	u, err := url.Parse(urlStr)
+	if err != nil {
+		return nil
+	}
+
+	// Only allow http/https URLs
+	if u.Scheme != "http" && u.Scheme != "https" {
+		return nil
+	}
+
+	return tea.ExecProcess(exec.Command("open", urlStr), nil)
 }

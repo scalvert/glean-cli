@@ -2,7 +2,6 @@ package search
 
 import (
 	"fmt"
-	"os/exec"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/spinner"
@@ -15,9 +14,16 @@ import (
 
 // searchInteractiveModel represents the UI state for interactive search
 type searchInteractiveModel struct {
+	input textinput.Model
 	BaseSearchModel
-	input     textinput.Model
 	searching bool
+}
+
+// RunInteractiveSearch executes an interactive search with the given options
+func RunInteractiveSearch(opts *Options, client http.Client) error {
+	p := tea.NewProgram(newSearchInteractiveModel(opts, client))
+	_, err := p.Run()
+	return err
 }
 
 func newSearchInteractiveModel(opts *Options, client http.Client) *searchInteractiveModel {
@@ -89,9 +95,9 @@ func (m *searchInteractiveModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		// Not searching, handle list navigation
 		switch msg.String() {
-		case "q", "Q", "ctrl+c", "esc":
+		case keyLowerQ, keyUpperQ, keyQuit, keyEsc:
 			return m, tea.Quit
-		case " ": // Space to load more
+		case keySpace:
 			if !m.loading && m.response != nil && m.response.HasMoreResults {
 				m.loading = true
 				m.showMore = false
@@ -111,7 +117,7 @@ func (m *searchInteractiveModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// Handle enter key to open URL
 		if msg.Type == tea.KeyEnter {
 			if i, ok := m.list.SelectedItem().(resultItem); ok {
-				return m, tea.ExecProcess(exec.Command("open", i.url), nil)
+				return m, openURL(i.url)
 			}
 		}
 
@@ -166,11 +172,4 @@ func (m *searchInteractiveModel) View() string {
 	sb.WriteString(m.loadMorePrompt())
 
 	return sb.String()
-}
-
-// RunInteractiveSearch executes an interactive search with the given options
-func RunInteractiveSearch(opts *Options, client http.Client) error {
-	p := tea.NewProgram(newSearchInteractiveModel(opts, client))
-	_, err := p.Run()
-	return err
 }

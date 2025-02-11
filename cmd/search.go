@@ -9,12 +9,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Test mode configuration for automated testing
-var (
-	testMode  bool   // Whether we're running in test mode
-	testInput string // Simulated user input for testing
-)
-
 // NewCmdSearch creates and returns the search command.
 // The search command allows users to search across their Glean instance,
 // with support for pagination, custom output formats, and filtering options.
