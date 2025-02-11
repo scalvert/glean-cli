@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -111,6 +112,7 @@ func (m *searchInteractiveModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if msg.String() == "/" {
 			m.searching = true
 			m.input.Focus()
+			m.list.SetItems([]list.Item{})
 			return m, textinput.Blink
 		}
 
