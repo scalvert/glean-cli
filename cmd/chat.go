@@ -352,11 +352,11 @@ func formatReadingStage(sources []api.StructuredResult) string {
 				details = append(details, fmt.Sprintf("%s: %s (%s)",
 					utils.FormatDatasource(ds),
 					doc.Title,
-					doc.URL))
+					utils.MaybeAnonymizeURL(doc.URL)))
 			} else {
 				details = append(details, fmt.Sprintf("%s: %s",
 					utils.FormatDatasource(ds),
-					doc.URL))
+					utils.MaybeAnonymizeURL(doc.URL)))
 			}
 		}
 	}

@@ -210,7 +210,7 @@ func (i resultItem) Title() string {
 }
 
 func (i resultItem) Description() string {
-	return theme.Yellow(i.url) + "\n" + i.desc
+	return theme.Yellow(utils.MaybeAnonymizeURL(i.url)) + "\n" + i.desc
 }
 
 func (i resultItem) FilterValue() string {
