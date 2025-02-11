@@ -116,17 +116,43 @@ func updateListWithResults(l *list.Model, response *Response, existingItems []li
 	items := make([]list.Item, 0, len(response.Results))
 
 	for i, result := range response.Results {
-		var snippets []string
-		for _, snippet := range result.Snippets {
-			snippets = append(snippets, snippet.Text)
+		if result.Document != nil {
+			var snippets []string
+			for _, snippet := range result.Snippets {
+				snippets = append(snippets, snippet.Text)
+			}
+			items = append(items, resultItem{
+				index:  baseIndex + i,
+				title:  result.Document.Title,
+				url:    result.Document.URL,
+				desc:   strings.Join(snippets, "\n"),
+				source: result.Document.Datasource,
+			})
+		} else if len(result.StructuredResults) > 0 {
+			for _, sr := range result.StructuredResults {
+				if person, ok := sr.(map[string]interface{})["person"]; ok {
+					if p, ok := person.(map[string]interface{}); ok {
+						name := p["name"].(string)
+						metadata := p["metadata"].(map[string]interface{})
+						title := metadata["title"].(string)
+						email := metadata["email"].(string)
+						bio := ""
+						if b, ok := metadata["bio"]; ok && b != nil {
+							bio = b.(string)
+						}
+						profileUrl := fmt.Sprintf("https://app.glean.com/directory/people/profile?person=%s", email)
+
+						items = append(items, resultItem{
+							index:  baseIndex + i,
+							title:  title,
+							url:    profileUrl,
+							desc:   bio,
+							source: name,
+						})
+					}
+				}
+			}
 		}
-		items = append(items, resultItem{
-			index:  baseIndex + i,
-			title:  result.Document.Title,
-			url:    result.Document.URL,
-			desc:   strings.Join(snippets, "\n"),
-			source: result.Document.Datasource,
-		})
 	}
 
 	if len(existingItems) == 0 {

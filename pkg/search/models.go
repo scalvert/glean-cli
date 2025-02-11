@@ -157,6 +157,7 @@ type Result struct {
 	Title                  string                 `json:"title"`
 	URL                    string                 `json:"url"`
 	Snippets               []Snippet              `json:"snippets"`
+	StructuredResults      []interface{}          `json:"structuredResults,omitempty"`
 }
 
 type Snippet struct {
