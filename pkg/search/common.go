@@ -15,11 +15,11 @@ import (
 
 // resultItem represents a search result in the list
 type resultItem struct {
-	index  int
 	title  string
 	url    string
 	desc   string
 	source string
+	index  int
 }
 
 func (i resultItem) Title() string {

@@ -19,12 +19,12 @@ type errMsg struct {
 
 type BaseSearchModel struct {
 	list     list.Model
-	spinner  spinner.Model
-	response *Response
 	err      error
-	loading  bool
-	opts     *Options
 	client   http.Client
+	response *Response
+	opts     *Options
+	spinner  spinner.Model
+	loading  bool
 	showMore bool
 }
 

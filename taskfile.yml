@@ -87,6 +87,7 @@ tasks:
     silent: true
     cmds:
       - golangci-lint run --fix
+      - fieldalignment -fix ./...
 
   install:
     desc: Install the CLI locally
