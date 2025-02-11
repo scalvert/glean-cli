@@ -49,6 +49,27 @@ func (i resultItem) FilterValue() string {
 	return i.title
 }
 
+// GetTimezoneOffset returns the current timezone offset in minutes
+func GetTimezoneOffset() int {
+	_, offset := time.Now().Zone()
+	return offset / 60
+}
+
+// AddFacetFilter adds a facet filter to the search options
+func AddFacetFilter(opts *Options, fieldName string, values []string) {
+	filter := FacetFilter{
+		FieldName: fieldName,
+		Values:    make([]FilterValue, len(values)),
+	}
+	for i, value := range values {
+		filter.Values[i] = FilterValue{
+			Value:        value,
+			RelationType: "EQUALS",
+		}
+	}
+	opts.RequestOptions.FacetFilters = append(opts.RequestOptions.FacetFilters, filter)
+}
+
 // newSearchList creates a new list model with consistent styling
 func newSearchList() list.Model {
 	delegate := list.NewDefaultDelegate()
@@ -87,7 +108,7 @@ func newSearchList() list.Model {
 
 // updateListWithResults updates a list model with search results
 func updateListWithResults(l *list.Model, response *Response, existingItems []list.Item, query string) {
-	if response == nil {
+	if response == nil || response.Results == nil {
 		return
 	}
 
@@ -185,27 +206,6 @@ func performSearch(client http.Client, opts *Options, cursor, trackingToken stri
 	}
 
 	return &searchResp, nil
-}
-
-// GetTimezoneOffset returns the current timezone offset in minutes
-func GetTimezoneOffset() int {
-	_, offset := time.Now().Zone()
-	return offset / 60
-}
-
-// AddFacetFilter adds a facet filter to the search options
-func AddFacetFilter(opts *Options, fieldName string, values []string) {
-	filter := FacetFilter{
-		FieldName: fieldName,
-		Values:    make([]FilterValue, len(values)),
-	}
-	for i, value := range values {
-		filter.Values[i] = FilterValue{
-			Value:        value,
-			RelationType: "EQUALS",
-		}
-	}
-	opts.RequestOptions.FacetFilters = append(opts.RequestOptions.FacetFilters, filter)
 }
 
 // openURL opens a URL in the default browser after validating it
