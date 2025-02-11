@@ -1,6 +1,12 @@
 package search
 
-import "github.com/scalvert/glean-cli/pkg/api"
+import (
+	"fmt"
+
+	"github.com/scalvert/glean-cli/pkg/api"
+	"github.com/scalvert/glean-cli/pkg/theme"
+	"github.com/scalvert/glean-cli/pkg/utils"
+)
 
 type Document = api.Document
 type DocumentMetadata = api.DocumentMetadata
@@ -184,4 +190,29 @@ type SearchMetadata struct {
 	UpdateTime string  `json:"updateTime,omitempty"`
 	MimeType   string  `json:"mimeType,omitempty"`
 	ObjectType string  `json:"objectType,omitempty"`
+}
+
+// resultItem represents a search result in the list
+type resultItem struct {
+	title  string
+	url    string
+	desc   string
+	source string
+	index  int
+}
+
+func (i resultItem) Title() string {
+	return fmt.Sprintf("%s %s | %s",
+		theme.Blue(fmt.Sprint(i.index+1)),
+		theme.Blue(utils.FormatDatasource(i.source)),
+		theme.Bold(i.title),
+	)
+}
+
+func (i resultItem) Description() string {
+	return theme.Yellow(i.url) + "\n" + i.desc
+}
+
+func (i resultItem) FilterValue() string {
+	return i.title
 }
