@@ -117,8 +117,8 @@ func TestValidateAndTransformHost(t *testing.T) {
 		name        string
 		input       string
 		want        string
-		wantErr     bool
 		errContains string
+		wantErr     bool
 	}{
 		{
 			name:  "simple instance name",

@@ -49,13 +49,13 @@ func setupTestConfig(t *testing.T) func() {
 
 //nolint:govet // Ignoring fieldalignment as it's just an optimization
 type testCase struct {
-	mockResp    []byte
 	mockErr     error
 	name        string
 	input       string
 	prompt      string
 	model       string
 	errContains string
+	mockResp    []byte
 	wantErr     bool
 }
 

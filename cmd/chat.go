@@ -15,6 +15,7 @@ import (
 	"github.com/scalvert/glean-cli/pkg/config"
 	"github.com/scalvert/glean-cli/pkg/http"
 	"github.com/scalvert/glean-cli/pkg/theme"
+	"github.com/scalvert/glean-cli/pkg/utils"
 	"github.com/spf13/cobra"
 	"golang.org/x/exp/maps"
 )
@@ -349,13 +350,13 @@ func formatReadingStage(sources []api.StructuredResult) string {
 			doc := source.Document
 			if doc.Title != "" {
 				details = append(details, fmt.Sprintf("%s: %s (%s)",
-					formatDatasource(ds),
+					utils.FormatDatasource(ds),
 					doc.Title,
-					doc.URL))
+					utils.MaybeAnonymizeURL(doc.URL)))
 			} else {
 				details = append(details, fmt.Sprintf("%s: %s",
-					formatDatasource(ds),
-					doc.URL))
+					utils.FormatDatasource(ds),
+					utils.MaybeAnonymizeURL(doc.URL)))
 			}
 		}
 	}

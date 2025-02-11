@@ -23,11 +23,11 @@ func TestWrite(t *testing.T) {
 	}
 
 	tests := []struct {
+		checkOutput func(t *testing.T, output string)
 		name        string
 		input       []byte
 		opts        Options
 		wantErr     bool
-		checkOutput func(t *testing.T, output string)
 	}{
 		{
 			name:  "writes JSON with color",
@@ -142,11 +142,11 @@ func TestWriteString(t *testing.T) {
 	}
 
 	tests := []struct {
+		checkOutput func(t *testing.T, output string)
 		name        string
 		input       string
 		opts        Options
 		wantErr     bool
-		checkOutput func(t *testing.T, output string)
 	}{
 		{
 			name:  "writes valid JSON string with color",
