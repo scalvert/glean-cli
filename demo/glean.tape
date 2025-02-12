@@ -18,16 +18,18 @@ Env "GLEAN_CLI_ANONYMIZE" "1"
 Sleep 500ms
 
 # Show chat functionality
-Type "./glean chat 'Tell me what Glean Assistant can do. Keep it to 3-4 bullets'" Sleep 500ms Enter
+Type "glean chat 'Tell me what Glean Assistant can do. Keep it to 3-4 bullets'" Sleep 500ms Enter
 Sleep 15s
 
 Ctrl+L
 
 # Show search functionality
-Type "./glean search -i 'getting started with glean'" Sleep 500ms Enter
-Sleep 5s
+Type "glean search -i 'getting started with glean'" Sleep 500ms Enter
+Sleep 10s
 
 # Navigate through results
+Type "j" Sleep 500ms
+Type "j" Sleep 500ms
 Type "j" Sleep 500ms
 Type "j" Sleep 500ms
 Type "k" Sleep 500ms
@@ -35,9 +37,9 @@ Type "k" Sleep 500ms
 # Start a new search
 Type "/" Sleep 200ms
 Type "glean features" Sleep 500ms Enter
-Sleep 10s
+Sleep 5s
 
 # Exit search
 Type "q"
 
-Sleep 15s
+Sleep 5s
