@@ -112,6 +112,7 @@ func (m *searchInteractiveModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if msg.String() == "/" {
 			m.searching = true
 			m.input.Focus()
+			m.input.SetValue("")
 			m.list.SetItems([]list.Item{})
 			return m, textinput.Blink
 		}
