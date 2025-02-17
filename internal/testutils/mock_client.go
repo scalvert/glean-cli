@@ -6,8 +6,8 @@ import (
 	"bytes"
 	"io"
 
-	"github.com/scalvert/glean-cli/pkg/config"
-	"github.com/scalvert/glean-cli/pkg/http"
+	"github.com/scalvert/glean-cli/internal/config"
+	"github.com/scalvert/glean-cli/internal/http"
 )
 
 // MockClient implements http.Client for testing with predefined responses.

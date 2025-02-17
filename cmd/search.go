@@ -3,9 +3,9 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/scalvert/glean-cli/pkg/config"
-	"github.com/scalvert/glean-cli/pkg/http"
-	"github.com/scalvert/glean-cli/pkg/search"
+	"github.com/scalvert/glean-cli/internal/config"
+	"github.com/scalvert/glean-cli/internal/http"
+	"github.com/scalvert/glean-cli/internal/search"
 	"github.com/spf13/cobra"
 )
 

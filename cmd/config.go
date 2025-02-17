@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/scalvert/glean-cli/pkg/config"
+	"github.com/scalvert/glean-cli/internal/config"
 	"github.com/spf13/cobra"
 )
 

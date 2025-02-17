@@ -11,7 +11,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/scalvert/glean-cli/pkg/config"
+	"github.com/scalvert/glean-cli/internal/config"
 )
 
 // Request represents a Glean API request with authentication and headers.

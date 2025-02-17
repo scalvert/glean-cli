@@ -9,8 +9,8 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/scalvert/glean-cli/pkg/http"
-	"github.com/scalvert/glean-cli/pkg/theme"
+	"github.com/scalvert/glean-cli/internal/http"
+	"github.com/scalvert/glean-cli/internal/theme"
 )
 
 // searchInteractiveModel represents the UI state for interactive search

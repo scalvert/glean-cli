@@ -11,11 +11,11 @@ import (
 	"time"
 
 	"github.com/briandowns/spinner"
-	"github.com/scalvert/glean-cli/pkg/api"
-	"github.com/scalvert/glean-cli/pkg/config"
-	"github.com/scalvert/glean-cli/pkg/http"
-	"github.com/scalvert/glean-cli/pkg/theme"
-	"github.com/scalvert/glean-cli/pkg/utils"
+	"github.com/scalvert/glean-cli/internal/api"
+	"github.com/scalvert/glean-cli/internal/config"
+	"github.com/scalvert/glean-cli/internal/http"
+	"github.com/scalvert/glean-cli/internal/theme"
+	"github.com/scalvert/glean-cli/internal/utils"
 	"github.com/spf13/cobra"
 	"golang.org/x/exp/maps"
 )

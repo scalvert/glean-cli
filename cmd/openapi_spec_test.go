@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/scalvert/glean-cli/pkg/testutils"
+	"github.com/scalvert/glean-cli/internal/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

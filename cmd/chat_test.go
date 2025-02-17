@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/bradleyjkemp/cupaloy/v2"
-	"github.com/scalvert/glean-cli/pkg/api"
-	"github.com/scalvert/glean-cli/pkg/testutils"
+	"github.com/scalvert/glean-cli/internal/api"
+	"github.com/scalvert/glean-cli/internal/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

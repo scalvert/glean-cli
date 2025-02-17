@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/scalvert/glean-cli/pkg/config"
+	"github.com/scalvert/glean-cli/internal/config"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

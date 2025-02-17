@@ -8,7 +8,7 @@ import (
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/scalvert/glean-cli/pkg/http"
+	"github.com/scalvert/glean-cli/internal/http"
 )
 
 const (

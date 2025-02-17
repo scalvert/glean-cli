@@ -9,9 +9,9 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/briandowns/spinner"
-	"github.com/scalvert/glean-cli/pkg/config"
-	"github.com/scalvert/glean-cli/pkg/http"
-	"github.com/scalvert/glean-cli/pkg/output"
+	"github.com/scalvert/glean-cli/internal/config"
+	"github.com/scalvert/glean-cli/internal/http"
+	"github.com/scalvert/glean-cli/internal/output"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 )

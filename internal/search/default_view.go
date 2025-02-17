@@ -7,8 +7,8 @@ import (
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/scalvert/glean-cli/pkg/http"
-	"github.com/scalvert/glean-cli/pkg/theme"
+	"github.com/scalvert/glean-cli/internal/http"
+	"github.com/scalvert/glean-cli/internal/theme"
 )
 
 // searchDisplayModel represents a simple display model for non-interactive search

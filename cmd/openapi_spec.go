@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/scalvert/glean-cli/pkg/llm"
-	"github.com/scalvert/glean-cli/pkg/output"
+	"github.com/scalvert/glean-cli/internal/llm"
+	"github.com/scalvert/glean-cli/internal/output"
 	"github.com/spf13/cobra"
 )
 

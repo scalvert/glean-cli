@@ -3,9 +3,9 @@ package search
 import (
 	"fmt"
 
-	"github.com/scalvert/glean-cli/pkg/api"
-	"github.com/scalvert/glean-cli/pkg/theme"
-	"github.com/scalvert/glean-cli/pkg/utils"
+	"github.com/scalvert/glean-cli/internal/api"
+	"github.com/scalvert/glean-cli/internal/theme"
+	"github.com/scalvert/glean-cli/internal/utils"
 )
 
 type Document = api.Document
