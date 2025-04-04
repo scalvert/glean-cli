@@ -130,18 +130,6 @@ func TestValidateAndTransformHost(t *testing.T) {
 			input: "linkedin-be.glean.com",
 			want:  "linkedin-be.glean.com",
 		},
-		{
-			name:        "invalid domain",
-			input:       "linkedin.example.com",
-			wantErr:     true,
-			errContains: "invalid host format",
-		},
-		{
-			name:        "missing -be suffix",
-			input:       "linkedin.glean.com",
-			wantErr:     true,
-			errContains: "invalid host format",
-		},
 	}
 
 	for _, tt := range tests {
@@ -178,7 +166,7 @@ func TestConfigOperations(t *testing.T) {
 
 	t.Run("save and load config with working keyring", func(t *testing.T) {
 		// Save config
-		err := SaveConfig("linkedin", "test-token", "test@example.com")
+		err := SaveConfig("linkedin", "", "test-token", "test@example.com")
 		require.NoError(t, err)
 
 		// Load config
@@ -195,7 +183,7 @@ func TestConfigOperations(t *testing.T) {
 
 	t.Run("fallback to config file when keyring fails", func(t *testing.T) {
 		// First save config successfully
-		err := SaveConfig("linkedin", "test-token", "test@example.com")
+		err := SaveConfig("linkedin", "", "test-token", "test@example.com")
 		require.NoError(t, err)
 
 		// Now simulate keyring failure
@@ -212,7 +200,7 @@ func TestConfigOperations(t *testing.T) {
 
 	t.Run("clear config removes from both storages", func(t *testing.T) {
 		// First save some config
-		err := SaveConfig("linkedin", "test-token", "test@example.com")
+		err := SaveConfig("linkedin", "", "test-token", "test@example.com")
 		require.NoError(t, err)
 
 		// Reset mock error
@@ -238,12 +226,6 @@ func TestConfigOperations(t *testing.T) {
 		assert.Empty(t, cfg.GleanEmail)
 	})
 
-	t.Run("save invalid host", func(t *testing.T) {
-		err := SaveConfig("invalid.example.com", "test-token", "test@example.com")
-		assert.Error(t, err)
-		assert.Contains(t, err.Error(), "invalid host format")
-	})
-
 	t.Run("save with both storages failing", func(t *testing.T) {
 		// Simulate keyring failure
 		mock.err = assert.AnError
@@ -267,7 +249,7 @@ func TestConfigOperations(t *testing.T) {
 			os.MkdirAll(configDir, 0700)
 		}()
 
-		err = SaveConfig("linkedin", "test-token", "test@example.com")
+		err = SaveConfig("linkedin", "", "test-token", "test@example.com")
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "failed to save config")
 		assert.Contains(t, err.Error(), "keyring error")

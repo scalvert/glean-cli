@@ -56,6 +56,17 @@ func NewClient(cfg *config.Config) (Client, error) {
 	return NewClientFunc(cfg)
 }
 
+func buildBaseURL(cfg *config.Config) string {
+	host := cfg.GleanHost
+	port := cfg.GleanPort
+
+	if port != "" {
+		return fmt.Sprintf("https://%s:%s", host, port)
+	}
+
+	return fmt.Sprintf("https://%s", host)
+}
+
 // defaultNewClient is the default implementation of NewClient
 func defaultNewClient(cfg *config.Config) (Client, error) {
 	if cfg.GleanHost == "" {
@@ -66,7 +77,7 @@ func defaultNewClient(cfg *config.Config) (Client, error) {
 		return nil, fmt.Errorf("Glean token not configured. Run 'glean config --token <token>' to set it")
 	}
 
-	baseURL := fmt.Sprintf("https://%s", cfg.GleanHost)
+	baseURL := buildBaseURL(cfg)
 
 	return &client{
 		http:    &http.Client{},
