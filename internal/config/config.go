@@ -27,6 +27,7 @@ var ConfigPath string
 
 const (
 	hostKey  = "host"
+	portKey  = "port"
 	tokenKey = "token"
 	emailKey = "email"
 )
@@ -34,6 +35,7 @@ const (
 // Config holds the Glean API credentials and connection settings.
 type Config struct {
 	GleanHost  string `json:"host"`
+	GleanPort  string `json:"port"`
 	GleanToken string `json:"token"`
 	GleanEmail string `json:"email"`
 }
@@ -52,14 +54,6 @@ func MaskToken(token string) string {
 func ValidateAndTransformHost(host string) (string, error) {
 	if !strings.Contains(host, ".") {
 		return fmt.Sprintf("%s-be.glean.com", host), nil
-	}
-
-	if !strings.HasSuffix(host, ".glean.com") {
-		return "", fmt.Errorf("invalid host format. Must be either 'instance' or 'instance-be.glean.com'")
-	}
-
-	if !strings.HasSuffix(strings.TrimSuffix(host, ".glean.com"), "-be") {
-		return "", fmt.Errorf("invalid host format. Must end with '-be.glean.com'")
 	}
 
 	return host, nil
@@ -83,7 +77,7 @@ func LoadConfig() (*Config, error) {
 
 // SaveConfig stores configuration in both the system keyring and file storage.
 // It returns an error only if both storage methods fail.
-func SaveConfig(host, token, email string) error {
+func SaveConfig(host, port, token, email string) error {
 	if host != "" {
 		validHost, err := ValidateAndTransformHost(host)
 		if err != nil {
@@ -95,6 +89,11 @@ func SaveConfig(host, token, email string) error {
 	var keyringErr error
 	if host != "" {
 		if err := keyringImpl.Set(ServiceName, hostKey, host); err != nil {
+			keyringErr = err
+		}
+	}
+	if port != "" {
+		if err := keyringImpl.Set(ServiceName, portKey, port); err != nil {
 			keyringErr = err
 		}
 	}
@@ -118,6 +117,9 @@ func SaveConfig(host, token, email string) error {
 	if host != "" {
 		cfg.GleanHost = host
 	}
+	if port != "" {
+		cfg.GleanPort = port
+	}
 	if token != "" {
 		cfg.GleanToken = token
 	}
@@ -137,6 +139,9 @@ func ClearConfig() error {
 	var keyringErr error
 
 	if err := keyringImpl.Delete(ServiceName, hostKey); err != nil && err != keyring.ErrNotFound {
+		keyringErr = err
+	}
+	if err := keyringImpl.Delete(ServiceName, portKey); err != nil && err != keyring.ErrNotFound {
 		keyringErr = err
 	}
 	if err := keyringImpl.Delete(ServiceName, tokenKey); err != nil && err != keyring.ErrNotFound {
@@ -191,6 +196,10 @@ func loadFromKeyring() *Config {
 
 	if host, err := keyringImpl.Get(ServiceName, hostKey); err == nil {
 		cfg.GleanHost = host
+	}
+
+	if port, err := keyringImpl.Get(ServiceName, portKey); err == nil {
+		cfg.GleanPort = port
 	}
 
 	if token, err := keyringImpl.Get(ServiceName, tokenKey); err == nil {

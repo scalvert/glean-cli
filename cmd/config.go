@@ -15,6 +15,7 @@ const notSetValue = "[not set]"
 // It allows setting or clearing Glean credentials and connection settings.
 type ConfigOptions struct {
 	host  string // Glean instance hostname
+	port  string // Glean instance port
 	token string // API token for authentication
 	email string // User's email address
 	clear bool   // Whether to clear all configuration
@@ -38,6 +39,9 @@ func NewCmdConfig() *cobra.Command {
 			  glean config --host linkedin
 			  glean config --host linkedin-be.glean.com
 
+			  # Set Glean host and port (e.g. custom proxy)
+			  glean config --host foo.bar.com --port 7960
+
 			  # Set Glean API token
 			  glean config --token your-token
 
@@ -59,8 +63,8 @@ func NewCmdConfig() *cobra.Command {
 
 				fmt.Println("Current configuration:")
 				fmt.Printf("  %-10s %s\n", "Host:", valueOrNotSet(cfg.GleanHost))
+				fmt.Printf("  %-10s %s\n", "Port:", valueOrNotSet(cfg.GleanPort))
 				fmt.Printf("  %-10s %s\n", "Email:", valueOrNotSet(cfg.GleanEmail))
-
 				// Mask token if present
 				tokenDisplay := notSetValue
 				if cfg.GleanToken != "" {
@@ -78,11 +82,11 @@ func NewCmdConfig() *cobra.Command {
 				return nil
 			}
 
-			if opts.host == "" && opts.token == "" && opts.email == "" {
-				return fmt.Errorf("no configuration provided. Use --host, --token, or --email to set configuration")
+			if opts.host == "" && opts.port == "" && opts.token == "" && opts.email == "" {
+				return fmt.Errorf("no configuration provided. Use --host, --port, --token, or --email to set configuration")
 			}
 
-			if err := config.SaveConfig(opts.host, opts.token, opts.email); err != nil {
+			if err := config.SaveConfig(opts.host, opts.port, opts.token, opts.email); err != nil {
 				return fmt.Errorf("failed to save configuration: %w", err)
 			}
 
@@ -92,6 +96,7 @@ func NewCmdConfig() *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&opts.host, "host", "", "Glean instance name or full hostname (e.g., 'linkedin' or 'linkedin-be.glean.com')")
+	cmd.Flags().StringVar(&opts.port, "port", "", "Glean instance port (e.g., '8080' for custom proxy or local development)")
 	cmd.Flags().StringVar(&opts.token, "token", "", "Glean API token")
 	cmd.Flags().StringVar(&opts.email, "email", "", "Email address for API requests")
 	cmd.Flags().BoolVar(&opts.clear, "clear", false, "Clear all stored credentials")

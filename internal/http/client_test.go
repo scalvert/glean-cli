@@ -25,6 +25,45 @@ func (m *mockHTTPClient) Do(req *http.Request) (*http.Response, error) {
 	return nil, fmt.Errorf("doFunc not implemented")
 }
 
+func TestBuildBaseURL(t *testing.T) {
+	tests := []struct {
+		name     string
+		config   *config.Config
+		expected string
+	}{
+		{
+			name: "host only",
+			config: &config.Config{
+				GleanHost: "test-be.glean.com",
+			},
+			expected: "https://test-be.glean.com",
+		},
+		{
+			name: "host with port",
+			config: &config.Config{
+				GleanHost: "foo.bar.com",
+				GleanPort: "8080",
+			},
+			expected: "https://foo.bar.com:8080",
+		},
+		{
+			name: "host with empty port",
+			config: &config.Config{
+				GleanHost: "test-be.glean.com",
+				GleanPort: "",
+			},
+			expected: "https://test-be.glean.com",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := buildBaseURL(tt.config)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
 func TestNewClient(t *testing.T) {
 	// Save original NewClientFunc and restore after test
 	originalNewClientFunc := NewClientFunc
@@ -97,6 +136,56 @@ func TestSendRequest(t *testing.T) {
 		GleanToken: "test-token",
 		GleanEmail: "test@example.com",
 	}
+
+	t.Run("successful GET request with foo.bar.com:7960 ", func(t *testing.T) {
+		mock := &mockHTTPClient{
+			doFunc: func(req *http.Request) (*http.Response, error) {
+				// Verify request
+				assert.Equal(t, "GET", req.Method)
+				assert.Equal(t, "Bearer test-token", req.Header.Get("Authorization"))
+				assert.Equal(t, "test@example.com", req.Header.Get("X-Scio-Actas"))
+				assert.Equal(t, "string", req.Header.Get("X-Glean-Auth-Type"))
+				assert.Equal(t, "application/json", req.Header.Get("Content-Type"))
+
+				// Verify URL construction
+				assert.Equal(t, "https://foo.bar.com:7960/rest/api/v1/test", req.URL.String())
+
+				// Return mock response
+				responseBody := map[string]string{"status": "ok"}
+				jsonBody, _ := json.Marshal(responseBody)
+				return &http.Response{
+					StatusCode: http.StatusOK,
+					Body:       io.NopCloser(bytes.NewReader(jsonBody)),
+				}, nil
+			},
+		}
+
+		cfgWithPort := &config.Config{
+			GleanHost:  "foo.bar.com",
+			GleanPort:  "7960",
+			GleanToken: "test-token",
+			GleanEmail: "test@example.com",
+		}
+
+		client := &client{
+			http:    mock,
+			baseURL: buildBaseURL(cfgWithPort),
+			cfg:     cfgWithPort,
+		}
+
+		req := &Request{
+			Method: "GET",
+			Path:   "test",
+		}
+
+		resp, err := client.SendRequest(req)
+		require.NoError(t, err)
+
+		var result map[string]string
+		err = json.Unmarshal(resp, &result)
+		require.NoError(t, err)
+		assert.Equal(t, "ok", result["status"])
+	})
 
 	t.Run("successful GET request with custom headers", func(t *testing.T) {
 		mock := &mockHTTPClient{
