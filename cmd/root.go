@@ -18,6 +18,8 @@ var rootCmd *cobra.Command
 // NewCmdRoot creates and returns the root command for the Glean CLI.
 // It sets up the base command structure and adds all subcommands.
 func NewCmdRoot() *cobra.Command {
+	var verbosity int
+
 	cmd := &cobra.Command{
 		Use:   "glean",
 		Short: "Glean CLI - A command-line interface for Glean operations.",
@@ -26,6 +28,16 @@ func NewCmdRoot() *cobra.Command {
 
 			To get started, run 'glean --help'.
 		`),
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			// Set debug level based on verbosity flag count
+			if verbosity > 0 {
+				if verbosity > 3 {
+					verbosity = 3 // Cap at level 3
+				}
+
+				os.Setenv("GLEAN_HTTP_DEBUG", fmt.Sprintf("%d", verbosity))
+			}
+		},
 		Run: func(cmd *cobra.Command, args []string) {
 			if err := cmd.Help(); err != nil {
 				fmt.Fprintf(os.Stderr, "Error displaying help: %v\n", err)
@@ -36,6 +48,8 @@ func NewCmdRoot() *cobra.Command {
 		// Ensure consistent error formatting
 		SilenceErrors: true,
 	}
+
+	cmd.PersistentFlags().CountVarP(&verbosity, "verbose", "v", "Increase verbosity level (can be used multiple times)")
 
 	// Add all subcommands
 	cmd.AddCommand(
