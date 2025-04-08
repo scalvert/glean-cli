@@ -1,0 +1,6 @@
+#:schema https://mise.jdx.dev/schema/mise.json 
+
+[tools]
+golangci-lint = "1"
+gotestsum = "latest"
+svu = "latest"
