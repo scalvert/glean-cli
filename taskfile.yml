@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 tasks:
   default:
@@ -54,7 +54,7 @@ tasks:
     desc: Run Go tests
     silent: true
     cmds:
-      - go test ./... -v
+      - gotestsum
 
   test:summary:
     desc: Run Go tests with colorized output and a summary
