@@ -17,16 +17,16 @@ require (
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
 	github.com/fatih/color v1.18.0
 	github.com/stretchr/testify v1.10.0
-	github.com/zalando/go-keyring v0.2.3
+	github.com/zalando/go-keyring v0.2.6
 	golang.org/x/term v0.28.0
 )
 
 require (
-	github.com/alessio/shellescape v1.4.1 // indirect
+	al.essio.dev/pkg/shellescape v1.5.1 // indirect
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/containerd/console v1.0.4-0.20230313162750-1ae8d489ac81 // indirect
-	github.com/danieljoos/wincred v1.2.0 // indirect
+	github.com/danieljoos/wincred v1.2.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dlclark/regexp2 v1.11.0 // indirect
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
