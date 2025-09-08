@@ -16,7 +16,7 @@ require (
 	github.com/alecthomas/chroma v0.10.0
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
 	github.com/fatih/color v1.18.0
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.1
 	github.com/zalando/go-keyring v0.2.3
 	golang.org/x/term v0.28.0
 )
