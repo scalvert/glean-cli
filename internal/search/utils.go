@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"os/exec"
+	"runtime"
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -98,18 +99,26 @@ func performSearch(client http.Client, opts *Options, cursor, trackingToken stri
 	return &searchResp, nil
 }
 
-// openURL opens a URL in the default browser after validating it
+// openURL opens a URL in the default browser after validating it.
+// Supports macOS, Linux, and Windows.
 func openURL(urlStr string) tea.Cmd {
-	// Validate URL
 	u, err := url.Parse(urlStr)
 	if err != nil {
 		return nil
 	}
-
-	// Only allow http/https URLs
 	if u.Scheme != "http" && u.Scheme != "https" {
 		return nil
 	}
 
-	return tea.ExecProcess(exec.Command("open", urlStr), nil)
+	var cmd *exec.Cmd
+	switch runtime.GOOS {
+	case "darwin":
+		cmd = exec.Command("open", urlStr)
+	case "windows":
+		cmd = exec.Command("rundll32", "url.dll,FileProtocolHandler", urlStr)
+	default:
+		cmd = exec.Command("xdg-open", urlStr)
+	}
+
+	return tea.ExecProcess(cmd, nil)
 }
