@@ -96,19 +96,23 @@ func NewCmdAPI() *cobra.Command {
 				}
 			}
 			if opts.inputFile == "" && opts.requestBody == "" {
-				stdinData, readErr := io.ReadAll(os.Stdin)
-				if readErr != nil {
-					return readErr
-				}
-				if len(stdinData) > 0 {
-					if jsonErr := json.Unmarshal(stdinData, &body); jsonErr != nil {
-						return fmt.Errorf("invalid JSON from stdin: %w", jsonErr)
+				if !term.IsTerminal(int(os.Stdin.Fd())) {
+					stdinData, readErr := io.ReadAll(os.Stdin)
+					if readErr != nil {
+						return fmt.Errorf("reading stdin: %w", readErr)
 					}
+					if len(stdinData) > 0 {
+						if jsonErr := json.Unmarshal(stdinData, &body); jsonErr != nil {
+							return fmt.Errorf("invalid JSON from stdin: %w", jsonErr)
+						}
+					}
+				} else {
+					return fmt.Errorf("provide a request body via --raw-field, --input, or pipe from stdin")
 				}
 			}
 
 			if opts.preview {
-				return previewRequest(cfg, opts.method, endpoint, body, opts.noColor)
+				return previewRequest(cmd, cfg, opts.method, endpoint, body, opts.noColor)
 			}
 
 			useSpinner := term.IsTerminal(int(os.Stderr.Fd())) && !opts.raw && !opts.noColor
@@ -147,6 +151,10 @@ func NewCmdAPI() *cobra.Command {
 // apiBaseURL builds the base API URL from config.
 func apiBaseURL(cfg *config.Config) string {
 	host := cfg.GleanHost
+	// Expand short names (e.g., "linkedin" → "linkedin-be.glean.com")
+	if host != "" && !strings.Contains(host, ".") {
+		host = host + "-be.glean.com"
+	}
 	if cfg.GleanPort != "" {
 		return fmt.Sprintf("https://%s:%s", host, cfg.GleanPort)
 	}
@@ -186,7 +194,8 @@ func rawAPIRequest(ctx context.Context, cfg *config.Config, method, endpoint str
 		req.Header.Set("X-Scio-Actas", cfg.GleanEmail)
 	}
 
-	httpResp, err := http.DefaultClient.Do(req)
+	httpClient := &http.Client{Timeout: 30 * time.Second}
+	httpResp, err := httpClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("error making request: %w", err)
 	}
@@ -216,26 +225,27 @@ func rawAPIRequest(ctx context.Context, cfg *config.Config, method, endpoint str
 	return respBody, nil
 }
 
-func previewRequest(cfg *config.Config, method, endpoint string, body map[string]interface{}, noColor bool) error {
-	fmt.Printf("Request Method: %s\n", method)
-	fmt.Printf("Request URL: %s\n", apiFullURL(cfg, endpoint))
-	fmt.Println("\nRequest Headers:")
-	fmt.Printf("  Content-Type: application/json\n")
+func previewRequest(cmd *cobra.Command, cfg *config.Config, method, endpoint string, body map[string]interface{}, noColor bool) error {
+	w := cmd.OutOrStdout()
+	fmt.Fprintf(w, "Request Method: %s\n", method)
+	fmt.Fprintf(w, "Request URL: %s\n", apiFullURL(cfg, endpoint))
+	fmt.Fprintf(w, "\nRequest Headers:\n")
+	fmt.Fprintf(w, "  Content-Type: application/json\n")
 	if cfg.GleanToken != "" {
-		fmt.Printf("  Authorization: Bearer %s\n", config.MaskToken(cfg.GleanToken))
+		fmt.Fprintf(w, "  Authorization: Bearer %s\n", config.MaskToken(cfg.GleanToken))
 	}
 	if cfg.GleanEmail != "" {
-		fmt.Printf("  X-Scio-Actas: %s\n", cfg.GleanEmail)
+		fmt.Fprintf(w, "  X-Scio-Actas: %s\n", cfg.GleanEmail)
 	}
-	fmt.Printf("  X-Glean-Auth-Type: string\n")
+	fmt.Fprintf(w, "  X-Glean-Auth-Type: string\n")
 
 	if body != nil {
-		fmt.Println("\nRequest Body:")
+		fmt.Fprintf(w, "\nRequest Body:\n")
 		bodyBytes, err := json.Marshal(body)
 		if err != nil {
 			return fmt.Errorf("failed to format request body: %w", err)
 		}
-		return output.Write(os.Stdout, bodyBytes, output.Options{
+		return output.Write(w, bodyBytes, output.Options{
 			NoColor: noColor,
 			Format:  "json",
 		})
