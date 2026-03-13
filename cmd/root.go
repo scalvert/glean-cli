@@ -58,6 +58,7 @@ func NewCmdRoot() *cobra.Command {
 		NewCmdGenerate(),
 		NewCmdSearch(),
 		NewCmdChat(),
+		NewCmdVersion(),
 	)
 
 	// Propagate settings to all subcommands

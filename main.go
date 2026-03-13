@@ -7,7 +7,11 @@ import (
 	"github.com/scalvert/glean-cli/cmd"
 )
 
+// version is set at build time via ldflags: -X main.version=<version>
+var version = "dev"
+
 func main() {
+	cmd.SetVersion(version)
 	if err := cmd.Execute(); err != nil {
 		os.Exit(1)
 	}
