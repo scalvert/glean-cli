@@ -59,10 +59,28 @@ func ValidateAndTransformHost(host string) (string, error) {
 	return host, nil
 }
 
-// LoadConfig retrieves configuration from the system keyring, falling back to
-// file-based storage if keyring access fails.
+// LoadConfig retrieves configuration using the following priority order:
+//  1. Environment variables (GLEAN_API_TOKEN, GLEAN_HOST, GLEAN_EMAIL, GLEAN_PORT)
+//  2. System keyring
+//  3. ~/.glean/config.json
 func LoadConfig() (*Config, error) {
-	cfg := loadFromKeyring()
+	cfg := loadFromEnv()
+
+	if cfg.GleanToken == "" {
+		keyringCfg := loadFromKeyring()
+		if cfg.GleanHost == "" {
+			cfg.GleanHost = keyringCfg.GleanHost
+		}
+		if cfg.GleanPort == "" {
+			cfg.GleanPort = keyringCfg.GleanPort
+		}
+		if cfg.GleanToken == "" {
+			cfg.GleanToken = keyringCfg.GleanToken
+		}
+		if cfg.GleanEmail == "" {
+			cfg.GleanEmail = keyringCfg.GleanEmail
+		}
+	}
 
 	if cfg.GleanHost == "" && cfg.GleanToken == "" && cfg.GleanEmail == "" {
 		var err error
@@ -73,6 +91,25 @@ func LoadConfig() (*Config, error) {
 	}
 
 	return cfg, nil
+}
+
+// loadFromEnv reads config values from environment variables.
+// GLEAN_API_TOKEN takes precedence over all other credential sources.
+func loadFromEnv() *Config {
+	cfg := &Config{}
+	if v := os.Getenv("GLEAN_API_TOKEN"); v != "" {
+		cfg.GleanToken = v
+	}
+	if v := os.Getenv("GLEAN_HOST"); v != "" {
+		cfg.GleanHost = v
+	}
+	if v := os.Getenv("GLEAN_PORT"); v != "" {
+		cfg.GleanPort = v
+	}
+	if v := os.Getenv("GLEAN_EMAIL"); v != "" {
+		cfg.GleanEmail = v
+	}
+	return cfg
 }
 
 // SaveConfig stores configuration in both the system keyring and file storage.

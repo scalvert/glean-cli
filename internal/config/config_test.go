@@ -260,6 +260,31 @@ func TestConfigOperations(t *testing.T) {
 	})
 }
 
+func TestLoadConfigEnvPriority(t *testing.T) {
+	_, cleanupKeyring := setupTestKeyring(t)
+	_, cleanupConfig := setupTestConfig(t)
+	defer cleanupKeyring()
+	defer cleanupConfig()
+
+	t.Run("GLEAN_API_TOKEN overrides keyring", func(t *testing.T) {
+		t.Setenv("GLEAN_API_TOKEN", "env-token")
+		t.Setenv("GLEAN_HOST", "env-be.glean.com")
+
+		cfg, err := LoadConfig()
+		require.NoError(t, err)
+		assert.Equal(t, "env-token", cfg.GleanToken)
+		assert.Equal(t, "env-be.glean.com", cfg.GleanHost)
+	})
+
+	t.Run("falls through to keyring when env vars absent", func(t *testing.T) {
+		require.NoError(t, SaveConfig("linkedin", "", "keyring-token", ""))
+
+		cfg, err := LoadConfig()
+		require.NoError(t, err)
+		assert.Equal(t, "keyring-token", cfg.GleanToken)
+	})
+}
+
 func TestLoadFromFile(t *testing.T) {
 	_, cleanup := setupTestConfig(t)
 	defer cleanup()
