@@ -10,6 +10,7 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/glamour"
+	"github.com/charmbracelet/lipgloss"
 	glean "github.com/gleanwork/api-client-go"
 	"github.com/gleanwork/api-client-go/models/components"
 )
@@ -48,6 +49,10 @@ func New(sdk *glean.Glean, session *Session) (*Model, error) {
 	ta.CharLimit = 4096
 	ta.KeyMap.InsertNewline.SetKeys("shift+enter")
 	ta.SetHeight(3)
+	// Remove the default cursor-line background highlight that the textarea
+	// applies to the entire line the cursor is on — it creates a distracting
+	// block over the placeholder text on an otherwise empty input.
+	ta.FocusedStyle.CursorLine = lipgloss.NewStyle()
 
 	vp := viewport.New(0, 0)
 

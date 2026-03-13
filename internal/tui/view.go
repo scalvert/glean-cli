@@ -65,7 +65,7 @@ func (m *Model) welcomeView() string {
 	hintStyled := styleSourceHeader.Render("Start typing to begin a conversation")
 
 	logoH := strings.Count(gleanLogo, "\n") + 1
-	totalH := logoH + 4 // tagline + blank + hint
+	totalH := logoH + 5 // blank + tagline + blank + hint
 	topPad := (m.viewport.Height - totalH) / 2
 	if topPad < 1 {
 		topPad = 1
@@ -76,7 +76,7 @@ func (m *Model) welcomeView() string {
 		sb.WriteString("\n")
 	}
 	sb.WriteString(logoBlock)
-	sb.WriteString("\n")
+	sb.WriteString("\n\n")
 	sb.WriteString(center(taglineStyled, m.width))
 	sb.WriteString("\n\n")
 	sb.WriteString(center(hintStyled, m.width))
