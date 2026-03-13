@@ -25,25 +25,18 @@ const (
 // Color represents a themed color with both terminal and TUI support
 type Color struct {
 	*color.Color
+	hex string // hex constant for lipgloss rendering
 }
 
 // Brand colors as Color objects
 var (
-	GleanBlue   = Color{color.New(color.FgHiBlue)}
-	GleanYellow = Color{color.New(color.FgHiYellow)}
+	GleanBlue   = Color{color.New(color.FgHiBlue), GleanBlueHex}
+	GleanYellow = Color{color.New(color.FgHiYellow), GleanYellowHex}
 )
 
-// ToLipgloss converts the theme color to a Lipgloss color
+// ToLipgloss converts the theme color to a Lipgloss color using the hex constant.
 func (c Color) ToLipgloss() lipgloss.Color {
-	// Map our color values to lipgloss colors
-	switch c.Color {
-	case color.New(color.FgHiBlue):
-		return lipgloss.Color("39") // Bright blue
-	case color.New(color.FgHiYellow):
-		return lipgloss.Color("220") // Bright yellow
-	default:
-		return lipgloss.Color("") // No color
-	}
+	return lipgloss.Color(c.hex)
 }
 
 // SprintFunc returns a function that colorizes text
