@@ -8,6 +8,9 @@ import (
 	"os"
 
 	"github.com/MakeNowJust/heredoc"
+	tea "github.com/charmbracelet/bubbletea"
+	gleanClient "github.com/scalvert/glean-cli/internal/client"
+	"github.com/scalvert/glean-cli/internal/tui"
 	"github.com/spf13/cobra"
 )
 
@@ -19,6 +22,7 @@ var rootCmd *cobra.Command
 // It sets up the base command structure and adds all subcommands.
 func NewCmdRoot() *cobra.Command {
 	var verbosity int
+	var newSession bool
 
 	cmd := &cobra.Command{
 		Use:   "glean",
@@ -26,15 +30,33 @@ func NewCmdRoot() *cobra.Command {
 		Long: heredoc.Doc(`
 			Work seamlessly with Glean from your command line.
 
-			To get started, run 'glean --help'.
+			Running 'glean' with no arguments opens the full-screen chat TUI.
+			Run 'glean --help' for other available commands.
 		`),
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			_ = verbosity // reserved for future debug logging
 		},
-		Run: func(cmd *cobra.Command, args []string) {
-			if err := cmd.Help(); err != nil {
-				fmt.Fprintf(os.Stderr, "Error displaying help: %v\n", err)
+		RunE: func(cmd *cobra.Command, args []string) error {
+			sdk, err := gleanClient.NewFromConfig()
+			if err != nil {
+				return err
 			}
+
+			var session *tui.Session
+			if newSession {
+				session = &tui.Session{}
+			} else {
+				session = tui.LoadLatest()
+			}
+
+			model, err := tui.New(sdk, session)
+			if err != nil {
+				return fmt.Errorf("failed to create TUI: %w", err)
+			}
+
+			p := tea.NewProgram(model, tea.WithAltScreen())
+			_, err = p.Run()
+			return err
 		},
 		// Silence usage output when an error occurs
 		SilenceUsage: true,
@@ -43,6 +65,7 @@ func NewCmdRoot() *cobra.Command {
 	}
 
 	cmd.PersistentFlags().CountVarP(&verbosity, "verbose", "v", "Increase verbosity level (can be used multiple times)")
+	cmd.Flags().BoolVar(&newSession, "new", false, "Start a new chat session (discard saved history)")
 
 	// Add all subcommands
 	cmd.AddCommand(

@@ -18,11 +18,6 @@ func TestRootCmd(t *testing.T) {
 		wantErr    bool
 	}{
 		{
-			name:       "shows help with no args",
-			args:       []string{},
-			wantOutput: "Work seamlessly with Glean from your command line",
-		},
-		{
 			name:       "shows help with --help flag",
 			args:       []string{"--help"},
 			wantOutput: "Work seamlessly with Glean from your command line",
