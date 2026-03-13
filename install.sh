@@ -7,7 +7,7 @@ set -e
 #   curl -fsSL https://raw.githubusercontent.com/scalvert/glean-cli/main/install.sh | sh
 
 LATEST_VERSION=$(curl -s https://api.github.com/repos/scalvert/glean-cli/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+OS=$(uname -s)
 ARCH=$(uname -m)
 
 # Convert architecture names
@@ -35,7 +35,6 @@ echo "Download URL: $DOWNLOAD_URL"
 curl -fsSL "$DOWNLOAD_URL" -o "$TMP_DIR/glean.tar.gz"
 
 echo "Extracting archive..."
-tar -tvf "$TMP_DIR/glean.tar.gz"
 tar -xzf "$TMP_DIR/glean.tar.gz" -C "$TMP_DIR"
 
 echo "Verifying extracted contents..."
@@ -51,11 +50,6 @@ if [ ! -d "$INSTALL_DIR" ]; then
     echo "Failed to create $INSTALL_DIR"
     exit 1
   fi
-fi
-
-# Set proper ownership for /usr/local/bin if it was just created
-if [ -d "$INSTALL_DIR" ]; then
-  sudo chown -R $(whoami) "$INSTALL_DIR" 2>/dev/null || true
 fi
 
 # Find the glean binary
