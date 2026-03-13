@@ -22,6 +22,7 @@ func NewCmdSearch() *cobra.Command {
 	var jsonPayload string
 	var outputFormat string
 	var dryRun bool
+	var fields string
 
 	cmd := &cobra.Command{
 		Use:   "search [query]",
@@ -115,12 +116,16 @@ Example:
 			if err != nil {
 				return err
 			}
+			if fields != "" {
+				return output.ProjectFields(cmd.OutOrStdout(), resp, fields)
+			}
 			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
 		},
 	}
 
 	cmd.Flags().StringVar(&jsonPayload, "json", "", "Complete JSON request body (overrides all other flags)")
 	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format: json, ndjson, or text")
+	cmd.Flags().StringVar(&fields, "fields", "", "Comma-separated dot-path fields to include (e.g. document.title,document.url)")
 	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print the request body without sending it")
 	cmd.Flags().IntVar(&opts.PageSize, "page-size", 10, "Number of results per page")
 	cmd.Flags().IntVar(&opts.MaxSnippetSize, "max-snippet-size", 0, "Maximum size of snippets")
