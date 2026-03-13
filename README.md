@@ -55,8 +55,7 @@ glean chat --timeout 60000 "Tell me about our engineering team"
 ## Commands
 
 - `glean search`: Search across your company's content
-  - Supports filtering by datasource, type, and people
-  - Custom output formatting with templates
+  - Supports filtering by datasource and type
   - JSON output for scripting
 
 - `glean chat`: Have conversations with Glean Assistant
@@ -81,12 +80,6 @@ glean chat --timeout 60000 "Tell me about our engineering team"
 ```bash
 # Search with multiple filters
 glean search --datasource confluence,drive --type document "project planning"
-
-# Custom output template
-glean search --template "{{range .Results}}{{.Title}} - {{.URL}}\n{{end}}" "meeting notes"
-
-# Search with person filter
-glean search --person john@company.com "team updates"
 ```
 
 ### Interactive Chat
