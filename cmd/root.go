@@ -69,12 +69,25 @@ func NewCmdRoot() *cobra.Command {
 
 	// Add all subcommands
 	cmd.AddCommand(
+		NewCmdActivity(),
+		NewCmdAgents(),
+		NewCmdAnnouncements(),
+		NewCmdAnswers(),
 		NewCmdAPI(),
+		NewCmdChat(),
+		NewCmdCollections(),
 		NewCmdConfig(),
+		NewCmdDocuments(),
+		NewCmdEntities(),
 		NewCmdGenerate(),
+		NewCmdInsights(),
+		NewCmdMessages(),
+		NewCmdPins(),
 		NewCmdSchema(),
 		NewCmdSearch(),
-		NewCmdChat(),
+		NewCmdShortcuts(),
+		NewCmdTools(),
+		NewCmdVerification(),
 		NewCmdVersion(),
 	)
 

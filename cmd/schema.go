@@ -86,6 +86,148 @@ GLEAN_API_TOKEN=mytoken GLEAN_HOST=linkedin glean search "test"`,
 		Flags:       map[string]schema.FlagSchema{},
 		Example:     `glean version`,
 	})
+
+	schema.Register(schema.CommandSchema{
+		Command:     "shortcuts",
+		Description: "Manage Glean shortcuts (go-links). Subcommands: list, get, create, update, delete.",
+		Flags: map[string]schema.FlagSchema{
+			"--json":   {Type: "string", Description: "JSON request body (see Glean API docs for shape)"},
+			"--output": {Type: "enum", Enum: []string{"json", "ndjson", "text"}, Default: "json"},
+			"--dry-run": {Type: "boolean", Default: false, Description: "Print request without sending"},
+		},
+		Example: `glean shortcuts list | jq '.results[].inputAlias'
+glean shortcuts create --json '{"data":{"inputAlias":"test/link","destinationUrl":"https://example.com"}}'`,
+	})
+
+	schema.Register(schema.CommandSchema{
+		Command:     "agents",
+		Description: "Manage and run Glean agents. Subcommands: list, get, schemas, run.",
+		Flags: map[string]schema.FlagSchema{
+			"--json":   {Type: "string", Description: "JSON request body"},
+			"--output": {Type: "enum", Enum: []string{"json", "ndjson", "text"}, Default: "json"},
+			"--dry-run": {Type: "boolean", Default: false},
+		},
+		Example: `glean agents list | jq '.[].id'
+glean agents run --json '{"agentId":"my-agent","input":{"query":"test"}}'`,
+	})
+
+	schema.Register(schema.CommandSchema{
+		Command:     "documents",
+		Description: "Retrieve and summarize Glean documents. Subcommands: get, get-by-facets, get-permissions, summarize.",
+		Flags: map[string]schema.FlagSchema{
+			"--json":   {Type: "string", Description: "JSON request body"},
+			"--output": {Type: "enum", Enum: []string{"json", "ndjson", "text"}, Default: "json"},
+			"--dry-run": {Type: "boolean", Default: false},
+		},
+		Example: `glean documents summarize --json '{"documentId":"DOC_ID"}' | jq .summary`,
+	})
+
+	schema.Register(schema.CommandSchema{
+		Command:     "entities",
+		Description: "List and read Glean entities and people. Subcommands: list, read-people.",
+		Flags: map[string]schema.FlagSchema{
+			"--json":   {Type: "string", Description: "JSON request body", Required: true},
+			"--output": {Type: "enum", Enum: []string{"json", "ndjson", "text"}, Default: "json"},
+		},
+		Example: `glean entities read-people --json '{"query":"smith"}' | jq '.[].name'`,
+	})
+
+	schema.Register(schema.CommandSchema{
+		Command:     "collections",
+		Description: "Manage Glean collections. Subcommands: create, delete, update, add-items, delete-item.",
+		Flags: map[string]schema.FlagSchema{
+			"--json":   {Type: "string", Description: "JSON request body"},
+			"--output": {Type: "enum", Enum: []string{"json", "ndjson", "text"}, Default: "json"},
+			"--dry-run": {Type: "boolean", Default: false},
+		},
+		Example: `glean collections create --json '{"name":"My Collection"}'`,
+	})
+
+	schema.Register(schema.CommandSchema{
+		Command:     "pins",
+		Description: "Manage Glean pins. Subcommands: list, get, create, update, remove.",
+		Flags: map[string]schema.FlagSchema{
+			"--json":   {Type: "string", Description: "JSON request body"},
+			"--output": {Type: "enum", Enum: []string{"json", "ndjson", "text"}, Default: "json"},
+			"--dry-run": {Type: "boolean", Default: false},
+		},
+		Example: `glean pins list | jq '.[].id'`,
+	})
+
+	schema.Register(schema.CommandSchema{
+		Command:     "answers",
+		Description: "Manage Glean answers. Subcommands: list, get, create, update, delete.",
+		Flags: map[string]schema.FlagSchema{
+			"--json":   {Type: "string", Description: "JSON request body"},
+			"--output": {Type: "enum", Enum: []string{"json", "ndjson", "text"}, Default: "json"},
+			"--dry-run": {Type: "boolean", Default: false},
+		},
+		Example: `glean answers list | jq '.[].id'`,
+	})
+
+	schema.Register(schema.CommandSchema{
+		Command:     "tools",
+		Description: "List and run Glean tools. Subcommands: list, run.",
+		Flags: map[string]schema.FlagSchema{
+			"--json":   {Type: "string", Description: "JSON request body"},
+			"--output": {Type: "enum", Enum: []string{"json", "ndjson", "text"}, Default: "json"},
+			"--dry-run": {Type: "boolean", Default: false},
+		},
+		Example: `glean tools list | jq '.[].name'`,
+	})
+
+	schema.Register(schema.CommandSchema{
+		Command:     "verification",
+		Description: "Manage document verification. Subcommands: list, verify, remind.",
+		Flags: map[string]schema.FlagSchema{
+			"--json":   {Type: "string", Description: "JSON request body"},
+			"--output": {Type: "enum", Enum: []string{"json", "ndjson", "text"}, Default: "json"},
+			"--dry-run": {Type: "boolean", Default: false},
+		},
+		Example: `glean verification list | jq '.[].document.title'`,
+	})
+
+	schema.Register(schema.CommandSchema{
+		Command:     "activity",
+		Description: "Report user activity and feedback. Subcommands: report, feedback.",
+		Flags: map[string]schema.FlagSchema{
+			"--json":   {Type: "string", Description: "JSON request body (required)", Required: true},
+			"--dry-run": {Type: "boolean", Default: false},
+		},
+		Example: `glean activity report --json '{"events":[{"action":"VIEW","url":"https://example.com"}]}'`,
+	})
+
+	schema.Register(schema.CommandSchema{
+		Command:     "insights",
+		Description: "Retrieve Glean usage insights. Subcommands: get.",
+		Flags: map[string]schema.FlagSchema{
+			"--json":   {Type: "string", Description: "JSON request body (required)", Required: true},
+			"--output": {Type: "enum", Enum: []string{"json", "ndjson", "text"}, Default: "json"},
+			"--dry-run": {Type: "boolean", Default: false},
+		},
+		Example: `glean insights get --json '{"insightTypes":["SEARCH"]}' | jq .`,
+	})
+
+	schema.Register(schema.CommandSchema{
+		Command:     "messages",
+		Description: "Retrieve Glean messages. Subcommands: get.",
+		Flags: map[string]schema.FlagSchema{
+			"--json":   {Type: "string", Description: "JSON request body (required)", Required: true},
+			"--output": {Type: "enum", Enum: []string{"json", "ndjson", "text"}, Default: "json"},
+		},
+		Example: `glean messages get --json '{"messageId":"MSG_ID"}' | jq .`,
+	})
+
+	schema.Register(schema.CommandSchema{
+		Command:     "announcements",
+		Description: "Manage Glean announcements. Subcommands: create, update, delete.",
+		Flags: map[string]schema.FlagSchema{
+			"--json":   {Type: "string", Description: "JSON request body (required)", Required: true},
+			"--output": {Type: "enum", Enum: []string{"json", "ndjson", "text"}, Default: "json"},
+			"--dry-run": {Type: "boolean", Default: false},
+		},
+		Example: `glean announcements create --json '{"title":"Company Update","body":"..."}'`,
+	})
 }
 
 // NewCmdSchema creates and returns the schema command.
