@@ -4,117 +4,149 @@
 
 ![Glean CLI Demo](demo/readme.gif)
 
-The Glean CLI (`glean`) brings Glean's powerful search and AI capabilities directly to your terminal. Search across your company's knowledge, chat with Glean Assistant, and manage your configuration all from the comfort of your command line.
-
-## Features
-
-- 🔍 **Powerful Search**: Search across all your company's content with rich filtering options
-- 💬 **Interactive Chat**: Have natural conversations with Glean's AI about your company's knowledge
-- 🔐 **Secure Authentication**: Credentials are stored securely in your system's keyring
-- 🎨 **Beautiful Output**: Rich, colorized output with support for custom formatting
-- 🛠️ **API Access**: Direct access to Glean's REST API for power users
+The Glean CLI (`glean`) brings Glean's search and AI capabilities directly to your terminal. Search across your company's knowledge, chat with Glean Assistant, invoke the full REST API surface, and wire Glean into AI agents via MCP — all from the command line.
 
 ## Installation
 
 ```bash
-# Using homebrew
+# Homebrew
 brew install scalvert/tap/glean-cli
 
-# Manual installation
+# Manual
 curl -fsSL https://raw.githubusercontent.com/scalvert/glean-cli/main/install.sh | sh
 ```
 
 ## Quick Start
 
-1. Configure your Glean credentials:
 ```bash
+# 1. Configure credentials
 glean config --host your-company --token your-token
-```
 
-2. Search for content:
-```bash
-# Basic search
+# 2. Search
 glean search "vacation policy"
-
-# Search with filters
-glean search --datasource confluence "engineering docs"
-
-# Custom output format
-glean search --output json "meeting notes" | jq
 ```
 
-3. Chat with Glean Assistant:
-```bash
-# Start a conversation
-glean chat "What are our company holidays?"
+## Default Behavior
 
-# Extended chat session
-glean chat --timeout 60000 "Tell me about our engineering team"
+Running `glean` with no arguments opens a full-screen interactive chat TUI powered by Glean Assistant. Session history is persisted across invocations. Use `--new` to start a fresh session.
+
+```bash
+glean           # open interactive TUI chat
+glean --new     # open TUI with a blank session
 ```
 
 ## Commands
 
-- `glean search`: Search across your company's content
-  - Supports filtering by datasource and type
-  - JSON output for scripting
+### `glean search`
 
-- `glean chat`: Have conversations with Glean Assistant
-  - Natural language interactions with your company's knowledge base
-  - Streaming responses with markdown rendering
-  - Configurable timeouts and response saving
-
-- `glean api`: Direct access to Glean's REST API
-  - Support for all HTTP methods
-  - Request preview
-  - Custom headers and authentication
-
-- `glean config`: Manage your configuration
-  - Secure credential storage
-  - Multiple configuration options
-  - Easy setup and updates
-
-## Examples
-
-### Advanced Search
+Search across your company's knowledge.
 
 ```bash
-# Search with multiple filters
-glean search --datasource confluence,drive --type document "project planning"
+glean search "vacation policy"
+glean search "vacation policy" | jq '.results[].document.title'
+
+# JSON output (default) — pipe-friendly
+glean search --output json "meeting notes"
+
+# NDJSON — one result per line
+glean search --output ndjson "engineering docs" | head -3 | jq .document.title
+
+# Project specific fields
+glean search --fields "document.title,document.url" "onboarding"
+
+# Filter by datasource or document type
+glean search --datasource confluence "project planning"
+glean search --type document "Q1 reports"
+
+# Send a raw SDK request body
+glean search --json '{"query":"Q1 reports","pageSize":5}' | jq .
+
+# Preview request without sending
+glean search --dry-run "test"
 ```
 
-### Interactive Chat
+Key flags:
+
+| Flag | Description |
+|------|-------------|
+| `--output` | `json` (default), `ndjson`, or `text` |
+| `--fields` | Comma-separated dot-path projection (e.g. `document.title,document.url`) |
+| `--json` | Complete JSON request body; overrides all other flags |
+| `--dry-run` | Print request body without sending |
+| `--datasource` | Filter by datasource (repeatable, `-d`) |
+| `--type` | Filter by document type (repeatable, `-y`) |
+| `--page-size` | Results per page (default 10) |
+| `--timeout` | Request timeout in milliseconds (default 30000) |
+
+### `glean chat`
+
+Ask Glean AI a question from the command line (non-interactive, streaming output).
 
 ```bash
-# Basic chat with Glean Assistant
-glean chat "What's our remote work policy?"
-
-# Extended timeout for longer responses
+glean chat "What are our company holidays?"
 glean chat --timeout 60000 "Tell me about our engineering team"
+glean chat --save=false "What's our tech stack?"
 
-# Disable saving chat history (enabled by default)
-glean chat --save=false "Tell me about our tech stack"
+# Send a raw SDK request body
+glean chat --json '{"messages":[{"author":"USER","messageType":"CONTENT","fragments":[{"text":"What is Glean?"}]}]}'
+
+# Preview request without sending
+glean chat --dry-run "test question"
 ```
 
-### API Access
+Key flags:
+
+| Flag | Description |
+|------|-------------|
+| `--json` | Complete JSON chat request body; overrides all other flags |
+| `--dry-run` | Print request body without sending |
+| `--timeout` | Request timeout in milliseconds (default 30000) |
+| `--save` | Save the chat for later continuation (default true) |
+
+### `glean api`
+
+Make an authenticated HTTP request to any Glean API endpoint.
 
 ```bash
-# Get user information
+# GET request
 glean api users/me
 
-# Custom search request
-glean api search --method POST --raw-field '{"query": "engineering", "pageSize": 5}'
+# POST with a JSON body via --raw-field
+glean api search --method POST --raw-field '{"query": "rust programming"}'
 
-# Preview API request
-glean api search --preview --method POST --raw-field '{"query": "docs"}'
+# POST with a body from a file
+glean api search --method POST --input search-params.json
+
+# POST with a body piped from stdin
+echo '{"query": "rust"}' | glean api --method POST search
+
+# Preview request without sending
+glean api search --method POST --raw-field '{"query": "test"}' --preview
+
+# Pipe to jq
+glean api search --no-color | jq .results
 ```
 
-## Configuration
+Note: POST/PUT requests require a body. Provide it via `--raw-field`, `--input`, or stdin pipe.
 
-The CLI stores configuration securely using your system's keyring with fallback to file-based storage:
+Key flags:
+
+| Flag | Description |
+|------|-------------|
+| `--method` / `-X` | HTTP method (default `GET`) |
+| `--raw-field` | JSON string body |
+| `--input` / `-F` | File to use as request body |
+| `--preview` | Print request details without sending |
+| `--no-color` | Disable colorized output |
+
+### `glean config`
+
+Manage credentials and connection settings.
 
 ```bash
-# Set Glean instance
-glean config --host your-company
+# Set host — either short name or full hostname works
+glean config --host linkedin
+glean config --host linkedin-be.glean.com
 
 # Set API token
 glean config --token your-token
@@ -122,17 +154,95 @@ glean config --token your-token
 # Set user email
 glean config --email you@company.com
 
-# View current config
+# Set multiple values at once
+glean config --host your-company --token your-token
+
+# Show current configuration (token is masked)
 glean config --show
 
-# Clear all settings
+# Clear all stored credentials
 glean config --clear
 ```
 
+Configuration is stored in the system keyring with fallback to `~/.glean/config.json`.
+
+### `glean mcp`
+
+Start a stdio MCP server that exposes Glean tools to AI agents (Claude Code, Cursor, etc.).
+
+```bash
+glean mcp
+```
+
+Available MCP tools: `glean_search`, `glean_chat`, `glean_schema`, `glean_people`.
+
+To wire it into Claude Code, add to `.claude/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "glean": {
+      "command": "glean",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+### `glean schema`
+
+Show machine-readable JSON schema for any command's flags and request format. Useful for agents.
+
+```bash
+glean schema            # list all commands with registered schemas
+glean schema search     # full schema for the search command
+glean schema chat       # full schema for the chat command
+```
+
+### API Namespace Commands
+
+The following commands are thin passthroughs to the Glean SDK's API surface. Each accepts `--json`, `--output`, and `--dry-run`. Run `glean <command> --help` for details.
+
+| Command | Description |
+|---------|-------------|
+| `glean activity` | Report user activity and feedback |
+| `glean agents` | Manage and run Glean agents |
+| `glean announcements` | Manage announcements |
+| `glean answers` | Manage answers |
+| `glean collections` | Manage collections |
+| `glean documents` | Retrieve and summarize documents |
+| `glean entities` | List and read entities and people |
+| `glean insights` | Retrieve usage insights |
+| `glean messages` | Retrieve messages |
+| `glean pins` | Manage pins |
+| `glean shortcuts` | Manage shortcuts (go-links) |
+| `glean tools` | List and run Glean tools |
+| `glean verification` | Manage document verification |
+
+## Shell Completions
+
+```bash
+glean completion bash   # Bash
+glean completion zsh    # Zsh
+glean completion fish   # Fish
+```
+
+Follow the instructions printed by each command to install the completion script for your shell.
+
+## Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `GLEAN_API_TOKEN` | API token (overrides keyring/config file) |
+| `GLEAN_HOST` | Glean instance name or hostname |
+| `GLEAN_EMAIL` | Email address for API requests |
+
+Environment variables take precedence over the system keyring and `~/.glean/config.json`.
+
 ## Contributing
 
-Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to submit pull requests and the project's code of conduct.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT — see [LICENSE](LICENSE).
