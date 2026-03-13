@@ -96,7 +96,7 @@ func NewCmdConfig() *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&opts.host, "host", "", "Glean instance name or full hostname (e.g., 'linkedin' or 'linkedin-be.glean.com')")
-	cmd.Flags().StringVar(&opts.port, "port", "", "Glean instance port (e.g., '8080' for custom proxy or local development)")
+	cmd.Flags().StringVar(&opts.port, "port", "", "Port for custom proxy (only applies to 'glean api' command; SDK commands use standard HTTPS)")
 	cmd.Flags().StringVar(&opts.token, "token", "", "Glean API token")
 	cmd.Flags().StringVar(&opts.email, "email", "", "Email address for API requests")
 	cmd.Flags().BoolVar(&opts.clear, "clear", false, "Clear all stored credentials")
