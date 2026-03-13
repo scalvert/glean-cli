@@ -10,8 +10,6 @@ import (
 )
 
 // NewCmdSearch creates and returns the search command.
-// The search command allows users to search across their Glean instance,
-// with support for pagination, custom output formats, and filtering options.
 func NewCmdSearch() *cobra.Command {
 	opts := &search.Options{
 		RequestOptions: &search.RequestOptions{
@@ -25,24 +23,14 @@ func NewCmdSearch() *cobra.Command {
 		Short: "Search for content in your Glean instance",
 		Long: `Search for content in your Glean instance.
 
-You can search for any content that is indexed in your Glean instance.
-The results will be displayed in a formatted list by default.
+Results are written as JSON to stdout, making the output easy to pipe
+to jq or other tools.
 
 Example:
   glean search "vacation policy"
-  glean search -i                    # Start interactive mode
-  glean search -i "vacation policy"  # Start interactive mode with initial query
+  glean search "vacation policy" | jq '.results[].document.title'
   glean search --page-size 20 "engineering docs"`,
-		Args: func(cmd *cobra.Command, args []string) error {
-			interactive, _ := cmd.Flags().GetBool("interactive")
-			if interactive && len(args) == 0 {
-				return nil // Allow no args in interactive mode
-			}
-			if len(args) != 1 {
-				return fmt.Errorf("requires exactly one query argument")
-			}
-			return nil
-		},
+		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := config.LoadConfig()
 			if err != nil {
@@ -54,7 +42,6 @@ Example:
 				return err
 			}
 
-			// Handle all the flag options first
 			if datasources, flagErr := cmd.Flags().GetStringSlice("datasource"); flagErr == nil && len(datasources) > 0 {
 				search.AddFacetFilter(opts, "datasource", datasources)
 			}
@@ -65,9 +52,7 @@ Example:
 			if people, flagErr := cmd.Flags().GetStringSlice("person"); flagErr == nil && len(people) > 0 {
 				opts.People = make([]search.Person, len(people))
 				for i, email := range people {
-					opts.People[i] = search.Person{
-						ObfuscatedId: email,
-					}
+					opts.People[i] = search.Person{ObfuscatedId: email}
 				}
 			}
 
@@ -84,11 +69,9 @@ Example:
 			if size, flagErr := cmd.Flags().GetInt("facet-bucket-size"); flagErr == nil {
 				opts.RequestOptions.FacetBucketSize = size
 			}
-
 			if hints, flagErr := cmd.Flags().GetStringSlice("response-hints"); flagErr == nil {
 				opts.RequestOptions.ResponseHints = hints
 			}
-
 			if disable, flagErr := cmd.Flags().GetBool("disable-query-autocorrect"); flagErr == nil {
 				opts.RequestOptions.DisableQueryAutocorrect = disable
 			}
@@ -102,27 +85,15 @@ Example:
 				opts.RequestOptions.ReturnLlmContentOverSnippets = llm
 			}
 
-			if opts.Interactive {
-				query := ""
-				if len(args) > 0 {
-					query = args[0]
-				}
-				opts.Query = query
-				return search.RunInteractiveSearch(opts, client)
-			}
-
 			opts.Query = args[0]
-			return search.RunSearch(opts, client)
+			return search.RunSearch(opts, client, cmd.OutOrStdout())
 		},
 	}
 
-	cmd.Flags().StringVar(&opts.OutputFormat, "output", "", "Output format (json)")
 	cmd.Flags().IntVar(&opts.PageSize, "page-size", 10, "Number of results per page")
 	cmd.Flags().IntVar(&opts.MaxSnippetSize, "max-snippet-size", 0, "Maximum size of snippets")
 	cmd.Flags().IntVar(&opts.TimeoutMillis, "timeout", 30000, "Request timeout in milliseconds")
 	cmd.Flags().BoolVar(&opts.DisableSpellcheck, "disable-spellcheck", false, "Disable spellcheck")
-	cmd.Flags().BoolVar(&opts.NoColor, "no-color", false, "Disable color output")
-	cmd.Flags().BoolVarP(&opts.Interactive, "interactive", "i", false, "Run in interactive mode")
 
 	cmd.Flags().StringSliceP("datasource", "d", nil, "Filter by datasource (can be specified multiple times)")
 	cmd.Flags().StringSliceP("type", "y", nil, "Filter by document type (can be specified multiple times)")
