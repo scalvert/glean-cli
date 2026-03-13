@@ -1,7 +1,160 @@
-#:schema https://mise.jdx.dev/schema/mise.json 
+#:schema https://mise.jdx.dev/schema/mise.json
 
 [tools]
 go = "latest"
 golangci-lint = "1"
 gotestsum = "latest"
 svu = "latest"
+
+[tasks.default]
+description = "List all tasks"
+run = "mise tasks"
+
+[tasks.setup]
+description = "Install required global Go dependencies"
+run = """
+echo "Installing required Go dependencies..."
+mise install
+echo ""
+echo "Setup complete! Installed:"
+echo "- svu (for versioning)"
+echo "- gotestsum (for test reporting)"
+echo "- golangci-lint (for linting)"
+"""
+
+[tasks.clean]
+description = "Clean the build directory"
+run = """
+rm -f glean
+go clean
+rm -rf dist/
+"""
+
+[tasks.build]
+description = "Build the CLI"
+run = "go build -o glean"
+
+[tasks."build:debug"]
+description = "Build the CLI with debug symbols"
+run = "go build -gcflags='all=-N -l' -o glean"
+
+[tasks."test:all"]
+description = "Run all checks (used in CI)"
+run = """
+mise run lint
+mise run test:summary
+mise run build
+"""
+
+[tasks.test]
+description = "Run Go tests"
+run = "gotestsum"
+
+[tasks."test:summary"]
+description = "Run Go tests with colorized output and a summary"
+run = "gotestsum --format=short-verbose"
+
+[tasks."test:snapshot"]
+description = "Run tests and update snapshots"
+run = """
+#!/usr/bin/env bash
+set -e
+echo "Running tests and updating snapshots..."
+UPDATE_SNAPSHOTS=true go test ./... -v
+echo "✓ Snapshots updated successfully"
+"""
+
+[tasks.lint]
+description = "Run Go lint"
+run = "golangci-lint run"
+
+[tasks."lint:fix"]
+description = "Run Go lint and fix"
+run = """
+golangci-lint run --fix
+fieldalignment -fix ./...
+"""
+
+[tasks.install]
+description = "Install the CLI locally"
+run = "go install"
+
+[tasks.release]
+description = "Create and push a new release (VERSION=vX.Y.Z FORCE=true)"
+run = """
+#!/usr/bin/env bash
+set -e
+
+VERSION="${VERSION:-}"
+FORCE="${FORCE:-false}"
+
+# Preconditions
+if ! git diff-index --quiet HEAD; then
+  echo "Working directory is not clean. Please commit or stash changes first."
+  exit 1
+fi
+
+if ! command -v svu &>/dev/null; then
+  echo "svu is not installed. Run: mise install"
+  exit 1
+fi
+
+# Ensure we're on main and up to date
+git checkout main
+git pull origin main
+git fetch --tags
+
+# Run all linters and tests
+mise run test:all
+
+# Show current version and commits since last release
+echo "Current version is $(svu current)"
+echo "Commits since last release:"
+git log $(svu current)..HEAD --oneline
+
+# Set version
+if [ -n "$VERSION" ]; then
+  version="$VERSION"
+  if ! echo "$version" | grep -qE "^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$"; then
+    echo "Error: Version must be in format vX.Y.Z where X,Y,Z are numbers (e.g. v1.2.3)"
+    exit 1
+  fi
+  echo "Using specified version: $version"
+else
+  version=$(svu next)
+  echo "Next version will be $version"
+fi
+
+# Confirm before proceeding
+echo "Press Ctrl+C to cancel or wait 5 seconds to continue..."
+sleep 5
+
+# Handle existing tag if force is true
+if [ "$FORCE" = "true" ]; then
+  if git rev-parse "$version" >/dev/null 2>&1; then
+    echo "Force flag set. Removing existing tag $version"
+    git tag -d "$version"
+    git push origin ":refs/tags/$version"
+  fi
+fi
+
+# Create and push the tag
+if [ "$FORCE" = "true" ]; then
+  git tag -f -a "$version" -m "Release $version"
+else
+  git tag -a "$version" -m "Release $version"
+fi
+git push origin "$version" --force
+
+echo "Release process started!"
+echo "Monitor the release at https://github.com/scalvert/glean-cli/actions"
+"""
+
+[tasks.demo]
+description = "Generate demo GIF for README"
+depends = ["build"]
+run = """
+echo "Generating demo GIF using VHS..."
+vhs demo/glean.tape
+echo "Demo GIF generated at demo/readme.gif"
+"""

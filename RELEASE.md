@@ -5,7 +5,7 @@
 After cloning the repository, run the following command to install required dependencies:
 
 ```bash
-task setup
+mise run setup
 ```
 
 This will install:
@@ -20,7 +20,7 @@ To create a new release:
 1. Ensure your working directory is clean and you're on the `main` branch
 2. Run the release task:
    ```bash
-   task release
+   mise run release
    ```
 
    This will:
@@ -34,12 +34,12 @@ To create a new release:
 
 - Specify a version:
   ```bash
-  task release VERSION=v1.2.3
+  VERSION=v1.2.3 mise run release
   ```
 
 - Force update an existing tag:
   ```bash
-  task release VERSION=v1.2.3 FORCE=true
+  VERSION=v1.2.3 FORCE=true mise run release
   ```
 
 ## Monitoring

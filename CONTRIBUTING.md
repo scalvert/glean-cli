@@ -7,7 +7,7 @@
 ### Prerequisites
 
 - Go 1.19 or higher
-- [Task](https://taskfile.dev/#/installation) (task runner)
+- [mise](https://mise.jdx.dev/getting-started.html) (tool and task runner)
 - Git
 
 ### Getting Started
@@ -20,12 +20,12 @@ cd glean-cli
 
 2. Install development dependencies:
 ```bash
-task setup
+mise run setup
 ```
 
 3. Build the project:
 ```bash
-task build
+mise run build
 ```
 
 ## Development Workflow
@@ -40,27 +40,27 @@ git checkout -b feature/your-feature-name
 3. Run tests:
 ```bash
 # Run tests with verbose output
-task test
+mise run test
 
 # Run tests with colorized summary
-task test:summary
+mise run test:summary
 
 # Run all checks (lint + test + build)
-task test:all
+mise run test:all
 ```
 
 4. Run linters:
 ```bash
 # Run linter
-task lint
+mise run lint
 
 # Run linter with auto-fix
-task lint:fix
+mise run lint:fix
 ```
 
 5. Install locally to test your changes:
 ```bash
-task install
+mise run install
 ```
 
 6. Commit your changes using conventional commit messages:
@@ -71,15 +71,15 @@ git commit -m "fix: resolve issue with X"
 
 ## Available Tasks
 
-Run `task --list-all` to see all available tasks. Common tasks include:
+Run `mise tasks` to see all available tasks. Common tasks include:
 
-- `task setup`: Install required development dependencies
-- `task build`: Build the CLI
-- `task test:all`: Run all checks (used in CI)
-- `task lint`: Run linters
-- `task lint:fix`: Run linters with auto-fix
-- `task install`: Install the CLI locally
-- `task clean`: Clean build artifacts
+- `mise run setup`: Install required development dependencies
+- `mise run build`: Build the CLI
+- `mise run test:all`: Run all checks (used in CI)
+- `mise run lint`: Run linters
+- `mise run lint:fix`: Run linters with auto-fix
+- `mise run install`: Install the CLI locally
+- `mise run clean`: Clean build artifacts
 
 ## Pull Request Process
 
