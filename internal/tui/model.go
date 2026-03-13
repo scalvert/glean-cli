@@ -3,19 +3,18 @@ package tui
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"strings"
 
+	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/textarea"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/glamour"
-	"github.com/charmbracelet/lipgloss"
 	glean "github.com/gleanwork/api-client-go"
 	"github.com/gleanwork/api-client-go/models/components"
 )
 
-// streamDoneMsg signals that the streaming response has completed.
+// streamDoneMsg signals that the API response has arrived.
 type streamDoneMsg struct {
 	ndjson string
 	err    error
@@ -23,52 +22,61 @@ type streamDoneMsg struct {
 
 // Model is the Bubbletea model for the glean chat TUI.
 type Model struct {
-	viewport    viewport.Model
-	textarea    textarea.Model
-	sdk         *glean.Glean
-	session     *Session
-	renderer    *glamour.TermRenderer
-	err         error
-	history     strings.Builder // rendered conversation for viewport
-	streaming   strings.Builder // current in-progress response text
-	width       int
-	height      int
-	showHelp    bool
-	isStreaming  bool
+	// UI components
+	viewport viewport.Model
+	textarea textarea.Model
+	spinner  spinner.Model
+	renderer *glamour.TermRenderer
+
+	// State
+	sdk              *glean.Glean
+	session          *Session
+	conversationMsgs []components.ChatMessage // full history sent to SDK on each turn
+	history          strings.Builder          // rendered HTML for the viewport
+	width            int
+	height           int
+	isStreaming      bool
+	showHelp         bool
 }
 
-// New creates a new TUI model.
+// New creates a fully-initialized TUI model.
 func New(sdk *glean.Glean, session *Session) (*Model, error) {
 	ta := textarea.New()
-	ta.Placeholder = "Ask Glean anything… (Enter to send, Shift+Enter for newline)"
+	ta.Placeholder = "Message Glean…  (shift+enter for a new line)"
 	ta.Focus()
-	ta.SetWidth(80)
-	ta.SetHeight(3)
 	ta.ShowLineNumbers = false
+	ta.CharLimit = 4096
 	ta.KeyMap.InsertNewline.SetKeys("shift+enter")
+	ta.SetHeight(3)
 
-	vp := viewport.New(80, 20)
-	vp.SetContent("")
+	vp := viewport.New(0, 0)
+
+	sp := spinner.New()
+	sp.Spinner = spinner.Dot
+	sp.Style = styleStatusAccent
 
 	renderer, err := glamour.NewTermRenderer(
 		glamour.WithAutoStyle(),
-		glamour.WithWordWrap(80),
+		glamour.WithWordWrap(100),
 	)
 	if err != nil {
-		return nil, fmt.Errorf("glamour renderer: %w", err)
+		// Non-fatal: fall back to plain text rendering
+		renderer = nil
 	}
 
 	m := &Model{
-		viewport:  vp,
-		textarea:  ta,
-		sdk:       sdk,
-		session:   session,
-		renderer:  renderer,
+		viewport: vp,
+		textarea: ta,
+		spinner:  sp,
+		renderer: renderer,
+		sdk:      sdk,
+		session:  session,
 	}
 
-	// Render saved history
+	// Replay saved session into the history buffer and build SDK message list.
 	for _, turn := range session.Turns {
-		m.appendTurnToHistory(turn)
+		m.addTurnToHistory(turn)
+		m.addTurnToConversation(turn)
 	}
 	m.viewport.SetContent(m.history.String())
 	m.viewport.GotoBottom()
@@ -86,45 +94,41 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var (
 		taCmd  tea.Cmd
 		vpCmd  tea.Cmd
+		spCmd  tea.Cmd
 	)
 
 	switch msg := msg.(type) {
+
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
 		m.height = msg.Height
-		headerH := 1  // status bar
-		footerH := m.textarea.Height() + 2 // input + border
-		m.viewport.Width = msg.Width
-		m.viewport.Height = msg.Height - headerH - footerH
-		m.textarea.SetWidth(msg.Width - 2)
-		if m.renderer != nil {
-			m.renderer, _ = glamour.NewTermRenderer(
-				glamour.WithAutoStyle(),
-				glamour.WithWordWrap(msg.Width-4),
-			)
-		}
+		m.recalculateLayout()
 
 	case tea.KeyMsg:
-		switch {
-		case msg.String() == "ctrl+c" || msg.String() == "esc":
+		switch msg.String() {
+		case "ctrl+c", "esc":
 			return m, tea.Quit
 
-		case msg.String() == "?":
+		case "?":
 			m.showHelp = !m.showHelp
 			return m, nil
 
-		case msg.String() == "ctrl+l":
+		case "ctrl+l":
 			m.history.Reset()
 			m.viewport.SetContent("")
 			return m, nil
 
-		case msg.String() == "ctrl+r":
+		case "ctrl+r":
 			m.session = &Session{}
+			m.conversationMsgs = nil
 			m.history.Reset()
 			m.viewport.SetContent("")
 			return m, nil
 
-		case msg.String() == "enter" && !m.isStreaming:
+		case "enter":
+			if m.isStreaming {
+				return m, nil
+			}
 			question := strings.TrimSpace(m.textarea.Value())
 			if question == "" {
 				return m, nil
@@ -132,41 +136,43 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.textarea.Reset()
 			m.isStreaming = true
 
-			// Append user turn to history immediately
-			userTurn := Turn{Role: "user", Content: question}
-			m.appendTurnToHistory(userTurn)
+			// Record the user turn immediately (both visually and in session).
+			turn := Turn{Role: "user", Content: question}
+			m.addTurnToHistory(turn)
+			m.addTurnToConversation(turn)
+			m.session.AddTurn("user", question, nil)
 			m.viewport.SetContent(m.history.String())
 			m.viewport.GotoBottom()
 
-			// Start the API call in a goroutine
-			return m, m.sendMessage(question)
+			return m, tea.Batch(m.spinner.Tick, m.callAPI())
+		}
+
+	case spinner.TickMsg:
+		if m.isStreaming {
+			m.spinner, spCmd = m.spinner.Update(msg)
+			return m, spCmd
 		}
 
 	case streamDoneMsg:
 		m.isStreaming = false
+
 		if msg.err != nil {
-			m.err = msg.err
 			m.appendError(msg.err)
 			m.viewport.SetContent(m.history.String())
 			m.viewport.GotoBottom()
 			return m, nil
 		}
 
-		// Process NDJSON response
-		text, sources := m.parseNDJSON(msg.ndjson)
+		text, sources := parseNDJSON(msg.ndjson)
 		if text != "" {
-			rendered, err := m.renderer.Render(text)
-			if err != nil {
-				rendered = text
-			}
-			aiTurn := Turn{Role: "assistant", Content: text, Sources: sources}
-			m.session.AddTurn("user", m.lastUserMessage(), nil)
+			rendered := m.renderMarkdown(text)
+			turn := Turn{Role: "assistant", Content: text, Sources: sources}
+			m.addTurnToHistory(turn)
+			m.addTurnToConversation(turn)
 			m.session.AddTurn("assistant", text, sources)
-
-			m.appendRenderedResponse(rendered, sources)
+			_ = rendered // history already updated inside addTurnToHistory
 			m.viewport.SetContent(m.history.String())
 			m.viewport.GotoBottom()
-			_ = aiTurn // already saved via session
 		}
 		return m, nil
 	}
@@ -177,83 +183,55 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, tea.Batch(taCmd, vpCmd)
 }
 
-// View implements tea.Model.
-func (m *Model) View() string {
-	if m.width == 0 {
-		return "Loading…"
+// recalculateLayout updates widget sizes based on current terminal dimensions.
+func (m *Model) recalculateLayout() {
+	if m.width == 0 || m.height == 0 {
+		return
 	}
 
-	statusText := fmt.Sprintf(" glean chat | %d turns | ? for help", len(m.session.Turns))
-	if m.isStreaming {
-		statusText = " glean chat | thinking… | ? for help"
-	}
-	status := styleStatusBar.Width(m.width).Render(statusText)
-
-	var body string
-	if m.showHelp {
-		body = m.helpView()
-	} else {
-		body = m.viewport.View()
+	inputH := 5  // 3 content rows + 2 border rows (rounded border)
+	statusH := 1 // bottom status line
+	vpH := m.height - inputH - statusH
+	if vpH < 1 {
+		vpH = 1
 	}
 
-	inputBorder := lipgloss.NewStyle().
-		Border(lipgloss.NormalBorder()).
-		BorderForeground(lipgloss.Color(colorBlue)).
-		Width(m.width - 2)
+	m.viewport.Width = m.width
+	m.viewport.Height = vpH
+	m.textarea.SetWidth(m.width - 4) // 2 border + 2 padding
 
-	return lipgloss.JoinVertical(lipgloss.Left,
-		status,
-		body,
-		inputBorder.Render(m.textarea.View()),
-	)
+	if m.renderer != nil {
+		wrapWidth := m.width - 4
+		if wrapWidth < 40 {
+			wrapWidth = 40
+		}
+		if r, err := glamour.NewTermRenderer(
+			glamour.WithAutoStyle(),
+			glamour.WithWordWrap(wrapWidth),
+		); err == nil {
+			m.renderer = r
+		}
+	}
 }
 
-// helpView renders the keyboard shortcut overlay.
-func (m *Model) helpView() string {
-	shortcuts := []struct{ key, desc string }{
-		{"Enter", "Send message"},
-		{"Shift+Enter", "New line in input"},
-		{"Ctrl+C / Esc", "Quit"},
-		{"Ctrl+L", "Clear conversation"},
-		{"Ctrl+R", "Start new session"},
-		{"PgUp / PgDn", "Scroll history"},
-		{"?", "Toggle this help"},
-	}
+// callAPI sends the full conversation history to Glean and returns a streamDoneMsg.
+func (m *Model) callAPI() tea.Cmd {
+	msgs := make([]components.ChatMessage, len(m.conversationMsgs))
+	copy(msgs, m.conversationMsgs)
 
-	var sb strings.Builder
-	sb.WriteString("\n  Keyboard Shortcuts\n\n")
-	for _, s := range shortcuts {
-		sb.WriteString(fmt.Sprintf("  %s  %s\n",
-			styleHelpKey.Render(fmt.Sprintf("%-20s", s.key)),
-			styleHelpDesc.Render(s.desc),
-		))
-	}
-	return sb.String()
-}
-
-// sendMessage fires the Glean chat API and returns the NDJSON as a streamDoneMsg.
-func (m *Model) sendMessage(question string) tea.Cmd {
+	sdk := m.sdk
 	return func() tea.Msg {
 		agentDefault := components.AgentEnumDefault
 		modeDefault := components.ModeDefault
-		authorUser := components.AuthorUser
 		stream := true
 
-		messages := []components.ChatMessage{
-			{
-				Author:      authorUser.ToPointer(),
-				MessageType: components.MessageTypeContent.ToPointer(),
-				Fragments:   []components.ChatMessageFragment{{Text: &question}},
-			},
-		}
-
 		chatReq := components.ChatRequest{
-			Messages:    messages,
+			Messages:    msgs,
 			AgentConfig: &components.AgentConfig{Agent: agentDefault.ToPointer(), Mode: modeDefault.ToPointer()},
 			Stream:      &stream,
 		}
 
-		resp, err := m.sdk.Client.Chat.CreateStream(context.Background(), chatReq, nil)
+		resp, err := sdk.Client.Chat.CreateStream(context.Background(), chatReq, nil)
 		if err != nil {
 			return streamDoneMsg{err: err}
 		}
@@ -266,8 +244,79 @@ func (m *Model) sendMessage(question string) tea.Cmd {
 	}
 }
 
-// parseNDJSON processes the NDJSON stream string and extracts the full text + sources.
-func (m *Model) parseNDJSON(ndjson string) (string, []Source) {
+// addTurnToHistory appends a rendered turn to the viewport history buffer.
+func (m *Model) addTurnToHistory(turn Turn) {
+	switch turn.Role {
+	case "user":
+		m.history.WriteString("\n")
+		m.history.WriteString(styleUserLabel.Render("  > "))
+		m.history.WriteString(styleUserText.Render(turn.Content))
+		m.history.WriteString("\n\n")
+
+	case "assistant":
+		rendered := m.renderMarkdown(turn.Content)
+		m.history.WriteString(rendered)
+		if len(turn.Sources) > 0 {
+			m.history.WriteString(styleSourceHeader.Render("  Sources\n"))
+			for i, s := range turn.Sources {
+				title := s.Title
+				if title == "" {
+					title = s.URL
+				}
+				ds := s.Datasource
+				if ds == "" {
+					ds = "glean"
+				}
+				m.history.WriteString(styleSourceItem.Render(
+					"  " + strings.Repeat("─", 2) + " [" + itoa(i+1) + "] " + ds + ": " + title + "\n",
+				))
+			}
+			m.history.WriteString("\n")
+		}
+	}
+}
+
+// addTurnToConversation appends an SDK ChatMessage to the conversation history
+// that will be sent on the next API call (enables multi-turn context).
+func (m *Model) addTurnToConversation(turn Turn) {
+	switch turn.Role {
+	case "user":
+		text := turn.Content
+		m.conversationMsgs = append(m.conversationMsgs, components.ChatMessage{
+			Author:      components.AuthorUser.ToPointer(),
+			MessageType: components.MessageTypeContent.ToPointer(),
+			Fragments:   []components.ChatMessageFragment{{Text: &text}},
+		})
+	case "assistant":
+		text := turn.Content
+		m.conversationMsgs = append(m.conversationMsgs, components.ChatMessage{
+			Author:      components.AuthorGleanAi.ToPointer(),
+			MessageType: components.MessageTypeContent.ToPointer(),
+			Fragments:   []components.ChatMessageFragment{{Text: &text}},
+		})
+	}
+}
+
+// renderMarkdown renders text using Glamour, falling back to plain text.
+func (m *Model) renderMarkdown(text string) string {
+	if m.renderer == nil {
+		return text + "\n"
+	}
+	rendered, err := m.renderer.Render(text)
+	if err != nil {
+		return text + "\n"
+	}
+	return rendered
+}
+
+func (m *Model) appendError(err error) {
+	m.history.WriteString("\n")
+	m.history.WriteString(styleError.Render("  Error: " + err.Error()))
+	m.history.WriteString("\n\n")
+}
+
+// parseNDJSON extracts the full text and source citations from a buffered NDJSON response.
+func parseNDJSON(ndjson string) (string, []Source) {
 	var textParts []string
 	var sources []Source
 
@@ -286,19 +335,23 @@ func (m *Model) parseNDJSON(ndjson string) (string, []Source) {
 					textParts = append(textParts, *frag.Text)
 				}
 				for _, sr := range frag.StructuredResults {
-					if sr.Document != nil {
-						src := Source{}
-						if sr.Document.Title != nil {
-							src.Title = *sr.Document.Title
-						}
-						if sr.Document.URL != nil {
-							src.URL = *sr.Document.URL
-						}
-						if sr.Document.Datasource != nil {
-							src.Datasource = *sr.Document.Datasource
-						} else if sr.Document.Metadata != nil && sr.Document.Metadata.Datasource != nil {
-							src.Datasource = *sr.Document.Metadata.Datasource
-						}
+					if sr.Document == nil {
+						continue
+					}
+					src := Source{}
+					if sr.Document.Title != nil {
+						src.Title = *sr.Document.Title
+					}
+					if sr.Document.URL != nil {
+						src.URL = *sr.Document.URL
+					}
+					if sr.Document.Datasource != nil {
+						src.Datasource = *sr.Document.Datasource
+					} else if sr.Document.Metadata != nil && sr.Document.Metadata.Datasource != nil {
+						src.Datasource = *sr.Document.Metadata.Datasource
+					}
+					// Deduplicate by URL
+					if !containsSource(sources, src.URL) {
 						sources = append(sources, src)
 					}
 				}
@@ -309,47 +362,24 @@ func (m *Model) parseNDJSON(ndjson string) (string, []Source) {
 	return strings.Join(textParts, ""), sources
 }
 
-// appendTurnToHistory renders a session turn into the history buffer.
-func (m *Model) appendTurnToHistory(turn Turn) {
-	switch turn.Role {
-	case "user":
-		m.history.WriteString(styleUserPrompt.Render("You: "))
-		m.history.WriteString(turn.Content)
-		m.history.WriteString("\n\n")
-	case "assistant":
-		rendered, err := m.renderer.Render(turn.Content)
-		if err != nil {
-			rendered = turn.Content
-		}
-		m.appendRenderedResponse(rendered, turn.Sources)
-	}
-}
-
-// appendRenderedResponse adds a rendered AI response + source list to history.
-func (m *Model) appendRenderedResponse(rendered string, sources []Source) {
-	m.history.WriteString(rendered)
-	if len(sources) > 0 {
-		m.history.WriteString(styleSource.Render("\nSources:\n"))
-		for i, s := range sources {
-			title := s.Title
-			if title == "" {
-				title = s.URL
-			}
-			m.history.WriteString(styleSource.Render(fmt.Sprintf("  [%d] %s — %s\n", i+1, s.Datasource, title)))
-		}
-		m.history.WriteString("\n")
-	}
-}
-
-func (m *Model) appendError(err error) {
-	m.history.WriteString(fmt.Sprintf("\nError: %v\n\n", err))
-}
-
-func (m *Model) lastUserMessage() string {
-	for i := len(m.session.Turns) - 1; i >= 0; i-- {
-		if m.session.Turns[i].Role == "user" {
-			return m.session.Turns[i].Content
+func containsSource(sources []Source, url string) bool {
+	for _, s := range sources {
+		if s.URL == url {
+			return true
 		}
 	}
-	return ""
+	return false
+}
+
+// itoa is a tiny int-to-string helper to avoid importing strconv.
+func itoa(n int) string {
+	if n == 0 {
+		return "0"
+	}
+	b := make([]byte, 0, 4)
+	for n > 0 {
+		b = append([]byte{byte('0' + n%10)}, b...)
+		n /= 10
+	}
+	return string(b)
 }

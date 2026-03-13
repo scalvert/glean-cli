@@ -2,39 +2,58 @@ package tui
 
 import "github.com/charmbracelet/lipgloss"
 
-// Glean brand colors
+// Brand colours — Glean design system.
 const (
-	colorBlue   = "#4339F2"
-	colorYellow = "#DFFC6A"
-	colorGray   = "#586069"
-	colorWhite  = "#FFFFFF"
+	colorBlue  = "#4339F2" // Glean primary blue
+	colorMuted = "#6B7280" // dimmed text (status bar, hints)
+	colorError = "#EF4444" // error red
 )
 
 var (
-	styleStatusBar = lipgloss.NewStyle().
-			Background(lipgloss.Color(colorBlue)).
-			Foreground(lipgloss.Color(colorWhite)).
-			Padding(0, 1)
-
-	styleUserPrompt = lipgloss.NewStyle().
+	// Logo — rendered in Glean blue, centered.
+	styleLogo = lipgloss.NewStyle().
 			Foreground(lipgloss.Color(colorBlue)).
 			Bold(true)
 
-	styleAIResponse = lipgloss.NewStyle().
-			Foreground(lipgloss.Color(colorWhite))
-
-	styleSource = lipgloss.NewStyle().
-			Foreground(lipgloss.Color(colorGray)).
+	styleTagline = lipgloss.NewStyle().
+			Foreground(lipgloss.Color(colorMuted)).
 			Italic(true)
 
-	styleHelpKey = lipgloss.NewStyle().
-			Foreground(lipgloss.Color(colorYellow)).
+	// User message prefix ">" and label.
+	styleUserLabel = lipgloss.NewStyle().
+			Foreground(lipgloss.Color(colorBlue)).
 			Bold(true)
 
-	styleHelpDesc = lipgloss.NewStyle().
-			Foreground(lipgloss.Color(colorGray))
+	styleUserText = lipgloss.NewStyle().
+			Foreground(lipgloss.AdaptiveColor{Light: "#111111", Dark: "#E5E7EB"})
 
-	styleBorder = lipgloss.NewStyle().
-			Border(lipgloss.NormalBorder()).
-			BorderForeground(lipgloss.Color(colorBlue))
+	// Cited sources block.
+	styleSourceHeader = lipgloss.NewStyle().
+				Foreground(lipgloss.Color(colorMuted)).
+				Italic(true)
+
+	styleSourceItem = lipgloss.NewStyle().
+			Foreground(lipgloss.Color(colorMuted))
+
+	// Error text.
+	styleError = lipgloss.NewStyle().
+			Foreground(lipgloss.Color(colorError)).
+			Bold(true)
+
+	// Status / hint bar — one line at the very bottom.
+	styleStatusBar = lipgloss.NewStyle().
+			Foreground(lipgloss.Color(colorMuted))
+
+	styleStatusAccent = lipgloss.NewStyle().
+				Foreground(lipgloss.Color(colorBlue)).
+				Bold(true)
+
+	// Input border — rounded corners, brand blue when focused.
+	styleInputFocused = lipgloss.NewStyle().
+				Border(lipgloss.RoundedBorder()).
+				BorderForeground(lipgloss.Color(colorBlue))
+
+	// Help overlay.
+	styleHelpKey  = lipgloss.NewStyle().Foreground(lipgloss.Color(colorBlue)).Bold(true)
+	styleHelpDesc = lipgloss.NewStyle().Foreground(lipgloss.Color(colorMuted))
 )

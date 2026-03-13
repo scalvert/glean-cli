@@ -1,0 +1,153 @@
+package tui
+
+import (
+	"fmt"
+	"strings"
+
+	"github.com/charmbracelet/lipgloss"
+)
+
+// gleanLogo is the ASCII art wordmark using box-drawing characters.
+const gleanLogo = `╔═╗╦  ╔═╗╔═╗╔╗╔
+║ ╦║  ║╣ ╠═╣║║║
+╚═╝╩═╝╚═╝╩ ╩╝╚╝`
+
+const gleanTagline = "AI-powered search for your company's knowledge"
+
+// View implements tea.Model.
+func (m *Model) View() string {
+	if m.width == 0 {
+		return ""
+	}
+	if m.showHelp {
+		return m.helpView()
+	}
+
+	// Main conversation area.
+	var mainArea string
+	if m.history.Len() == 0 {
+		mainArea = m.welcomeView()
+	} else {
+		mainArea = m.viewport.View()
+	}
+
+	// Input box — rounded border.
+	inputBox := styleInputFocused.
+		Width(m.width - 4).
+		PaddingLeft(1).
+		PaddingRight(1).
+		Render(m.textarea.View())
+
+	// Status line.
+	status := m.statusLine()
+
+	return lipgloss.JoinVertical(lipgloss.Left,
+		mainArea,
+		"",
+		inputBox,
+		status,
+	)
+}
+
+// welcomeView renders the centered logo and start hint when the session is empty.
+func (m *Model) welcomeView() string {
+	logoStyled := styleLogo.Render(gleanLogo)
+	taglineStyled := styleTagline.Render(gleanTagline)
+	hintStyled := styleSourceHeader.Render("Start typing to begin a conversation")
+
+	logoH := strings.Count(gleanLogo, "\n") + 1
+	totalH := logoH + 4 // tagline + blank + hint
+	topPad := (m.viewport.Height - totalH) / 2
+	if topPad < 1 {
+		topPad = 1
+	}
+
+	var sb strings.Builder
+	for range topPad {
+		sb.WriteString("\n")
+	}
+	sb.WriteString(center(logoStyled, m.width))
+	sb.WriteString("\n")
+	sb.WriteString(center(taglineStyled, m.width))
+	sb.WriteString("\n\n")
+	sb.WriteString(center(hintStyled, m.width))
+
+	// Pad out to fill the viewport height so the input box doesn't jump.
+	content := sb.String()
+	lines := strings.Count(content, "\n")
+	for i := lines; i < m.viewport.Height; i++ {
+		content += "\n"
+	}
+	return content
+}
+
+// statusLine renders the one-line hint bar at the bottom of the screen.
+func (m *Model) statusLine() string {
+	var left string
+	if m.isStreaming {
+		left = m.spinner.View() + " " + styleStatusBar.Render("Searching…")
+	} else {
+		turns := len(m.session.Turns)
+		if turns > 0 {
+			left = styleStatusAccent.Render(fmt.Sprintf("%d", turns)) +
+				styleStatusBar.Render(" turn"+pluralS(turns))
+		}
+	}
+
+	right := styleStatusBar.Render("ctrl+r new  ctrl+l clear  ? help  ctrl+c quit")
+
+	leftW := lipgloss.Width(left)
+	rightW := lipgloss.Width(right)
+	gap := m.width - leftW - rightW - 2
+	if gap < 1 {
+		gap = 1
+	}
+
+	return left + strings.Repeat(" ", gap) + right
+}
+
+// helpView renders the full-screen keyboard shortcut reference.
+func (m *Model) helpView() string {
+	shortcuts := []struct{ key, desc string }{
+		{"enter", "Send message"},
+		{"shift+enter", "New line in input"},
+		{"↑ / ↓  or  pgup / pgdn", "Scroll history"},
+		{"ctrl+r", "New session (clear history)"},
+		{"ctrl+l", "Clear screen"},
+		{"ctrl+c  /  esc", "Quit"},
+		{"?", "Toggle this help"},
+	}
+
+	var sb strings.Builder
+	sb.WriteString("\n")
+	sb.WriteString(center(styleLogo.Render("Keyboard shortcuts"), m.width))
+	sb.WriteString("\n\n")
+	for _, s := range shortcuts {
+		line := "  " +
+			styleHelpKey.Render(fmt.Sprintf("%-26s", s.key)) +
+			"  " +
+			styleHelpDesc.Render(s.desc)
+		sb.WriteString(line + "\n")
+	}
+	sb.WriteString("\n")
+	sb.WriteString(center(styleStatusBar.Render("press ? to close"), m.width))
+	sb.WriteString("\n")
+	return sb.String()
+}
+
+// center horizontally centers a (possibly ANSI-styled) string within termWidth columns.
+func center(s string, termWidth int) string {
+	visible := lipgloss.Width(s)
+	pad := (termWidth - visible) / 2
+	if pad < 0 {
+		pad = 0
+	}
+	return strings.Repeat(" ", pad) + s
+}
+
+func pluralS(n int) string {
+	if n == 1 {
+		return ""
+	}
+	return "s"
+}
