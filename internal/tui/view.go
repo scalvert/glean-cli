@@ -7,10 +7,13 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-// gleanLogo is the ASCII art wordmark using box-drawing characters.
-const gleanLogo = `╔═╗╦  ╔═╗╔═╗╔╗╔
-║ ╦║  ║╣ ╠═╣║║║
-╚═╝╩═╝╚═╝╩ ╩╝╚╝`
+// gleanLogo is the ASCII wordmark for Glean, styled after the brand logotype.
+// Uses only standard printable ASCII for maximum terminal compatibility.
+// Rendered in Glean blue on the welcome screen.
+const gleanLogo = "  __ _| | ___  __ _ _ __\n" +
+	" / _` | |/ _ \\/ _` | '_ \\\n" +
+	"| (_| | |  __/ (_| | | | |\n" +
+	" \\__, |_|\\___|\\_,_|_| |_|"
 
 const gleanTagline = "AI-powered search for your company's knowledge"
 
@@ -51,7 +54,10 @@ func (m *Model) View() string {
 
 // welcomeView renders the centered logo and start hint when the session is empty.
 func (m *Model) welcomeView() string {
-	logoStyled := styleLogo.Render(gleanLogo)
+	// Center each logo line individually so multi-line blocks render correctly.
+	// Applying styleLogo.Render to the entire block and then prepending spaces
+	// only pads the first physical line — subsequent lines start at column 0.
+	logoBlock := centerBlock(gleanLogo, styleLogo, m.width)
 	taglineStyled := styleTagline.Render(gleanTagline)
 	hintStyled := styleSourceHeader.Render("Start typing to begin a conversation")
 
@@ -66,7 +72,7 @@ func (m *Model) welcomeView() string {
 	for range topPad {
 		sb.WriteString("\n")
 	}
-	sb.WriteString(center(logoStyled, m.width))
+	sb.WriteString(logoBlock)
 	sb.WriteString("\n")
 	sb.WriteString(center(taglineStyled, m.width))
 	sb.WriteString("\n\n")
@@ -135,7 +141,19 @@ func (m *Model) helpView() string {
 	return sb.String()
 }
 
-// center horizontally centers a (possibly ANSI-styled) string within termWidth columns.
+// centerBlock renders each line of a multi-line string with the given style
+// and centers each line independently within termWidth columns.
+func centerBlock(s string, style lipgloss.Style, termWidth int) string {
+	lines := strings.Split(s, "\n")
+	result := make([]string, len(lines))
+	for i, line := range lines {
+		result[i] = center(style.Render(line), termWidth)
+	}
+	return strings.Join(result, "\n")
+}
+
+// center horizontally centers a (possibly ANSI-styled) single-line string
+// within termWidth columns.
 func center(s string, termWidth int) string {
 	visible := lipgloss.Width(s)
 	pad := (termWidth - visible) / 2

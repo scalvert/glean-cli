@@ -56,7 +56,7 @@ func New(sdk *glean.Glean, session *Session) (*Model, error) {
 	sp.Style = styleStatusAccent
 
 	renderer, err := glamour.NewTermRenderer(
-		glamour.WithAutoStyle(),
+		glamour.WithStandardStyle("dark"),
 		glamour.WithWordWrap(100),
 	)
 	if err != nil {
@@ -206,7 +206,7 @@ func (m *Model) recalculateLayout() {
 			wrapWidth = 40
 		}
 		if r, err := glamour.NewTermRenderer(
-			glamour.WithAutoStyle(),
+			glamour.WithStandardStyle("dark"),
 			glamour.WithWordWrap(wrapWidth),
 		); err == nil {
 			m.renderer = r
