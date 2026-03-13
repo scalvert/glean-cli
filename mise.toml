@@ -25,7 +25,7 @@ echo "- golangci-lint (for linting)"
 [tasks.clean]
 description = "Clean the build directory"
 run = """
-rm -f glean
+rm -f glean glean-cli
 go clean
 rm -rf dist/
 """
