@@ -256,9 +256,9 @@ func (s *ChatState) processFragment(fragment components.ChatMessageFragment, has
 		} else {
 			fmt.Fprint(s.cmd.OutOrStdout(), text)
 			if !hasMoreFragments {
-				fmt.Println()
+				fmt.Fprintln(s.cmd.OutOrStdout())
 				if s.firstLine {
-					fmt.Println()
+					fmt.Fprintln(s.cmd.OutOrStdout())
 					s.firstLine = false
 				}
 			}
