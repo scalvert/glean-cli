@@ -17,7 +17,6 @@ import (
 	"github.com/scalvert/glean-cli/internal/theme"
 	"github.com/scalvert/glean-cli/internal/utils"
 	"github.com/spf13/cobra"
-	"golang.org/x/exp/maps"
 )
 
 const (
@@ -340,7 +339,10 @@ func formatReadingStage(sources []api.StructuredResult) string {
 		}
 	}
 
-	datasources := maps.Keys(sourcesByType)
+	datasources := make([]string, 0, len(sourcesByType))
+	for ds := range sourcesByType {
+		datasources = append(datasources, ds)
+	}
 	sort.Strings(datasources)
 
 	var details []string
