@@ -6,7 +6,7 @@
 
 ### Prerequisites
 
-- Go 1.19 or higher
+- Go 1.24 or higher
 - [mise](https://mise.jdx.dev/getting-started.html) (tool and task runner)
 - Git
 
@@ -115,9 +115,8 @@ Run `mise tasks` to see all available tasks. Common tasks include:
 ## Release Process
 
 1. Update version numbers in relevant files
-2. Update CHANGELOG.md following Keep a Changelog format
-3. Create a new release tag
-4. Build and publish new artifacts
+2. Create a new release tag
+3. Build and publish new artifacts
 
 ## Getting Help
 
