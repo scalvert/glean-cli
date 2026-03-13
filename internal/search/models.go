@@ -1,11 +1,7 @@
 package search
 
 import (
-	"fmt"
-
 	"github.com/scalvert/glean-cli/internal/api"
-	"github.com/scalvert/glean-cli/internal/theme"
-	"github.com/scalvert/glean-cli/internal/utils"
 )
 
 type Document = api.Document
@@ -21,20 +17,16 @@ type Options struct {
 	SessionInfo       *SessionInfo        `json:"sessionInfo,omitempty"`
 	SourceDocument    *Document           `json:"sourceDocument,omitempty"`
 	RequestOptions    *RequestOptions     `json:"requestOptions,omitempty"`
-	Template          string
-	OutputFormat      string
-	Query             string   `json:"query"`
-	Cursor            string   `json:"cursor,omitempty"`
-	Timestamp         string   `json:"timestamp,omitempty"`
-	TrackingToken     string   `json:"trackingToken,omitempty"`
-	People            []Person `json:"people,omitempty"`
-	ResultTabIds      []string `json:"resultTabIds,omitempty"`
-	PageSize          int      `json:"pageSize,omitempty"`
-	MaxSnippetSize    int      `json:"maxSnippetSize,omitempty"`
-	TimeoutMillis     int      `json:"timeoutMillis,omitempty"`
-	DisableSpellcheck bool     `json:"disableSpellcheck,omitempty"`
-	NoColor           bool
-	Interactive       bool // Whether to run in interactive mode
+	Query             string              `json:"query"`
+	Cursor            string              `json:"cursor,omitempty"`
+	Timestamp         string              `json:"timestamp,omitempty"`
+	TrackingToken     string              `json:"trackingToken,omitempty"`
+	People            []Person            `json:"people,omitempty"`
+	ResultTabIds      []string            `json:"resultTabIds,omitempty"`
+	PageSize          int                 `json:"pageSize,omitempty"`
+	MaxSnippetSize    int                 `json:"maxSnippetSize,omitempty"`
+	TimeoutMillis     int                 `json:"timeoutMillis,omitempty"`
+	DisableSpellcheck bool                `json:"disableSpellcheck,omitempty"`
 }
 
 type SearchInputDetails struct {
@@ -192,27 +184,3 @@ type SearchMetadata struct {
 	ObjectType string  `json:"objectType,omitempty"`
 }
 
-// resultItem represents a search result in the list
-type resultItem struct {
-	title  string
-	url    string
-	desc   string
-	source string
-	index  int
-}
-
-func (i resultItem) Title() string {
-	return fmt.Sprintf("%s %s | %s",
-		theme.Blue(fmt.Sprint(i.index+1)),
-		theme.Blue(utils.FormatDatasource(i.source)),
-		theme.Bold(i.title),
-	)
-}
-
-func (i resultItem) Description() string {
-	return theme.Yellow(utils.MaybeAnonymizeURL(i.url)) + "\n" + i.desc
-}
-
-func (i resultItem) FilterValue() string {
-	return i.title
-}

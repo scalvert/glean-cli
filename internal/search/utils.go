@@ -3,20 +3,10 @@ package search
 import (
 	"encoding/json"
 	"fmt"
-	"net/url"
-	"os/exec"
+	"io"
 	"time"
 
-	tea "github.com/charmbracelet/bubbletea"
 	"github.com/scalvert/glean-cli/internal/http"
-)
-
-const (
-	keyLowerQ = "q"
-	keyUpperQ = "Q"
-	keyQuit   = "ctrl+c"
-	keyEsc    = "esc"
-	keySpace  = " "
 )
 
 // GetTimezoneOffset returns the current timezone offset in minutes
@@ -40,6 +30,22 @@ func AddFacetFilter(opts *Options, fieldName string, values []string) {
 	opts.RequestOptions.FacetFilters = append(opts.RequestOptions.FacetFilters, filter)
 }
 
+// RunSearch executes a search and writes the results as JSON to w.
+func RunSearch(opts *Options, client http.Client, w io.Writer) error {
+	resp, err := performSearch(client, opts, "", "")
+	if err != nil {
+		return err
+	}
+
+	data, err := json.MarshalIndent(resp, "", "  ")
+	if err != nil {
+		return fmt.Errorf("error marshaling search results: %w", err)
+	}
+
+	_, err = fmt.Fprintln(w, string(data))
+	return err
+}
+
 // performSearch executes a search request with the given parameters
 func performSearch(client http.Client, opts *Options, cursor, trackingToken string) (*Response, error) {
 	requestBody := map[string]interface{}{
@@ -50,7 +56,6 @@ func performSearch(client http.Client, opts *Options, cursor, trackingToken stri
 		"timeoutMillis":     opts.TimeoutMillis,
 	}
 
-	// Add optional parameters if they're set
 	if opts.InputDetails != nil {
 		requestBody["inputDetails"] = opts.InputDetails
 	}
@@ -96,20 +101,4 @@ func performSearch(client http.Client, opts *Options, cursor, trackingToken stri
 	}
 
 	return &searchResp, nil
-}
-
-// openURL opens a URL in the default browser after validating it
-func openURL(urlStr string) tea.Cmd {
-	// Validate URL
-	u, err := url.Parse(urlStr)
-	if err != nil {
-		return nil
-	}
-
-	// Only allow http/https URLs
-	if u.Scheme != "http" && u.Scheme != "https" {
-		return nil
-	}
-
-	return tea.ExecProcess(exec.Command("open", urlStr), nil)
 }
