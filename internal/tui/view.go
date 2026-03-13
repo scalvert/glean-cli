@@ -7,13 +7,16 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-// gleanLogo is the ASCII wordmark for Glean, styled after the brand logotype.
-// Uses only standard printable ASCII for maximum terminal compatibility.
-// Rendered in Glean blue on the welcome screen.
-const gleanLogo = "  __ _| | ___  __ _ _ __\n" +
-	" / _` | |/ _ \\/ _` | '_ \\\n" +
-	"| (_| | |  __/ (_| | | | |\n" +
-	" \\__, |_|\\___|\\_,_|_| |_|"
+// gleanLogo is a braille Unicode rendering of the Glean wordmark, generated
+// from the official logo image via chafa (--symbols braille --size 60x6).
+// Braille's 2×4 dot grid reproduces the circular "g" and curved letterforms
+// far more faithfully than ASCII art. Each line is 30 terminal columns wide.
+const gleanLogo = "⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+	"⠀⢀⣀⣀⣀⣴⡄⢸⣿⠀⠀⠀⣀⣀⣀⠀⠀⠀⢀⣀⣀⡀⠀⠀⠀⢀⣀⣀⡀⠀\n" +
+	"⣰⡿⠛⠛⠻⣿⡀⢸⣿⠀⣰⡿⠛⢛⣻⣷⡀⣰⡿⠛⠛⠻⣷⡀⣴⡿⠛⠛⢿⣦\n" +
+	"⢿⣇⠀⠀⢀⣿⠇⢸⣿⠀⢿⣷⠿⠟⢋⣭⠄⣿⣇⠀⠀⢀⣿⡇⣿⡇⠀⠀⢸⣿\n" +
+	"⠈⠻⠿⠾⠿⠋⣠⡈⠻⠿⠈⠻⠿⠾⠿⠋⠀⠈⠻⠿⠾⠿⠿⠇⠿⠇⠀⠀⠸⠿\n" +
+	"⠀⠀⣶⣶⣶⠿⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"
 
 const gleanTagline = "AI-powered search for your company's knowledge"
 
