@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/bradleyjkemp/cupaloy/v2"
-	"github.com/scalvert/glean-cli/internal/api"
+	"github.com/gleanwork/api-client-go/models/components"
 	"github.com/scalvert/glean-cli/internal/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -204,14 +204,14 @@ func TestReadingStageFormatting(t *testing.T) {
 	data := fixtures.Load("reading_stage_sources")
 
 	var fixtureData struct {
-		Sources []api.StructuredResult `json:"sources"`
+		Sources []components.StructuredResult `json:"sources"`
 	}
 	err := json.Unmarshal(data, &fixtureData)
 	require.NoError(t, err)
 
 	tests := []struct {
 		name    string
-		sources []api.StructuredResult
+		sources []components.StructuredResult
 	}{
 		{
 			name:    "no sources",
@@ -231,7 +231,7 @@ func TestReadingStageFormatting(t *testing.T) {
 		},
 		{
 			name:    "multiple sources from different datasources",
-			sources: []api.StructuredResult{fixtureData.Sources[0], fixtureData.Sources[1]},
+			sources: []components.StructuredResult{fixtureData.Sources[0], fixtureData.Sources[1]},
 		},
 	}
 

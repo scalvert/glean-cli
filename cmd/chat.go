@@ -1,19 +1,16 @@
 package cmd
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
-	"io"
 	"regexp"
 	"sort"
 	"strings"
 	"time"
 
 	"github.com/briandowns/spinner"
-	"github.com/scalvert/glean-cli/internal/api"
-	"github.com/scalvert/glean-cli/internal/config"
-	"github.com/scalvert/glean-cli/internal/http"
+	"github.com/gleanwork/api-client-go/models/components"
+	gleanClient "github.com/scalvert/glean-cli/internal/client"
 	"github.com/scalvert/glean-cli/internal/theme"
 	"github.com/scalvert/glean-cli/internal/utils"
 	"github.com/spf13/cobra"
@@ -31,53 +28,14 @@ var (
 	summarizePattern = regexp.MustCompile(`^(?i)summariz(e|ing)\b`)
 )
 
-// ChatMessage represents a message in a chat conversation with fragments of text.
-type ChatMessage struct {
-	Author      string `json:"author"`      // USER or GLEAN_AI
-	MessageType string `json:"messageType"` // e.g., CONTENT
-	Fragments   []struct {
-		Text string `json:"text"`
-	} `json:"fragments"`
-}
-
-// ChatRequest represents a request to the Glean chat API.
-type ChatRequest struct {
-	AgentConfig   AgentConfig   `json:"agentConfig"`
-	ApplicationID string        `json:"applicationId,omitempty"`
-	ChatID        string        `json:"chatId,omitempty"`
-	Messages      []ChatMessage `json:"messages"`
-	TimeoutMillis int           `json:"timeoutMillis"`
-	Stream        bool          `json:"stream"`
-	SaveChat      bool          `json:"saveChat"`
-}
-
-// AgentConfig configures the behavior of the chat agent.
-type AgentConfig struct {
-	Agent string `json:"agent"` // e.g., GPT
-	Mode  string `json:"mode"`  // e.g., DEFAULT
-}
-
-// ChatResponse represents a response from the Glean chat API.
-type ChatResponse struct {
-	ChatSessionTrackingToken string `json:"chatSessionTrackingToken"`
-	Messages                 []struct {
-		Author    string `json:"author"`
-		Fragments []struct {
-			Text              string                 `json:"text"`
-			StructuredResults []api.StructuredResult `json:"structuredResults,omitempty"`
-		} `json:"fragments"`
-		HasMoreFragments bool `json:"hasMoreFragments,omitempty"`
-	} `json:"messages"`
-}
+// ChatStageType represents different stages of chat output
+type ChatStageType string
 
 // stageInfo represents a parsed chat stage
 type stageInfo struct {
 	stage  ChatStageType
 	detail string
 }
-
-// ChatStageType represents different stages of chat output
-type ChatStageType string
 
 // ChatState holds the state for processing chat responses
 type ChatState struct {
@@ -116,126 +74,39 @@ Example:
 	return cmd
 }
 
-// sendChatRequest creates and sends a chat request to the Glean API
-func sendChatRequest(client http.Client, question string, timeoutMillis int, saveChat bool) (io.ReadCloser, error) {
-	req := ChatRequest{
-		Messages: []ChatMessage{
+// executeChat handles the chat interaction with Glean's API.
+func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveChat bool) error {
+	ctx := cmd.Context()
+
+	sdk, err := gleanClient.NewFromConfig()
+	if err != nil {
+		return err
+	}
+
+	agentDefault := components.AgentEnumDefault
+	modeDefault := components.ModeDefault
+	authorUser := components.AuthorUser
+	timeout := int64(timeoutMillis)
+	save := saveChat
+	stream := true
+
+	chatReq := components.ChatRequest{
+		Messages: []components.ChatMessage{
 			{
-				Author:      "USER",
-				MessageType: "CONTENT",
-				Fragments: []struct {
-					Text string `json:"text"`
-				}{
-					{Text: question},
+				Author:      authorUser.ToPointer(),
+				MessageType: components.MessageTypeContent.ToPointer(),
+				Fragments: []components.ChatMessageFragment{
+					{Text: &question},
 				},
 			},
 		},
-		Stream: true,
-		AgentConfig: AgentConfig{
-			Agent: "DEFAULT",
-			Mode:  "DEFAULT",
+		AgentConfig: &components.AgentConfig{
+			Agent: agentDefault.ToPointer(),
+			Mode:  modeDefault.ToPointer(),
 		},
-		SaveChat:      saveChat,
-		TimeoutMillis: timeoutMillis,
-	}
-
-	jsonBytes, err := json.Marshal(req)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling request: %w", err)
-	}
-
-	httpReq := &http.Request{
-		Method: "POST",
-		Path:   "chat",
-		Body:   json.RawMessage(jsonBytes),
-		Stream: true,
-	}
-
-	return client.SendStreamingRequest(httpReq)
-}
-
-// processFragment handles a single chat message fragment
-func (s *ChatState) processFragment(fragment struct {
-	Text              string                 `json:"text"`
-	StructuredResults []api.StructuredResult `json:"structuredResults,omitempty"`
-}, hasMoreFragments bool) {
-	if len(fragment.StructuredResults) > 0 {
-		if s.readingStage == nil {
-			fmt.Fprintln(s.cmd.OutOrStdout(), formatChatStage(StageReading, formatReadingStage(fragment.StructuredResults)))
-			s.isStageOutput = true
-		}
-		s.readingStage = nil
-		return
-	}
-
-	if fragment.Text == "" {
-		return
-	}
-
-	if stage := isStage(fragment.Text); stage != nil {
-		if stage.stage == StageReading {
-			s.readingStage = stage
-			return
-		}
-		if stage.stage == StageSearching && stage.detail == "" {
-			s.searchStage = stage
-			return
-		}
-		fmt.Fprintln(s.cmd.OutOrStdout(), formatChatStage(stage.stage, stage.detail))
-		if stage.stage == StageSummary {
-			fmt.Fprintln(s.cmd.OutOrStdout())
-		}
-		if stage.stage != StageSummary {
-			s.isStageOutput = true
-		}
-	} else if s.searchStage != nil {
-		fmt.Fprintln(s.cmd.OutOrStdout(), formatChatStage(s.searchStage.stage, fragment.Text))
-		s.searchStage = nil
-		s.isStageOutput = true
-	} else {
-		if s.isStageOutput {
-			fmt.Fprint(s.cmd.OutOrStdout(), formatChatResponse(fragment.Text))
-			s.isStageOutput = false
-		} else {
-			fmt.Fprint(s.cmd.OutOrStdout(), fragment.Text)
-			if !hasMoreFragments {
-				fmt.Println()
-				if s.firstLine {
-					fmt.Println()
-					s.firstLine = false
-				}
-			}
-		}
-	}
-}
-
-// processChatResponse processes a single line of chat response
-func (s *ChatState) processChatResponse(line string) error {
-	var chatResp ChatResponse
-	if err := json.Unmarshal([]byte(line), &chatResp); err != nil {
-		return fmt.Errorf("error parsing response line: %w", err)
-	}
-
-	for _, msg := range chatResp.Messages {
-		for _, fragment := range msg.Fragments {
-			s.processFragment(fragment, msg.HasMoreFragments)
-		}
-	}
-
-	return nil
-}
-
-// executeChat handles the chat interaction with Glean's API, streaming the response
-// and formatting the output for the terminal.
-func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveChat bool) error {
-	cfg, err := config.LoadConfig()
-	if err != nil {
-		return fmt.Errorf("failed to load config: %w", err)
-	}
-
-	client, err := http.NewClient(cfg)
-	if err != nil {
-		return err
+		SaveChat:      &save,
+		TimeoutMillis: &timeout,
+		Stream:        &stream,
 	}
 
 	spin := spinner.New(spinner.CharSets[14], 100*time.Millisecond)
@@ -243,27 +114,22 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 	spin.Start()
 	defer spin.Stop()
 
-	responseBody, err := sendChatRequest(client, question, timeoutMillis, saveChat)
+	resp, err := sdk.Client.Chat.CreateStream(ctx, chatReq, nil)
 	if err != nil {
-		return err
+		return fmt.Errorf("chat request failed: %w", err)
 	}
-	defer responseBody.Close()
+
+	if resp.ChatRequestStream == nil {
+		return nil
+	}
 
 	state := &ChatState{
 		cmd:       cmd,
 		firstLine: true,
 	}
 
-	reader := bufio.NewReader(responseBody)
-	for {
-		line, err := reader.ReadString('\n')
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			return fmt.Errorf("error reading response: %w", err)
-		}
-
+	lines := strings.Split(*resp.ChatRequestStream, "\n")
+	for _, line := range lines {
 		line = strings.TrimSpace(line)
 		if line == "" {
 			continue
@@ -281,7 +147,81 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 	return nil
 }
 
-// formatChatStage formats a chat stage output with a colored checkmark and appropriate spacing.
+// processChatResponse processes a single line of chat response JSON.
+func (s *ChatState) processChatResponse(line string) error {
+	var chatResp components.ChatResponse
+	if err := json.Unmarshal([]byte(line), &chatResp); err != nil {
+		return fmt.Errorf("error parsing response line: %w", err)
+	}
+
+	for _, msg := range chatResp.Messages {
+		hasMore := msg.HasMoreFragments != nil && *msg.HasMoreFragments
+		for _, fragment := range msg.Fragments {
+			s.processFragment(fragment, hasMore)
+		}
+	}
+
+	return nil
+}
+
+// processFragment handles a single chat message fragment.
+func (s *ChatState) processFragment(fragment components.ChatMessageFragment, hasMoreFragments bool) {
+	if len(fragment.StructuredResults) > 0 {
+		if s.readingStage == nil {
+			fmt.Fprintln(s.cmd.OutOrStdout(), formatChatStage(StageReading, formatReadingStage(fragment.StructuredResults)))
+			s.isStageOutput = true
+		}
+		s.readingStage = nil
+		return
+	}
+
+	text := ""
+	if fragment.Text != nil {
+		text = *fragment.Text
+	}
+
+	if text == "" {
+		return
+	}
+
+	if stage := isStage(text); stage != nil {
+		if stage.stage == StageReading {
+			s.readingStage = stage
+			return
+		}
+		if stage.stage == StageSearching && stage.detail == "" {
+			s.searchStage = stage
+			return
+		}
+		fmt.Fprintln(s.cmd.OutOrStdout(), formatChatStage(stage.stage, stage.detail))
+		if stage.stage == StageSummary {
+			fmt.Fprintln(s.cmd.OutOrStdout())
+		}
+		if stage.stage != StageSummary {
+			s.isStageOutput = true
+		}
+	} else if s.searchStage != nil {
+		fmt.Fprintln(s.cmd.OutOrStdout(), formatChatStage(s.searchStage.stage, text))
+		s.searchStage = nil
+		s.isStageOutput = true
+	} else {
+		if s.isStageOutput {
+			fmt.Fprint(s.cmd.OutOrStdout(), formatChatResponse(text))
+			s.isStageOutput = false
+		} else {
+			fmt.Fprint(s.cmd.OutOrStdout(), text)
+			if !hasMoreFragments {
+				fmt.Println()
+				if s.firstLine {
+					fmt.Println()
+					s.firstLine = false
+				}
+			}
+		}
+	}
+}
+
+// formatChatStage formats a chat stage output with a colored checkmark.
 func formatChatStage(stage ChatStageType, detail string) string {
 	const check = "✓"
 	if stage == StageSummary {
@@ -296,7 +236,7 @@ func formatChatResponse(response string) string {
 	return fmt.Sprintf("%s%s", divider, response)
 }
 
-// isStage checks if a text fragment represents a chat stage and returns the stage info
+// isStage checks if a text fragment represents a chat stage.
 func isStage(text string) *stageInfo {
 	stagePatterns := map[string]ChatStageType{
 		"**Searching:**": StageSearching,
@@ -307,8 +247,6 @@ func isStage(text string) *stageInfo {
 	for pattern, stageType := range stagePatterns {
 		if strings.HasPrefix(text, pattern) {
 			detail := strings.TrimPrefix(text, pattern)
-			// Special case for searching stage which may have an empty detail
-			// as it comes in a separate fragment
 			if stageType == StageSearching && strings.TrimSpace(detail) == "" {
 				return &stageInfo{stage: stageType}
 			}
@@ -324,17 +262,21 @@ func isStage(text string) *stageInfo {
 	return nil
 }
 
-// formatReadingStage formats the reading stage with document details
-func formatReadingStage(sources []api.StructuredResult) string {
+// formatReadingStage formats the reading stage with document details.
+func formatReadingStage(sources []components.StructuredResult) string {
 	if len(sources) == 0 {
 		return "Reading: no sources found"
 	}
 
-	// Group sources by datasource for better organization
-	sourcesByType := make(map[string][]api.StructuredResult)
+	sourcesByType := make(map[string][]components.StructuredResult)
 	for _, source := range sources {
 		if source.Document != nil {
-			ds := source.Document.Metadata.Datasource
+			ds := ""
+			if source.Document.Datasource != nil {
+				ds = *source.Document.Datasource
+			} else if source.Document.Metadata != nil && source.Document.Metadata.Datasource != nil {
+				ds = *source.Document.Metadata.Datasource
+			}
 			sourcesByType[ds] = append(sourcesByType[ds], source)
 		}
 	}
@@ -347,18 +289,25 @@ func formatReadingStage(sources []api.StructuredResult) string {
 
 	var details []string
 	for _, ds := range datasources {
-		sources := sourcesByType[ds]
-		for _, source := range sources {
+		for _, source := range sourcesByType[ds] {
 			doc := source.Document
-			if doc.Title != "" {
+			title := ""
+			if doc.Title != nil {
+				title = *doc.Title
+			}
+			docURL := ""
+			if doc.URL != nil {
+				docURL = *doc.URL
+			}
+			if title != "" {
 				details = append(details, fmt.Sprintf("%s: %s (%s)",
 					utils.FormatDatasource(ds),
-					doc.Title,
-					utils.MaybeAnonymizeURL(doc.URL)))
+					title,
+					utils.MaybeAnonymizeURL(docURL)))
 			} else {
 				details = append(details, fmt.Sprintf("%s: %s",
 					utils.FormatDatasource(ds),
-					utils.MaybeAnonymizeURL(doc.URL)))
+					utils.MaybeAnonymizeURL(docURL)))
 			}
 		}
 	}

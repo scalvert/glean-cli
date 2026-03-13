@@ -4,8 +4,9 @@ import (
 	"testing"
 )
 
-// SetupTestWithResponse sets up both config and mock client for testing
-func SetupTestWithResponse(t *testing.T, response []byte) (*MockClient, func()) {
+// SetupTestWithResponse sets up both config and mock transport for testing.
+func SetupTestWithResponse(t *testing.T, response []byte) (*MockTransport, func()) {
+	t.Helper()
 	cleanupConfig := SetupTestConfig(t)
 	mock, cleanupMock := SetupMockClient(response, nil)
 

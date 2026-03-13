@@ -1,35 +1,35 @@
 package cmd
 
 import (
+	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/briandowns/spinner"
 	"github.com/scalvert/glean-cli/internal/config"
-	"github.com/scalvert/glean-cli/internal/http"
 	"github.com/scalvert/glean-cli/internal/output"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 )
 
 // APIOptions holds configuration for the API command.
-// It controls the HTTP method, request body, and output formatting.
 type APIOptions struct {
-	method      string // HTTP method for the request (GET, POST, etc.)
-	requestBody string // Raw JSON string for the request body
-	inputFile   string // File path for request body input
-	preview     bool   // Whether to preview the request without sending
-	raw         bool   // Whether to output raw response without formatting
-	noColor     bool   // Whether to disable colored output
+	method      string
+	requestBody string
+	inputFile   string
+	preview     bool
+	raw         bool
+	noColor     bool
 }
 
 // NewCmdAPI creates and returns the api command.
-// The api command allows direct interaction with Glean's REST API endpoints,
-// supporting various HTTP methods and request body formats.
 func NewCmdAPI() *cobra.Command {
 	opts := APIOptions{}
 
@@ -78,11 +78,6 @@ func NewCmdAPI() *cobra.Command {
 				return fmt.Errorf("failed to load config: %w", err)
 			}
 
-			client, err := http.NewClient(cfg)
-			if err != nil {
-				return err
-			}
-
 			endpoint := args[0]
 
 			var body map[string]interface{}
@@ -91,7 +86,6 @@ func NewCmdAPI() *cobra.Command {
 					return jsonErr
 				}
 			}
-
 			if opts.inputFile != "" {
 				data, readErr := os.ReadFile(opts.inputFile)
 				if readErr != nil {
@@ -101,7 +95,6 @@ func NewCmdAPI() *cobra.Command {
 					return jsonErr
 				}
 			}
-
 			if opts.inputFile == "" && opts.requestBody == "" {
 				stdinData, readErr := io.ReadAll(os.Stdin)
 				if readErr != nil {
@@ -114,19 +107,11 @@ func NewCmdAPI() *cobra.Command {
 				}
 			}
 
-			req := &http.Request{
-				Method: opts.method,
-				Path:   endpoint,
-				Body:   body,
-			}
-
 			if opts.preview {
-				return previewRequest(req, opts.noColor)
+				return previewRequest(cfg, opts.method, endpoint, body, opts.noColor)
 			}
 
-			// Only show spinner if we're in a terminal and not using --raw or --no-color
 			useSpinner := term.IsTerminal(int(os.Stderr.Fd())) && !opts.raw && !opts.noColor
-
 			var s *spinner.Spinner
 			if useSpinner {
 				s = spinner.New(spinner.CharSets[9], 100*time.Millisecond)
@@ -137,7 +122,7 @@ func NewCmdAPI() *cobra.Command {
 				defer s.Stop()
 			}
 
-			resp, err := client.SendRequest(req)
+			resp, err := rawAPIRequest(cmd.Context(), cfg, opts.method, endpoint, body)
 			if err != nil {
 				return err
 			}
@@ -151,7 +136,7 @@ func NewCmdAPI() *cobra.Command {
 
 	cmd.Flags().StringVarP(&opts.method, "method", "X", "GET", "The HTTP method for the request")
 	cmd.Flags().StringVar(&opts.requestBody, "raw-field", "", "Add a JSON string as the request body")
-	cmd.Flags().StringVarP(&opts.inputFile, "input", "F", "", "The file to use as body for the request (use \"-\" to read from standard input)")
+	cmd.Flags().StringVarP(&opts.inputFile, "input", "F", "", "The file to use as body for the request")
 	cmd.Flags().BoolVar(&opts.preview, "preview", false, "Preview the API request without sending it")
 	cmd.Flags().BoolVar(&opts.raw, "raw", false, "Print raw API response")
 	cmd.Flags().BoolVar(&opts.noColor, "no-color", false, "Disable colorized output")
@@ -159,43 +144,101 @@ func NewCmdAPI() *cobra.Command {
 	return cmd
 }
 
-func previewRequest(req *http.Request, noColor bool) error {
-	cfg, err := config.LoadConfig()
-	if err != nil {
-		return fmt.Errorf("failed to load config: %w", err)
+// apiBaseURL builds the base API URL from config.
+func apiBaseURL(cfg *config.Config) string {
+	host := cfg.GleanHost
+	if cfg.GleanPort != "" {
+		return fmt.Sprintf("https://%s:%s", host, cfg.GleanPort)
+	}
+	return fmt.Sprintf("https://%s", host)
+}
+
+// apiFullURL returns the full REST API URL for an endpoint path.
+func apiFullURL(cfg *config.Config, path string) string {
+	if !strings.HasPrefix(path, "/rest/api/v1/") {
+		path = "/rest/api/v1/" + strings.TrimPrefix(path, "/")
+	}
+	return strings.TrimRight(apiBaseURL(cfg), "/") + path
+}
+
+// rawAPIRequest makes an authenticated HTTP request to the Glean API.
+func rawAPIRequest(ctx context.Context, cfg *config.Config, method, endpoint string, body map[string]interface{}) ([]byte, error) {
+	url := apiFullURL(cfg, endpoint)
+
+	var bodyReader io.Reader
+	if body != nil {
+		bodyBytes, err := json.Marshal(body)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling request body: %w", err)
+		}
+		bodyReader = bytes.NewReader(bodyBytes)
 	}
 
-	client, err := http.NewClient(cfg)
+	req, err := http.NewRequestWithContext(ctx, method, url, bodyReader)
 	if err != nil {
-		return err
+		return nil, fmt.Errorf("error creating request: %w", err)
 	}
 
-	fmt.Printf("Request Method: %s\n", req.Method)
-	fmt.Printf("Request URL: %s\n", client.GetFullURL(req.Path))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+cfg.GleanToken)
+	req.Header.Set("X-Glean-Auth-Type", "string")
+	if cfg.GleanEmail != "" {
+		req.Header.Set("X-Scio-Actas", cfg.GleanEmail)
+	}
 
+	httpResp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error making request: %w", err)
+	}
+	defer httpResp.Body.Close()
+
+	respBody, err := io.ReadAll(httpResp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error reading response body: %w", err)
+	}
+
+	if httpResp.StatusCode >= 400 {
+		var errResp struct {
+			Message string `json:"message"`
+			Error   string `json:"error"`
+		}
+		if json.Unmarshal(respBody, &errResp) == nil {
+			if errResp.Message != "" {
+				return nil, fmt.Errorf("API error (%d): %s", httpResp.StatusCode, errResp.Message)
+			}
+			if errResp.Error != "" {
+				return nil, fmt.Errorf("API error (%d): %s", httpResp.StatusCode, errResp.Error)
+			}
+		}
+		return nil, fmt.Errorf("API error (%d): %s", httpResp.StatusCode, string(respBody))
+	}
+
+	return respBody, nil
+}
+
+func previewRequest(cfg *config.Config, method, endpoint string, body map[string]interface{}, noColor bool) error {
+	fmt.Printf("Request Method: %s\n", method)
+	fmt.Printf("Request URL: %s\n", apiFullURL(cfg, endpoint))
 	fmt.Println("\nRequest Headers:")
 	fmt.Printf("  Content-Type: application/json\n")
 	if cfg.GleanToken != "" {
 		fmt.Printf("  Authorization: Bearer %s\n", config.MaskToken(cfg.GleanToken))
 	}
 	if cfg.GleanEmail != "" {
-		fmt.Printf("  X-Glean-User-Email: %s\n", cfg.GleanEmail)
 		fmt.Printf("  X-Scio-Actas: %s\n", cfg.GleanEmail)
 	}
 	fmt.Printf("  X-Glean-Auth-Type: string\n")
 
-	if req.Body != nil {
+	if body != nil {
 		fmt.Println("\nRequest Body:")
-		bodyBytes, err := json.Marshal(req.Body)
+		bodyBytes, err := json.Marshal(body)
 		if err != nil {
 			return fmt.Errorf("failed to format request body: %w", err)
 		}
-
 		return output.Write(os.Stdout, bodyBytes, output.Options{
 			NoColor: noColor,
 			Format:  "json",
 		})
 	}
-
 	return nil
 }

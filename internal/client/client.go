@@ -44,14 +44,18 @@ func New(cfg *config.Config) (*glean.Glean, error) {
 	return glean.New(opts...), nil
 }
 
-// NewFromConfig loads config then creates the SDK client.
+// NewFunc is the factory used by NewFromConfig. Override in tests to inject
+// a mock HTTP transport: set NewFunc to return glean.New(glean.WithClient(mock)).
+var NewFunc = New
+
+// NewFromConfig loads config then creates the SDK client via NewFunc.
 // Convenience wrapper for command handlers.
 func NewFromConfig() (*glean.Glean, error) {
 	cfg, err := config.LoadConfig()
 	if err != nil {
 		return nil, fmt.Errorf("failed to load config: %w", err)
 	}
-	return New(cfg)
+	return NewFunc(cfg)
 }
 
 // extractInstance derives the Glean instance name from a host value.

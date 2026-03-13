@@ -1,49 +1,19 @@
 package llm
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
 	"strings"
 
-	"github.com/scalvert/glean-cli/internal/config"
-	"github.com/scalvert/glean-cli/internal/http"
+	"github.com/gleanwork/api-client-go/models/components"
+	gleanClient "github.com/scalvert/glean-cli/internal/client"
 )
-
-type chatRequest struct {
-	AgentConfig struct {
-		Agent string `json:"agent"`
-		Mode  string `json:"mode"`
-	} `json:"agentConfig"`
-	Messages []message `json:"messages"`
-	Stream   bool      `json:"stream"`
-}
-
-type message struct {
-	Author      string     `json:"author"`
-	MessageType string     `json:"messageType"`
-	Fragments   []fragment `json:"fragments"`
-}
-
-type fragment struct {
-	Text string `json:"text"`
-}
-
-type chatResponse struct {
-	Messages []struct {
-		Fragments []fragment `json:"fragments"`
-	} `json:"messages"`
-}
 
 // GenerateOpenAPISpec generates an OpenAPI specification from the given input
 func GenerateOpenAPISpec(input, prompt, model string) (string, error) {
-	cfg, err := config.LoadConfig()
+	sdk, err := gleanClient.NewFromConfig()
 	if err != nil {
-		return "", fmt.Errorf("failed to load config: %w", err)
-	}
-
-	client, err := http.NewClient(cfg)
-	if err != nil {
-		return "", fmt.Errorf("failed to create HTTP client: %w", err)
+		return "", fmt.Errorf("failed to create client: %w", err)
 	}
 
 	systemPrompt := `You are an expert in OpenAPI specifications. Generate an OpenAPI 3.0 specification in YAML format based on the provided API description or curl command.
@@ -60,53 +30,46 @@ Return ONLY the YAML content with no additional text, markdown formatting, or co
 		systemPrompt += "\n\nAdditional instructions:\n" + prompt
 	}
 
-	messages := []message{
-		{
-			Author:      "SYSTEM",
-			MessageType: "CONTENT",
-			Fragments:   []fragment{{Text: systemPrompt}},
-		},
-		{
-			Author:      "USER",
-			MessageType: "CONTENT",
-			Fragments:   []fragment{{Text: input}},
-		},
-	}
+	agentGPT := components.AgentEnumGpt
+	modeDefault := components.ModeDefault
 
-	req := &http.Request{
-		Method: "POST",
-		Path:   "/rest/api/v1/chat",
-		Body: chatRequest{
-			Messages: messages,
-			Stream:   false,
-			AgentConfig: struct {
-				Agent string `json:"agent"`
-				Mode  string `json:"mode"`
-			}{
-				Agent: "GPT",
-				Mode:  "DEFAULT",
+	chatReq := components.ChatRequest{
+		Messages: []components.ChatMessage{
+			{
+				Author:      components.AuthorUser.ToPointer(),
+				MessageType: components.MessageTypeContext.ToPointer(),
+				Fragments:   []components.ChatMessageFragment{{Text: &systemPrompt}},
+			},
+			{
+				Author:      components.AuthorUser.ToPointer(),
+				MessageType: components.MessageTypeContent.ToPointer(),
+				Fragments:   []components.ChatMessageFragment{{Text: &input}},
 			},
 		},
+		AgentConfig: &components.AgentConfig{
+			Agent: agentGPT.ToPointer(),
+			Mode:  modeDefault.ToPointer(),
+		},
 	}
 
-	resp, err := client.SendRequest(req)
+	// Use context.Background() since this function doesn't have a context parameter yet
+	// (context propagation is handled at the cmd layer for streaming; this is non-streaming)
+	resp, err := sdk.Client.Chat.Create(context.Background(), chatReq, nil, nil)
 	if err != nil {
 		return "", fmt.Errorf("failed to generate OpenAPI spec: %w", err)
 	}
 
-	var chatResp chatResponse
-	if err := json.Unmarshal(resp, &chatResp); err != nil {
-		return "", fmt.Errorf("failed to parse response: %w", err)
-	}
-
-	if len(chatResp.Messages) == 0 {
+	if resp.ChatResponse == nil || len(resp.ChatResponse.Messages) == 0 {
 		return "", fmt.Errorf("no response from LLM")
 	}
 
-	var spec string
-	for _, fragment := range chatResp.Messages[len(chatResp.Messages)-1].Fragments {
-		spec += fragment.Text
+	var spec strings.Builder
+	lastMsg := resp.ChatResponse.Messages[len(resp.ChatResponse.Messages)-1]
+	for _, fragment := range lastMsg.Fragments {
+		if fragment.Text != nil {
+			spec.WriteString(*fragment.Text)
+		}
 	}
 
-	return strings.TrimSpace(spec), nil
+	return strings.TrimSpace(spec.String()), nil
 }

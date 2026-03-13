@@ -1,87 +1,72 @@
 // Package testutils provides testing utilities for the Glean CLI,
-// including mock implementations of interfaces and test setup helpers.
+// including mock HTTP transports for injecting test responses into the SDK.
 package testutils
 
 import (
 	"bytes"
 	"io"
+	"net/http"
 
+	glean "github.com/gleanwork/api-client-go"
+	"github.com/scalvert/glean-cli/internal/client"
 	"github.com/scalvert/glean-cli/internal/config"
-	"github.com/scalvert/glean-cli/internal/http"
 )
 
-// MockClient implements http.Client for testing with predefined responses.
-// It supports both single responses and sequences of responses for testing
-// multiple requests in order.
-type MockClient struct {
-	// Err is returned instead of Response if non-nil
+// MockTransport implements http.RoundTripper (the Do method expected by glean.HTTPClient).
+// It returns a predefined response body for every request, making it easy to test
+// command output without making real network calls.
+type MockTransport struct {
+	// Body is returned for every request
+	Body []byte
+	// Err is returned instead of a response when non-nil
 	Err error
-	// Response is returned for single-response scenarios
-	Response []byte
-	// Responses is used for multi-response scenarios, returning each response in sequence
-	Responses [][]byte
-	// CallCount tracks the number of requests made
-	CallCount int
+	// StatusCode defaults to 200 when zero
+	StatusCode int
+	// ContentType defaults to "application/json" when empty
+	ContentType string
+	// Requests records all requests received for inspection
+	Requests []*http.Request
 }
 
-// SendRequest returns the next response in the sequence or the single Response.
-func (m *MockClient) SendRequest(req *http.Request) ([]byte, error) {
+func (m *MockTransport) Do(req *http.Request) (*http.Response, error) {
+	m.Requests = append(m.Requests, req)
 	if m.Err != nil {
 		return nil, m.Err
 	}
-	if len(m.Responses) > 0 {
-		response := m.Responses[m.CallCount]
-		m.CallCount++
-		if m.CallCount >= len(m.Responses) {
-			m.CallCount = len(m.Responses) - 1
+	statusCode := m.StatusCode
+	if statusCode == 0 {
+		statusCode = 200
+	}
+	// Mirror the Accept header the SDK sends so the SDK can parse its own response.
+	// CreateStream sets Accept: text/plain; Create sets Accept: application/json.
+	contentType := m.ContentType
+	if contentType == "" {
+		if accept := req.Header.Get("Accept"); accept != "" {
+			contentType = accept
+		} else {
+			contentType = "application/json"
 		}
-		return response, nil
 	}
-	return m.Response, nil
+	return &http.Response{
+		StatusCode: statusCode,
+		Header:     http.Header{"Content-Type": []string{contentType}},
+		Body:       io.NopCloser(bytes.NewReader(m.Body)),
+	}, nil
 }
 
-// SendStreamingRequest simulates a streaming response by ensuring each response
-// ends with a newline, making it compatible with line-by-line readers.
-func (m *MockClient) SendStreamingRequest(req *http.Request) (io.ReadCloser, error) {
-	if m.Err != nil {
-		return nil, m.Err
-	}
-
-	var response []byte
-	if len(m.Responses) > 0 {
-		response = m.Responses[m.CallCount]
-		m.CallCount++
-		if m.CallCount >= len(m.Responses) {
-			m.CallCount = len(m.Responses) - 1
-		}
-	} else {
-		response = m.Response
-	}
-
-	if !bytes.HasSuffix(response, []byte("\n")) {
-		response = append(response, '\n')
-	}
-
-	return io.NopCloser(bytes.NewReader(response)), nil
-}
-
-// GetFullURL returns a test URL with the given path.
-func (m *MockClient) GetFullURL(path string) string {
-	return "https://test-company-be.glean.com" + path
-}
-
-// SetupMockClient creates a mock client for testing and returns a cleanup function.
-// The cleanup function should be deferred to restore the original client factory.
-func SetupMockClient(response []byte, err error) (*MockClient, func()) {
-	mock := &MockClient{
-		Response: response,
-		Err:      err,
-	}
-	origFunc := http.NewClientFunc
-	http.NewClientFunc = func(cfg *config.Config) (http.Client, error) {
-		return mock, nil
+// SetupMockClient injects a MockTransport into the SDK client factory and
+// returns the mock plus a cleanup function that restores the original factory.
+func SetupMockClient(body []byte, err error) (*MockTransport, func()) {
+	mock := &MockTransport{Body: body, Err: err}
+	origFunc := client.NewFunc
+	client.NewFunc = func(cfg *config.Config) (*glean.Glean, error) {
+		return glean.New(
+			glean.WithInstance("test-company"),
+			glean.WithSecurity("test-token"),
+			glean.WithClient(mock),
+		), nil
 	}
 	return mock, func() {
-		http.NewClientFunc = origFunc
+		client.NewFunc = origFunc
 	}
 }

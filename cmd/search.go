@@ -1,10 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-
-	"github.com/scalvert/glean-cli/internal/config"
-	"github.com/scalvert/glean-cli/internal/http"
+	gleanClient "github.com/scalvert/glean-cli/internal/client"
 	"github.com/scalvert/glean-cli/internal/search"
 	"github.com/spf13/cobra"
 )
@@ -32,12 +29,7 @@ Example:
   glean search --page-size 20 "engineering docs"`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cfg, err := config.LoadConfig()
-			if err != nil {
-				return fmt.Errorf("failed to load config: %w", err)
-			}
-
-			client, err := http.NewClient(cfg)
+			sdk, err := gleanClient.NewFromConfig()
 			if err != nil {
 				return err
 			}
@@ -48,14 +40,6 @@ Example:
 			if types, flagErr := cmd.Flags().GetStringSlice("type"); flagErr == nil && len(types) > 0 {
 				search.AddFacetFilter(opts, "type", types)
 			}
-
-			if people, flagErr := cmd.Flags().GetStringSlice("person"); flagErr == nil && len(people) > 0 {
-				opts.People = make([]search.Person, len(people))
-				for i, email := range people {
-					opts.People[i] = search.Person{ObfuscatedId: email}
-				}
-			}
-
 			if tabs, flagErr := cmd.Flags().GetStringSlice("tab"); flagErr == nil && len(tabs) > 0 {
 				opts.ResultTabIds = tabs
 			}
@@ -86,7 +70,7 @@ Example:
 			}
 
 			opts.Query = args[0]
-			return search.RunSearch(opts, client, cmd.OutOrStdout())
+			return search.RunSearch(cmd.Context(), opts, sdk, cmd.OutOrStdout())
 		},
 	}
 
@@ -97,7 +81,6 @@ Example:
 
 	cmd.Flags().StringSliceP("datasource", "d", nil, "Filter by datasource (can be specified multiple times)")
 	cmd.Flags().StringSliceP("type", "y", nil, "Filter by document type (can be specified multiple times)")
-	cmd.Flags().StringSliceP("person", "p", nil, "Filter by person email (can be specified multiple times)")
 	cmd.Flags().StringSlice("tab", nil, "Filter by result tab IDs (can be specified multiple times)")
 
 	cmd.Flags().Bool("disable-query-autocorrect", false, "Disable automatic query corrections")
