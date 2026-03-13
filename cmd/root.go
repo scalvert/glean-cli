@@ -67,30 +67,47 @@ func NewCmdRoot() *cobra.Command {
 	cmd.PersistentFlags().CountVarP(&verbosity, "verbose", "v", "Increase verbosity level (can be used multiple times)")
 	cmd.Flags().BoolVar(&newSession, "new", false, "Start a new chat session (discard saved history)")
 
-	// Add all subcommands
-	cmd.AddCommand(
+	cmd.AddGroup(&cobra.Group{
+		ID:    "core",
+		Title: "Core Commands:",
+	})
+	cmd.AddGroup(&cobra.Group{
+		ID:    "namespace",
+		Title: "API Namespace Commands:",
+	})
+
+	for _, sub := range []*cobra.Command{
+		NewCmdSearch(),
+		NewCmdChat(),
+		NewCmdConfig(),
+		NewCmdAPI(),
+		NewCmdMCP(),
+		NewCmdSchema(),
+		NewCmdVersion(),
+		NewCmdGenerate(),
+	} {
+		sub.GroupID = "core"
+		cmd.AddCommand(sub)
+	}
+
+	for _, sub := range []*cobra.Command{
 		NewCmdActivity(),
 		NewCmdAgents(),
 		NewCmdAnnouncements(),
 		NewCmdAnswers(),
-		NewCmdAPI(),
-		NewCmdChat(),
 		NewCmdCollections(),
-		NewCmdConfig(),
 		NewCmdDocuments(),
 		NewCmdEntities(),
-		NewCmdGenerate(),
 		NewCmdInsights(),
-		NewCmdMCP(),
 		NewCmdMessages(),
 		NewCmdPins(),
-		NewCmdSchema(),
-		NewCmdSearch(),
 		NewCmdShortcuts(),
 		NewCmdTools(),
 		NewCmdVerification(),
-		NewCmdVersion(),
-	)
+	} {
+		sub.GroupID = "namespace"
+		cmd.AddCommand(sub)
+	}
 
 	// Propagate settings to all subcommands
 	for _, subCmd := range cmd.Commands() {
