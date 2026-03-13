@@ -103,7 +103,7 @@ func (m *Model) statusLine() string {
 		}
 	}
 
-	right := styleStatusBar.Render("ctrl+r new  ctrl+l clear  ? help  ctrl+c quit")
+	right := styleStatusBar.Render("ctrl+r new  ctrl+l clear  ctrl+h help  ctrl+c quit")
 
 	leftW := lipgloss.Width(left)
 	rightW := lipgloss.Width(right)
@@ -124,7 +124,7 @@ func (m *Model) helpView() string {
 		{"ctrl+r", "New session (clear history)"},
 		{"ctrl+l", "Clear screen"},
 		{"ctrl+c  /  esc", "Quit"},
-		{"?", "Toggle this help"},
+		{"ctrl+h", "Toggle this help"},
 	}
 
 	var sb strings.Builder
@@ -139,7 +139,7 @@ func (m *Model) helpView() string {
 		sb.WriteString(line + "\n")
 	}
 	sb.WriteString("\n")
-	sb.WriteString(center(styleStatusBar.Render("press ? to close"), m.width))
+	sb.WriteString(center(styleStatusBar.Render("press ctrl+h to close"), m.width))
 	sb.WriteString("\n")
 	return sb.String()
 }

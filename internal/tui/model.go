@@ -32,6 +32,7 @@ type Model struct {
 	// State
 	sdk              *glean.Glean
 	session          *Session
+	ctx              context.Context
 	conversationMsgs []components.ChatMessage // full history sent to SDK on each turn
 	history          strings.Builder          // rendered HTML for the viewport
 	width            int
@@ -41,7 +42,7 @@ type Model struct {
 }
 
 // New creates a fully-initialized TUI model.
-func New(sdk *glean.Glean, session *Session) (*Model, error) {
+func New(sdk *glean.Glean, session *Session, ctx context.Context) (*Model, error) {
 	ta := textarea.New()
 	ta.Placeholder = "Message Glean…  (shift+enter for a new line)"
 	ta.Focus()
@@ -76,6 +77,7 @@ func New(sdk *glean.Glean, session *Session) (*Model, error) {
 		renderer: renderer,
 		sdk:      sdk,
 		session:  session,
+		ctx:      ctx,
 	}
 
 	// Replay saved session into the history buffer and build SDK message list.
@@ -114,7 +116,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "esc":
 			return m, tea.Quit
 
-		case "?":
+		case "ctrl+h":
 			m.showHelp = !m.showHelp
 			return m, nil
 
@@ -225,6 +227,7 @@ func (m *Model) callAPI() tea.Cmd {
 	copy(msgs, m.conversationMsgs)
 
 	sdk := m.sdk
+	ctx := m.ctx
 	return func() tea.Msg {
 		agentDefault := components.AgentEnumDefault
 		modeDefault := components.ModeDefault
@@ -236,7 +239,7 @@ func (m *Model) callAPI() tea.Cmd {
 			Stream:      &stream,
 		}
 
-		resp, err := sdk.Client.Chat.CreateStream(context.Background(), chatReq, nil)
+		resp, err := sdk.Client.Chat.CreateStream(ctx, chatReq, nil)
 		if err != nil {
 			return streamDoneMsg{err: err}
 		}
