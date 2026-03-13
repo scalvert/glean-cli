@@ -81,7 +81,7 @@ run = "go install"
 
 [tasks.release]
 description = "Create and push a new release (VERSION=vX.Y.Z FORCE=true)"
-run = """
+run = '''
 #!/usr/bin/env bash
 set -e
 
@@ -148,7 +148,7 @@ git push origin "$version" --force
 
 echo "Release process started!"
 echo "Monitor the release at https://github.com/scalvert/glean-cli/actions"
-"""
+'''
 
 [tasks.demo]
 description = "Generate demo GIF for README"
