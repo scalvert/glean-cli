@@ -32,6 +32,11 @@ func AddFacetFilter(opts *Options, fieldName string, values []string) {
 	opts.RequestOptions.FacetFilters = append(opts.RequestOptions.FacetFilters, filter)
 }
 
+// RunSearchSDK executes a search and returns the raw SDK response for the caller to format.
+func RunSearchSDK(ctx context.Context, opts *Options, sdk *glean.Glean) (*components.SearchResponse, error) {
+	return performSearch(ctx, sdk, opts)
+}
+
 // RunSearch executes a search and writes the results as JSON to w.
 func RunSearch(ctx context.Context, opts *Options, sdk *glean.Glean, w io.Writer) error {
 	resp, err := performSearch(ctx, sdk, opts)

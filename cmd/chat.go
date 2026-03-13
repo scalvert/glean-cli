@@ -11,6 +11,7 @@ import (
 	"github.com/briandowns/spinner"
 	"github.com/gleanwork/api-client-go/models/components"
 	gleanClient "github.com/scalvert/glean-cli/internal/client"
+	"github.com/scalvert/glean-cli/internal/output"
 	"github.com/scalvert/glean-cli/internal/theme"
 	"github.com/scalvert/glean-cli/internal/utils"
 	"github.com/spf13/cobra"
@@ -50,6 +51,8 @@ type ChatState struct {
 func NewCmdChat() *cobra.Command {
 	var timeoutMillis int
 	var saveChat bool
+	var jsonPayload string
+	var dryRun bool
 
 	cmd := &cobra.Command{
 		Use:   "chat [message]",
@@ -57,32 +60,62 @@ func NewCmdChat() *cobra.Command {
 		Long: `Have a conversation with Glean's chat API.
 
 The chat API allows you to have natural language conversations with Glean's AI.
-The response will be streamed as it becomes available.
 
 Example:
   glean chat "What are the company holidays?"
-  glean chat --timeout 60000 "Tell me about the engineering team"`,
-		Args: cobra.ExactArgs(1),
+  glean chat --json '{"messages":[{"author":"USER","messageType":"CONTENT","fragments":[{"text":"What is Glean?"}]}]}'
+  glean chat --dry-run "test question"`,
+		Args: cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return executeChat(cmd, args[0], timeoutMillis, saveChat)
+			if jsonPayload == "" && len(args) == 0 {
+				return fmt.Errorf("requires a message argument or --json payload")
+			}
+			if jsonPayload != "" {
+				var chatReq components.ChatRequest
+				if err := json.Unmarshal([]byte(jsonPayload), &chatReq); err != nil {
+					return fmt.Errorf("invalid --json payload: %w", err)
+				}
+				if dryRun {
+					return output.WriteJSON(cmd.OutOrStdout(), chatReq)
+				}
+				return executeChat(cmd, chatReq, false)
+			}
+			if dryRun {
+				// Show what would be sent
+				q := args[0]
+				timeout := int64(timeoutMillis)
+				save := saveChat
+				stream := true
+				agentDefault := components.AgentEnumDefault
+				modeDefault := components.ModeDefault
+				authorUser := components.AuthorUser
+				chatReq := components.ChatRequest{
+					Messages: []components.ChatMessage{{
+						Author:      authorUser.ToPointer(),
+						MessageType: components.MessageTypeContent.ToPointer(),
+						Fragments:   []components.ChatMessageFragment{{Text: &q}},
+					}},
+					AgentConfig:   &components.AgentConfig{Agent: agentDefault.ToPointer(), Mode: modeDefault.ToPointer()},
+					SaveChat:      &save,
+					TimeoutMillis: &timeout,
+					Stream:        &stream,
+				}
+				return output.WriteJSON(cmd.OutOrStdout(), chatReq)
+			}
+			return executeChatMessage(cmd, args[0], timeoutMillis, saveChat)
 		},
 	}
 
+	cmd.Flags().StringVar(&jsonPayload, "json", "", "Complete JSON chat request body (overrides all other flags)")
+	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print the request body without sending it")
 	cmd.Flags().IntVar(&timeoutMillis, "timeout", 30000, "Request timeout in milliseconds")
 	cmd.Flags().BoolVar(&saveChat, "save", true, "Save the chat for later continuation")
 
 	return cmd
 }
 
-// executeChat handles the chat interaction with Glean's API.
-func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveChat bool) error {
-	ctx := cmd.Context()
-
-	sdk, err := gleanClient.NewFromConfig()
-	if err != nil {
-		return err
-	}
-
+// executeChatMessage builds a ChatRequest from a plain message string and calls executeChat.
+func executeChatMessage(cmd *cobra.Command, question string, timeoutMillis int, saveChat bool) error {
 	agentDefault := components.AgentEnumDefault
 	modeDefault := components.ModeDefault
 	authorUser := components.AuthorUser
@@ -95,9 +128,7 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 			{
 				Author:      authorUser.ToPointer(),
 				MessageType: components.MessageTypeContent.ToPointer(),
-				Fragments: []components.ChatMessageFragment{
-					{Text: &question},
-				},
+				Fragments:   []components.ChatMessageFragment{{Text: &question}},
 			},
 		},
 		AgentConfig: &components.AgentConfig{
@@ -108,11 +139,25 @@ func executeChat(cmd *cobra.Command, question string, timeoutMillis int, saveCha
 		TimeoutMillis: &timeout,
 		Stream:        &stream,
 	}
+	return executeChat(cmd, chatReq, true)
+}
+
+// executeChat sends a ChatRequest and streams the response to cmd.OutOrStdout().
+// showSpinner controls whether the waiting spinner is displayed.
+func executeChat(cmd *cobra.Command, chatReq components.ChatRequest, showSpinner bool) error {
+	ctx := cmd.Context()
+
+	sdk, err := gleanClient.NewFromConfig()
+	if err != nil {
+		return err
+	}
 
 	spin := spinner.New(spinner.CharSets[14], 100*time.Millisecond)
 	spin.Prefix = "Waiting for response "
-	spin.Start()
-	defer spin.Stop()
+	if showSpinner {
+		spin.Start()
+		defer spin.Stop()
+	}
 
 	resp, err := sdk.Client.Chat.CreateStream(ctx, chatReq, nil)
 	if err != nil {

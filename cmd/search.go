@@ -1,7 +1,12 @@
 package cmd
 
 import (
+	"encoding/json"
+	"fmt"
+
+	"github.com/gleanwork/api-client-go/models/components"
 	gleanClient "github.com/scalvert/glean-cli/internal/client"
+	"github.com/scalvert/glean-cli/internal/output"
 	"github.com/scalvert/glean-cli/internal/search"
 	"github.com/spf13/cobra"
 )
@@ -14,26 +19,52 @@ func NewCmdSearch() *cobra.Command {
 			ResponseHints:   []string{"RESULTS", "QUERY_METADATA"},
 		},
 	}
+	var jsonPayload string
+	var outputFormat string
+	var dryRun bool
 
 	cmd := &cobra.Command{
 		Use:   "search [query]",
 		Short: "Search for content in your Glean instance",
 		Long: `Search for content in your Glean instance.
 
-Results are written as JSON to stdout, making the output easy to pipe
-to jq or other tools.
+Results are written as JSON to stdout by default, making the output easy to
+pipe to jq or other tools.
 
 Example:
   glean search "vacation policy"
   glean search "vacation policy" | jq '.results[].document.title'
-  glean search --page-size 20 "engineering docs"`,
-		Args: cobra.ExactArgs(1),
+  glean search --json '{"query":"Q1 reports","pageSize":5}' | jq .
+  glean search --output ndjson "engineering docs" | head -3 | jq .document.title
+  glean search --dry-run "test"`,
+		Args: cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			if jsonPayload == "" && len(args) == 0 {
+				return fmt.Errorf("requires a query argument or --json payload")
+			}
+
 			sdk, err := gleanClient.NewFromConfig()
 			if err != nil {
 				return err
 			}
 
+			// --json path: parse directly into SearchRequest
+			if jsonPayload != "" {
+				var req components.SearchRequest
+				if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
+					return fmt.Errorf("invalid --json payload: %w", err)
+				}
+				if dryRun {
+					return output.WriteJSON(cmd.OutOrStdout(), req)
+				}
+				resp, err := sdk.Client.Search.Query(cmd.Context(), req, nil)
+				if err != nil {
+					return fmt.Errorf("search request failed: %w", err)
+				}
+				return output.WriteFormatted(cmd.OutOrStdout(), resp.SearchResponse, outputFormat, nil)
+			}
+
+			// flag-based path
 			if datasources, flagErr := cmd.Flags().GetStringSlice("datasource"); flagErr == nil && len(datasources) > 0 {
 				search.AddFacetFilter(opts, "datasource", datasources)
 			}
@@ -43,13 +74,10 @@ Example:
 			if tabs, flagErr := cmd.Flags().GetStringSlice("tab"); flagErr == nil && len(tabs) > 0 {
 				opts.ResultTabIds = tabs
 			}
-
 			if opts.RequestOptions == nil {
 				opts.RequestOptions = &search.RequestOptions{}
 			}
-
 			opts.RequestOptions.TimezoneOffset = search.GetTimezoneOffset()
-
 			if size, flagErr := cmd.Flags().GetInt("facet-bucket-size"); flagErr == nil {
 				opts.RequestOptions.FacetBucketSize = size
 			}
@@ -70,10 +98,30 @@ Example:
 			}
 
 			opts.Query = args[0]
-			return search.RunSearch(cmd.Context(), opts, sdk, cmd.OutOrStdout())
+
+			if dryRun {
+				// Show the SDK request that would be sent
+				pageSize := int64(opts.PageSize)
+				timeout := int64(opts.TimeoutMillis)
+				req := components.SearchRequest{
+					Query:         opts.Query,
+					PageSize:      &pageSize,
+					TimeoutMillis: &timeout,
+				}
+				return output.WriteJSON(cmd.OutOrStdout(), req)
+			}
+
+			resp, err := search.RunSearchSDK(cmd.Context(), opts, sdk)
+			if err != nil {
+				return err
+			}
+			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
 		},
 	}
 
+	cmd.Flags().StringVar(&jsonPayload, "json", "", "Complete JSON request body (overrides all other flags)")
+	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format: json, ndjson, or text")
+	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print the request body without sending it")
 	cmd.Flags().IntVar(&opts.PageSize, "page-size", 10, "Number of results per page")
 	cmd.Flags().IntVar(&opts.MaxSnippetSize, "max-snippet-size", 0, "Maximum size of snippets")
 	cmd.Flags().IntVar(&opts.TimeoutMillis, "timeout", 30000, "Request timeout in milliseconds")

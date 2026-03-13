@@ -1,0 +1,133 @@
+package cmd
+
+import (
+	"encoding/json"
+	"fmt"
+
+	"github.com/scalvert/glean-cli/internal/schema"
+	"github.com/spf13/cobra"
+)
+
+func init() {
+	// Register schemas for all commands at startup.
+	schema.Register(schema.CommandSchema{
+		Command:     "search",
+		Description: "Search for content in your Glean instance. Results are JSON.",
+		Flags: map[string]schema.FlagSchema{
+			"--json":                    {Type: "string", Description: "Complete JSON request body (overrides individual flags)", Required: false},
+			"--query":                   {Type: "string", Description: "Search query (positional arg)", Required: true},
+			"--page-size":               {Type: "integer", Default: 10, Description: "Number of results per page"},
+			"--max-snippet-size":        {Type: "integer", Default: 0, Description: "Maximum snippet size in characters"},
+			"--timeout":                 {Type: "integer", Default: 30000, Description: "Request timeout in milliseconds"},
+			"--disable-spellcheck":      {Type: "boolean", Default: false, Description: "Disable spellcheck"},
+			"--datasource":              {Type: "[]string", Description: "Filter by datasource (repeatable)"},
+			"--type":                    {Type: "[]string", Description: "Filter by document type (repeatable)"},
+			"--tab":                     {Type: "[]string", Description: "Filter by result tab IDs (repeatable)"},
+			"--response-hints":          {Type: "[]string", Default: []string{"RESULTS", "QUERY_METADATA"}, Description: "Response hints"},
+			"--facet-bucket-size":       {Type: "integer", Default: 10, Description: "Maximum facet buckets per result"},
+			"--disable-query-autocorrect": {Type: "boolean", Default: false, Description: "Disable automatic query corrections"},
+			"--fetch-all-datasource-counts": {Type: "boolean", Default: false, Description: "Return counts for all datasources"},
+			"--query-overrides-facet-filters": {Type: "boolean", Default: false, Description: "Allow query operators to override facet filters"},
+			"--return-llm-content":      {Type: "boolean", Default: false, Description: "Return expanded LLM-friendly content"},
+			"--output":                  {Type: "enum", Enum: []string{"json", "ndjson", "text"}, Default: "json", Description: "Output format"},
+			"--dry-run":                 {Type: "boolean", Default: false, Description: "Print request body without sending"},
+		},
+		Example: `glean search "vacation policy" | jq '.results[].document.title'
+glean search --json '{"query":"Q1 reports","pageSize":5,"datasources":["confluence"]}' | jq .`,
+	})
+
+	schema.Register(schema.CommandSchema{
+		Command:     "chat",
+		Description: "Have a conversation with Glean AI. Streams response to stdout.",
+		Flags: map[string]schema.FlagSchema{
+			"--json":    {Type: "string", Description: "Complete JSON chat request body (overrides individual flags)"},
+			"--message": {Type: "string", Description: "Chat message (positional arg)", Required: true},
+			"--timeout": {Type: "integer", Default: 30000, Description: "Request timeout in milliseconds"},
+			"--save":    {Type: "boolean", Default: true, Description: "Save the chat session"},
+			"--dry-run": {Type: "boolean", Default: false, Description: "Print request body without sending"},
+		},
+		Example: `glean chat "What are the company holidays?"
+glean chat --json '{"messages":[{"author":"USER","messageType":"CONTENT","fragments":[{"text":"What is Glean?"}]}]}'`,
+	})
+
+	schema.Register(schema.CommandSchema{
+		Command:     "api",
+		Description: "Make a raw authenticated HTTP request to any Glean REST API endpoint.",
+		Flags: map[string]schema.FlagSchema{
+			"--method":    {Type: "enum", Enum: []string{"GET", "POST", "PUT", "DELETE", "PATCH"}, Default: "GET", Description: "HTTP method"},
+			"--raw-field": {Type: "string", Description: "JSON request body as a string"},
+			"--input":     {Type: "string", Description: "Path to a JSON file to use as request body"},
+			"--preview":   {Type: "boolean", Default: false, Description: "Print request details without sending"},
+			"--raw":       {Type: "boolean", Default: false, Description: "Print raw response without syntax highlighting"},
+			"--no-color":  {Type: "boolean", Default: false, Description: "Disable colorized output"},
+			"--dry-run":   {Type: "boolean", Default: false, Description: "Same as --preview"},
+		},
+		Example: `glean api search --method POST --raw-field '{"query":"test"}' --no-color | jq .results`,
+	})
+
+	schema.Register(schema.CommandSchema{
+		Command:     "config",
+		Description: "Manage Glean CLI configuration (host, token, email).",
+		Flags: map[string]schema.FlagSchema{
+			"--host":  {Type: "string", Description: "Glean instance hostname or short name (e.g. linkedin)"},
+			"--port":  {Type: "string", Description: "Optional port override"},
+			"--token": {Type: "string", Description: "Glean API token"},
+			"--email": {Type: "string", Description: "Email for X-Scio-Actas header (impersonation)"},
+			"--show":  {Type: "boolean", Default: false, Description: "Show current configuration"},
+			"--clear": {Type: "boolean", Default: false, Description: "Clear all stored configuration"},
+		},
+		Example: `glean config --host linkedin --token mytoken
+GLEAN_API_TOKEN=mytoken GLEAN_HOST=linkedin glean search "test"`,
+	})
+
+	schema.Register(schema.CommandSchema{
+		Command:     "version",
+		Description: "Print the glean CLI version string.",
+		Flags:       map[string]schema.FlagSchema{},
+		Example:     `glean version`,
+	})
+}
+
+// NewCmdSchema creates and returns the schema command.
+func NewCmdSchema() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "schema [command]",
+		Short: "Show JSON schema for a command's flags and request format",
+		Long: `Show machine-readable JSON schema for any glean command.
+
+Agents can call this before invoking a command to understand parameter
+types, required fields, defaults, and example invocations — without
+needing documentation in context.
+
+Examples:
+  glean schema             # list all commands with registered schemas
+  glean schema search      # full schema for the search command
+  glean schema chat        # full schema for the chat command`,
+		Args: cobra.MaximumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if len(args) == 0 {
+				// List all registered commands
+				names := schema.List()
+				out := map[string][]string{"commands": names}
+				data, err := json.MarshalIndent(out, "", "  ")
+				if err != nil {
+					return err
+				}
+				fmt.Fprintln(cmd.OutOrStdout(), string(data))
+				return nil
+			}
+
+			s, err := schema.Get(args[0])
+			if err != nil {
+				return err
+			}
+			data, err := json.MarshalIndent(s, "", "  ")
+			if err != nil {
+				return err
+			}
+			fmt.Fprintln(cmd.OutOrStdout(), string(data))
+			return nil
+		},
+	}
+	return cmd
+}

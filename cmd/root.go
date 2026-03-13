@@ -29,14 +29,7 @@ func NewCmdRoot() *cobra.Command {
 			To get started, run 'glean --help'.
 		`),
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			// Set debug level based on verbosity flag count
-			if verbosity > 0 {
-				if verbosity > 3 {
-					verbosity = 3 // Cap at level 3
-				}
-
-				os.Setenv("GLEAN_HTTP_DEBUG", fmt.Sprintf("%d", verbosity))
-			}
+			_ = verbosity // reserved for future debug logging
 		},
 		Run: func(cmd *cobra.Command, args []string) {
 			if err := cmd.Help(); err != nil {
@@ -56,6 +49,7 @@ func NewCmdRoot() *cobra.Command {
 		NewCmdAPI(),
 		NewCmdConfig(),
 		NewCmdGenerate(),
+		NewCmdSchema(),
 		NewCmdSearch(),
 		NewCmdChat(),
 		NewCmdVersion(),
