@@ -172,12 +172,10 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		text, sources := parseNDJSON(msg.ndjson)
 		if text != "" {
-			rendered := m.renderMarkdown(text)
 			turn := Turn{Role: "assistant", Content: text, Sources: sources}
 			m.addTurnToHistory(turn)
 			m.addTurnToConversation(turn)
 			m.session.AddTurn("assistant", text, sources)
-			_ = rendered // history already updated inside addTurnToHistory
 			m.viewport.SetContent(m.history.String())
 			m.viewport.GotoBottom()
 		}
