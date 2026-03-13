@@ -49,12 +49,12 @@ func NewCmdRoot() *cobra.Command {
 				session = tui.LoadLatest()
 			}
 
-			model, err := tui.New(sdk, session)
+			model, err := tui.New(sdk, session, cmd.Context())
 			if err != nil {
 				return fmt.Errorf("failed to create TUI: %w", err)
 			}
 
-			p := tea.NewProgram(model, tea.WithAltScreen())
+			p := tea.NewProgram(model, tea.WithAltScreen(), tea.WithContext(cmd.Context()))
 			_, err = p.Run()
 			return err
 		},
