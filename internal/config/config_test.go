@@ -285,6 +285,38 @@ func TestLoadConfigEnvPriority(t *testing.T) {
 	})
 }
 
+func TestLoadConfig_EnvTokenWithKeyringHost(t *testing.T) {
+	_, cleanupKeyring := setupTestKeyring(t)
+	_, cleanupConfig := setupTestConfig(t)
+	defer cleanupKeyring()
+	defer cleanupConfig()
+
+	err := SaveConfig("myhost.glean.com", "", "", "")
+	require.NoError(t, err)
+	t.Setenv("GLEAN_API_TOKEN", "env-token")
+
+	result, err := LoadConfig()
+	require.NoError(t, err)
+	assert.Equal(t, "env-token", result.GleanToken)
+	assert.Equal(t, "myhost.glean.com", result.GleanHost, "host from keyring must be used even when token comes from env")
+}
+
+func TestLoadConfig_EnvHostWithFileToken(t *testing.T) {
+	_, cleanupKeyring := setupTestKeyring(t)
+	_, cleanupConfig := setupTestConfig(t)
+	defer cleanupKeyring()
+	defer cleanupConfig()
+
+	err := saveToFile(&Config{GleanToken: "file-token"})
+	require.NoError(t, err)
+	t.Setenv("GLEAN_HOST", "envhost.glean.com")
+
+	result, err := LoadConfig()
+	require.NoError(t, err)
+	assert.Equal(t, "envhost.glean.com", result.GleanHost)
+	assert.Equal(t, "file-token", result.GleanToken, "token from file must be used even when host comes from env")
+}
+
 func TestLoadFromFile(t *testing.T) {
 	_, cleanup := setupTestConfig(t)
 	defer cleanup()

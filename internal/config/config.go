@@ -66,27 +66,36 @@ func ValidateAndTransformHost(host string) (string, error) {
 func LoadConfig() (*Config, error) {
 	cfg := loadFromEnv()
 
+	keyringCfg := loadFromKeyring()
+	if cfg.GleanHost == "" {
+		cfg.GleanHost = keyringCfg.GleanHost
+	}
+	if cfg.GleanPort == "" {
+		cfg.GleanPort = keyringCfg.GleanPort
+	}
 	if cfg.GleanToken == "" {
-		keyringCfg := loadFromKeyring()
-		if cfg.GleanHost == "" {
-			cfg.GleanHost = keyringCfg.GleanHost
-		}
-		if cfg.GleanPort == "" {
-			cfg.GleanPort = keyringCfg.GleanPort
-		}
-		if cfg.GleanToken == "" {
-			cfg.GleanToken = keyringCfg.GleanToken
-		}
-		if cfg.GleanEmail == "" {
-			cfg.GleanEmail = keyringCfg.GleanEmail
-		}
+		cfg.GleanToken = keyringCfg.GleanToken
+	}
+	if cfg.GleanEmail == "" {
+		cfg.GleanEmail = keyringCfg.GleanEmail
 	}
 
-	if cfg.GleanHost == "" && cfg.GleanToken == "" && cfg.GleanEmail == "" {
-		var err error
-		cfg, err = loadFromFile()
+	if cfg.GleanHost == "" || cfg.GleanToken == "" || cfg.GleanEmail == "" {
+		fileCfg, err := loadFromFile()
 		if err != nil {
 			return nil, err
+		}
+		if cfg.GleanHost == "" {
+			cfg.GleanHost = fileCfg.GleanHost
+		}
+		if cfg.GleanPort == "" {
+			cfg.GleanPort = fileCfg.GleanPort
+		}
+		if cfg.GleanToken == "" {
+			cfg.GleanToken = fileCfg.GleanToken
+		}
+		if cfg.GleanEmail == "" {
+			cfg.GleanEmail = fileCfg.GleanEmail
 		}
 	}
 
