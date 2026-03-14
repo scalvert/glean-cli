@@ -55,6 +55,7 @@ type Model struct {
 	history          strings.Builder          // rendered conversation for the viewport
 	currentResponse  strings.Builder          // accumulates the in-progress assistant response
 	currentSources   []Source                 // accumulates sources for the in-progress response
+	streamRenderLen  int                      // chars since last glamour render (throttle)
 	width            int
 	height           int
 	isStreaming      bool
@@ -170,6 +171,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.isStreaming = true
 			m.currentResponse.Reset()
 			m.currentSources = nil
+			m.streamRenderLen = 0
 
 			turn := Turn{Role: roleUser, Content: question}
 			m.addTurnToHistory(turn)
@@ -284,10 +286,15 @@ func (m *Model) processStreamLine(line string) {
 
 	// Append chunk to the accumulated response.
 	m.currentResponse.WriteString(chunk)
+	m.streamRenderLen += len(chunk)
 
-	// Re-render the full in-progress response through glamour so markdown
-	// is readable during streaming rather than shown as raw **bold** text.
-	m.rebuildViewport()
+	// Throttle glamour renders: only re-render every ~80 chars or when a
+	// newline arrives (sentence/paragraph boundary). This prevents the glamour
+	// renderer from becoming a bottleneck on rapid single-word token streams.
+	if m.streamRenderLen >= 80 || strings.ContainsAny(chunk, "\n.!?") {
+		m.streamRenderLen = 0
+		m.rebuildViewport()
+	}
 }
 
 // stripStagePreamble removes Glean chat stage preamble lines from a chunk.
