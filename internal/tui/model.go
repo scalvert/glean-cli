@@ -356,7 +356,9 @@ func (m *Model) recalculateLayout() {
 	if m.width == 0 || m.height == 0 {
 		return
 	}
-	m.viewport.Width = m.width
+	// Viewport width matches the input box content width so text and input
+	// share the same horizontal margins (left border + padding = 2 chars each side).
+	m.viewport.Width = m.width - 4
 	m.textarea.SetWidth(m.width - 4)
 	m.resizeViewportToContent()
 
@@ -410,9 +412,17 @@ func (m *Model) resizeViewportToContent() {
 func (m *Model) addTurnToHistory(turn Turn) {
 	switch turn.Role {
 	case roleUser:
+		// Render user message as a distinct background box (like Claude Code).
+		// Width matches the viewport (m.width - 4 when set, else natural).
+		boxWidth := m.width - 4
+		if boxWidth < 20 {
+			boxWidth = 0
+		}
+		label := styleUserLabel.Render("you")
+		content := styleUserText.Render(turn.Content)
+		box := styleUserBox.Width(boxWidth).Render(label + "  " + content)
 		m.history.WriteString("\n")
-		m.history.WriteString(styleUserLabel.Render("  you  "))
-		m.history.WriteString(styleUserText.Render(turn.Content))
+		m.history.WriteString(box)
 		m.history.WriteString("\n\n")
 
 	case roleAssistant:

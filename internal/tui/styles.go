@@ -19,13 +19,18 @@ var (
 			Foreground(lipgloss.Color(colorMuted)).
 			Italic(true)
 
-	// User message prefix ">" and label.
+	// User message box — distinct background block like Claude Code.
 	styleUserLabel = lipgloss.NewStyle().
 			Foreground(lipgloss.Color(colorBlue)).
 			Bold(true)
 
 	styleUserText = lipgloss.NewStyle().
 			Foreground(lipgloss.AdaptiveColor{Light: "#111111", Dark: "#E5E7EB"})
+
+	// Box wrapping the entire user message — subtle dark background.
+	styleUserBox = lipgloss.NewStyle().
+			Background(lipgloss.Color("#1e1f2e")).
+			Padding(0, 1)
 
 	// Cited sources block.
 	styleSourceHeader = lipgloss.NewStyle().
