@@ -566,7 +566,7 @@ func (m *Model) resizeViewportToContent() {
 	}
 	inputH := 3
 	statusH := 1
-	spacerH := 1
+	spacerH := 2 // top delimiter + bottom delimiter, each 1 line
 	maxVpH := m.height - logoHeaderLines - spacerH - inputH - statusH
 	if maxVpH < 4 {
 		maxVpH = 4
@@ -597,7 +597,7 @@ func (m *Model) maxViewportHeight() int {
 	const (
 		inputH  = 3 // 1-line textarea + 2 border rows
 		statusH = 1
-		spacerH = 1
+		spacerH = 2 // top delimiter + bottom delimiter, each 1 line
 	)
 	h := m.height - logoHeaderLines - spacerH - inputH - statusH
 	if h < 4 {

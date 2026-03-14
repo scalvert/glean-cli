@@ -81,6 +81,10 @@ var (
 	styleHelpKey  = lipgloss.NewStyle().Foreground(lipgloss.Color(colorBrand)).Bold(true)
 	styleHelpDesc = lipgloss.NewStyle().Foreground(lipgloss.Color(colorMuted))
 
+	// Viewport delimiter — thin rule above and below the scrollable content area.
+	styleDelimiter = lipgloss.NewStyle().
+			Foreground(lipgloss.Color(colorDim))
+
 	// Exit hint shown after first ctrl+c.
 	styleExitHint = lipgloss.NewStyle().
 			Foreground(lipgloss.Color(colorOrange)).

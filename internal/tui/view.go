@@ -37,14 +37,6 @@ func (m *Model) View() string {
 	// Logo + identity — always visible, regardless of conversation state.
 	header := m.headerView()
 
-	// Body: welcome hints (empty state) or conversation viewport (active state).
-	var body string
-	if !m.conversationActive {
-		body = m.welcomeBody()
-	} else {
-		body = m.viewport.View()
-	}
-
 	// Input box — rounded border, full width.
 	inputBox := styleInputFocused.
 		Width(m.width - 2).
@@ -56,10 +48,23 @@ func (m *Model) View() string {
 		bottom = styleExitHint.Render("  Press ctrl+c again to exit  ·  esc to cancel")
 	}
 
+	// Body: welcome hints (empty state) or conversation viewport with delimiters (active).
+	if !m.conversationActive {
+		return lipgloss.JoinVertical(lipgloss.Left,
+			header,
+			m.welcomeBody(),
+			"",
+			inputBox,
+			bottom,
+		)
+	}
+
+	rule := styleDelimiter.Render(strings.Repeat("─", m.width))
 	return lipgloss.JoinVertical(lipgloss.Left,
 		header,
-		body,
-		"",
+		rule,
+		m.viewport.View(),
+		rule,
 		inputBox,
 		bottom,
 	)
