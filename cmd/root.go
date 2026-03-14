@@ -81,7 +81,6 @@ func NewCmdRoot() *cobra.Command {
 		NewCmdChat(),
 		NewCmdConfig(),
 		NewCmdAPI(),
-		NewCmdMCP(),
 		NewCmdSchema(),
 		NewCmdVersion(),
 		NewCmdGenerate(),
