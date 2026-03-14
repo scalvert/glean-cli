@@ -14,6 +14,13 @@ func NewCmdTools() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "tools",
 		Short: "List and run Glean tools",
+		Long: `List and run Glean tools.
+
+Tools are callable functions exposed by the Glean platform for agent workflows.
+
+Example:
+  glean tools list
+  glean tools run --json '{"toolName":"search","parameters":{"query":"Q1 results"}}'`,
 	}
 	cmd.AddCommand(
 		newToolsListCmd(),

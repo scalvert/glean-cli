@@ -14,6 +14,12 @@ func NewCmdInsights() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "insights",
 		Short: "Retrieve Glean usage insights",
+		Long: `Retrieve Glean usage insights.
+
+Insights provide analytics on how your organization uses Glean — search trends, popular content, and more.
+
+Example:
+  glean insights get --json '{"insightType":"SEARCH","timeRange":"LAST_30_DAYS"}'`,
 	}
 	cmd.AddCommand(newInsightsGetCmd())
 	return cmd

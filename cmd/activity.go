@@ -14,6 +14,12 @@ func NewCmdActivity() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "activity",
 		Short: "Report user activity and feedback to Glean",
+		Long: `Report user activity and feedback to Glean.
+
+Send activity events (views, clicks, feedback) to improve Glean's search personalization.
+
+Example:
+  glean activity report --json '{"events":[{"action":"VIEW","docId":{"datasource":"confluence","objectId":"12345"}}]}'`,
 	}
 	cmd.AddCommand(
 		newActivityReportCmd(),

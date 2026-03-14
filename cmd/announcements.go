@@ -14,6 +14,13 @@ func NewCmdAnnouncements() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "announcements",
 		Short: "Manage Glean announcements",
+		Long: `Manage Glean announcements.
+
+Announcements are time-bounded notices that appear prominently in Glean search results.
+
+Example:
+  glean announcements create --json '{"title":"Q2 kickoff","startTime":"2026-04-01T00:00:00Z"}'
+  glean announcements list`,
 	}
 	cmd.AddCommand(
 		newAnnouncementsCreateCmd(),

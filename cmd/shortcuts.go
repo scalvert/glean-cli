@@ -14,6 +14,14 @@ func NewCmdShortcuts() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "shortcuts",
 		Short: "Manage Glean shortcuts (go-links)",
+		Long: `Manage Glean shortcuts (go-links).
+
+Shortcuts are memorable short URLs that redirect to longer internal resources.
+
+Example:
+  glean shortcuts list
+  glean shortcuts get <shortcut-id>
+  glean shortcuts create --json '{"urlTemplate":"https://example.com","shortcutId":"mylink"}'`,
 	}
 	cmd.AddCommand(
 		newShortcutsListCmd(),

@@ -14,6 +14,13 @@ func NewCmdEntities() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "entities",
 		Short: "List and read Glean entities and people",
+		Long: `List and read Glean entities and people.
+
+Entities represent structured objects in your company's knowledge graph — people, teams, projects, and more.
+
+Example:
+  glean entities list --json '{"entityType":"PERSON","query":"engineering"}'
+  glean entities get <entity-id>`,
 	}
 	cmd.AddCommand(
 		newEntitiesListCmd(),

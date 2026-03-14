@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+
 // NewCmdSearch creates and returns the search command.
 func NewCmdSearch() *cobra.Command {
 	opts := &search.Options{
@@ -101,15 +102,7 @@ Example:
 			opts.Query = args[0]
 
 			if dryRun {
-				// Show the SDK request that would be sent
-				pageSize := int64(opts.PageSize)
-				timeout := int64(opts.TimeoutMillis)
-				req := components.SearchRequest{
-					Query:         opts.Query,
-					PageSize:      &pageSize,
-					TimeoutMillis: &timeout,
-				}
-				return output.WriteJSON(cmd.OutOrStdout(), req)
+				return output.WriteJSON(cmd.OutOrStdout(), search.BuildSearchRequest(opts))
 			}
 
 			resp, err := search.RunSearchSDK(cmd.Context(), opts, sdk)
@@ -133,7 +126,7 @@ Example:
 	cmd.Flags().BoolVar(&opts.DisableSpellcheck, "disable-spellcheck", false, "Disable spellcheck")
 
 	cmd.Flags().StringSliceP("datasource", "d", nil, "Filter by datasource (can be specified multiple times)")
-	cmd.Flags().StringSliceP("type", "y", nil, "Filter by document type (can be specified multiple times)")
+	cmd.Flags().StringSliceP("type", "t", nil, "Filter by document type (can be specified multiple times)")
 	cmd.Flags().StringSlice("tab", nil, "Filter by result tab IDs (can be specified multiple times)")
 
 	cmd.Flags().Bool("disable-query-autocorrect", false, "Disable automatic query corrections")

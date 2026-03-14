@@ -59,7 +59,7 @@ var NewFunc = New
 func NewFromConfig() (*glean.Glean, error) {
 	cfg, err := config.LoadConfig()
 	if err != nil {
-		return nil, fmt.Errorf("failed to load config: %w", err)
+		return nil, err
 	}
 	return NewFunc(cfg)
 }

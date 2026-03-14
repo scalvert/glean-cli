@@ -14,6 +14,13 @@ func NewCmdDocuments() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "documents",
 		Short: "Retrieve and summarize Glean documents",
+		Long: `Retrieve and summarize Glean documents.
+
+Fetch full document content by ID or URL, or get an AI-generated summary of a document.
+
+Example:
+  glean documents get --json '{"docIds":[{"datasource":"confluence","objectType":"page","objectId":"12345"}]}'
+  glean documents summarize --json '{"docId":{"datasource":"gdrive","objectId":"xyz"}}'`,
 	}
 	cmd.AddCommand(
 		newDocumentsGetCmd(),

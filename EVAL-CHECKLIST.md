@@ -1,6 +1,6 @@
 # Eval Checklist — glean-cli Pre-Release Readiness
 
-Generated: 2026-03-13 | Panel: 6-agent discovery run (correctness, UX, test, docs, release, security)
+Generated: 2026-03-13 | Last updated: 2026-03-14 | Panel v2: 5-agent verification run (tui-correctness, test-coverage, auth-correctness, p2-verifier, code-quality)
 
 ## How to read this
 - P0 = release blocker; P1 = should fix before release; P2 = nice to have
@@ -23,40 +23,7 @@ Generated: 2026-03-13 | Panel: 6-agent discovery run (correctness, UX, test, doc
 
 ## P2 — Nice to Have
 
-- [ ] **CHK-024** TUI session file (`~/.glean/sessions/latest.json`) has no expiry or cleanup — conversations with sensitive content persist indefinitely
-  - **File:** `internal/tui/session.go`
-  - **Acceptance:** Either a `--clear-history` flag exists, or session is bounded by age/size, or documentation notes that history persists and how to clear it
-  - **Agents:** security
-
-- [ ] **CHK-026** `--dry-run` on `search` with flag-based options produces incomplete request body — omits datasource filters, spellcheck settings, response hints, etc.
-  - **File:** `cmd/search.go:105-112`
-  - **Acceptance:** Dry-run output reflects the full request that would be sent, including all active flag values
-  - **Agents:** correctness
-
-- [ ] **CHK-027** Namespace commands (`agents`, `shortcuts`, `answers`, etc.) have no `Long` description or usage examples in their help text
-  - **File:** `cmd/agents.go`, `cmd/shortcuts.go` et al.
-  - **Acceptance:** Each namespace parent command has a `Long` description and at least one `Example` entry showing a realistic subcommand invocation
-  - **Agents:** UX
-
-- [ ] **CHK-028** `-y` shorthand for `--type` filter on `search` is non-intuitive — users expect `-t` for type
-  - **File:** `cmd/search.go:136`
-  - **Acceptance:** Either shorthand changed (verifying no conflict) or documented prominently; `-t` is not available because it could conflict with `--timeout`
-  - **Agents:** UX
-
-- [ ] **CHK-029** README Quick Start section has no documentation on `GLEAN_HOST` format — users don't know whether to use `linkedin` or `linkedin-be.glean.com`
-  - **File:** `README.md`
-  - **Acceptance:** Quick Start section explains both host formats are accepted, with an example
-  - **Agents:** docs
-
-- [ ] **CHK-030** `skills/` directory agent skill files (CONTEXT.md, search.md, chat.md, shortcuts.md) may reference stale flags from pre-rewrite CLI
-  - **File:** `skills/`
-  - **Acceptance:** Each skill file verified against current flag surface; stale flag references updated
-  - **Agents:** docs
-
-- [ ] **CHK-031** First-run auth error wraps with "failed to load config:" prefix — misleading when the real issue is missing credentials, not a load failure
-  - **File:** `internal/client/client.go:56`
-  - **Acceptance:** Error prefix changed to reflect the actual problem (e.g., "credentials not configured") or removed so the underlying error message is shown directly
-  - **Agents:** UX
+*(all closed — see Closed section)*
 
 ---
 
@@ -199,6 +166,51 @@ Generated: 2026-03-13 | Panel: 6-agent discovery run (correctness, UX, test, doc
   - **Acceptance:** Demo GIF re-recorded with the current TUI and command surface
   - **Opened:** 2026-03-13 | **Agents:** docs
   - **Closed:** 2026-03-13 | **How:** Updated `demo/glean.tape` to reflect current CLI commands and TUI behavior
+
+- [x] **CHK-028** `-y` shorthand for `--type` filter on search was non-intuitive
+  - **Closed:** 2026-03-14 | **How:** Changed shorthand from `-y` to `-t`; `--timeout` has no `-t` shorthand so no conflict exists; README updated
+
+- [x] **CHK-035** Host normalization was independently implemented in four places (config, client, stream, auth)
+  - **Closed:** 2026-03-14 | **How:** Added `config.NormalizeHost(host string) string` as the single canonical implementation; `stream.go` now calls `config.NormalizeHost`; `ValidateAndTransformHost` delegates to it; `client.extractInstance` stays separate (different operation: hostname → SDK instance name)
+
+- [x] **CHK-037** `internal/tui` had zero test coverage (972 LoC)
+  - **Closed:** 2026-03-14 | **How:** Created `internal/tui/tui_test.go` with 13 tests covering: ctrl+r state reset (including chatID), elapsed timing in renderConversation, error surfacing in viewport, chatID-triggered conversationMsgs bounding, source citation rendering, userMessages helper, sessionPreview truncation, addTurnToConversation SDK types, bounds-check safety in callAPI, session AppendTurn preservation
+
+- [x] **CHK-038** `conversationMsgs` grew unboundedly after chatID was received
+  - **Closed:** 2026-03-14 | **How:** In `streamCompleteMsg` handler, `m.conversationMsgs` is reset to `nil` when `chatID` is received; assistant reply is then appended (bounded to 1 entry); next user message makes it 2 entries total before callAPI sends only the last one
+
+- [x] **CHK-024** TUI session file (`~/.glean/sessions/latest.json`) has no expiry or cleanup
+  - **Closed:** 2026-03-14 | **How:** Added documentation to README explaining session file location, how `ctrl+r` clears in-session history, and `rm -f ~/.glean/sessions/latest.json` to clear persisted history
+
+- [x] **CHK-026** `--dry-run` on `search` produced incomplete request body — omitted datasource filters, spellcheck settings, response hints, etc.
+  - **Closed:** 2026-03-14 | **How:** Extracted `BuildSearchRequest(opts)` from `performSearch` in `internal/search/utils.go`; search.go `--dry-run` now calls `BuildSearchRequest` to produce the full request body including all active flags; `performSearch` reuses `BuildSearchRequest` (no duplication)
+
+- [x] **CHK-027** Namespace commands had no `Long` description or usage examples
+  - **Closed:** 2026-03-14 | **How:** Added `Long` description and `Example` to all 13 namespace parent commands (agents, announcements, answers, collections, documents, entities, insights, messages, pins, shortcuts, tools, verification, activity)
+
+- [x] **CHK-031** First-run auth error wrapped with "failed to load config:" — misleading prefix
+  - **Closed:** 2026-03-14 | **How:** Removed the wrapping `fmt.Errorf` in `NewFromConfig()`; underlying error (e.g., "Glean host not configured") surfaces directly to user
+
+- [x] **CHK-032** `m.chatID` not cleared on ctrl+r — stale server context bled into new session
+  - **Closed:** 2026-03-14 | **How:** Added `m.chatID = nil` to ctrl+r handler in `internal/tui/model.go`
+
+- [x] **CHK-033** Always-true conditional with latent bounds-check panic in `callAPI()`
+  - **Closed:** 2026-03-14 | **How:** Replaced `if last := ...; true` with `if m.chatID != nil && len(m.conversationMsgs) > 0` — correct condition, bounds-safe
+
+- [x] **CHK-034** No OAuth token refresh — expired tokens caused silent auth failure
+  - **Closed:** 2026-03-14 | **How:** (1) Added `TokenEndpoint` field to `StoredTokens`; (2) `dcrOrStaticClient` now persists DCR client via `SaveClient` so refresh can use same credentials; (3) `Login()` saves `TokenEndpoint` in stored tokens; (4) Added `refreshOAuthToken()` function; (5) `LoadOAuthToken()` now attempts silent refresh before returning ""
+
+- [x] **CHK-036** Dead stage-rendering code in `cmd/chat.go` — functions only called from tests
+  - **Closed:** 2026-03-14 | **How:** Removed `formatChatStage`, `formatChatResponse`, `isStage`, `formatReadingStage`, `ChatStageType`, `stageInfo`, constants, and `summarizePattern` from chat.go; removed corresponding test functions from chat_test.go; deleted 14 orphaned snapshot files
+
+- [x] **CHK-038** `conversationMsgs` grew unboundedly even after `chatID` was active
+  - **Closed:** 2026-03-14 | **How:** In `streamCompleteMsg` handler, `m.conversationMsgs` is reset to `nil` when `chatID` is received; next turn appends only the new user message
+
+- [x] **CHK-030** `skills/` directory agent skill files (CONTEXT.md, search.md, chat.md, shortcuts.md) may reference stale flags from pre-rewrite CLI
+  - **File:** `skills/`
+  - **Acceptance:** Each skill file verified against current flag surface; stale flag references updated
+  - **Opened:** 2026-03-13 | **Agents:** docs
+  - **Closed:** 2026-03-14 | **Verified-at:** b9b27d9 | **How:** skills/search.md, skills/chat.md, skills/shortcuts.md all verified against current cmd/ flags — all match current command surface
 
 - [x] **CHK-025** Dead `renderMarkdown` call in TUI `streamDoneMsg` handler
   - **File:** `internal/tui/model.go:168,173`

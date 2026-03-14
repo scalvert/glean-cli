@@ -51,14 +51,19 @@ func MaskToken(token string) string {
 	return token[:4] + strings.Repeat("*", len(token)-8) + token[len(token)-4:]
 }
 
-// ValidateAndTransformHost ensures the Glean host is in the correct format,
+// NormalizeHost ensures the Glean host is in the correct format,
 // transforming short names (e.g., "linkedin") to full hostnames (e.g., "linkedin-be.glean.com").
-func ValidateAndTransformHost(host string) (string, error) {
+// Full hostnames (containing a ".") are returned unchanged.
+func NormalizeHost(host string) string {
 	if !strings.Contains(host, ".") {
-		return fmt.Sprintf("%s-be.glean.com", host), nil
+		return host + "-be.glean.com"
 	}
+	return host
+}
 
-	return host, nil
+// ValidateAndTransformHost is a compatibility wrapper around NormalizeHost.
+func ValidateAndTransformHost(host string) (string, error) {
+	return NormalizeHost(host), nil
 }
 
 // LoadConfig retrieves configuration using the following priority order:

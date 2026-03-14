@@ -14,6 +14,14 @@ func NewCmdCollections() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "collections",
 		Short: "Manage Glean collections",
+		Long: `Manage Glean collections.
+
+Collections are curated groups of documents and links organized around a topic or project.
+
+Example:
+  glean collections list
+  glean collections get <collection-id>
+  glean collections create --json '{"name":"Onboarding","description":"New hire resources"}'`,
 	}
 	cmd.AddCommand(
 		newCollectionsCreateCmd(),

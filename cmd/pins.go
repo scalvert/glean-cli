@@ -15,6 +15,13 @@ func NewCmdPins() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "pins",
 		Short: "Manage Glean pins",
+		Long: `Manage Glean pins.
+
+Pins are manually promoted search results that appear at the top for specific queries.
+
+Example:
+  glean pins list
+  glean pins create --json '{"query":"onboarding","url":"https://wiki.example.com/onboarding"}'`,
 	}
 	cmd.AddCommand(
 		newPinsListCmd(),

@@ -32,29 +32,9 @@ func AddFacetFilter(opts *Options, fieldName string, values []string) {
 	opts.RequestOptions.FacetFilters = append(opts.RequestOptions.FacetFilters, filter)
 }
 
-// RunSearchSDK executes a search and returns the raw SDK response for the caller to format.
-func RunSearchSDK(ctx context.Context, opts *Options, sdk *glean.Glean) (*components.SearchResponse, error) {
-	return performSearch(ctx, sdk, opts)
-}
-
-// RunSearch executes a search and writes the results as JSON to w.
-func RunSearch(ctx context.Context, opts *Options, sdk *glean.Glean, w io.Writer) error {
-	resp, err := performSearch(ctx, sdk, opts)
-	if err != nil {
-		return err
-	}
-
-	data, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return fmt.Errorf("error marshaling search results: %w", err)
-	}
-
-	_, err = fmt.Fprintln(w, string(data))
-	return err
-}
-
-// performSearch executes a search request using the Glean SDK.
-func performSearch(ctx context.Context, sdk *glean.Glean, opts *Options) (*components.SearchResponse, error) {
+// BuildSearchRequest converts Options into a components.SearchRequest without executing it.
+// Used by --dry-run to show the exact request that would be sent.
+func BuildSearchRequest(opts *Options) components.SearchRequest {
 	pageSize := int64(opts.PageSize)
 	maxSnippet := int64(opts.MaxSnippetSize)
 	timeout := int64(opts.TimeoutMillis)
@@ -102,10 +82,36 @@ func performSearch(ctx context.Context, sdk *glean.Glean, opts *Options) (*compo
 		req.RequestOptions = sdkOpts
 	}
 
+	return req
+}
+
+// RunSearchSDK executes a search and returns the raw SDK response for the caller to format.
+func RunSearchSDK(ctx context.Context, opts *Options, sdk *glean.Glean) (*components.SearchResponse, error) {
+	return performSearch(ctx, sdk, opts)
+}
+
+// RunSearch executes a search and writes the results as JSON to w.
+func RunSearch(ctx context.Context, opts *Options, sdk *glean.Glean, w io.Writer) error {
+	resp, err := performSearch(ctx, sdk, opts)
+	if err != nil {
+		return err
+	}
+
+	data, err := json.MarshalIndent(resp, "", "  ")
+	if err != nil {
+		return fmt.Errorf("error marshaling search results: %w", err)
+	}
+
+	_, err = fmt.Fprintln(w, string(data))
+	return err
+}
+
+// performSearch executes a search request using the Glean SDK.
+func performSearch(ctx context.Context, sdk *glean.Glean, opts *Options) (*components.SearchResponse, error) {
+	req := BuildSearchRequest(opts)
 	result, err := sdk.Client.Search.Query(ctx, req, nil)
 	if err != nil {
 		return nil, fmt.Errorf("search request failed: %w", err)
 	}
-
 	return result.SearchResponse, nil
 }

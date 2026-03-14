@@ -14,6 +14,13 @@ func NewCmdAnswers() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "answers",
 		Short: "Manage Glean answers",
+		Long: `Manage Glean answers.
+
+Answers are curated Q&A pairs that surface authoritative responses in search results.
+
+Example:
+  glean answers list
+  glean answers get <answer-id>`,
 	}
 	cmd.AddCommand(
 		newAnswersListCmd(),

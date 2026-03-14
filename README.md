@@ -20,6 +20,9 @@ curl -fsSL https://raw.githubusercontent.com/scalvert/glean-cli/main/install.sh 
 
 ```bash
 # 1. Configure credentials
+#    --host accepts either the short instance name or the full backend hostname:
+#      short:  your-company          (Glean appends -be.glean.com automatically)
+#      full:   your-company-be.glean.com
 glean config --host your-company --token your-token
 
 # 2. Search
@@ -28,7 +31,12 @@ glean search "vacation policy"
 
 ## Default Behavior
 
-Running `glean` with no arguments opens a full-screen interactive chat TUI powered by Glean Assistant. Session history is persisted across invocations. Use `--new` to start a fresh session.
+Running `glean` with no arguments opens a full-screen interactive chat TUI powered by Glean Assistant. Session history is persisted to `~/.glean/sessions/latest.json` across invocations.
+
+To clear history within a session, press `ctrl+r`. To clear persisted history entirely, delete the file:
+```bash
+rm -f ~/.glean/sessions/latest.json
+```
 
 ```bash
 glean           # open interactive TUI chat
@@ -74,7 +82,7 @@ Key flags:
 | `--json` | Complete JSON request body; overrides all other flags |
 | `--dry-run` | Print request body without sending |
 | `--datasource` | Filter by datasource (repeatable, `-d`) |
-| `--type` | Filter by document type (repeatable, `-y`) |
+| `--type` | Filter by document type (repeatable, `-t`) |
 | `--page-size` | Results per page (default 10) |
 | `--timeout` | Request timeout in milliseconds (default 30000) |
 

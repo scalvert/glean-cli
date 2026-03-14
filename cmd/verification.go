@@ -14,6 +14,13 @@ func NewCmdVerification() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "verification",
 		Short: "Manage document verification",
+		Long: `Manage document verification.
+
+Document verification lets teams mark documents as reviewed and accurate for a given time window.
+
+Example:
+  glean verification list
+  glean verification remind --json '{"docId":{"datasource":"confluence","objectId":"12345"}}'`,
 	}
 	cmd.AddCommand(
 		newVerificationListCmd(),

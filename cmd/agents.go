@@ -14,6 +14,14 @@ func NewCmdAgents() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "agents",
 		Short: "Manage and run Glean agents",
+		Long: `Manage and run Glean agents.
+
+Agents are AI-powered workflows that can search, reason, and act on your company's knowledge.
+
+Example:
+  glean agents list
+  glean agents get <agent-id>
+  glean agents run --json '{"agentId":"<id>","query":"summarize Q1 results"}'`,
 	}
 	cmd.AddCommand(
 		newAgentsListCmd(),

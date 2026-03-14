@@ -48,7 +48,7 @@ func Login(ctx context.Context) error {
 	redirectURI := fmt.Sprintf("http://127.0.0.1:%d/callback", port)
 
 	// Always do fresh DCR per login — the redirect URI (port) changes each time.
-	clientID, clientSecret, err := dcrOrStaticClient(ctx, registrationEndpoint, redirectURI)
+	clientID, clientSecret, err := dcrOrStaticClient(ctx, host, registrationEndpoint, redirectURI)
 	if err != nil {
 		return fmt.Errorf("resolving OAuth client: %w", err)
 	}
@@ -108,11 +108,12 @@ func Login(ctx context.Context) error {
 	email := extractEmailFromToken(ctx, provider, clientID, token)
 
 	stored := &StoredTokens{
-		AccessToken:  token.AccessToken,
-		RefreshToken: token.RefreshToken,
-		Expiry:       token.Expiry,
-		Email:        email,
-		TokenType:    token.TokenType,
+		AccessToken:   token.AccessToken,
+		RefreshToken:  token.RefreshToken,
+		Expiry:        token.Expiry,
+		Email:         email,
+		TokenType:     token.TokenType,
+		TokenEndpoint: oauthCfg.Endpoint.TokenURL, // enables future token refresh
 	}
 	if err := SaveTokens(host, stored); err != nil {
 		return fmt.Errorf("saving tokens: %w", err)
@@ -197,12 +198,68 @@ func EnsureAuth(ctx context.Context) error {
 }
 
 // LoadOAuthToken returns a valid, non-expired OAuth access token for host, or "".
+// If the stored token is expired and a refresh token is available, it attempts
+// a silent refresh and persists the new tokens before returning.
 func LoadOAuthToken(host string) string {
 	tok, err := LoadTokens(host)
-	if err != nil || tok == nil || tok.IsExpired() {
+	if err != nil || tok == nil {
 		return ""
 	}
-	return tok.AccessToken
+	if !tok.IsExpired() {
+		return tok.AccessToken
+	}
+	// Token expired — attempt silent refresh.
+	if tok.RefreshToken != "" && tok.TokenEndpoint != "" {
+		if refreshed, err := refreshOAuthToken(host, tok); err == nil {
+			return refreshed.AccessToken
+		}
+	}
+	return ""
+}
+
+// refreshOAuthToken exchanges a stored refresh_token for a new access token.
+// The refreshed tokens are persisted to storage. Returns the updated StoredTokens.
+func refreshOAuthToken(host string, tok *StoredTokens) (*StoredTokens, error) {
+	cl, err := LoadClient(host)
+	if err != nil || cl == nil {
+		return nil, fmt.Errorf("no stored OAuth client for %s — re-run 'glean auth login'", host)
+	}
+
+	oauthCfg := oauth2.Config{
+		ClientID:     cl.ClientID,
+		ClientSecret: cl.ClientSecret,
+		Endpoint:     oauth2.Endpoint{TokenURL: tok.TokenEndpoint},
+	}
+
+	existing := &oauth2.Token{
+		AccessToken:  tok.AccessToken,
+		RefreshToken: tok.RefreshToken,
+		Expiry:       tok.Expiry,
+		TokenType:    tok.TokenType,
+	}
+
+	src := oauthCfg.TokenSource(context.Background(), existing)
+	newTok, err := src.Token()
+	if err != nil {
+		return nil, fmt.Errorf("token refresh failed: %w", err)
+	}
+
+	// Some providers rotate the refresh token; retain the old one if not.
+	refreshToken := newTok.RefreshToken
+	if refreshToken == "" {
+		refreshToken = tok.RefreshToken
+	}
+
+	stored := &StoredTokens{
+		AccessToken:   newTok.AccessToken,
+		RefreshToken:  refreshToken,
+		Expiry:        newTok.Expiry,
+		Email:         tok.Email,
+		TokenType:     newTok.TokenType,
+		TokenEndpoint: tok.TokenEndpoint,
+	}
+	_ = SaveTokens(host, stored)
+	return stored, nil
 }
 
 // resolveHost returns the configured Glean host, prompting for email if needed.
@@ -284,11 +341,15 @@ func discover(ctx context.Context, host string) (*oidc.Provider, oauth2.Endpoint
 
 // dcrOrStaticClient resolves the OAuth client_id/secret for a login session.
 // It performs fresh DCR on each call (redirect URI includes port, so it changes).
+// A successful DCR registration is persisted to storage so the same client
+// credentials can be reused for token refresh later.
 // Falls back to a static client configured via glean config --oauth-client-id.
-func dcrOrStaticClient(ctx context.Context, registrationEndpoint, redirectURI string) (string, string, error) {
+func dcrOrStaticClient(ctx context.Context, host, registrationEndpoint, redirectURI string) (string, string, error) {
 	if registrationEndpoint != "" {
 		cl, err := registerClient(ctx, registrationEndpoint, redirectURI)
 		if err == nil {
+			// Persist so future token refresh can use the same client credentials.
+			_ = SaveClient(host, cl)
 			return cl.ClientID, cl.ClientSecret, nil
 		}
 		// DCR failed — log and fall through to static client

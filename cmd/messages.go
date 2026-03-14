@@ -14,6 +14,12 @@ func NewCmdMessages() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "messages",
 		Short: "Retrieve Glean messages",
+		Long: `Retrieve Glean messages.
+
+Messages are threaded communications (Slack, Teams, email, etc.) indexed in Glean.
+
+Example:
+  glean messages get --json '{"messageIds":["<id>"]}'`,
 	}
 	cmd.AddCommand(newMessagesGetCmd())
 	return cmd

@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/gleanwork/api-client-go/models/components"
@@ -39,9 +38,7 @@ func StreamChat(ctx context.Context, cfg *config.Config, req components.ChatRequ
 		return nil, fmt.Errorf("not authenticated — run 'glean auth login'")
 	}
 
-	if !strings.Contains(host, ".") {
-		host += "-be.glean.com"
-	}
+	host = config.NormalizeHost(host)
 
 	stream := true
 	req.Stream = &stream

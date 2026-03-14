@@ -11,11 +11,12 @@ import (
 
 // StoredTokens holds persisted OAuth tokens for a Glean host.
 type StoredTokens struct {
-	AccessToken  string    `json:"access_token"`
-	RefreshToken string    `json:"refresh_token,omitempty"`
-	Expiry       time.Time `json:"expiry,omitempty"`
-	Email        string    `json:"email,omitempty"`
-	TokenType    string    `json:"token_type,omitempty"`
+	AccessToken   string    `json:"access_token"`
+	RefreshToken  string    `json:"refresh_token,omitempty"`
+	Expiry        time.Time `json:"expiry,omitempty"`
+	Email         string    `json:"email,omitempty"`
+	TokenType     string    `json:"token_type,omitempty"`
+	TokenEndpoint string    `json:"token_endpoint,omitempty"` // used for token refresh
 }
 
 // IsExpired returns true if the token expires within the next 60 seconds.
