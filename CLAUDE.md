@@ -1,0 +1,56 @@
+# Glean CLI — Development Rules
+
+## Non-Negotiable: Verify Before Claiming Done
+
+**Never say a feature is complete without running the actual binary.**
+
+```bash
+cd /Users/steve.calvert/workspace/personal/glean-cli
+mise run build          # build the binary
+./glean                 # run the TUI and test the feature manually
+```
+
+For TUI features specifically:
+- Build the binary, run it, interact with the feature being built
+- If it involves keystrokes (e.g. `/mode`, `@` file picker), actually type them
+- If it involves streaming (stages, spinner, elapsed), ask a real question
+- Screenshots from the user are ground truth — believe them over unit tests
+
+Unit tests pass ≠ feature works. The TUI has UI state that tests cannot cover.
+
+## Project
+
+- **Repo**: `github.com/scalvert/glean-cli` — personal, pre-1.0, breaking changes OK
+- **Module**: `github.com/scalvert/glean-cli`
+- **Task runner**: `mise` (not go-task)
+- **Go version**: 1.24
+
+## Key Commands
+
+```bash
+mise run build          # build glean binary
+mise run test           # run tests
+mise run test:all       # lint + test + build (CI equivalent)
+./glean                 # run TUI (requires valid GLEAN_HOST + token)
+```
+
+## Architecture
+
+- `internal/tui/` — Bubbletea TUI (model.go, view.go, commands.go, filepicker.go, session.go, styles.go)
+- `internal/client/` — Glean SDK wrapper + streaming HTTP client
+- `internal/auth/` — OAuth PKCE + DCR flow
+- `cmd/` — Cobra commands (search, chat, api, config, etc.)
+
+## TUI Architecture Rules
+
+- **Worktree LSP errors are noise** — the worktree (`/.claude/worktrees/`) is stale. Always build in the main repo at `/Users/steve.calvert/workspace/personal/glean-cli`
+- **Viewport key isolation** — never pass `tea.KeyMsg` to viewport in the catch-all; scroll keys are handled explicitly above
+- **Collect-then-display for content** — streaming stages show live via channel; content waits until complete
+- **No viewport jumping** — `conversationActive` pins viewport height; `recalculateLayout()` only called on terminal resize or deliberate state changes
+
+## Common Mistakes to Avoid
+
+1. **Rendering picker only in active state** — UI elements visible before a conversation starts need to work in the welcome state too (`!m.conversationActive` branch in View())
+2. **Skipping `mise run build && ./glean` verification** — unit tests don't catch TUI rendering bugs
+3. **Spinner below input** — spinner goes in the viewport content area, never in statusLine()
+4. **Large decimal elapsed** — show integer seconds (`12s` not `11.6s`)

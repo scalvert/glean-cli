@@ -49,29 +49,34 @@ func (m *Model) View() string {
 		bottom = styleExitHint.Render("  Press ctrl+c again to exit  ·  esc to cancel")
 	}
 
-	// Body: welcome hints (empty state) or conversation viewport with delimiters (active).
+	// Picker and chip are shown in both welcome and active states — the user
+	// can type @ before sending their first message.
+	picker := m.filePickerView()
+	chip := m.attachedFilesView()
+
+	// Welcome state (no conversation yet): no viewport or delimiter rules.
 	if !m.conversationActive {
-		return lipgloss.JoinVertical(lipgloss.Left,
-			header,
-			m.welcomeBody(),
-			"",
-			inputBox,
-			bottom,
-		)
+		parts := []string{header, m.welcomeBody(), ""}
+		if picker != "" {
+			parts = append(parts, picker)
+		}
+		if chip != "" {
+			parts = append(parts, chip)
+		}
+		parts = append(parts, inputBox, bottom)
+		return lipgloss.JoinVertical(lipgloss.Left, parts...)
 	}
 
+	// Active state: conversation viewport bounded by delimiter rules.
 	rule := styleDelimiter.Render(strings.Repeat("─", m.width))
-
 	parts := []string{header, rule, m.viewport.View(), rule}
-
-	if picker := m.filePickerView(); picker != "" {
+	if picker != "" {
 		parts = append(parts, picker)
 	}
-	if chip := m.attachedFilesView(); chip != "" {
+	if chip != "" {
 		parts = append(parts, chip)
 	}
 	parts = append(parts, inputBox, bottom)
-
 	return lipgloss.JoinVertical(lipgloss.Left, parts...)
 }
 

@@ -224,6 +224,10 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.lastErr = nil
 			m.historyIdx = -1
 			m.conversationActive = false
+			m.showFilePicker = false
+			m.filePickerItems = nil
+			m.filePickerIdx = 0
+			m.attachedFiles = nil
 			m.viewport.Height = 1 // will be resized by resizeViewportToContent on next render
 			m.viewport.SetContent(m.renderConversation())
 			m.resizeViewportToContent()
