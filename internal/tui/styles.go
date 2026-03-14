@@ -19,13 +19,18 @@ var (
 			Foreground(lipgloss.Color(colorMuted)).
 			Italic(true)
 
-	// User message box — distinct background block like Claude Code.
+	// User message — blue left-border block, no width calculation needed.
 	styleUserLabel = lipgloss.NewStyle().
 			Foreground(lipgloss.Color(colorBlue)).
 			Bold(true)
 
 	styleUserText = lipgloss.NewStyle().
 			Foreground(lipgloss.AdaptiveColor{Light: "#111111", Dark: "#E5E7EB"})
+
+	styleUserMsg = lipgloss.NewStyle().
+			Border(lipgloss.ThickBorder(), false, false, false, true).
+			BorderForeground(lipgloss.Color(colorBlue)).
+			PaddingLeft(1)
 
 	// Cited sources block.
 	styleSourceHeader = lipgloss.NewStyle().

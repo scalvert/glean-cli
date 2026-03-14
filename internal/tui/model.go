@@ -350,7 +350,7 @@ func (m *Model) recalculateLayout() {
 	}
 	// Viewport width matches the input box content width so text and input
 	// share the same horizontal margins (left border + padding = 2 chars each side).
-	m.viewport.Width = m.width - 4
+	m.viewport.Width = m.width
 	m.textarea.SetWidth(m.width - 4)
 	m.resizeViewportToContent()
 
@@ -404,11 +404,11 @@ func (m *Model) resizeViewportToContent() {
 func (m *Model) addTurnToHistory(turn Turn) {
 	switch turn.Role {
 	case roleUser:
-		// Clean left-indented user message: bold blue "you" label + content.
-		// No background box — avoids width calculation fights with the viewport margin.
+		// User message: blue left-border block with "you" label.
+		// Left-border style requires no width calculation — adapts naturally.
+		inner := styleUserLabel.Render("you") + "  " + styleUserText.Render(turn.Content)
 		m.history.WriteString("\n")
-		m.history.WriteString("  " + styleUserLabel.Render("you") + "  ")
-		m.history.WriteString(styleUserText.Render(turn.Content))
+		m.history.WriteString(styleUserMsg.Render(inner))
 		m.history.WriteString("\n\n")
 
 	case roleAssistant:

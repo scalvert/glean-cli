@@ -58,9 +58,17 @@ func NewCmdRoot() *cobra.Command {
 			}
 
 			// Resolve identity: "email · host" or just host.
+			// Email comes from stored token or decoded from the JWT access token
+			// (Glean's RFC 8414 access tokens are JWTs containing the email claim).
 			identity := cfg.GleanHost
-			if tok, err := auth.LoadTokens(cfg.GleanHost); err == nil && tok != nil && tok.Email != "" {
-				identity = tok.Email + "  ·  " + cfg.GleanHost
+			if tok, err := auth.LoadTokens(cfg.GleanHost); err == nil && tok != nil {
+				email := tok.Email
+				if email == "" {
+					email = auth.EmailFromJWT(tok.AccessToken)
+				}
+				if email != "" {
+					identity = email + "  ·  " + cfg.GleanHost
+				}
 			}
 
 			model, err := tui.New(cfg, session, identity, cmd.Context())

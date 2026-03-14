@@ -37,20 +37,15 @@ func (m *Model) View() string {
 	header := m.headerView()
 
 	// Body: welcome hints (empty session) or conversation viewport.
-	// When streaming, append a spinner directly in the conversation area
-	// so the user sees it inline rather than having to look at the status bar.
-	// A 2-char left margin aligns viewport content with the input box text
-	// (which sits 1 border + 1 padding = 2 chars from the left edge).
-	bodyMargin := lipgloss.NewStyle().MarginLeft(2)
+	// Viewport is full terminal width — same outer edge as the input box.
 	var body string
 	if m.history.Len() == 0 {
 		body = m.welcomeBody()
 	} else {
-		vpContent := m.viewport.View()
+		body = m.viewport.View()
 		if m.isStreaming {
-			vpContent += "\n  " + m.spinner.View() + " " + styleStatusAccent.Render("Asking Glean…")
+			body += "\n  " + m.spinner.View() + " " + styleStatusAccent.Render("Asking Glean…")
 		}
-		body = bodyMargin.Render(vpContent)
 	}
 
 	// Input box — rounded border, full width.

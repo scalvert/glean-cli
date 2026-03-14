@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	_ "embed"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"net"
@@ -358,33 +359,58 @@ type authServerMeta struct {
 	RegistrationEndpoint  string `json:"registration_endpoint,omitempty"`
 }
 
-// extractEmailFromToken pulls the user email from the ID token or UserInfo endpoint.
+// extractEmailFromToken pulls the user email from the token.
+// Tries OIDC ID token verification first (when provider available), then
+// decodes the access token as a JWT (without verification) to read the email
+// claim directly — works for Glean's RFC 8414 OAuth which issues JWT access tokens.
 func extractEmailFromToken(ctx context.Context, provider *oidc.Provider, clientID string, token *oauth2.Token) string {
-	if provider == nil {
-		return ""
-	}
-	rawIDToken, ok := token.Extra("id_token").(string)
-	if ok && rawIDToken != "" {
-		verifier := provider.Verifier(&oidc.Config{ClientID: clientID})
-		if idToken, err := verifier.Verify(ctx, rawIDToken); err == nil {
+	// 1. OIDC ID token (full verification).
+	if provider != nil {
+		if rawIDToken, ok := token.Extra("id_token").(string); ok && rawIDToken != "" {
+			verifier := provider.Verifier(&oidc.Config{ClientID: clientID})
+			if idToken, err := verifier.Verify(ctx, rawIDToken); err == nil {
+				var claims struct {
+					Email string `json:"email"`
+				}
+				if err := idToken.Claims(&claims); err == nil && claims.Email != "" {
+					return claims.Email
+				}
+			}
+		}
+		// UserInfo endpoint fallback.
+		if ui, err := provider.UserInfo(ctx, oauth2.StaticTokenSource(token)); err == nil {
 			var claims struct {
 				Email string `json:"email"`
 			}
-			if err := idToken.Claims(&claims); err == nil && claims.Email != "" {
+			if err := ui.Claims(&claims); err == nil && claims.Email != "" {
 				return claims.Email
 			}
 		}
 	}
-	// Fallback: UserInfo endpoint.
-	if ui, err := provider.UserInfo(ctx, oauth2.StaticTokenSource(token)); err == nil {
-		var claims struct {
-			Email string `json:"email"`
-		}
-		if err := ui.Claims(&claims); err == nil {
-			return claims.Email
-		}
+
+	// 2. Decode the access token as a JWT (no signature verification).
+	// Glean issues JWT access tokens that contain the user's email claim.
+	return EmailFromJWT(token.AccessToken)
+}
+
+// EmailFromJWT decodes a JWT payload (without verification) and returns the
+// email claim, or "" if unavailable or the token is not a valid JWT.
+func EmailFromJWT(raw string) string {
+	parts := strings.Split(raw, ".")
+	if len(parts) != 3 {
+		return ""
 	}
-	return ""
+	payload, err := base64.RawURLEncoding.DecodeString(parts[1])
+	if err != nil {
+		return ""
+	}
+	var claims struct {
+		Email string `json:"email"`
+	}
+	if err := json.Unmarshal(payload, &claims); err != nil {
+		return ""
+	}
+	return claims.Email
 }
 
 // promptForAPIToken handles instances that don't support OAuth.
