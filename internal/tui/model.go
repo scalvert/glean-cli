@@ -271,7 +271,7 @@ func (m *Model) addTurnToHistory(turn Turn) {
 	switch turn.Role {
 	case roleUser:
 		m.history.WriteString("\n")
-		m.history.WriteString(styleUserLabel.Render("  > "))
+		m.history.WriteString(styleUserLabel.Render("  you  "))
 		m.history.WriteString(styleUserText.Render(turn.Content))
 		m.history.WriteString("\n\n")
 

@@ -2,9 +2,9 @@ package tui
 
 import "github.com/charmbracelet/lipgloss"
 
-// Brand colors — Glean design system.
+// Brand colors — taken directly from the Glean wordmark SVG.
 const (
-	colorBlue  = "#4339F2" // Glean primary blue
+	colorBlue  = "#343CED" // Glean primary blue (from glean.svg fill)
 	colorMuted = "#6B7280" // dimmed text (status bar, hints)
 	colorError = "#EF4444" // error red
 )
