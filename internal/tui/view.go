@@ -20,8 +20,8 @@ const gleanLogo = "⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀�
 const gleanTagline = "AI-powered search for your company's knowledge"
 
 // logoHeaderLines is the number of rows the header occupies.
-// 1 blank + 6 braille + 1 blank + 1 identity + 1 blank = 10
-const logoHeaderLines = 10
+// 1 blank + 6 braille + 1 blank = 8
+const logoHeaderLines = 8
 
 // View implements tea.Model.
 func (m *Model) View() string {
@@ -77,20 +77,47 @@ func (m *Model) View() string {
 	return lipgloss.JoinVertical(lipgloss.Left, parts...)
 }
 
-// headerView renders the braille Glean logo left-aligned in brand blue,
-// with the identity (email · host) left-aligned on the line below.
+// headerView renders a two-panel header:
+// Left:  Glean braille logo in brand blue
+// Right: email, host, and tagline stacked vertically beside the logo
+// A vertical border separates the two panels.
 func (m *Model) headerView() string {
+	logoLines := strings.Split(gleanLogo, "\n") // always 6 lines
+
+	// Parse identity into email and host.
+	var email, host string
+	if parts := strings.SplitN(m.identity, "  ·  ", 2); len(parts) == 2 {
+		email = parts[0]
+		host = parts[1]
+	} else {
+		email = m.identity
+	}
+
+	// Right-panel lines, starting on row 1 to sit flush with the logo content.
+	// Row 0: blank (aligns with sparse top of logo)
+	// Row 1: email
+	// Row 2: host
+	// Row 3: tagline
+	// Rows 4–5: blank
+	infoLines := [6]string{
+		"",
+		styleStatusAccent.Render(email),
+		styleTagline.Render(host),
+		styleSourceHeader.Render(gleanTagline),
+		"",
+		"",
+	}
+
+	sep := styleStatusBar.Render("  │  ")
+
 	var sb strings.Builder
 	sb.WriteString("\n")
-	for _, line := range strings.Split(gleanLogo, "\n") {
-		sb.WriteString(styleLogo.Render(line))
+	for i, logoLine := range logoLines {
+		sb.WriteString(styleLogo.Render(logoLine))
+		if info := infoLines[i]; info != "" {
+			sb.WriteString(sep + info)
+		}
 		sb.WriteString("\n")
-	}
-	sb.WriteString("\n")
-	if m.identity != "" {
-		sb.WriteString(styleTagline.Render(m.identity))
-	} else {
-		sb.WriteString(styleTagline.Render(gleanTagline))
 	}
 	sb.WriteString("\n")
 	return sb.String()
