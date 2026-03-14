@@ -206,14 +206,15 @@ func (m *Model) recalculateLayout() {
 		return
 	}
 
-	inputH := 5  // 3 content rows + 2 border rows (rounded border)
-	statusH := 1 // bottom status line
-	vpH := m.height - inputH - statusH
+	inputH := 5  // 3 content rows + 2 border rows
+	statusH := 1 // status bar
+	spacerH := 1 // blank between body and input
+	vpH := m.height - logoHeaderLines - spacerH - inputH - statusH
 	if vpH > maxViewportHeight {
 		vpH = maxViewportHeight
 	}
-	if vpH < 1 {
-		vpH = 1
+	if vpH < 4 {
+		vpH = 4
 	}
 
 	m.viewport.Width = m.width

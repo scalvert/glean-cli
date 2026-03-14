@@ -20,6 +20,10 @@ const gleanLogo = "⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀�
 
 const gleanTagline = "AI-powered search for your company's knowledge"
 
+// logoHeaderLines is the number of rows the header occupies, used by
+// recalculateLayout to size the viewport correctly.
+const logoHeaderLines = 10 // 1 blank + 6 braille + 1 blank + 1 identity + 1 blank
+
 // View implements tea.Model.
 func (m *Model) View() string {
 	if m.width == 0 {
@@ -29,69 +33,67 @@ func (m *Model) View() string {
 		return m.helpView()
 	}
 
-	// Main conversation area.
-	var mainArea string
+	// Logo + identity — always visible, regardless of conversation state.
+	header := m.headerView()
+
+	// Body: welcome hints (empty session) or conversation viewport.
+	var body string
 	if m.history.Len() == 0 {
-		mainArea = m.welcomeView()
+		body = m.welcomeBody()
 	} else {
-		mainArea = m.viewport.View()
+		body = m.viewport.View()
 	}
 
-	// Input box — rounded border.
+	// Input box — rounded border, full width.
 	inputBox := styleInputFocused.
 		Width(m.width - 4).
 		PaddingLeft(1).
 		PaddingRight(1).
 		Render(m.textarea.View())
 
-	// Status line.
-	status := m.statusLine()
-
 	return lipgloss.JoinVertical(lipgloss.Left,
-		mainArea,
+		header,
+		body,
 		"",
 		inputBox,
-		status,
+		m.statusLine(),
 	)
 }
 
-// welcomeView renders the compact welcome panel shown on an empty session.
-// No vertical padding to fill the viewport — without alt-screen the terminal
-// handles whitespace naturally.
-func (m *Model) welcomeView() string {
+// headerView renders the logo and identity line — shown on every screen.
+func (m *Model) headerView() string {
 	var sb strings.Builder
-
-	// Logo.
 	sb.WriteString("\n")
 	sb.WriteString(centerBlock(gleanLogo, styleLogo, m.width))
 	sb.WriteString("\n\n")
-
-	// Identity line: "email · host" or just the tagline if no identity.
 	if m.identity != "" {
 		sb.WriteString(center(styleTagline.Render(m.identity), m.width))
-		sb.WriteString("\n")
-		sb.WriteString(center(styleSourceHeader.Render(gleanTagline), m.width))
 	} else {
 		sb.WriteString(center(styleTagline.Render(gleanTagline), m.width))
 	}
 	sb.WriteString("\n")
-
-	// Session preview: first user message from the saved session.
-	if preview := m.sessionPreview(); preview != "" {
-		sb.WriteString("\n")
-		sb.WriteString(center(styleSourceHeader.Render("Last session: "+preview), m.width))
-		sb.WriteString("\n")
-	}
-
-	sb.WriteString("\n")
-	sb.WriteString(center(styleSourceHeader.Render("Start typing to begin a conversation"), m.width))
-	sb.WriteString("\n")
-
 	return sb.String()
 }
 
-// sessionPreview returns a truncated first user message from the current session,
-// or "" if the session is empty.
+// welcomeBody renders the hints shown below the logo when no conversation exists.
+func (m *Model) welcomeBody() string {
+	var sb strings.Builder
+	sb.WriteString("\n")
+
+	if preview := m.sessionPreview(); preview != "" {
+		sb.WriteString(center(styleSourceHeader.Render("Last session: "+preview), m.width))
+		sb.WriteString("\n\n")
+	} else {
+		sb.WriteString(center(styleTagline.Render(gleanTagline), m.width))
+		sb.WriteString("\n\n")
+	}
+
+	sb.WriteString(center(styleSourceHeader.Render("Start typing to ask Glean anything"), m.width))
+	sb.WriteString("\n")
+	return sb.String()
+}
+
+// sessionPreview returns a truncated first user message, or "".
 func (m *Model) sessionPreview() string {
 	for _, t := range m.session.Turns {
 		if t.Role == roleUser && t.Content != "" {
@@ -100,7 +102,7 @@ func (m *Model) sessionPreview() string {
 			if len([]rune(msg)) > maxLen {
 				msg = string([]rune(msg)[:maxLen]) + "…"
 			}
-			return "\u201c" + msg + "\u201d" // "…"
+			return "\u201c" + msg + "\u201d"
 		}
 	}
 	return ""
@@ -111,7 +113,7 @@ func (m *Model) statusLine() string {
 	var left string
 	switch {
 	case m.isStreaming:
-		left = m.spinner.View() + " " + styleStatusBar.Render("Searching…")
+		left = m.spinner.View() + " " + styleStatusBar.Render("Asking Glean…")
 	case m.identity != "":
 		left = styleStatusBar.Render(m.identity)
 	default:
@@ -134,7 +136,7 @@ func (m *Model) statusLine() string {
 	return left + strings.Repeat(" ", gap) + right
 }
 
-// helpView renders the full-screen keyboard shortcut reference.
+// helpView renders the keyboard shortcut reference.
 func (m *Model) helpView() string {
 	shortcuts := []struct{ key, desc string }{
 		{"enter", "Send message"},
@@ -164,7 +166,7 @@ func (m *Model) helpView() string {
 }
 
 // centerBlock renders each line of a multi-line string with the given style
-// and centers each line independently within termWidth columns.
+// and centers each line independently.
 func centerBlock(s string, style lipgloss.Style, termWidth int) string {
 	lines := strings.Split(s, "\n")
 	result := make([]string, len(lines))
@@ -174,8 +176,7 @@ func centerBlock(s string, style lipgloss.Style, termWidth int) string {
 	return strings.Join(result, "\n")
 }
 
-// center horizontally centers a (possibly ANSI-styled) single-line string
-// within termWidth columns.
+// center horizontally centers a styled single-line string within termWidth columns.
 func center(s string, termWidth int) string {
 	visible := lipgloss.Width(s)
 	pad := (termWidth - visible) / 2

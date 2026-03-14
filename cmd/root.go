@@ -66,8 +66,7 @@ func NewCmdRoot() *cobra.Command {
 				return fmt.Errorf("failed to create TUI: %w", err)
 			}
 
-			// No WithAltScreen — renders inline without taking over the terminal.
-			p := tea.NewProgram(model, tea.WithContext(cmd.Context()))
+			p := tea.NewProgram(model, tea.WithAltScreen(), tea.WithContext(cmd.Context()))
 			_, err = p.Run()
 			return err
 		},
