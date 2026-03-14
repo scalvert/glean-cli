@@ -23,6 +23,7 @@ import (
 const (
 	roleUser          = "user"
 	roleAssistant     = "assistant"
+	roleSystem        = "system"
 	defaultDatasource = "glean"
 )
 
@@ -589,6 +590,9 @@ func (m *Model) renderConversation() string {
 			sb.WriteString("\n")
 			sb.WriteString(styleUserMsg.Render(inner))
 			sb.WriteString("\n\n")
+		case roleSystem:
+			sb.WriteString(styleSystem.Render("  ✓ " + turn.Content))
+			sb.WriteString("\n\n")
 		case roleAssistant:
 			sb.WriteString(m.renderMarkdown(turn.Content))
 			if len(turn.Sources) > 0 {
@@ -634,7 +638,9 @@ func (m *Model) renderConversation() string {
 			}
 			label = styleStatusAccent.Render(label)
 		} else {
-			label = styleSourceHeader.Render(elapsedStr)
+			// No stage received yet — show a default indicator so the viewport
+			// is never blank between send and the first UPDATE message.
+			label = styleStatusAccent.Render("Gleaning…") + "  " + styleSourceHeader.Render("·  "+elapsedStr)
 		}
 		sb.WriteString("\n")
 		sb.WriteString("  " + m.spinner.View() + "  " + label)

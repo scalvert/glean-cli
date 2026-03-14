@@ -242,6 +242,23 @@ func TestCallAPIUsesAgentMode(t *testing.T) {
 	assert.Equal(t, components.AgentEnumFast, m.agentMode)
 }
 
+func TestSystemMessageRendersInViewport(t *testing.T) {
+	m := newTestModel(t)
+	m.session.Turns = []Turn{
+		{Role: roleSystem, Content: "Mode set to FAST"},
+	}
+	rendered := m.renderConversation()
+	assert.Contains(t, rendered, "Mode set to FAST")
+}
+
+func TestSystemTurnNotAddedToConversationMsgs(t *testing.T) {
+	m := newTestModel(t)
+	before := len(m.conversationMsgs)
+	m.addTurnToConversation(Turn{Role: roleSystem, Content: "test"})
+	assert.Equal(t, before, len(m.conversationMsgs),
+		"system turns must not be sent to the Glean API")
+}
+
 // TestSessionAppendTurnPreservesElapsed verifies the session persistence path:
 // Turn.Elapsed is written to disk and restored correctly.
 func TestSessionAppendTurnPreservesElapsed(t *testing.T) {

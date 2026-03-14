@@ -46,6 +46,11 @@ var (
 	styleSourceItem = lipgloss.NewStyle().
 			Foreground(lipgloss.Color(colorMuted))
 
+	// System messages — command feedback, mode changes.
+	styleSystem = lipgloss.NewStyle().
+		Foreground(lipgloss.Color(colorBrand)).
+		Italic(true)
+
 	// Error text.
 	styleError = lipgloss.NewStyle().
 			Foreground(lipgloss.Color(colorError)).
