@@ -10,9 +10,10 @@ import (
 
 // Turn holds one exchange in the conversation history.
 type Turn struct {
-	Role    string   `json:"role"`    // "user" or "assistant"
-	Content string   `json:"content"` // full text of the message
-	Sources []Source `json:"sources,omitempty"`
+	Role    string   `json:"role"`              // "user" or "assistant"
+	Content string   `json:"content"`           // full text of the message
+	Sources []Source `json:"sources,omitempty"` // cited documents
+	Elapsed string   `json:"elapsed,omitempty"` // response time, e.g. "4.2s"
 }
 
 // Source is a cited document reference shown below an AI response.

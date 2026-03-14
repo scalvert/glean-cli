@@ -30,6 +30,8 @@ const (
 type streamCompleteMsg struct {
 	text    string   // all CONTENT message text concatenated
 	sources []Source // all source citations collected
+	chatID  *string  // Glean chatId for conversation continuity
+	elapsed string   // formatted elapsed time, e.g. "4.2s"
 	err     error
 }
 
@@ -47,6 +49,8 @@ type Model struct {
 	ctx                context.Context
 	identity           string                   // "email · host" shown in header + status
 	conversationMsgs   []components.ChatMessage // full history sent on each turn (multi-turn context)
+	chatID             *string                  // Glean chatId — server manages conversation context
+	requestStart       time.Time                // when the current request started, for elapsed timing
 	startTime          time.Time                // session start, for stats on quit
 	lastCtrlC          time.Time                // for double ctrl+c detection
 	showExitHint       bool                     // show "press ctrl+c again to exit" hint
@@ -246,6 +250,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.textarea.Reset()
 			m.historyIdx = -1
 			m.isStreaming = true
+			m.requestStart = time.Now()
 
 			// Transition to active state: fix viewport at max height.
 			// This only runs once per session — after this the viewport never resizes.
@@ -271,10 +276,18 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case streamCompleteMsg:
 		m.isStreaming = false
+		if msg.chatID != nil {
+			m.chatID = msg.chatID // use Glean's chatId for subsequent turns
+		}
 		if msg.err != nil {
 			m.lastErr = msg.err
 		} else if msg.text != "" {
-			turn := Turn{Role: roleAssistant, Content: msg.text, Sources: msg.sources}
+			turn := Turn{
+				Role:    roleAssistant,
+				Content: msg.text,
+				Sources: msg.sources,
+				Elapsed: msg.elapsed,
+			}
 			m.addTurnToConversation(turn)
 			m.session.AddTurn(roleAssistant, msg.text, msg.sources)
 		}
@@ -298,23 +311,43 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 // callAPI runs the streaming chat request in a goroutine, collects the
 // complete CONTENT response, and returns a single streamCompleteMsg.
-// No incremental updates — the full response appears at once.
+// Uses Glean's chatId for server-side conversation context when available,
+// which gives better multi-turn behavior than manually passing history.
 func (m *Model) callAPI() tea.Cmd {
-	msgs := make([]components.ChatMessage, len(m.conversationMsgs))
-	copy(msgs, m.conversationMsgs)
+	// When we have a chatId from Glean, only send the current user message.
+	// Glean manages conversation context server-side — more reliable than
+	// manually building message history which can bias the model.
+	var msgs []components.ChatMessage
+	if m.chatID != nil {
+		// Send only the most recent user message; chatId carries the context.
+		if last := m.conversationMsgs[len(m.conversationMsgs)-1]; true {
+			msgs = []components.ChatMessage{last}
+		}
+	} else {
+		msgs = make([]components.ChatMessage, len(m.conversationMsgs))
+		copy(msgs, m.conversationMsgs)
+	}
+	chatID := m.chatID
 	cfg := m.cfg
 	ctx := m.ctx
 
 	return func() tea.Msg {
-		req := components.ChatRequest{Messages: msgs}
+		save := true
+		req := components.ChatRequest{Messages: msgs, SaveChat: &save}
+		if chatID != nil {
+			req.ChatID = chatID
+		}
 		body, err := client.StreamChat(ctx, cfg, req)
 		if err != nil {
 			return streamCompleteMsg{err: err}
 		}
 		defer body.Close()
 
+		start := time.Now()
+
 		var textBuf strings.Builder
 		var sources []Source
+		var returnedChatID *string
 		seen := map[string]bool{}
 
 		scanner := bufio.NewScanner(body)
@@ -326,6 +359,10 @@ func (m *Model) callAPI() tea.Cmd {
 			var resp components.ChatResponse
 			if err := json.Unmarshal([]byte(line), &resp); err != nil {
 				continue
+			}
+			// Capture chatId for server-side conversation continuity.
+			if resp.ChatID != nil && returnedChatID == nil {
+				returnedChatID = resp.ChatID
 			}
 			for _, msg := range resp.Messages {
 				if msg.MessageType != nil && *msg.MessageType != components.MessageTypeContent {
@@ -362,7 +399,16 @@ func (m *Model) callAPI() tea.Cmd {
 		if err := scanner.Err(); err != nil {
 			return streamCompleteMsg{err: err}
 		}
-		return streamCompleteMsg{text: textBuf.String(), sources: sources}
+
+		elapsed := time.Since(start).Round(10 * time.Millisecond)
+		elapsedStr := fmt.Sprintf("%.1fs", elapsed.Seconds())
+
+		return streamCompleteMsg{
+			text:    textBuf.String(),
+			sources: sources,
+			chatID:  returnedChatID,
+			elapsed: elapsedStr,
+		}
 	}
 }
 
@@ -477,6 +523,11 @@ func (m *Model) renderConversation() string {
 					sb.WriteString(styleSourceItem.Render(fmt.Sprintf("  [%d] %s — %s", i+1, ds, title)) + "\n")
 				}
 				sb.WriteString("\n")
+			}
+			// Response timing indicator — muted, below the response.
+			if turn.Elapsed != "" {
+				sb.WriteString(styleSourceHeader.Render("  ─── " + turn.Elapsed + " ───"))
+				sb.WriteString("\n\n")
 			}
 		}
 	}
