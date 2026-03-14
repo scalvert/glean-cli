@@ -449,7 +449,8 @@ func (m *Model) callAPI() tea.Cmd {
 	ctx := m.ctx
 
 	return func() tea.Msg {
-		body, err := client.StreamChat(ctx, cfg, msgs)
+		req := components.ChatRequest{Messages: msgs}
+		body, err := client.StreamChat(ctx, cfg, req)
 		if err != nil {
 			return streamDoneMsg{err: err}
 		}

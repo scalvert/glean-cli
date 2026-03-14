@@ -18,13 +18,14 @@ import (
 var streamHTTPClient = &http.Client{Timeout: 120 * time.Second}
 
 // StreamChat makes a streaming chat request to the Glean API, bypassing the
-// SDK's buffered CreateStream method which consumes the entire response body
-// before returning. Returns the raw response body for progressive line-by-line
-// reading. The caller is responsible for closing the returned body.
+// SDK's buffered CreateStream which reads the entire response before returning.
+// The req.Stream field is forced to true. The caller is responsible for closing
+// the returned io.ReadCloser.
 //
-// The response body contains newline-delimited JSON (NDJSON): each line is a
-// complete components.ChatResponse JSON object.
-func StreamChat(ctx context.Context, cfg *config.Config, msgs []components.ChatMessage) (io.ReadCloser, error) {
+// The response body is NDJSON: each line is a complete ChatResponse JSON object.
+// Only messages with messageType == "CONTENT" carry user-facing text; callers
+// should skip UPDATE, CONTROL, DEBUG, etc.
+func StreamChat(ctx context.Context, cfg *config.Config, req components.ChatRequest) (io.ReadCloser, error) {
 	host := cfg.GleanHost
 	if host == "" {
 		return nil, fmt.Errorf("Glean host not configured")
@@ -38,39 +39,42 @@ func StreamChat(ctx context.Context, cfg *config.Config, msgs []components.ChatM
 		return nil, fmt.Errorf("not authenticated — run 'glean auth login'")
 	}
 
-	// Expand short hostname to full form (mirrors extractInstance in reverse).
 	if !strings.Contains(host, ".") {
 		host += "-be.glean.com"
 	}
 
-	agentDefault := components.AgentEnumDefault
-	modeDefault := components.ModeDefault
 	stream := true
-	body := components.ChatRequest{
-		Messages:    msgs,
-		AgentConfig: &components.AgentConfig{Agent: agentDefault.ToPointer(), Mode: modeDefault.ToPointer()},
-		Stream:      &stream,
+	req.Stream = &stream
+
+	// Ensure AgentConfig defaults are set if not provided.
+	if req.AgentConfig == nil {
+		agentDefault := components.AgentEnumDefault
+		modeDefault := components.ModeDefault
+		req.AgentConfig = &components.AgentConfig{
+			Agent: agentDefault.ToPointer(),
+			Mode:  modeDefault.ToPointer(),
+		}
 	}
 
-	payload, err := json.Marshal(body)
+	payload, err := json.Marshal(req)
 	if err != nil {
 		return nil, fmt.Errorf("marshaling chat request: %w", err)
 	}
 
 	url := fmt.Sprintf("https://%s/rest/api/v1/chat", host)
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(payload))
+	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(payload))
 	if err != nil {
 		return nil, fmt.Errorf("building request: %w", err)
 	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Accept", "text/event-stream")
-	req.Header.Set("Authorization", "Bearer "+token)
+	httpReq.Header.Set("Content-Type", "application/json")
+	httpReq.Header.Set("Accept", "text/event-stream")
+	httpReq.Header.Set("Authorization", "Bearer "+token)
 
 	if cfg.GleanEmail != "" {
-		req.Header.Set("X-Scio-Actas", cfg.GleanEmail)
+		httpReq.Header.Set("X-Scio-Actas", cfg.GleanEmail)
 	}
 
-	resp, err := streamHTTPClient.Do(req)
+	resp, err := streamHTTPClient.Do(httpReq)
 	if err != nil {
 		return nil, fmt.Errorf("chat request failed: %w", err)
 	}

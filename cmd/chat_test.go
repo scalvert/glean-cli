@@ -59,6 +59,8 @@ func TestChatCommand(t *testing.T) {
 	})
 
 	t.Run("chat with error response", func(t *testing.T) {
+		// Fully invalid NDJSON is silently skipped — agent-first design means
+		// we don't fail the command for malformed lines; we just produce no output.
 		response := fixtures.LoadAsStream("error_response")
 		_, cleanup := testutils.SetupTestWithResponse(t, response)
 		defer cleanup()
@@ -69,11 +71,12 @@ func TestChatCommand(t *testing.T) {
 		cmd.SetArgs([]string{"Test error"})
 
 		err := cmd.Execute()
-		require.Error(t, err)
-		assert.Contains(t, err.Error(), "error parsing response line")
+		require.NoError(t, err)
+		assert.Empty(t, b.String())
 	})
 
 	t.Run("chat with invalid JSON response", func(t *testing.T) {
+		// Invalid lines are silently skipped; valid CONTENT lines still produce output.
 		response := fixtures.LoadAsStream("invalid_json_response")
 		_, cleanup := testutils.SetupTestWithResponse(t, response)
 		defer cleanup()
@@ -84,8 +87,9 @@ func TestChatCommand(t *testing.T) {
 		cmd.SetArgs([]string{"Test invalid"})
 
 		err := cmd.Execute()
-		require.Error(t, err)
-		assert.Contains(t, err.Error(), "error parsing response line")
+		require.NoError(t, err)
+		// Valid messages should still produce output.
+		assert.NotEmpty(t, b.String())
 	})
 
 	t.Run("chat with empty response", func(t *testing.T) {

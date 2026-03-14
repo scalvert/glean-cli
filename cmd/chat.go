@@ -17,6 +17,35 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// contentOnly extracts the user-visible text from a chat NDJSON stream.
+// It skips UPDATE/CONTROL/DEBUG messages (internal reasoning/progress)
+// and only collects CONTENT message fragments, stripping stage preamble lines.
+func contentOnly(ndjson string) string {
+	var sb strings.Builder
+	for _, line := range strings.Split(ndjson, "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+		var resp components.ChatResponse
+		if err := json.Unmarshal([]byte(line), &resp); err != nil {
+			continue
+		}
+		for _, msg := range resp.Messages {
+			// Only CONTENT messages carry user-facing text.
+			if msg.MessageType != nil && *msg.MessageType != components.MessageTypeContent {
+				continue
+			}
+			for _, frag := range msg.Fragments {
+				if frag.Text != nil && *frag.Text != "" {
+					sb.WriteString(*frag.Text)
+				}
+			}
+		}
+	}
+	return sb.String()
+}
+
 const (
 	StageSearching ChatStageType = "Searching"
 	StageReading   ChatStageType = "Reading"
@@ -36,15 +65,6 @@ type ChatStageType string
 type stageInfo struct {
 	stage  ChatStageType
 	detail string
-}
-
-// ChatState holds the state for processing chat responses
-type ChatState struct {
-	cmd           *cobra.Command
-	searchStage   *stageInfo
-	readingStage  *stageInfo
-	isStageOutput bool
-	firstLine     bool
 }
 
 // NewCmdChat creates and returns the chat command.
@@ -142,8 +162,10 @@ func executeChatMessage(cmd *cobra.Command, question string, timeoutMillis int, 
 	return executeChat(cmd, chatReq, true)
 }
 
-// executeChat sends a ChatRequest and streams the response to cmd.OutOrStdout().
-// showSpinner controls whether the waiting spinner is displayed.
+// executeChat sends a ChatRequest and writes the response to cmd.OutOrStdout().
+// Only CONTENT messages are shown — UPDATE/CONTROL/DEBUG (internal reasoning)
+// are filtered. The full response is collected before printing so agents get
+// a clean, complete string without per-token newlines.
 func executeChat(cmd *cobra.Command, chatReq components.ChatRequest, showSpinner bool) error {
 	ctx := cmd.Context()
 
@@ -153,7 +175,7 @@ func executeChat(cmd *cobra.Command, chatReq components.ChatRequest, showSpinner
 	}
 
 	spin := spinner.New(spinner.CharSets[14], 100*time.Millisecond)
-	spin.Prefix = "Waiting for response "
+	spin.Prefix = "  "
 	if showSpinner {
 		spin.Start()
 		defer spin.Stop()
@@ -163,107 +185,18 @@ func executeChat(cmd *cobra.Command, chatReq components.ChatRequest, showSpinner
 	if err != nil {
 		return fmt.Errorf("chat request failed: %w", err)
 	}
+	spin.Stop()
 
 	if resp.ChatRequestStream == nil {
 		return nil
 	}
 
-	state := &ChatState{
-		cmd:       cmd,
-		firstLine: true,
-	}
-
-	lines := strings.Split(*resp.ChatRequestStream, "\n")
-	for _, line := range lines {
-		line = strings.TrimSpace(line)
-		if line == "" {
-			continue
-		}
-
-		if state.firstLine {
-			spin.Stop()
-		}
-
-		if err := state.processChatResponse(line); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-// processChatResponse processes a single line of chat response JSON.
-func (s *ChatState) processChatResponse(line string) error {
-	var chatResp components.ChatResponse
-	if err := json.Unmarshal([]byte(line), &chatResp); err != nil {
-		return fmt.Errorf("error parsing response line: %w", err)
-	}
-
-	for _, msg := range chatResp.Messages {
-		hasMore := msg.HasMoreFragments != nil && *msg.HasMoreFragments
-		for _, fragment := range msg.Fragments {
-			s.processFragment(fragment, hasMore)
-		}
-	}
-
-	return nil
-}
-
-// processFragment handles a single chat message fragment.
-func (s *ChatState) processFragment(fragment components.ChatMessageFragment, hasMoreFragments bool) {
-	if len(fragment.StructuredResults) > 0 {
-		if s.readingStage == nil {
-			fmt.Fprintln(s.cmd.OutOrStdout(), formatChatStage(StageReading, formatReadingStage(fragment.StructuredResults)))
-			s.isStageOutput = true
-		}
-		s.readingStage = nil
-		return
-	}
-
-	text := ""
-	if fragment.Text != nil {
-		text = *fragment.Text
-	}
-
+	text := contentOnly(*resp.ChatRequestStream)
 	if text == "" {
-		return
+		return nil
 	}
-
-	if stage := isStage(text); stage != nil {
-		if stage.stage == StageReading {
-			s.readingStage = stage
-			return
-		}
-		if stage.stage == StageSearching && stage.detail == "" {
-			s.searchStage = stage
-			return
-		}
-		fmt.Fprintln(s.cmd.OutOrStdout(), formatChatStage(stage.stage, stage.detail))
-		if stage.stage == StageSummary {
-			fmt.Fprintln(s.cmd.OutOrStdout())
-		}
-		if stage.stage != StageSummary {
-			s.isStageOutput = true
-		}
-	} else if s.searchStage != nil {
-		fmt.Fprintln(s.cmd.OutOrStdout(), formatChatStage(s.searchStage.stage, text))
-		s.searchStage = nil
-		s.isStageOutput = true
-	} else {
-		if s.isStageOutput {
-			fmt.Fprint(s.cmd.OutOrStdout(), formatChatResponse(text))
-			s.isStageOutput = false
-		} else {
-			fmt.Fprint(s.cmd.OutOrStdout(), text)
-			if !hasMoreFragments {
-				fmt.Fprintln(s.cmd.OutOrStdout())
-				if s.firstLine {
-					fmt.Fprintln(s.cmd.OutOrStdout())
-					s.firstLine = false
-				}
-			}
-		}
-	}
+	fmt.Fprintln(cmd.OutOrStdout(), strings.TrimSpace(text))
+	return nil
 }
 
 // formatChatStage formats a chat stage output with a colored checkmark.

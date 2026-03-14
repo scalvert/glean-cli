@@ -1,5 +1,3 @@
-{"messages":[{"author":"GLEAN_AI","fragments":[{"text":"Hello"}],"hasMoreFragments":false}],"chatSessionTrackingToken":"token1"}
-{"messages":[{"author":"GLEAN_AI","fragments":[{"text":"How"}],"hasMoreFragments":true}],"chatSessionTrackingToken":"token2"}
-{"messages":[{"author":"GLEAN_AI","fragments":[{"text":" can"}],"hasMoreFragments":true}],"chatSessionTrackingToken":"token3"}
-{"messages":[{"author":"GLEAN_AI","fragments":[{"text":" I"}],"hasMoreFragments":true}],"chatSessionTrackingToken":"token4"}
-{"messages":[{"author":"GLEAN_AI","fragments":[{"text":" help?"}],"hasMoreFragments":false}],"chatSessionTrackingToken":"token5"}
+{"messages":[{"author":"GLEAN_AI","fragments":[{"text":"Hello"}],"messageType":"CONTENT"}],"chatSessionTrackingToken":"token1"}
+{"messages":[{"author":"GLEAN_AI","fragments":[{"text":"\n\n"}],"messageType":"CONTENT"}],"chatSessionTrackingToken":"token2"}
+{"messages":[{"author":"GLEAN_AI","fragments":[{"text":"How can I help?"}],"messageType":"CONTENT"}],"chatSessionTrackingToken":"token3"}
