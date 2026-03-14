@@ -123,13 +123,17 @@ func (m *Model) statusLine() string {
 	switch {
 	case m.isStreaming:
 		left = m.spinner.View() + " " + styleStatusBar.Render("Asking Glean…")
-	case m.identity != "":
-		left = styleStatusBar.Render(m.identity)
 	default:
-		turns := len(m.session.Turns)
-		if turns > 0 {
-			left = styleStatusAccent.Render(fmt.Sprintf("%d", turns)) +
-				styleStatusBar.Render(" turn"+pluralS(turns))
+		// Only show identity in the status bar if it contains an email address
+		// (i.e. includes "·"). The host alone is already shown in the header.
+		if strings.Contains(m.identity, "·") {
+			left = styleStatusBar.Render(m.identity)
+		} else {
+			turns := len(m.session.Turns)
+			if turns > 0 {
+				left = styleStatusAccent.Render(fmt.Sprintf("%d", turns)) +
+					styleStatusBar.Render(" turn"+pluralS(turns))
+			}
 		}
 	}
 

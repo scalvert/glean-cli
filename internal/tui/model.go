@@ -63,11 +63,12 @@ type Model struct {
 // New creates a fully-initialized TUI model.
 func New(cfg *config.Config, session *Session, identity string, ctx context.Context) (*Model, error) {
 	ta := textarea.New()
-	ta.Placeholder = "Message Glean…  (shift+enter for a new line)"
+	ta.Placeholder = "Message Glean…"
 	ta.Focus()
 	ta.ShowLineNumbers = false
 	ta.CharLimit = 4096
-	ta.KeyMap.InsertNewline.SetKeys("shift+enter")
+	// shift+enter is terminal-dependent and unreliable; disable the claim.
+	ta.KeyMap.InsertNewline.SetEnabled(false)
 	ta.SetHeight(3)
 	ta.FocusedStyle.CursorLine = lipgloss.NewStyle()
 
