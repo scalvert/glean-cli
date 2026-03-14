@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -38,11 +39,18 @@ func Login(ctx context.Context) error {
 	// Generate the PKCE verifier once — used in both AuthCodeOptions and TokenRequestOptions.
 	verifier := oauth2.GenerateVerifier()
 
+	// When we have an OIDC provider use standard OIDC scopes; otherwise use
+	// Glean's native scopes (Glean's auth server does not support openid/profile).
+	scopes := []string{"chat", "search", "email"}
+	if provider != nil {
+		scopes = []string{oidc.ScopeOpenID, "email", "profile"}
+	}
+
 	oauthCfg := oauth2.Config{
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
 		Endpoint:     endpoint,
-		Scopes:       []string{oidc.ScopeOpenID, "email", "profile"},
+		Scopes:       scopes,
 	}
 
 	token, err := oauth2cli.GetToken(ctx, oauth2cli.Config{
@@ -185,7 +193,13 @@ func resolveHost(ctx context.Context) (string, error) {
 	return host, nil
 }
 
-// discover uses oidc.NewProvider to perform OIDC/OAuth discovery on the Glean backend.
+// discover resolves the OAuth2 endpoint for the Glean backend.
+//
+// Strategy:
+//  1. Fetch RFC 9728 protected resource metadata → get authorization server URL
+//  2. Try OIDC discovery (oidc.NewProvider) for full OIDC support
+//  3. Fall back to RFC 8414 auth server metadata when OIDC is unavailable
+//     (Glean uses RFC 8414 but does not serve /.well-known/openid-configuration)
 func discover(ctx context.Context, host string) (*oidc.Provider, oauth2.Endpoint, error) {
 	baseURL := "https://" + host
 	meta, err := fetchProtectedResource(ctx, baseURL)
@@ -194,11 +208,26 @@ func discover(ctx context.Context, host string) (*oidc.Provider, oauth2.Endpoint
 	}
 
 	issuer := meta.AuthorizationServers[0]
+
+	// Try full OIDC discovery first (supports ID token, UserInfo).
 	provider, err := oidc.NewProvider(ctx, issuer)
-	if err != nil {
-		return nil, oauth2.Endpoint{}, fmt.Errorf("OIDC discovery failed for %s: %w", issuer, err)
+	if err == nil {
+		return provider, provider.Endpoint(), nil
 	}
-	return provider, provider.Endpoint(), nil
+
+	// Fall back to RFC 8414 auth server metadata (Glean's primary discovery mechanism).
+	authMeta, err := fetchAuthServerMetadata(ctx, issuer)
+	if err != nil {
+		return nil, oauth2.Endpoint{}, fmt.Errorf("OAuth discovery failed for %s: %w", issuer, err)
+	}
+	if authMeta.AuthorizationEndpoint == "" || authMeta.TokenEndpoint == "" {
+		return nil, oauth2.Endpoint{}, fmt.Errorf("OAuth metadata missing required endpoints for %s", issuer)
+	}
+
+	return nil, oauth2.Endpoint{
+		AuthURL:  authMeta.AuthorizationEndpoint,
+		TokenURL: authMeta.TokenEndpoint,
+	}, nil
 }
 
 // resolveClientID returns the client_id and client_secret to use.
@@ -231,9 +260,18 @@ func resolveClientID(ctx context.Context, host string, endpoint oauth2.Endpoint)
 	return "", "", fmt.Errorf("no OAuth client available — run 'glean config --oauth-client-id <id>' for static clients")
 }
 
-// fetchAuthServerMetadata fetches RFC 8414 auth server metadata to get registration_endpoint.
+// fetchAuthServerMetadata fetches RFC 8414 Authorization Server Metadata.
+//
+// Per RFC 8414 §3, for an issuer with a path component (e.g. https://host/oauth),
+// the discovery URL is: https://host/.well-known/oauth-authorization-server/oauth
+// (origin + well-known + issuer-path), not https://host/oauth/.well-known/...
 func fetchAuthServerMetadata(ctx context.Context, issuer string) (*authServerMeta, error) {
-	u := strings.TrimRight(issuer, "/") + "/.well-known/oauth-authorization-server"
+	parsed, err := url.Parse(strings.TrimRight(issuer, "/"))
+	if err != nil {
+		return nil, fmt.Errorf("invalid issuer URL %q: %w", issuer, err)
+	}
+	// RFC 8414 path-aware: origin + /.well-known/oauth-authorization-server + path
+	u := parsed.Scheme + "://" + parsed.Host + "/.well-known/oauth-authorization-server" + parsed.Path
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return nil, err
