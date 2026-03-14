@@ -3,6 +3,7 @@ package auth
 import (
 	"bufio"
 	"context"
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"net"
@@ -18,6 +19,9 @@ import (
 	"github.com/scalvert/glean-cli/internal/config"
 	"golang.org/x/oauth2"
 )
+
+//go:embed success.html
+var successHTML string
 
 // Login performs the full OAuth 2.0 PKCE login flow for the configured Glean host.
 // If the host is not configured, prompts for a work email and auto-discovers it.
@@ -94,7 +98,7 @@ func Login(ctx context.Context) error {
 		LocalServerReadyChan:    readyChan,
 		AuthCodeOptions:         []oauth2.AuthCodeOption{oauth2.S256ChallengeOption(verifier)},
 		TokenRequestOptions:     []oauth2.AuthCodeOption{oauth2.VerifierOption(verifier)},
-		LocalServerSuccessHTML:  "<html><body><h2>✓ Authenticated with Glean!</h2><p>You may close this tab and return to your terminal.</p></body></html>",
+		LocalServerSuccessHTML:  successHTML,
 	})
 	if err != nil {
 		return fmt.Errorf("OAuth login failed: %w", err)

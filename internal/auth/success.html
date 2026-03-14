@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glean — Authenticated</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+      background: #0f0f11;
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      text-align: center;
+      padding: 3.5rem 4rem;
+      max-width: 420px;
+      width: 100%;
+    }
+
+    /* Glean wordmark — styled to match brand logotype */
+    .wordmark {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: #4339F2;
+      margin-bottom: 2.5rem;
+      line-height: 1;
+    }
+
+    /* Success circle with checkmark */
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      background: #4339F2;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.75rem;
+      animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes pop {
+      0%   { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1);   opacity: 1; }
+    }
+
+    .success-icon svg {
+      width: 30px;
+      height: 30px;
+      stroke: #ffffff;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    h1 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #f9fafb;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.01em;
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+
+    .divider {
+      width: 40px;
+      height: 2px;
+      background: #1f2937;
+      border-radius: 1px;
+      margin: 1.75rem auto;
+    }
+
+    .hint {
+      font-size: 0.8rem;
+      color: #374151;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="wordmark">glean</div>
+
+    <div class="success-icon">
+      <svg viewBox="0 0 24 24">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+
+    <h1>Authentication successful</h1>
+    <p>You're now signed in to Glean.<br>You may close this tab.</p>
+
+    <div class="divider"></div>
+    <p class="hint">Return to your terminal to continue.</p>
+  </div>
+</body>
+</html>
