@@ -273,3 +273,72 @@ func TestSessionAppendTurnPreservesElapsed(t *testing.T) {
 	require.Len(t, s.Turns, 1)
 	assert.Equal(t, "3.7s", s.Turns[0].Elapsed, "Elapsed must survive AppendTurn")
 }
+
+func TestSlashClearResetsSession(t *testing.T) {
+	m := newTestModel(t)
+	chatID := "old-chat"
+	m.chatID = &chatID
+	m.conversationActive = true
+	m.session.AppendTurn(Turn{Role: roleUser, Content: "hello"})
+
+	result, _ := m.handleSlashCommand("/clear")
+	r := result.(*Model)
+
+	assert.Nil(t, r.chatID)
+	assert.Empty(t, r.session.Turns)
+	assert.False(t, r.conversationActive)
+}
+
+func TestSlashModeSetsFast(t *testing.T) {
+	m := newTestModel(t)
+	result, _ := m.handleSlashCommand("/mode fast")
+	r := result.(*Model)
+	assert.Equal(t, components.AgentEnumFast, r.agentMode)
+}
+
+func TestSlashModeSetAdvanced(t *testing.T) {
+	m := newTestModel(t)
+	result, _ := m.handleSlashCommand("/mode advanced")
+	r := result.(*Model)
+	assert.Equal(t, components.AgentEnumAdvanced, r.agentMode)
+}
+
+func TestSlashModeSetAuto(t *testing.T) {
+	m := newTestModel(t)
+	m.agentMode = components.AgentEnumFast
+	result, _ := m.handleSlashCommand("/mode auto")
+	r := result.(*Model)
+	assert.Equal(t, components.AgentEnumAuto, r.agentMode)
+}
+
+func TestSlashModeShowsFeedback(t *testing.T) {
+	m := newTestModel(t)
+	m.conversationActive = true
+	result, _ := m.handleSlashCommand("/mode fast")
+	r := result.(*Model)
+	require.NotEmpty(t, r.session.Turns)
+	last := r.session.Turns[len(r.session.Turns)-1]
+	assert.Equal(t, roleSystem, last.Role)
+	assert.Contains(t, last.Content, "FAST")
+}
+
+func TestSlashUnknownCommandShowsError(t *testing.T) {
+	m := newTestModel(t)
+	m.conversationActive = true
+	result, _ := m.handleSlashCommand("/foobar")
+	r := result.(*Model)
+	require.NotEmpty(t, r.session.Turns)
+	last := r.session.Turns[len(r.session.Turns)-1]
+	assert.Equal(t, roleSystem, last.Role)
+	assert.Contains(t, last.Content, "foobar")
+}
+
+func TestSlashModeUnknownArgShowsError(t *testing.T) {
+	m := newTestModel(t)
+	m.conversationActive = true
+	result, _ := m.handleSlashCommand("/mode turbo")
+	r := result.(*Model)
+	last := r.session.Turns[len(r.session.Turns)-1]
+	assert.Equal(t, roleSystem, last.Role)
+	assert.Contains(t, last.Content, "turbo")
+}
