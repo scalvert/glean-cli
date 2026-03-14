@@ -10,6 +10,7 @@ import (
 
 	"github.com/atotto/clipboard"
 	"github.com/charmbracelet/bubbles/spinner"
+	"github.com/charmbracelet/bubbles/stopwatch"
 	"github.com/charmbracelet/bubbles/textarea"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
@@ -60,7 +61,7 @@ type Model struct {
 	conversationMsgs   []components.ChatMessage // full history sent on each turn (multi-turn context)
 	chatID             *string                  // Glean chatId — server manages conversation context
 	startTime          time.Time                // session start, for stats on quit
-	requestStartTime   time.Time                // when current streaming request started, for elapsed display
+	stopwatch          stopwatch.Model          // tracks elapsed time during streaming; ticks every 1s
 	lastCtrlC          time.Time                // for double ctrl+c detection
 	showExitHint       bool                     // show "press ctrl+c again to exit" hint
 	lastErr            error
@@ -91,14 +92,8 @@ func New(cfg *config.Config, session *Session, identity string, ctx context.Cont
 
 	vp := viewport.New(0, 0)
 
-	// Custom braille circular spinner — looks like a spinning ball.
-	// Braille characters create a smooth circular motion that feels more
-	// premium than the default dot spinner.
 	sp := spinner.New()
-	sp.Spinner = spinner.Spinner{
-		Frames: []string{"⣾ ", "⣽ ", "⣻ ", "⢿ ", "⡿ ", "⣟ ", "⣯ ", "⣷ "},
-		FPS:    time.Second / 10,
-	}
+	sp.Spinner = spinner.Pulse
 	sp.Style = styleStatusAccent
 
 	renderer, err := glamour.NewTermRenderer(
@@ -113,6 +108,7 @@ func New(cfg *config.Config, session *Session, identity string, ctx context.Cont
 		viewport:   vp,
 		textarea:   ta,
 		spinner:    sp,
+		stopwatch:  stopwatch.New(),
 		renderer:   renderer,
 		cfg:        cfg,
 		session:    session,
@@ -271,8 +267,6 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			m.isStreaming = true
-			m.requestStartTime = time.Now()
-
 			// Transition to active state: fix viewport at max height.
 			// This only runs once per session — after this the viewport never resizes.
 			if !m.conversationActive {
@@ -287,8 +281,26 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.viewport.GotoBottom()
 
 			apiCmd := m.callAPI() // sets up m.streamCh and returns listenStreamCh
-			return m, tea.Batch(m.spinner.Tick, apiCmd)
+			swCmd := m.stopwatch.Reset()
+			return m, tea.Batch(m.spinner.Tick, apiCmd, swCmd, m.stopwatch.Start())
 		}
+
+	case stopwatch.TickMsg:
+		// Stopwatch ticks every 1s while streaming — update elapsed display.
+		m.stopwatch, spCmd = m.stopwatch.Update(msg)
+		if m.isStreaming {
+			m.viewport.SetContent(m.renderConversation())
+			m.viewport.GotoBottom()
+		}
+		return m, spCmd
+
+	case stopwatch.StartStopMsg:
+		m.stopwatch, spCmd = m.stopwatch.Update(msg)
+		return m, spCmd
+
+	case stopwatch.ResetMsg:
+		m.stopwatch, spCmd = m.stopwatch.Update(msg)
+		return m, spCmd
 
 	case streamStageMsg:
 		m.currentStage = msg.stage
@@ -300,7 +312,6 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case spinner.TickMsg:
 		if m.isStreaming {
 			m.spinner, spCmd = m.spinner.Update(msg)
-			// Rebuild viewport content so the elapsed counter updates each tick.
 			m.viewport.SetContent(m.renderConversation())
 			m.viewport.GotoBottom()
 			return m, spCmd
@@ -311,6 +322,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.currentStage = ""
 		m.currentDetail = ""
 		m.streamCh = nil
+		_ = m.stopwatch.Stop()
 		if msg.chatID != nil {
 			m.chatID = msg.chatID // use Glean's chatId for subsequent turns
 			// Once chatId is active, only the latest user message is sent per turn.
@@ -635,10 +647,10 @@ func (m *Model) renderConversation() string {
 	// While streaming: show spinner + current Glean stage + elapsed seconds in the
 	// content area, right where the response will appear. Stages update live as
 	// Glean reports them (Searching → Reading → Writing). Elapsed counts up in
-	// whole seconds, matching Claude Code's style.
+	// whole seconds via the bubbles stopwatch component.
 	if m.isStreaming {
-		elapsed := int(time.Since(m.requestStartTime).Seconds())
-		elapsedStr := fmt.Sprintf("%ds", elapsed)
+		elapsed := m.stopwatch.Elapsed().Round(time.Second)
+		elapsedStr := fmt.Sprintf("%ds", int(elapsed.Seconds()))
 
 		var label string
 		if m.currentStage != "" {
