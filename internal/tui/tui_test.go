@@ -92,7 +92,7 @@ func TestStreamCompleteMsgErrorSurfaces(t *testing.T) {
 	assert.Contains(t, result.lastErr.Error(), "connection refused")
 
 	rendered := result.renderConversation()
-	assert.Contains(t, rendered, "connection refused", "error must appear in rendered conversation")
+	assert.Contains(t, rendered, "Could not reach Glean", "friendly error must appear in rendered conversation")
 }
 
 // TestStreamCompleteMsgClearsMsgsOnChatID verifies CHK-038: once chatID is received

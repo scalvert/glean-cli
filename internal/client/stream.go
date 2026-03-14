@@ -14,7 +14,10 @@ import (
 	"github.com/scalvert/glean-cli/internal/config"
 )
 
-var streamHTTPClient = &http.Client{Timeout: 120 * time.Second}
+// streamHTTPClient has a generous timeout for long-running AUTO/ADVANCED agent
+// responses. Context cancellation (ctrl+c in the TUI) handles user-initiated
+// cancellation; this timeout is only a backstop for genuine network hangs.
+var streamHTTPClient = &http.Client{Timeout: 10 * time.Minute}
 
 // StreamChat makes a streaming chat request to the Glean API, bypassing the
 // SDK's buffered CreateStream which reads the entire response before returning.

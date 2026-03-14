@@ -671,7 +671,7 @@ func (m *Model) renderConversation() string {
 
 	if m.lastErr != nil {
 		sb.WriteString("\n")
-		sb.WriteString(styleError.Render("  Error: " + m.lastErr.Error()))
+		sb.WriteString(styleError.Render("  Error: " + friendlyError(m.lastErr)))
 		sb.WriteString("\n\n")
 	}
 	return sb.String()
@@ -718,6 +718,27 @@ func userMessages(turns []Turn) []string {
 		}
 	}
 	return msgs
+}
+
+// friendlyError translates low-level network errors into readable messages.
+func friendlyError(err error) string {
+	msg := err.Error()
+	switch {
+	case strings.Contains(msg, "context deadline exceeded") || strings.Contains(msg, "Client.Timeout"):
+		return "Request timed out — Glean is still thinking. Try /mode fast for quicker responses, or ask again."
+	case strings.Contains(msg, "context canceled"):
+		return "Request cancelled."
+	case strings.Contains(msg, "connection refused") || strings.Contains(msg, "no such host"):
+		return "Could not reach Glean — check your network connection."
+	case strings.Contains(msg, "HTTP 401") || strings.Contains(msg, "HTTP 403"):
+		return "Authentication failed — run 'glean auth login' to re-authenticate."
+	case strings.Contains(msg, "HTTP 429"):
+		return "Rate limited — please wait a moment before sending another message."
+	case strings.Contains(msg, "HTTP 5"):
+		return "Glean returned a server error — please try again."
+	default:
+		return msg
+	}
 }
 
 // newGlamourRenderer creates a glamour renderer based on the dark style, but
