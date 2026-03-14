@@ -79,7 +79,7 @@ func New(cfg *config.Config, session *Session, identity string, ctx context.Cont
 	// shift+enter is terminal-dependent and unreliable; disable the claim.
 	ta.KeyMap.InsertNewline.SetEnabled(false)
 	ta.SetHeight(1)
-	ta.Prompt = "┃ "
+	ta.Prompt = styleStatusAccent.Render("❯") + " "
 	ta.FocusedStyle.CursorLine = lipgloss.NewStyle()
 
 	vp := viewport.New(0, 0)
@@ -176,6 +176,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case "ctrl+l":
 			m.lastErr = nil
+			m.clearViewportHeight()
 			m.viewport.SetContent(m.renderConversation())
 			m.resizeViewportToContent()
 			return m, nil
@@ -184,6 +185,8 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.session = &Session{}
 			m.conversationMsgs = nil
 			m.lastErr = nil
+			m.historyIdx = -1
+			m.clearViewportHeight()
 			m.viewport.SetContent(m.renderConversation())
 			m.resizeViewportToContent()
 			return m, nil
@@ -420,10 +423,13 @@ func isStageLine(line string) bool {
 	return false
 }
 
-// rebuildViewport regenerates the viewport content from session turns.
+// rebuildViewport updates viewport content during streaming.
+// Does NOT resize — resizing during streaming causes the viewport height
+// to oscillate (glamour line counts are inconsistent) which makes the
+// content pane jump while typing or streaming. Resize only happens on
+// complete turns (in streamDoneMsg and the enter handler).
 func (m *Model) rebuildViewport() {
 	m.viewport.SetContent(m.renderConversation())
-	m.resizeViewportToContent()
 	m.viewport.GotoBottom()
 }
 
@@ -488,10 +494,13 @@ func (m *Model) recalculateLayout() {
 	}
 }
 
-// resizeViewportToContent sets the viewport height to exactly the number of
-// content lines when they fit in the available space, so the input box appears
-// right below the content (Claude Code style). Once content fills the screen
-// the viewport caps at maxVpH and becomes scrollable.
+// resizeViewportToContent sets the viewport height to content size when small,
+// or caps at maxVpH when the conversation fills the screen.
+//
+// IMPORTANT: Once the viewport reaches maxVpH it stays there — calling this
+// again with full content would only oscillate the height (glamour line counts
+// are non-deterministic). The caller must call clearViewportHeight() before
+// resizing after a session clear (ctrl+r / ctrl+l).
 func (m *Model) resizeViewportToContent() {
 	if m.width == 0 || m.height == 0 {
 		return
@@ -504,10 +513,13 @@ func (m *Model) resizeViewportToContent() {
 		maxVpH = 4
 	}
 
-	// Count rendered content lines.
+	// If viewport is already at max height, don't touch it — avoids oscillation.
+	if m.viewport.Height >= maxVpH {
+		return
+	}
+
 	content := m.renderConversation()
 	contentLines := strings.Count(content, "\n") + 1
-
 	vpH := contentLines
 	if vpH > maxVpH {
 		vpH = maxVpH
@@ -516,6 +528,12 @@ func (m *Model) resizeViewportToContent() {
 		vpH = 1
 	}
 	m.viewport.Height = vpH
+}
+
+// clearViewportHeight resets the viewport to minimum so resizeViewportToContent
+// re-evaluates from scratch (needed after ctrl+r / ctrl+l clears content).
+func (m *Model) clearViewportHeight() {
+	m.viewport.Height = 1
 }
 
 // renderConversation rebuilds the full viewport content from session turns.
