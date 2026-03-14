@@ -282,24 +282,48 @@ func (m *Model) processStreamLine(line string) {
 		return
 	}
 
+	// Filter out Glean's chat stage preamble markers (**Searching:**, etc.).
+	// These are internal progress indicators, not user-facing content.
+	// cmd/chat.go does the same filtering for the non-TUI chat command.
+	if isStageMarker(chunk) {
+		return
+	}
+
 	// Append chunk to the accumulated response.
 	m.currentResponse.WriteString(chunk)
 
-	// Re-render the full in-progress response incrementally.
-	// Rebuild history from the saved turns + the current partial response.
+	// Re-render the full in-progress response through glamour so markdown
+	// is readable during streaming rather than shown as raw **bold** text.
 	m.rebuildViewport()
 }
 
+// isStageMarker returns true if text is a Glean chat stage preamble line
+// (**Searching:**, **Reading:**, **Writing:**, or a summarize line).
+// These are internal progress signals from the Chat API, not response content.
+func isStageMarker(text string) bool {
+	for _, prefix := range []string{"**Searching:**", "**Reading:**", "**Writing:**"} {
+		if strings.HasPrefix(text, prefix) {
+			return true
+		}
+	}
+	// "Searching:" variant (without surrounding **)
+	if strings.HasPrefix(strings.ToLower(text), "searching:") {
+		return true
+	}
+	return false
+}
+
 // rebuildViewport regenerates the viewport content from saved history +
-// the current in-progress streaming response.
+// the current in-progress streaming response, rendered through glamour.
 func (m *Model) rebuildViewport() {
 	var buf strings.Builder
 	buf.WriteString(m.history.String())
 
-	// Append the in-progress response as plain text (no markdown yet —
-	// glamour needs the full text to render correctly).
+	// Render the in-progress response through glamour so markdown is
+	// readable during streaming (not raw **bold** text).
 	if m.currentResponse.Len() > 0 {
-		buf.WriteString(m.currentResponse.String())
+		rendered := m.renderMarkdown(m.currentResponse.String())
+		buf.WriteString(rendered)
 	}
 
 	m.viewport.SetContent(buf.String())
