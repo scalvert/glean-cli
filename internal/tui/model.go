@@ -49,24 +49,25 @@ type Model struct {
 	renderer *glamour.TermRenderer
 
 	// State
-	cfg              *config.Config
-	session          *Session
-	ctx              context.Context
-	identity         string                   // "email · host" shown in header + status
-	conversationMsgs []components.ChatMessage // full history sent on each turn (multi-turn context)
-	currentResponse  strings.Builder          // accumulates the in-progress assistant response
-	currentSources   []Source                 // accumulates sources for the in-progress response
-	streamRenderLen  int                      // chars since last glamour render (throttle)
-	streamHasContent bool                     // true once first CONTENT message received
-	startTime        time.Time                // session start, for stats on quit
-	lastCtrlC        time.Time                // for double ctrl+c detection
-	showExitHint     bool                     // show "press ctrl+c again to exit" hint
-	lastErr          error
-	width            int
-	height           int
-	isStreaming      bool
-	showHelp         bool
-	historyIdx       int
+	cfg                *config.Config
+	session            *Session
+	ctx                context.Context
+	identity           string                   // "email · host" shown in header + status
+	conversationMsgs   []components.ChatMessage // full history sent on each turn (multi-turn context)
+	currentResponse    strings.Builder          // accumulates the in-progress assistant response
+	currentSources     []Source                 // accumulates sources for the in-progress response
+	streamRenderLen    int                      // chars since last glamour render (throttle)
+	streamHasContent   bool                     // true once first CONTENT message received
+	startTime          time.Time                // session start, for stats on quit
+	lastCtrlC          time.Time                // for double ctrl+c detection
+	showExitHint       bool                     // show "press ctrl+c again to exit" hint
+	lastErr            error
+	width              int
+	height             int
+	isStreaming        bool
+	showHelp           bool
+	historyIdx         int
+	conversationActive bool
 }
 
 // New creates a fully-initialized TUI model.
@@ -176,9 +177,8 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case "ctrl+l":
 			m.lastErr = nil
-			m.clearViewportHeight()
 			m.viewport.SetContent(m.renderConversation())
-			m.resizeViewportToContent()
+			// viewport stays at max height — already active
 			return m, nil
 
 		case "ctrl+r":
@@ -186,7 +186,8 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.conversationMsgs = nil
 			m.lastErr = nil
 			m.historyIdx = -1
-			m.clearViewportHeight()
+			m.conversationActive = false
+			m.viewport.Height = 1 // will be resized by resizeViewportToContent on next render
 			m.viewport.SetContent(m.renderConversation())
 			m.resizeViewportToContent()
 			return m, nil
@@ -261,11 +262,17 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.streamRenderLen = 0
 			m.streamHasContent = false
 
+			// Transition to active state: fix viewport at max height.
+			// This only runs once per session — after this the viewport never resizes.
+			if !m.conversationActive {
+				m.conversationActive = true
+				m.viewport.Height = m.maxViewportHeight()
+			}
+
 			turn := Turn{Role: roleUser, Content: question}
 			m.addTurnToConversation(turn)
 			m.session.AddTurn(roleUser, question, nil)
 			m.viewport.SetContent(m.renderConversation())
-			m.resizeViewportToContent()
 			m.viewport.GotoBottom()
 
 			return m, tea.Batch(m.spinner.Tick, m.callAPI())
@@ -274,6 +281,11 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case spinner.TickMsg:
 		if m.isStreaming {
 			m.spinner, spCmd = m.spinner.Update(msg)
+			if !m.streamHasContent {
+				// Animate the thinking indicator in the viewport.
+				m.viewport.SetContent(m.renderConversation())
+				m.viewport.GotoBottom()
+			}
 			return m, spCmd
 		}
 
@@ -297,7 +309,6 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.session.AddTurn(roleAssistant, text, m.currentSources)
 		}
 		m.viewport.SetContent(m.renderConversation())
-		m.resizeViewportToContent()
 		m.viewport.GotoBottom()
 		m.currentResponse.Reset()
 		m.currentSources = nil
@@ -424,10 +435,7 @@ func isStageLine(line string) bool {
 }
 
 // rebuildViewport updates viewport content during streaming.
-// Does NOT resize — resizing during streaming causes the viewport height
-// to oscillate (glamour line counts are inconsistent) which makes the
-// content pane jump while typing or streaming. Resize only happens on
-// complete turns (in streamDoneMsg and the enter handler).
+// Never resizes — the viewport height is fixed once conversationActive is true.
 func (m *Model) rebuildViewport() {
 	m.viewport.SetContent(m.renderConversation())
 	m.viewport.GotoBottom()
@@ -469,16 +477,21 @@ func pumpNextLine(scanner *bufio.Scanner, body io.ReadCloser) tea.Msg {
 }
 
 // recalculateLayout updates widget widths and the maximum viewport height on
-// terminal resize, then sizes the viewport to its current content.
+// terminal resize. When the conversation is active the viewport is pinned to
+// maxViewportHeight; otherwise it auto-sizes to its content.
 func (m *Model) recalculateLayout() {
 	if m.width == 0 || m.height == 0 {
 		return
 	}
-	// Viewport width matches the input box content width so text and input
-	// share the same horizontal margins (left border + padding = 2 chars each side).
 	m.viewport.Width = m.width
 	m.textarea.SetWidth(m.width - 4)
-	m.resizeViewportToContent()
+
+	// Always recalculate max height on resize; if active, pin to max.
+	if m.conversationActive {
+		m.viewport.Height = m.maxViewportHeight()
+	} else {
+		m.resizeViewportToContent()
+	}
 
 	if m.renderer != nil {
 		wrapWidth := m.width - 4
@@ -495,12 +508,8 @@ func (m *Model) recalculateLayout() {
 }
 
 // resizeViewportToContent sets the viewport height to content size when small,
-// or caps at maxVpH when the conversation fills the screen.
-//
-// IMPORTANT: Once the viewport reaches maxVpH it stays there — calling this
-// again with full content would only oscillate the height (glamour line counts
-// are non-deterministic). The caller must call clearViewportHeight() before
-// resizing after a session clear (ctrl+r / ctrl+l).
+// or caps at maxVpH when the conversation fills the screen. Only called in
+// the empty state (conversationActive == false).
 func (m *Model) resizeViewportToContent() {
 	if m.width == 0 || m.height == 0 {
 		return
@@ -530,10 +539,21 @@ func (m *Model) resizeViewportToContent() {
 	m.viewport.Height = vpH
 }
 
-// clearViewportHeight resets the viewport to minimum so resizeViewportToContent
-// re-evaluates from scratch (needed after ctrl+r / ctrl+l clears content).
-func (m *Model) clearViewportHeight() {
-	m.viewport.Height = 1
+// maxViewportHeight returns the maximum viewport height that fits the terminal.
+func (m *Model) maxViewportHeight() int {
+	if m.width == 0 || m.height == 0 {
+		return 4
+	}
+	const (
+		inputH  = 3 // 1-line textarea + 2 border rows
+		statusH = 1
+		spacerH = 1
+	)
+	h := m.height - logoHeaderLines - spacerH - inputH - statusH
+	if h < 4 {
+		return 4
+	}
+	return h
 }
 
 // renderConversation rebuilds the full viewport content from session turns.
@@ -578,6 +598,14 @@ func (m *Model) renderConversation() string {
 	// In-progress streaming response.
 	if m.currentResponse.Len() > 0 {
 		sb.WriteString(m.renderMarkdown(m.currentResponse.String()))
+	}
+	// Inline thinking/responding indicator — lives in the conversation, not the status bar.
+	if m.isStreaming && m.currentResponse.Len() == 0 {
+		sb.WriteString("\n  ")
+		sb.WriteString(m.spinner.View())
+		sb.WriteString("  ")
+		sb.WriteString(styleSourceHeader.Render("Thinking…"))
+		sb.WriteString("\n")
 	}
 	return sb.String()
 }

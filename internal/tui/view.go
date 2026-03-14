@@ -37,10 +37,9 @@ func (m *Model) View() string {
 	// Logo + identity — always visible, regardless of conversation state.
 	header := m.headerView()
 
-	// Body: welcome hints (empty session) or conversation viewport.
-	// Viewport is full terminal width — same outer edge as the input box.
+	// Body: welcome hints (empty state) or conversation viewport (active state).
 	var body string
-	if len(m.session.Turns) == 0 && m.lastErr == nil && m.currentResponse.Len() == 0 {
+	if !m.conversationActive {
 		body = m.welcomeBody()
 	} else {
 		body = m.viewport.View()
@@ -116,20 +115,11 @@ func (m *Model) sessionPreview() string {
 
 // statusLine renders the one-line hint bar at the bottom of the screen.
 func (m *Model) statusLine() string {
-	// Status bar left: streaming phase indicator OR turn count.
-	// Identity lives in the header — no duplication here.
 	var left string
-	switch {
-	case m.isStreaming && !m.streamHasContent:
-		left = m.spinner.View() + " " + styleStatusBar.Render("Thinking…")
-	case m.isStreaming:
-		left = m.spinner.View() + " " + styleStatusBar.Render("Responding…")
-	default:
-		turns := len(m.session.Turns)
-		if turns > 0 {
-			left = styleStatusAccent.Render(fmt.Sprintf("%d", turns)) +
-				styleStatusBar.Render(" turn"+pluralS(turns))
-		}
+	turns := len(m.session.Turns)
+	if turns > 0 {
+		left = styleStatusAccent.Render(fmt.Sprintf("%d", turns)) +
+			styleStatusBar.Render(" turn"+pluralS(turns))
 	}
 
 	right := styleStatusBar.Render("ctrl+r new  ctrl+l clear  ctrl+y copy  ctrl+h help  ctrl+c quit")
@@ -140,7 +130,6 @@ func (m *Model) statusLine() string {
 	if gap < 1 {
 		gap = 1
 	}
-
 	return left + strings.Repeat(" ", gap) + right
 }
 
