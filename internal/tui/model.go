@@ -667,7 +667,7 @@ func (m *Model) renderConversation() string {
 		} else {
 			// No stage received yet — show a default indicator so the viewport
 			// is never blank between send and the first UPDATE message.
-			label = styleStatusAccent.Render("Gleaning…") + "  " + styleSourceHeader.Render("·  "+elapsedStr)
+			label = styleStatusAccent.Render("Gleaning") + "  " + styleSourceHeader.Render("·  "+elapsedStr)
 		}
 		sb.WriteString("\n")
 		sb.WriteString("  " + m.spinner.View() + "  " + label)
