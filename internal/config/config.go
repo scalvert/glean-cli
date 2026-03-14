@@ -34,10 +34,12 @@ const (
 
 // Config holds the Glean API credentials and connection settings.
 type Config struct {
-	GleanHost  string `json:"host"`
-	GleanPort  string `json:"port"`
-	GleanToken string `json:"token"`
-	GleanEmail string `json:"email"`
+	GleanHost         string `json:"host"`
+	GleanPort         string `json:"port"`
+	GleanToken        string `json:"token"`
+	GleanEmail        string `json:"email"`
+	OAuthClientID     string `json:"oauth_client_id,omitempty"`
+	OAuthClientSecret string `json:"oauth_client_secret,omitempty"`
 }
 
 // MaskToken masks a token by showing only the first and last 4 characters
@@ -117,6 +119,12 @@ func loadFromEnv() *Config {
 	}
 	if v := os.Getenv("GLEAN_EMAIL"); v != "" {
 		cfg.GleanEmail = v
+	}
+	if v := os.Getenv("GLEAN_OAUTH_CLIENT_ID"); v != "" {
+		cfg.OAuthClientID = v
+	}
+	if v := os.Getenv("GLEAN_OAUTH_CLIENT_SECRET"); v != "" {
+		cfg.OAuthClientSecret = v
 	}
 	return cfg
 }
