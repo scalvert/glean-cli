@@ -15,6 +15,7 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/glamour"
+	"github.com/charmbracelet/glamour/styles"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/gleanwork/api-client-go/models/components"
 	"github.com/scalvert/glean-cli/internal/client"
@@ -100,10 +101,7 @@ func New(cfg *config.Config, session *Session, identity string, ctx context.Cont
 	}
 	sp.Style = styleStatusAccent
 
-	renderer, err := glamour.NewTermRenderer(
-		glamour.WithStandardStyle("dark"),
-		glamour.WithWordWrap(100),
-	)
+	renderer, err := newGlamourRenderer(100)
 	if err != nil {
 		renderer = nil
 	}
@@ -548,10 +546,7 @@ func (m *Model) recalculateLayout() {
 		if wrapWidth < 40 {
 			wrapWidth = 40
 		}
-		if r, err := glamour.NewTermRenderer(
-			glamour.WithStandardStyle("dark"),
-			glamour.WithWordWrap(wrapWidth),
-		); err == nil {
+		if r, err := newGlamourRenderer(wrapWidth); err == nil {
 			m.renderer = r
 		}
 	}
@@ -723,4 +718,24 @@ func userMessages(turns []Turn) []string {
 		}
 	}
 	return msgs
+}
+
+// newGlamourRenderer creates a glamour renderer based on the dark style, but
+// with heading prefixes stripped so `### Heading` renders without literal `###`.
+// The dark style intentionally keeps `##`/`###` as prefix markers; we remove them
+// so headings are visually distinct via bold/color alone, matching user expectations.
+func newGlamourRenderer(wrapWidth int) (*glamour.TermRenderer, error) {
+	s := styles.DarkStyleConfig
+	empty := ""
+	s.H1.Prefix = empty
+	s.H1.Suffix = empty
+	s.H2.Prefix = empty
+	s.H3.Prefix = empty
+	s.H4.Prefix = empty
+	s.H5.Prefix = empty
+	s.H6.Prefix = empty
+	return glamour.NewTermRenderer(
+		glamour.WithStyles(s),
+		glamour.WithWordWrap(wrapWidth),
+	)
 }
