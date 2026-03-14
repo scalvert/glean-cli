@@ -9,12 +9,19 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+// gleanLogo is a braille Unicode rendering of the Glean wordmark.
+const gleanLogo = "⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+	"⠀⢀⣀⣀⣀⣴⡄⢸⣿⠀⠀⠀⣀⣀⣀⠀⠀⠀⢀⣀⣀⡀⠀⠀⠀⢀⣀⣀⡀⠀\n" +
+	"⣰⡿⠛⠛⠻⣿⡀⢸⣿⠀⣰⡿⠛⢛⣻⣷⡀⣰⡿⠛⠛⠻⣷⡀⣴⡿⠛⠛⢿⣦\n" +
+	"⢿⣇⠀⠀⢀⣿⠇⢸⣿⠀⢿⣷⠿⠟⢋⣭⠄⣿⣇⠀⠀⢀⣿⡇⣿⡇⠀⠀⢸⣿\n" +
+	"⠈⠻⠿⠾⠿⠋⣠⡈⠻⠿⠈⠻⠿⠾⠿⠋⠀⠈⠻⠿⠾⠿⠿⠇⠿⠇⠀⠀⠸⠿\n" +
+	"⠀⠀⣶⣶⣶⠿⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"
+
 const gleanTagline = "AI-powered search for your company's knowledge"
 
-// logoHeaderLines is the number of rows the header occupies, used by
-// recalculateLayout to size the viewport correctly.
-// Layout: 1 solid header bar + 1 blank = 2 rows.
-const logoHeaderLines = 2
+// logoHeaderLines is the number of rows the header occupies.
+// 1 blank + 6 braille + 1 blank + 1 identity + 1 blank = 10
+const logoHeaderLines = 10
 
 // View implements tea.Model.
 func (m *Model) View() string {
@@ -70,42 +77,23 @@ func (m *Model) View() string {
 	return lipgloss.JoinVertical(lipgloss.Left, parts...)
 }
 
-// headerView renders a full-width solid header bar — the entire row is filled
-// with brand blue so it reads as a proper application title bar, not a badge.
-// Layout: left-padded "glean" · separator · identity · right-fill to terminal edge
+// headerView renders the braille Glean logo left-aligned in brand blue,
+// with the identity (email · host) left-aligned on the line below.
 func (m *Model) headerView() string {
-	if m.width == 0 {
-		return "\n"
+	var sb strings.Builder
+	sb.WriteString("\n")
+	for _, line := range strings.Split(gleanLogo, "\n") {
+		sb.WriteString(styleLogo.Render(line))
+		sb.WriteString("\n")
 	}
-
-	identity := m.identity
-	if identity == "" {
-		identity = gleanTagline
+	sb.WriteString("\n")
+	if m.identity != "" {
+		sb.WriteString(styleTagline.Render(m.identity))
+	} else {
+		sb.WriteString(styleTagline.Render(gleanTagline))
 	}
-
-	// Every piece shares the same background so the bar renders as a solid stripe.
-	bg := lipgloss.Color(colorBrand)
-
-	gleanText := lipgloss.NewStyle().
-		Background(bg).Foreground(lipgloss.Color("#FFFFFF")).Bold(true).
-		Render("  glean")
-
-	sepText := lipgloss.NewStyle().
-		Background(bg).Foreground(lipgloss.Color("#8890FF")).
-		Render("  │  ")
-
-	rightText := lipgloss.NewStyle().
-		Background(bg).Foreground(lipgloss.Color("#C8CAFF")).Italic(true).
-		Render(identity)
-
-	used := lipgloss.Width(gleanText) + lipgloss.Width(sepText) + lipgloss.Width(rightText)
-	fillW := m.width - used
-	if fillW < 0 {
-		fillW = 0
-	}
-	fill := lipgloss.NewStyle().Background(bg).Render(strings.Repeat(" ", fillW))
-
-	return gleanText + sepText + rightText + fill + "\n"
+	sb.WriteString("\n")
+	return sb.String()
 }
 
 // welcomeBody renders the hints shown below the logo when no conversation exists.
