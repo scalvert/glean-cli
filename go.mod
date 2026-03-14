@@ -11,6 +11,7 @@ require (
 require (
 	github.com/MakeNowJust/heredoc v1.0.0
 	github.com/alecthomas/chroma v0.10.0
+	github.com/atotto/clipboard v0.1.4
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
 	github.com/charmbracelet/bubbles v1.0.0
 	github.com/charmbracelet/bubbletea v1.3.10
@@ -19,6 +20,7 @@ require (
 	github.com/fatih/color v1.18.0
 	github.com/gleanwork/api-client-go v0.11.30
 	github.com/int128/oauth2cli v1.15.1
+	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	github.com/stretchr/testify v1.10.0
 	github.com/zalando/go-keyring v0.2.3
 	golang.org/x/oauth2 v0.28.0
@@ -28,7 +30,6 @@ require (
 require (
 	github.com/alecthomas/chroma/v2 v2.20.0 // indirect
 	github.com/alessio/shellescape v1.4.1 // indirect
-	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/charmbracelet/colorprofile v0.4.1 // indirect
@@ -59,7 +60,6 @@ require (
 	github.com/muesli/cancelreader v0.2.2 // indirect
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.16.0 // indirect
-	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect

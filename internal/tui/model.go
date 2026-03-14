@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/atotto/clipboard"
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/textarea"
 	"github.com/charmbracelet/bubbles/viewport"
@@ -53,7 +54,6 @@ type Model struct {
 	ctx              context.Context
 	identity         string                   // "email · host" shown in header + status
 	conversationMsgs []components.ChatMessage // full history sent on each turn (multi-turn context)
-	history          strings.Builder          // rendered conversation for the viewport
 	currentResponse  strings.Builder          // accumulates the in-progress assistant response
 	currentSources   []Source                 // accumulates sources for the in-progress response
 	streamRenderLen  int                      // chars since last glamour render (throttle)
@@ -61,10 +61,12 @@ type Model struct {
 	startTime        time.Time                // session start, for stats on quit
 	lastCtrlC        time.Time                // for double ctrl+c detection
 	showExitHint     bool                     // show "press ctrl+c again to exit" hint
+	lastErr          error
 	width            int
 	height           int
 	isStreaming      bool
 	showHelp         bool
+	historyIdx       int
 }
 
 // New creates a fully-initialized TUI model.
@@ -76,7 +78,8 @@ func New(cfg *config.Config, session *Session, identity string, ctx context.Cont
 	ta.CharLimit = 4096
 	// shift+enter is terminal-dependent and unreliable; disable the claim.
 	ta.KeyMap.InsertNewline.SetEnabled(false)
-	ta.SetHeight(3)
+	ta.SetHeight(1)
+	ta.Prompt = "┃ "
 	ta.FocusedStyle.CursorLine = lipgloss.NewStyle()
 
 	vp := viewport.New(0, 0)
@@ -100,22 +103,22 @@ func New(cfg *config.Config, session *Session, identity string, ctx context.Cont
 	}
 
 	m := &Model{
-		viewport:  vp,
-		textarea:  ta,
-		spinner:   sp,
-		renderer:  renderer,
-		cfg:       cfg,
-		session:   session,
-		identity:  identity,
-		ctx:       ctx,
-		startTime: time.Now(),
+		viewport:   vp,
+		textarea:   ta,
+		spinner:    sp,
+		renderer:   renderer,
+		cfg:        cfg,
+		session:    session,
+		identity:   identity,
+		ctx:        ctx,
+		startTime:  time.Now(),
+		historyIdx: -1,
 	}
 
 	for _, turn := range session.Turns {
-		m.addTurnToHistory(turn)
 		m.addTurnToConversation(turn)
 	}
-	m.viewport.SetContent(m.history.String())
+	m.viewport.SetContent(m.renderConversation())
 	m.viewport.GotoBottom()
 
 	return m, nil
@@ -172,25 +175,72 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, nil
 
 		case "ctrl+l":
-			m.history.Reset()
-			m.viewport.SetContent("")
+			m.lastErr = nil
+			m.viewport.SetContent(m.renderConversation())
 			m.resizeViewportToContent()
 			return m, nil
 
 		case "ctrl+r":
 			m.session = &Session{}
 			m.conversationMsgs = nil
-			m.history.Reset()
-			m.viewport.SetContent("")
+			m.lastErr = nil
+			m.viewport.SetContent(m.renderConversation())
 			m.resizeViewportToContent()
 			return m, nil
 
-			// Scroll keys: route to viewport when conversation exists.
-		case "up", "down", "pgup", "pgdown":
-			if m.history.Len() > 0 {
+		case "pgup", "pgdown":
+			if m.session != nil && len(m.session.Turns) > 0 {
 				m.viewport, vpCmd = m.viewport.Update(msg)
 				return m, vpCmd
 			}
+
+		case "up":
+			// Shell-style history nav when input is single-line.
+			if !m.isStreaming && m.textarea.LineCount() <= 1 {
+				msgs := userMessages(m.session.Turns)
+				if len(msgs) > 0 {
+					if m.historyIdx == -1 {
+						m.historyIdx = len(msgs) - 1
+					} else if m.historyIdx > 0 {
+						m.historyIdx--
+					}
+					m.textarea.SetValue(msgs[m.historyIdx])
+					m.textarea.CursorEnd()
+					return m, nil
+				}
+			}
+			// Fall through to viewport scroll.
+			if m.session != nil && len(m.session.Turns) > 0 {
+				m.viewport, vpCmd = m.viewport.Update(msg)
+				return m, vpCmd
+			}
+
+		case "down":
+			if !m.isStreaming && m.historyIdx >= 0 {
+				msgs := userMessages(m.session.Turns)
+				m.historyIdx++
+				if m.historyIdx >= len(msgs) {
+					m.historyIdx = -1
+					m.textarea.SetValue("")
+				} else {
+					m.textarea.SetValue(msgs[m.historyIdx])
+					m.textarea.CursorEnd()
+				}
+				return m, nil
+			}
+			if m.session != nil && len(m.session.Turns) > 0 {
+				m.viewport, vpCmd = m.viewport.Update(msg)
+				return m, vpCmd
+			}
+
+		case "ctrl+y":
+			for i := len(m.session.Turns) - 1; i >= 0; i-- {
+				if m.session.Turns[i].Role == roleAssistant {
+					_ = clipboard.WriteAll(m.session.Turns[i].Content)
+					break
+				}
+			}
+			return m, nil
 
 		case "enter":
 			if m.isStreaming {
@@ -201,6 +251,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, nil
 			}
 			m.textarea.Reset()
+			m.historyIdx = -1
 			m.isStreaming = true
 			m.currentResponse.Reset()
 			m.currentSources = nil
@@ -208,10 +259,9 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.streamHasContent = false
 
 			turn := Turn{Role: roleUser, Content: question}
-			m.addTurnToHistory(turn)
 			m.addTurnToConversation(turn)
 			m.session.AddTurn(roleUser, question, nil)
-			m.viewport.SetContent(m.history.String())
+			m.viewport.SetContent(m.renderConversation())
 			m.resizeViewportToContent()
 			m.viewport.GotoBottom()
 
@@ -235,21 +285,15 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case streamDoneMsg:
 		m.isStreaming = false
-
 		if msg.err != nil {
 			m.appendError(msg.err)
 		} else if m.currentResponse.Len() > 0 {
 			text := m.currentResponse.String()
 			turn := Turn{Role: roleAssistant, Content: text, Sources: m.currentSources}
-			// addTurnToHistory renders markdown and appends sources to m.history.
-			// This is what was missing — the streaming text was never committed
-			// to m.history, so it vanished when currentResponse was reset.
-			m.addTurnToHistory(turn)
 			m.addTurnToConversation(turn)
 			m.session.AddTurn(roleAssistant, text, m.currentSources)
 		}
-
-		m.viewport.SetContent(m.history.String())
+		m.viewport.SetContent(m.renderConversation())
 		m.resizeViewportToContent()
 		m.viewport.GotoBottom()
 		m.currentResponse.Reset()
@@ -258,7 +302,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	// Mouse scroll events go to the viewport when there is content.
 	case tea.MouseMsg:
-		if m.history.Len() > 0 {
+		if m.session != nil && len(m.session.Turns) > 0 {
 			m.viewport, vpCmd = m.viewport.Update(msg)
 			return m, vpCmd
 		}
@@ -376,20 +420,9 @@ func isStageLine(line string) bool {
 	return false
 }
 
-// rebuildViewport regenerates the viewport content from saved history +
-// the current in-progress streaming response, rendered through glamour.
+// rebuildViewport regenerates the viewport content from session turns.
 func (m *Model) rebuildViewport() {
-	var buf strings.Builder
-	buf.WriteString(m.history.String())
-
-	// Render the in-progress response through glamour so markdown is
-	// readable during streaming (not raw **bold** text).
-	if m.currentResponse.Len() > 0 {
-		rendered := m.renderMarkdown(m.currentResponse.String())
-		buf.WriteString(rendered)
-	}
-
-	m.viewport.SetContent(buf.String())
+	m.viewport.SetContent(m.renderConversation())
 	m.resizeViewportToContent()
 	m.viewport.GotoBottom()
 }
@@ -463,7 +496,7 @@ func (m *Model) resizeViewportToContent() {
 	if m.width == 0 || m.height == 0 {
 		return
 	}
-	inputH := 5
+	inputH := 3
 	statusH := 1
 	spacerH := 1
 	maxVpH := m.height - logoHeaderLines - spacerH - inputH - statusH
@@ -472,10 +505,8 @@ func (m *Model) resizeViewportToContent() {
 	}
 
 	// Count rendered content lines.
-	contentLines := strings.Count(m.history.String(), "\n") + 1
-	if m.currentResponse.Len() > 0 {
-		contentLines += strings.Count(m.currentResponse.String(), "\n") + 1
-	}
+	content := m.renderConversation()
+	contentLines := strings.Count(content, "\n") + 1
 
 	vpH := contentLines
 	if vpH > maxVpH {
@@ -487,42 +518,50 @@ func (m *Model) resizeViewportToContent() {
 	m.viewport.Height = vpH
 }
 
-// addTurnToHistory appends a rendered turn to the viewport history buffer.
-func (m *Model) addTurnToHistory(turn Turn) {
-	switch turn.Role {
-	case roleUser:
-		// User message: blue left-border block with "you" label.
-		// Left-border style requires no width calculation — adapts naturally.
-		inner := styleUserLabel.Render("you") + "  " + styleUserText.Render(turn.Content)
-		m.history.WriteString("\n")
-		m.history.WriteString(styleUserMsg.Render(inner))
-		m.history.WriteString("\n\n")
-
-	case roleAssistant:
-		rendered := m.renderMarkdown(turn.Content)
-		m.history.WriteString(rendered)
-		if len(turn.Sources) > 0 {
-			m.history.WriteString(styleSourceHeader.Render("Sources") + "\n")
-			for i, s := range turn.Sources {
-				title := s.Title
-				if title == "" {
-					title = s.URL
+// renderConversation rebuilds the full viewport content from session turns.
+// Called on every viewport update — simpler than incremental updates.
+func (m *Model) renderConversation() string {
+	var sb strings.Builder
+	for _, turn := range m.session.Turns {
+		switch turn.Role {
+		case roleUser:
+			inner := styleUserLabel.Render("you") + "  " + styleUserText.Render(turn.Content)
+			sb.WriteString("\n")
+			sb.WriteString(styleUserMsg.Render(inner))
+			sb.WriteString("\n\n")
+		case roleAssistant:
+			sb.WriteString(m.renderMarkdown(turn.Content))
+			if len(turn.Sources) > 0 {
+				sb.WriteString(styleSourceHeader.Render("Sources") + "\n")
+				for i, s := range turn.Sources {
+					title := s.Title
+					if title == "" {
+						title = s.URL
+					}
+					const maxTitle = 60
+					if len([]rune(title)) > maxTitle {
+						title = string([]rune(title)[:maxTitle-1]) + "…"
+					}
+					ds := s.Datasource
+					if ds == "" {
+						ds = defaultDatasource
+					}
+					sb.WriteString(styleSourceItem.Render(fmt.Sprintf("  [%d] %s — %s", i+1, ds, title)) + "\n")
 				}
-				// Truncate long titles so they fit cleanly in the viewport.
-				const maxTitle = 60
-				if len([]rune(title)) > maxTitle {
-					title = string([]rune(title)[:maxTitle-1]) + "…"
-				}
-				ds := s.Datasource
-				if ds == "" {
-					ds = defaultDatasource
-				}
-				line := fmt.Sprintf("  [%d] %s — %s", i+1, ds, title)
-				m.history.WriteString(styleSourceItem.Render(line) + "\n")
+				sb.WriteString("\n")
 			}
-			m.history.WriteString("\n")
 		}
 	}
+	if m.lastErr != nil {
+		sb.WriteString("\n")
+		sb.WriteString(styleError.Render("  Error: " + m.lastErr.Error()))
+		sb.WriteString("\n\n")
+	}
+	// In-progress streaming response.
+	if m.currentResponse.Len() > 0 {
+		sb.WriteString(m.renderMarkdown(m.currentResponse.String()))
+	}
+	return sb.String()
 }
 
 // addTurnToConversation appends an SDK ChatMessage for multi-turn context.
@@ -558,9 +597,18 @@ func (m *Model) renderMarkdown(text string) string {
 }
 
 func (m *Model) appendError(err error) {
-	m.history.WriteString("\n")
-	m.history.WriteString(styleError.Render("  Error: " + err.Error()))
-	m.history.WriteString("\n\n")
+	m.lastErr = err
+}
+
+// userMessages returns content of all user turns for history navigation.
+func userMessages(turns []Turn) []string {
+	var msgs []string
+	for _, t := range turns {
+		if t.Role == roleUser {
+			msgs = append(msgs, t.Content)
+		}
+	}
+	return msgs
 }
 
 func containsSource(sources []Source, url string) bool {

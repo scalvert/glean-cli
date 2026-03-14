@@ -40,7 +40,7 @@ func (m *Model) View() string {
 	// Body: welcome hints (empty session) or conversation viewport.
 	// Viewport is full terminal width — same outer edge as the input box.
 	var body string
-	if m.history.Len() == 0 {
+	if len(m.session.Turns) == 0 && m.lastErr == nil && m.currentResponse.Len() == 0 {
 		body = m.welcomeBody()
 	} else {
 		body = m.viewport.View()
@@ -48,9 +48,7 @@ func (m *Model) View() string {
 
 	// Input box — rounded border, full width.
 	inputBox := styleInputFocused.
-		Width(m.width - 4).
-		PaddingLeft(1).
-		PaddingRight(1).
+		Width(m.width - 2).
 		Render(m.textarea.View())
 
 	// After first ctrl+c, replace status bar with exit hint.
@@ -134,7 +132,7 @@ func (m *Model) statusLine() string {
 		}
 	}
 
-	right := styleStatusBar.Render("ctrl+r new  ctrl+l clear  ctrl+h help  ctrl+c quit")
+	right := styleStatusBar.Render("ctrl+r new  ctrl+l clear  ctrl+y copy  ctrl+h help  ctrl+c quit")
 
 	leftW := lipgloss.Width(left)
 	rightW := lipgloss.Width(right)
