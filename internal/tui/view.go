@@ -3,6 +3,7 @@ package tui
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/lipgloss"
 )
@@ -55,12 +56,18 @@ func (m *Model) View() string {
 		PaddingRight(1).
 		Render(m.textarea.View())
 
+	// After first ctrl+c, replace status bar with exit hint.
+	bottom := m.statusLine()
+	if m.showExitHint {
+		bottom = styleExitHint.Render("  Press ctrl+c again to exit  ·  esc to cancel")
+	}
+
 	return lipgloss.JoinVertical(lipgloss.Left,
 		header,
 		body,
 		"",
 		inputBox,
-		m.statusLine(),
+		bottom,
 	)
 }
 
@@ -194,6 +201,39 @@ func center(s string, termWidth int) string {
 		pad = 0
 	}
 	return strings.Repeat(" ", pad) + s
+}
+
+// StatsLine builds a brief session summary printed to stdout after the TUI exits.
+// Format: "N turns  ·  5m 30s  ·  Thanks for using Glean"
+func (m *Model) StatsLine() string {
+	turns := len(m.session.Turns) / 2 // each turn = user + assistant
+	if turns == 0 && len(m.session.Turns) > 0 {
+		turns = 1
+	}
+
+	elapsed := time.Since(m.startTime).Round(time.Second)
+	mins := int(elapsed.Minutes())
+	secs := int(elapsed.Seconds()) % 60
+
+	var durationStr string
+	if mins > 0 {
+		durationStr = fmt.Sprintf("%dm %ds", mins, secs)
+	} else {
+		durationStr = fmt.Sprintf("%ds", secs)
+	}
+
+	turnStr := fmt.Sprintf("%d turn%s", turns, pluralS(turns))
+
+	left := styleStatValue.Render(turnStr) + styleStatLabel.Render("  ·  "+durationStr)
+	right := styleStatLabel.Render("Thanks for using Glean")
+
+	leftW := lipgloss.Width(left)
+	rightW := lipgloss.Width(right)
+	gap := m.width - leftW - rightW - 2
+	if gap < 1 {
+		gap = 1
+	}
+	return left + strings.Repeat(" ", gap) + right
 }
 
 func pluralS(n int) string {

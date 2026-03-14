@@ -77,7 +77,11 @@ func NewCmdRoot() *cobra.Command {
 			}
 
 			p := tea.NewProgram(model, tea.WithAltScreen(), tea.WithMouseCellMotion(), tea.WithContext(cmd.Context()))
-			_, err = p.Run()
+			finalModel, err := p.Run()
+			// Print session stats to stdout after TUI exits (like Claude Code).
+			if m, ok := finalModel.(*tui.Model); ok && len(m.Session().Turns) > 0 {
+				fmt.Println(m.StatsLine())
+			}
 			return err
 		},
 		// Silence usage output when an error occurs

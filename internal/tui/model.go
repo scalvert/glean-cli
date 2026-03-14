@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/textarea"
@@ -57,6 +58,9 @@ type Model struct {
 	currentSources   []Source                 // accumulates sources for the in-progress response
 	streamRenderLen  int                      // chars since last glamour render (throttle)
 	streamHasContent bool                     // true once first CONTENT message received
+	startTime        time.Time                // session start, for stats on quit
+	lastCtrlC        time.Time                // for double ctrl+c detection
+	showExitHint     bool                     // show "press ctrl+c again to exit" hint
 	width            int
 	height           int
 	isStreaming      bool
@@ -90,14 +94,15 @@ func New(cfg *config.Config, session *Session, identity string, ctx context.Cont
 	}
 
 	m := &Model{
-		viewport: vp,
-		textarea: ta,
-		spinner:  sp,
-		renderer: renderer,
-		cfg:      cfg,
-		session:  session,
-		identity: identity,
-		ctx:      ctx,
+		viewport:  vp,
+		textarea:  ta,
+		spinner:   sp,
+		renderer:  renderer,
+		cfg:       cfg,
+		session:   session,
+		identity:  identity,
+		ctx:       ctx,
+		startTime: time.Now(),
 	}
 
 	for _, turn := range session.Turns {
@@ -108,6 +113,11 @@ func New(cfg *config.Config, session *Session, identity string, ctx context.Cont
 	m.viewport.GotoBottom()
 
 	return m, nil
+}
+
+// Session returns the current session (used by cmd/root.go for post-exit stats).
+func (m *Model) Session() *Session {
+	return m.session
 }
 
 // Init implements tea.Model.
@@ -132,8 +142,24 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "ctrl+c", "esc":
+		case "esc":
+			if m.showExitHint {
+				// Cancel the pending exit.
+				m.showExitHint = false
+				m.lastCtrlC = time.Time{}
+				return m, nil
+			}
 			return m, tea.Quit
+
+		case "ctrl+c":
+			now := time.Now()
+			if !m.lastCtrlC.IsZero() && now.Sub(m.lastCtrlC) < time.Second {
+				// Second press within 1s — exit.
+				return m, tea.Quit
+			}
+			m.lastCtrlC = now
+			m.showExitHint = true
+			return m, nil
 
 		case "ctrl+h":
 			m.showHelp = !m.showHelp

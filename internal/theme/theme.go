@@ -1,4 +1,5 @@
-// Package theme provides Glean's brand colors and theme utilities for consistent CLI styling
+// Package theme provides Glean's brand colors and theme utilities for consistent CLI styling.
+// Colors sourced directly from www.glean.com (#343CED confirmed as dominant primary, 60 occurrences).
 package theme
 
 import (
@@ -9,45 +10,40 @@ import (
 	"github.com/fatih/color"
 )
 
-// Brand colors as hex strings
+// Glean brand palette — sourced from www.glean.com.
 const (
-	// Primary brand colors
-	GleanBlueHex   = "#4339F2" // Primary brand color
-	GleanYellowHex = "#DFFC6A" // Secondary brand color
-	GleanPurpleHex = "#7C4DFF" // Accent color
+	GleanBlueHex   = "#343CED" // Primary brand blue/indigo (was incorrectly #4339F2)
+	GleanGreenHex  = "#D8FD49" // Yellow-green accent
+	GleanPurpleHex = "#E16BFF" // Purple accent
+	GleanOrangeHex = "#FF7E4C" // Orange accent
+	GleanErrorHex  = "#FF492C" // Coral red (error / destructive)
+	GleanMutedHex  = "#777867" // Warm gray (muted text, on-brand)
+	GleanCreamHex  = "#E1DFD7" // Warm off-white (surface)
 
-	// Neutral colors for text and backgrounds
-	TextPrimary   = "#24292E" // Primary text color (dark)
-	TextSecondary = "#586069" // Secondary text color (medium)
-	Background    = "#FFFFFF" // Background color
+	// Legacy aliases kept for backward compatibility.
+	GleanYellowHex = GleanGreenHex
 )
 
-// Color represents a themed color with both terminal and TUI support
+// Color wraps fatih/color with the hex value for lipgloss compatibility.
 type Color struct {
 	*color.Color
-	hex string // hex constant for lipgloss rendering
+	hex string
 }
 
-// Brand colors as Color objects
-var (
-	GleanBlue   = Color{color.New(color.FgHiBlue), GleanBlueHex}
-	GleanYellow = Color{color.New(color.FgHiYellow), GleanYellowHex}
-)
-
-// ToLipgloss converts the theme color to a Lipgloss color using the hex constant.
+// ToLipgloss returns the equivalent lipgloss.Color.
 func (c Color) ToLipgloss() lipgloss.Color {
 	return lipgloss.Color(c.hex)
 }
 
-// SprintFunc returns a function that colorizes text
+// SprintFunc returns a function that colorizes text.
 func (c Color) SprintFunc() func(a ...interface{}) string {
 	return c.Color.SprintFunc()
 }
 
-// ColorFunc is a function that applies color to text
+// ColorFunc is a function that applies color to text.
 type ColorFunc = func(a ...interface{}) string
 
-// StyleFunc returns a template function that applies styling based on noColor setting
+// StyleFunc returns a template function that respects noColor.
 func StyleFunc(noColor bool, style ColorFunc) func(any) string {
 	return func(s any) string {
 		if noColor {
@@ -57,42 +53,53 @@ func StyleFunc(noColor bool, style ColorFunc) func(any) string {
 	}
 }
 
-// Color functions for consistent styling
+// Branded color functions for consistent CLI stdout output.
 var (
-	// Blue returns text styled with Glean's brand blue
-	Blue = GleanBlue.SprintFunc()
+	// Blue applies Glean's primary brand color (#343CED).
+	Blue = Color{color.New(color.FgHiBlue), GleanBlueHex}.SprintFunc()
 
-	// Yellow returns text styled with a muted version of Glean's yellow
-	Yellow = GleanYellow.SprintFunc()
+	// Muted applies Glean's warm gray for secondary / dimmed text.
+	Muted = Color{color.New(color.FgHiBlack), GleanMutedHex}.SprintFunc()
 
-	// Secondary returns text styled with a muted color for less emphasis
-	Secondary = color.New(color.FgHiBlack).SprintFunc()
-
-	// Bold returns text in bold
+	// Bold makes text bold.
 	Bold = color.New(color.Bold).SprintFunc()
+
+	// Success applies a bright accent for positive outcomes.
+	Success = Color{color.New(color.FgHiGreen), GleanGreenHex}.SprintFunc()
+
+	// Err applies Glean's coral red for errors.
+	Err = Color{color.New(color.FgHiRed), GleanErrorHex}.SprintFunc()
+
+	// Secondary is an alias for Muted (backward compat).
+	Secondary = Muted
+
+	// Yellow is kept for backward compat (maps to green accent now).
+	Yellow = Color{color.New(color.FgHiYellow), GleanGreenHex}.SprintFunc()
 )
 
-// TemplateFuncs returns a map of template functions that respect color settings
+// TemplateFuncs returns template helpers that respect color settings.
 func TemplateFuncs(noColor bool) template.FuncMap {
 	return template.FuncMap{
 		"gleanBlue":   StyleFunc(noColor, Blue),
 		"gleanYellow": StyleFunc(noColor, Yellow),
-		"secondary":   StyleFunc(noColor, Secondary),
+		"secondary":   StyleFunc(noColor, Muted),
 		"bold":        StyleFunc(noColor, Bold),
+		"success":     StyleFunc(noColor, Success),
+		"gleanError":  StyleFunc(noColor, Err),
 	}
 }
 
-// NoColor returns true if color output is disabled
+// NoColor returns true if color output is disabled.
 func NoColor() bool {
 	return color.NoColor
 }
 
-// DisableColors disables color output
+// DisableColors disables color output.
 func DisableColors() {
 	color.NoColor = true
 }
 
-// EnableColors enables color output
+// EnableColors enables color output.
 func EnableColors() {
 	color.NoColor = false
 }
