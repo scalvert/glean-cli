@@ -14,6 +14,7 @@ import (
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/int128/oauth2cli"
+	"github.com/pkg/browser"
 	"github.com/scalvert/glean-cli/internal/config"
 	"golang.org/x/oauth2"
 )
@@ -58,21 +59,33 @@ func Login(ctx context.Context) error {
 		RedirectURL:  redirectURI,
 	}
 
-	// Fix the OAuth state so we can compute the exact auth URL upfront.
-	// oauth2cli.Config.State overrides its internal random state, giving us
-	// a deterministic URL to display before the browser opens.
+	// oauth2cli v1.15.1 does not open the browser itself — the caller must do it.
+	// LocalServerReadyChan receives the local server URL once the callback server
+	// is ready. We open the browser to that URL (which the local server redirects
+	// to the real OAuth page), and also print the direct auth URL as a fallback.
 	state := oauth2.GenerateVerifier()[:20]
-
 	authURL := oauthCfg.AuthCodeURL(state, oauth2.S256ChallengeOption(verifier))
 
-	fmt.Printf("Opening your browser to authenticate with Glean…\n\n")
-	fmt.Printf("If your browser doesn't open, visit:\n  %s\n\n", authURL)
-	fmt.Printf("Waiting for you to complete login in the browser…\n")
+	readyChan := make(chan string, 1)
+	go func() {
+		select {
+		case localURL := <-readyChan:
+			fmt.Printf("Opening your browser to authenticate with Glean…\n")
+			fmt.Printf("If your browser doesn't open, visit:\n  %s\n\n", authURL)
+			fmt.Printf("Waiting for you to complete login in the browser…\n")
+			if err := browser.OpenURL(localURL); err != nil {
+				// Browser failed to open — the printed URL is the fallback.
+				fmt.Printf("(Could not open browser automatically: %v)\n", err)
+			}
+		case <-ctx.Done():
+		}
+	}()
 
 	token, err := oauth2cli.GetToken(ctx, oauth2cli.Config{
 		OAuth2Config:           oauthCfg,
 		State:                  state,
 		LocalServerBindAddress: []string{fmt.Sprintf("127.0.0.1:%d", port)},
+		LocalServerReadyChan:   readyChan,
 		AuthCodeOptions:        []oauth2.AuthCodeOption{oauth2.S256ChallengeOption(verifier)},
 		TokenRequestOptions:    []oauth2.AuthCodeOption{oauth2.VerifierOption(verifier)},
 		LocalServerSuccessHTML: "<html><body><h2>✓ Authenticated with Glean!</h2><p>You may close this tab and return to your terminal.</p></body></html>",
