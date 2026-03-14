@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -26,37 +27,45 @@ func Login(ctx context.Context) error {
 		return err
 	}
 
-	provider, endpoint, err := discover(ctx, host)
+	provider, endpoint, registrationEndpoint, err := discover(ctx, host)
 	if err != nil {
 		return promptForAPIToken(host)
 	}
 
-	clientID, clientSecret, err := resolveClientID(ctx, host)
+	// Find a free port for the local callback server.
+	// This must happen before DCR so we register the exact redirect URI
+	// that oauth2cli will use — a mismatch causes a silent hang.
+	port, err := findFreePort()
+	if err != nil {
+		return fmt.Errorf("finding callback port: %w", err)
+	}
+	redirectURI := fmt.Sprintf("http://127.0.0.1:%d/callback", port)
+
+	// Always do fresh DCR per login — the redirect URI (port) changes each time.
+	clientID, clientSecret, err := dcrOrStaticClient(ctx, registrationEndpoint, redirectURI)
 	if err != nil {
 		return fmt.Errorf("resolving OAuth client: %w", err)
 	}
 
-	// Generate the PKCE verifier once — used in both AuthCodeOptions and TokenRequestOptions.
 	verifier := oauth2.GenerateVerifier()
-
-	// When we have an OIDC provider use standard OIDC scopes; otherwise use
-	// Glean's native scopes (Glean's auth server does not support openid/profile).
-	scopes := []string{"chat", "search", "email"}
-	if provider != nil {
-		scopes = []string{oidc.ScopeOpenID, "email", "profile"}
-	}
+	scopes := resolveScopes(provider)
 
 	oauthCfg := oauth2.Config{
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
 		Endpoint:     endpoint,
 		Scopes:       scopes,
+		RedirectURL:  redirectURI,
 	}
 
+	fmt.Printf("Opening your browser to authenticate with Glean…\n\n")
+
 	token, err := oauth2cli.GetToken(ctx, oauth2cli.Config{
-		OAuth2Config:        oauthCfg,
-		AuthCodeOptions:     []oauth2.AuthCodeOption{oauth2.S256ChallengeOption(verifier)},
-		TokenRequestOptions: []oauth2.AuthCodeOption{oauth2.VerifierOption(verifier)},
+		OAuth2Config:           oauthCfg,
+		LocalServerBindAddress: []string{fmt.Sprintf("127.0.0.1:%d", port)},
+		AuthCodeOptions:        []oauth2.AuthCodeOption{oauth2.S256ChallengeOption(verifier)},
+		TokenRequestOptions:    []oauth2.AuthCodeOption{oauth2.VerifierOption(verifier)},
+		LocalServerSuccessHTML: "<html><body><h2>✓ Authenticated with Glean!</h2><p>You may close this tab.</p></body></html>",
 	})
 	if err != nil {
 		return fmt.Errorf("OAuth login failed: %w", err)
@@ -177,7 +186,7 @@ func resolveHost(ctx context.Context) (string, error) {
 	}
 	email = strings.TrimSpace(email)
 
-	fmt.Print("Looking up your Glean instance...")
+	fmt.Print("Looking up your Glean instance…")
 	backendURL, err := LookupBackendURL(ctx, email)
 	if err != nil {
 		fmt.Println()
@@ -193,18 +202,21 @@ func resolveHost(ctx context.Context) (string, error) {
 	return host, nil
 }
 
-// discover resolves the OAuth2 endpoint for the Glean backend.
+// discover resolves the OAuth2 endpoint and registration endpoint for the Glean backend.
 //
 // Strategy:
 //  1. Fetch RFC 9728 protected resource metadata → get authorization server URL
 //  2. Try OIDC discovery (oidc.NewProvider) for full OIDC support
 //  3. Fall back to RFC 8414 auth server metadata when OIDC is unavailable
 //     (Glean uses RFC 8414 but does not serve /.well-known/openid-configuration)
-func discover(ctx context.Context, host string) (*oidc.Provider, oauth2.Endpoint, error) {
+//
+// Returns (provider, oauth2Endpoint, registrationEndpoint, error).
+// provider is nil when only RFC 8414 discovery succeeded.
+func discover(ctx context.Context, host string) (*oidc.Provider, oauth2.Endpoint, string, error) {
 	baseURL := "https://" + host
 	meta, err := fetchProtectedResource(ctx, baseURL)
 	if err != nil {
-		return nil, oauth2.Endpoint{}, err
+		return nil, oauth2.Endpoint{}, "", err
 	}
 
 	issuer := meta.AuthorizationServers[0]
@@ -212,52 +224,69 @@ func discover(ctx context.Context, host string) (*oidc.Provider, oauth2.Endpoint
 	// Try full OIDC discovery first (supports ID token, UserInfo).
 	provider, err := oidc.NewProvider(ctx, issuer)
 	if err == nil {
-		return provider, provider.Endpoint(), nil
+		// Still need registration_endpoint, which oidc.Provider doesn't expose.
+		authMeta, _ := fetchAuthServerMetadata(ctx, issuer)
+		regEndpoint := ""
+		if authMeta != nil {
+			regEndpoint = authMeta.RegistrationEndpoint
+		}
+		return provider, provider.Endpoint(), regEndpoint, nil
 	}
 
-	// Fall back to RFC 8414 auth server metadata (Glean's primary discovery mechanism).
+	// Fall back to RFC 8414 auth server metadata.
 	authMeta, err := fetchAuthServerMetadata(ctx, issuer)
 	if err != nil {
-		return nil, oauth2.Endpoint{}, fmt.Errorf("OAuth discovery failed for %s: %w", issuer, err)
+		return nil, oauth2.Endpoint{}, "", fmt.Errorf("OAuth discovery failed for %s: %w", issuer, err)
 	}
 	if authMeta.AuthorizationEndpoint == "" || authMeta.TokenEndpoint == "" {
-		return nil, oauth2.Endpoint{}, fmt.Errorf("OAuth metadata missing required endpoints for %s", issuer)
+		return nil, oauth2.Endpoint{}, "", fmt.Errorf("OAuth metadata missing required endpoints for %s", issuer)
 	}
 
 	return nil, oauth2.Endpoint{
 		AuthURL:  authMeta.AuthorizationEndpoint,
 		TokenURL: authMeta.TokenEndpoint,
-	}, nil
+	}, authMeta.RegistrationEndpoint, nil
 }
 
-// resolveClientID returns the client_id and client_secret to use.
-// Priority: stored client → DCR → static config.
-func resolveClientID(ctx context.Context, host string) (string, string, error) {
-	if cl, err := LoadClient(host); err == nil && cl != nil && cl.ClientID != "" {
-		return cl.ClientID, cl.ClientSecret, nil
-	}
-
-	// Try DCR: need registration_endpoint from auth server metadata.
-	baseURL := "https://" + host
-	prMeta, err := fetchProtectedResource(ctx, baseURL)
-	if err == nil && len(prMeta.AuthorizationServers) > 0 {
-		authMeta, err := fetchAuthServerMetadata(ctx, prMeta.AuthorizationServers[0])
-		if err == nil && authMeta.RegistrationEndpoint != "" {
-			cl, err := registerClient(ctx, authMeta.RegistrationEndpoint, "http://127.0.0.1/callback")
-			if err == nil {
-				_ = SaveClient(host, cl)
-				return cl.ClientID, cl.ClientSecret, nil
-			}
+// dcrOrStaticClient resolves the OAuth client_id/secret for a login session.
+// It performs fresh DCR on each call (redirect URI includes port, so it changes).
+// Falls back to a static client configured via glean config --oauth-client-id.
+func dcrOrStaticClient(ctx context.Context, registrationEndpoint, redirectURI string) (string, string, error) {
+	if registrationEndpoint != "" {
+		cl, err := registerClient(ctx, registrationEndpoint, redirectURI)
+		if err == nil {
+			return cl.ClientID, cl.ClientSecret, nil
 		}
+		// DCR failed — log and fall through to static client
+		fmt.Printf("Note: dynamic client registration failed (%v), trying static client\n", err)
 	}
 
-	// Static client from config.
 	cfg, _ := config.LoadConfig()
 	if cfg != nil && cfg.OAuthClientID != "" {
 		return cfg.OAuthClientID, cfg.OAuthClientSecret, nil
 	}
 
-	return "", "", fmt.Errorf("no OAuth client available — run 'glean config --oauth-client-id <id>' for static clients")
+	return "", "", fmt.Errorf("no OAuth client available — set a client ID via 'glean config --oauth-client-id <id>'")
+}
+
+// resolveScopes returns the appropriate OAuth scopes for the given provider.
+func resolveScopes(provider *oidc.Provider) []string {
+	if provider != nil {
+		// Full OIDC: standard scopes for ID token + email
+		return []string{oidc.ScopeOpenID, "email", "profile"}
+	}
+	// Glean native scopes (Glean's auth server does not support openid/profile)
+	return []string{"chat", "search", "email"}
+}
+
+// findFreePort finds an available TCP port on localhost.
+func findFreePort() (int, error) {
+	l, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		return 0, err
+	}
+	defer l.Close()
+	return l.Addr().(*net.TCPAddr).Port, nil
 }
 
 // fetchAuthServerMetadata fetches RFC 8414 Authorization Server Metadata.
