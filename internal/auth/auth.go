@@ -31,7 +31,7 @@ func Login(ctx context.Context) error {
 		return promptForAPIToken(host)
 	}
 
-	clientID, clientSecret, err := resolveClientID(ctx, host, endpoint)
+	clientID, clientSecret, err := resolveClientID(ctx, host)
 	if err != nil {
 		return fmt.Errorf("resolving OAuth client: %w", err)
 	}
@@ -232,7 +232,7 @@ func discover(ctx context.Context, host string) (*oidc.Provider, oauth2.Endpoint
 
 // resolveClientID returns the client_id and client_secret to use.
 // Priority: stored client → DCR → static config.
-func resolveClientID(ctx context.Context, host string, endpoint oauth2.Endpoint) (string, string, error) {
+func resolveClientID(ctx context.Context, host string) (string, string, error) {
 	if cl, err := LoadClient(host); err == nil && cl != nil && cl.ClientID != "" {
 		return cl.ClientID, cl.ClientSecret, nil
 	}

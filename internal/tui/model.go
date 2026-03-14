@@ -15,6 +15,11 @@ import (
 	"github.com/gleanwork/api-client-go/models/components"
 )
 
+const (
+	roleUser      = "user"
+	roleAssistant = "assistant"
+)
+
 // streamDoneMsg signals that the API response has arrived.
 type streamDoneMsg struct {
 	ndjson string
@@ -106,9 +111,9 @@ func (m *Model) Init() tea.Cmd {
 // Update implements tea.Model.
 func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var (
-		taCmd  tea.Cmd
-		vpCmd  tea.Cmd
-		spCmd  tea.Cmd
+		taCmd tea.Cmd
+		vpCmd tea.Cmd
+		spCmd tea.Cmd
 	)
 
 	switch msg := msg.(type) {
@@ -151,10 +156,10 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.isStreaming = true
 
 			// Record the user turn immediately (both visually and in session).
-			turn := Turn{Role: "user", Content: question}
+			turn := Turn{Role: roleUser, Content: question}
 			m.addTurnToHistory(turn)
 			m.addTurnToConversation(turn)
-			m.session.AddTurn("user", question, nil)
+			m.session.AddTurn(roleUser, question, nil)
 			m.viewport.SetContent(m.history.String())
 			m.viewport.GotoBottom()
 
@@ -179,10 +184,10 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		text, sources := parseNDJSON(msg.ndjson)
 		if text != "" {
-			turn := Turn{Role: "assistant", Content: text, Sources: sources}
+			turn := Turn{Role: roleAssistant, Content: text, Sources: sources}
 			m.addTurnToHistory(turn)
 			m.addTurnToConversation(turn)
-			m.session.AddTurn("assistant", text, sources)
+			m.session.AddTurn(roleAssistant, text, sources)
 			m.viewport.SetContent(m.history.String())
 			m.viewport.GotoBottom()
 		}
@@ -263,13 +268,13 @@ func (m *Model) callAPI() tea.Cmd {
 // addTurnToHistory appends a rendered turn to the viewport history buffer.
 func (m *Model) addTurnToHistory(turn Turn) {
 	switch turn.Role {
-	case "user":
+	case roleUser:
 		m.history.WriteString("\n")
 		m.history.WriteString(styleUserLabel.Render("  > "))
 		m.history.WriteString(styleUserText.Render(turn.Content))
 		m.history.WriteString("\n\n")
 
-	case "assistant":
+	case roleAssistant:
 		rendered := m.renderMarkdown(turn.Content)
 		m.history.WriteString(rendered)
 		if len(turn.Sources) > 0 {
@@ -296,14 +301,14 @@ func (m *Model) addTurnToHistory(turn Turn) {
 // that will be sent on the next API call (enables multi-turn context).
 func (m *Model) addTurnToConversation(turn Turn) {
 	switch turn.Role {
-	case "user":
+	case roleUser:
 		text := turn.Content
 		m.conversationMsgs = append(m.conversationMsgs, components.ChatMessage{
 			Author:      components.AuthorUser.ToPointer(),
 			MessageType: components.MessageTypeContent.ToPointer(),
 			Fragments:   []components.ChatMessageFragment{{Text: &text}},
 		})
-	case "assistant":
+	case roleAssistant:
 		text := turn.Content
 		m.conversationMsgs = append(m.conversationMsgs, components.ChatMessage{
 			Author:      components.AuthorGleanAi.ToPointer(),

@@ -15,7 +15,7 @@ import (
 	"github.com/scalvert/glean-cli/internal/output"
 )
 
-// RunFunc is a function that calls the SDK and returns a result to be serialised.
+// RunFunc is a function that calls the SDK and returns a result to be serialized.
 type RunFunc func(ctx context.Context) (any, error)
 
 // RunCommand executes a SDK-backed command with standard --json / --output / --dry-run handling.

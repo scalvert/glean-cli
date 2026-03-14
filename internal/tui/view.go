@@ -94,7 +94,7 @@ func (m *Model) welcomeView() string {
 // or "" if the session is empty.
 func (m *Model) sessionPreview() string {
 	for _, t := range m.session.Turns {
-		if t.Role == "user" && t.Content != "" {
+		if t.Role == roleUser && t.Content != "" {
 			msg := t.Content
 			const maxLen = 55
 			if len([]rune(msg)) > maxLen {
@@ -109,11 +109,12 @@ func (m *Model) sessionPreview() string {
 // statusLine renders the one-line hint bar at the bottom of the screen.
 func (m *Model) statusLine() string {
 	var left string
-	if m.isStreaming {
+	switch {
+	case m.isStreaming:
 		left = m.spinner.View() + " " + styleStatusBar.Render("Searching…")
-	} else if m.identity != "" {
+	case m.identity != "":
 		left = styleStatusBar.Render(m.identity)
-	} else {
+	default:
 		turns := len(m.session.Turns)
 		if turns > 0 {
 			left = styleStatusAccent.Render(fmt.Sprintf("%d", turns)) +

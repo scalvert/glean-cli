@@ -43,7 +43,6 @@ func makeSuccessResp(text string) []byte {
 
 //nolint:govet
 type testCase struct {
-	mockErr     error
 	name        string
 	input       string
 	prompt      string

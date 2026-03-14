@@ -18,6 +18,9 @@ linters:
 linters-settings:
   govet:
     enable-all: true
+    disable:
+      - shadow        # `if err :=` shadowing is idiomatic Go; too noisy to enforce
+      - fieldalignment # struct field ordering is a micro-optimization, not a correctness issue
   gocyclo:
     min-complexity: 15
   goconst:
@@ -38,6 +41,10 @@ issues:
         - errcheck
     - path: _test\.go
       text: "fieldalignment:"
+    # SDK deprecated fields — outside our control, suppress to avoid noise
+    - linters:
+        - staticcheck
+      text: "SA1019:"
   max-issues-per-linter: 0
   max-same-issues: 0
 

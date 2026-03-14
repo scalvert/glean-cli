@@ -1,5 +1,5 @@
 // Package client provides a thin wrapper around the official Glean Go SDK,
-// initialising the SDK client from glean-cli's config (env vars, keyring,
+// initializing the SDK client from glean-cli's config (env vars, keyring,
 // or ~/.glean/config.json).
 package client
 

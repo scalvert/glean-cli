@@ -3,18 +3,18 @@ package search
 // Options holds all CLI-level search options parsed from flags.
 // These are mapped to the SDK's components.SearchRequest inside performSearch.
 type Options struct {
-	InputDetails   *SearchInputDetails `json:"inputDetails,omitempty"`
-	SessionInfo    *SessionInfo        `json:"sessionInfo,omitempty"`
-	RequestOptions *RequestOptions     `json:"requestOptions,omitempty"`
-	Query          string              `json:"query"`
-	Cursor         string              `json:"cursor,omitempty"`
-	Timestamp      string              `json:"timestamp,omitempty"`
-	TrackingToken  string              `json:"trackingToken,omitempty"`
-	ResultTabIds   []string            `json:"resultTabIds,omitempty"`
-	PageSize       int                 `json:"pageSize,omitempty"`
-	MaxSnippetSize int                 `json:"maxSnippetSize,omitempty"`
-	TimeoutMillis  int                 `json:"timeoutMillis,omitempty"`
-	DisableSpellcheck bool             `json:"disableSpellcheck,omitempty"`
+	InputDetails      *SearchInputDetails `json:"inputDetails,omitempty"`
+	SessionInfo       *SessionInfo        `json:"sessionInfo,omitempty"`
+	RequestOptions    *RequestOptions     `json:"requestOptions,omitempty"`
+	Query             string              `json:"query"`
+	Cursor            string              `json:"cursor,omitempty"`
+	Timestamp         string              `json:"timestamp,omitempty"`
+	TrackingToken     string              `json:"trackingToken,omitempty"`
+	ResultTabIds      []string            `json:"resultTabIds,omitempty"`
+	PageSize          int                 `json:"pageSize,omitempty"`
+	MaxSnippetSize    int                 `json:"maxSnippetSize,omitempty"`
+	TimeoutMillis     int                 `json:"timeoutMillis,omitempty"`
+	DisableSpellcheck bool                `json:"disableSpellcheck,omitempty"`
 }
 
 type SearchInputDetails struct {

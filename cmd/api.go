@@ -153,7 +153,7 @@ func apiBaseURL(cfg *config.Config) string {
 	host := cfg.GleanHost
 	// Expand short names (e.g., "linkedin" → "linkedin-be.glean.com")
 	if host != "" && !strings.Contains(host, ".") {
-		host = host + "-be.glean.com"
+		host += "-be.glean.com"
 	}
 	if cfg.GleanPort != "" {
 		return fmt.Sprintf("https://%s:%s", host, cfg.GleanPort)
