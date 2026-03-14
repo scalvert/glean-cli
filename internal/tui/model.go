@@ -93,7 +93,11 @@ func New(cfg *config.Config, session *Session, identity string, ctx context.Cont
 	vp := viewport.New(0, 0)
 
 	sp := spinner.New()
-	sp.Spinner = spinner.Pulse
+	// Pulsing circle — expands and contracts like a glowing dot.
+	sp.Spinner = spinner.Spinner{
+		Frames: []string{"○", "◎", "●", "◉", "●", "◎"},
+		FPS:    time.Second / 6,
+	}
 	sp.Style = styleStatusAccent
 
 	renderer, err := glamour.NewTermRenderer(
@@ -639,7 +643,7 @@ func (m *Model) renderConversation() string {
 			}
 			// Response timing indicator — muted, below the response.
 			if turn.Elapsed != "" {
-				sb.WriteString(styleSourceHeader.Render("  ─── " + turn.Elapsed + " ───"))
+				sb.WriteString(styleSourceHeader.Render("  ─── Gleaned in " + turn.Elapsed + " ───"))
 				sb.WriteString("\n\n")
 			}
 		}
