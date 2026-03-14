@@ -432,6 +432,64 @@ func TestReadAttachedFileReadsNormalFile(t *testing.T) {
 	assert.Equal(t, "package main\n", af.Content)
 }
 
+func TestPickerUpDownNavigation(t *testing.T) {
+	m := newTestModel(t)
+	m.showFilePicker = true
+	m.filePickerItems = []string{"a.go", "b.go", "c.go"}
+	m.filePickerIdx = 1
+
+	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyDown})
+	r := updated.(*Model)
+	assert.Equal(t, 2, r.filePickerIdx)
+
+	updated2, _ := r.Update(tea.KeyMsg{Type: tea.KeyUp})
+	r2 := updated2.(*Model)
+	assert.Equal(t, 1, r2.filePickerIdx)
+}
+
+func TestPickerEscClosesPicker(t *testing.T) {
+	m := newTestModel(t)
+	m.showFilePicker = true
+	m.filePickerItems = []string{"a.go"}
+
+	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEsc})
+	r := updated.(*Model)
+	assert.False(t, r.showFilePicker)
+}
+
+func TestEnterWithAttachedFilesInjectsContext(t *testing.T) {
+	m := newTestModel(t)
+	m.conversationActive = true
+	m.attachedFiles = []attachedFile{
+		{Path: "go.mod", Content: "module test"},
+	}
+	m.textarea.SetValue("explain this")
+
+	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	r := updated.(*Model)
+
+	assert.Empty(t, r.attachedFiles)
+	require.NotEmpty(t, r.conversationMsgs)
+	lastMsg := r.conversationMsgs[len(r.conversationMsgs)-1]
+	require.NotEmpty(t, lastMsg.Fragments)
+	assert.Contains(t, *lastMsg.Fragments[0].Text, "[File: go.mod]")
+	assert.Contains(t, *lastMsg.Fragments[0].Text, "explain this")
+}
+
+func TestEnterWithNoAttachedFilesSendsNormalMessage(t *testing.T) {
+	m := newTestModel(t)
+	m.conversationActive = true
+	m.textarea.SetValue("hello")
+
+	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	r := updated.(*Model)
+
+	require.NotEmpty(t, r.conversationMsgs)
+	lastMsg := r.conversationMsgs[len(r.conversationMsgs)-1]
+	require.NotEmpty(t, lastMsg.Fragments)
+	assert.Equal(t, "hello", *lastMsg.Fragments[0].Text)
+}
+
 func TestUpdateFilePickerClosesWhenNoAt(t *testing.T) {
 	m := newTestModel(t)
 	m.showFilePicker = true

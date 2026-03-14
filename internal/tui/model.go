@@ -165,6 +165,28 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.recalculateLayout()
 
 	case tea.KeyMsg:
+		// Route navigation keys to the file picker when it is open.
+		if m.showFilePicker {
+			switch msg.String() {
+			case "up", "ctrl+p":
+				if m.filePickerIdx > 0 {
+					m.filePickerIdx--
+				}
+				return m, nil
+			case "down", "ctrl+n":
+				if m.filePickerIdx < len(m.filePickerItems)-1 {
+					m.filePickerIdx++
+				}
+				return m, nil
+			case "enter", "tab":
+				m.selectPickerItem()
+				return m, nil
+			case "esc":
+				m.closePicker()
+				return m, nil
+			}
+		}
+
 		switch msg.String() {
 		case "esc":
 			if m.showExitHint {
@@ -285,9 +307,25 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.viewport.Height = m.maxViewportHeight()
 			}
 
-			turn := Turn{Role: roleUser, Content: question}
-			m.addTurnToConversation(turn)
+			// Build the API message — prepend file context if files are attached.
+			// Display shows original question; Glean receives expanded content.
+			apiContent := question
+			if len(m.attachedFiles) > 0 {
+				apiContent = buildFileContext(m.attachedFiles, question)
+				m.attachedFiles = nil
+			}
+
+			// Display turn uses original question for clean viewport rendering.
 			m.session.AddTurn(roleUser, question, nil)
+
+			// API message carries file context when present.
+			apiText := apiContent
+			m.conversationMsgs = append(m.conversationMsgs, components.ChatMessage{
+				Author:      components.AuthorUser.ToPointer(),
+				MessageType: components.MessageTypeContent.ToPointer(),
+				Fragments:   []components.ChatMessageFragment{{Text: &apiText}},
+			})
+
 			m.viewport.SetContent(m.renderConversation())
 			m.viewport.GotoBottom()
 
@@ -370,6 +408,10 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// g, d, u which would cause content to jump while the user is typing.
 	if _, isKey := msg.(tea.KeyMsg); !isKey {
 		m.viewport, vpCmd = m.viewport.Update(msg)
+	}
+	// Update file picker based on current textarea value after each keystroke.
+	if _, isKey := msg.(tea.KeyMsg); isKey {
+		m.updateFilePicker()
 	}
 
 	return m, tea.Batch(taCmd, vpCmd)
