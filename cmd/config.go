@@ -14,12 +14,14 @@ const notSetValue = "[not set]"
 // ConfigOptions holds the configuration options for the config command.
 // It allows setting or clearing Glean credentials and connection settings.
 type ConfigOptions struct {
-	host  string // Glean instance hostname
-	port  string // Glean instance port
-	token string // API token for authentication
-	email string // User's email address
-	clear bool   // Whether to clear all configuration
-	show  bool   // Whether to display current configuration
+	host              string // Glean instance hostname
+	port              string // Glean instance port
+	token             string // API token for authentication
+	email             string // User's email address
+	oauthClientID     string // OAuth client ID for pre-registered apps
+	oauthClientSecret string // OAuth client secret for confidential apps
+	clear             bool   // Whether to clear all configuration
+	show              bool   // Whether to display current configuration
 }
 
 // NewCmdConfig creates and returns the config command.
@@ -82,12 +84,20 @@ func NewCmdConfig() *cobra.Command {
 				return nil
 			}
 
-			if opts.host == "" && opts.port == "" && opts.token == "" && opts.email == "" {
-				return fmt.Errorf("no configuration provided. Use --host, --port, --token, or --email to set configuration")
+			if opts.host == "" && opts.port == "" && opts.token == "" && opts.email == "" && opts.oauthClientID == "" && opts.oauthClientSecret == "" {
+				return fmt.Errorf("no configuration provided. Use --host, --port, --token, --email, or --oauth-client-id to set configuration")
 			}
 
-			if err := config.SaveConfig(opts.host, opts.port, opts.token, opts.email); err != nil {
-				return fmt.Errorf("failed to save configuration: %w", err)
+			if opts.host != "" || opts.port != "" || opts.token != "" || opts.email != "" {
+				if err := config.SaveConfig(opts.host, opts.port, opts.token, opts.email); err != nil {
+					return fmt.Errorf("failed to save configuration: %w", err)
+				}
+			}
+
+			if opts.oauthClientID != "" || opts.oauthClientSecret != "" {
+				if err := config.SaveOAuthClient(opts.oauthClientID, opts.oauthClientSecret); err != nil {
+					return fmt.Errorf("failed to save OAuth configuration: %w", err)
+				}
 			}
 
 			fmt.Println("Configuration saved successfully")
@@ -99,6 +109,8 @@ func NewCmdConfig() *cobra.Command {
 	cmd.Flags().StringVar(&opts.port, "port", "", "Port for custom proxy (only applies to 'glean api' command; SDK commands use standard HTTPS)")
 	cmd.Flags().StringVar(&opts.token, "token", "", "Glean API token")
 	cmd.Flags().StringVar(&opts.email, "email", "", "Email address for API requests")
+	cmd.Flags().StringVar(&opts.oauthClientID, "oauth-client-id", "", "OAuth client ID (for instances with a pre-registered OAuth app)")
+	cmd.Flags().StringVar(&opts.oauthClientSecret, "oauth-client-secret", "", "OAuth client secret (for confidential OAuth apps)")
 	cmd.Flags().BoolVar(&opts.clear, "clear", false, "Clear all stored credentials")
 	cmd.Flags().BoolVar(&opts.show, "show", false, "Show current configuration")
 

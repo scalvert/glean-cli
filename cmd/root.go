@@ -77,6 +77,7 @@ func NewCmdRoot() *cobra.Command {
 	})
 
 	for _, sub := range []*cobra.Command{
+		NewCmdAuth(),
 		NewCmdSearch(),
 		NewCmdChat(),
 		NewCmdConfig(),

@@ -188,6 +188,22 @@ func SaveConfig(host, port, token, email string) error {
 	return nil
 }
 
+// SaveOAuthClient persists the OAuth client ID and secret to the config file.
+// It merges with existing file config so other fields are preserved.
+func SaveOAuthClient(clientID, clientSecret string) error {
+	cfg := &Config{}
+	if existing, err := loadFromFile(); err == nil {
+		cfg = existing
+	}
+	if clientID != "" {
+		cfg.OAuthClientID = clientID
+	}
+	if clientSecret != "" {
+		cfg.OAuthClientSecret = clientSecret
+	}
+	return saveToFile(cfg)
+}
+
 // ClearConfig removes all stored configuration from both keyring and file storage.
 func ClearConfig() error {
 	var keyringErr error
