@@ -264,6 +264,12 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			m.textarea.Reset()
 			m.historyIdx = -1
+
+			// Slash commands are handled locally — no API call.
+			if strings.HasPrefix(question, "/") {
+				return m.handleSlashCommand(question)
+			}
+
 			m.isStreaming = true
 			m.requestStartTime = time.Now()
 
@@ -336,7 +342,12 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	m.textarea, taCmd = m.textarea.Update(msg)
-	m.viewport, vpCmd = m.viewport.Update(msg)
+	// Key messages are routed to the viewport explicitly above (pgup, pgdown,
+	// up, down). Never pass typing events here — viewport handles keys like
+	// g, d, u which would cause content to jump while the user is typing.
+	if _, isKey := msg.(tea.KeyMsg); !isKey {
+		m.viewport, vpCmd = m.viewport.Update(msg)
+	}
 
 	return m, tea.Batch(taCmd, vpCmd)
 }

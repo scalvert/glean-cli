@@ -114,12 +114,19 @@ func (m *Model) sessionPreview() string {
 }
 
 // statusLine renders the one-line hint bar at the bottom of the screen.
+// The spinner lives in the viewport content area, not here.
 func (m *Model) statusLine() string {
+	// Left side: mode badge + optional turn count.
+	modeLabel := styleStatusAccent.Render(string(m.agentMode))
 	var left string
 	turns := len(m.session.Turns)
 	if turns > 0 {
-		left = styleStatusAccent.Render(fmt.Sprintf("%d", turns)) +
+		left = modeLabel +
+			styleStatusBar.Render("  ·  ") +
+			styleStatusAccent.Render(fmt.Sprintf("%d", turns)) +
 			styleStatusBar.Render(" turn"+pluralS(turns))
+	} else {
+		left = modeLabel
 	}
 
 	right := styleStatusBar.Render("ctrl+r new  ctrl+l clear  ctrl+y copy  ctrl+h help  ctrl+c quit")
@@ -143,6 +150,10 @@ func (m *Model) helpView() string {
 		{"ctrl+l", "Clear screen"},
 		{"ctrl+c  /  esc", "Quit"},
 		{"ctrl+h", "Toggle this help"},
+		{"", ""},
+		{"/clear", "Start a new session"},
+		{"/mode fast|advanced|auto", "Switch agent reasoning depth"},
+		{"/help", "Show this help"},
 	}
 
 	var sb strings.Builder
@@ -150,8 +161,12 @@ func (m *Model) helpView() string {
 	sb.WriteString(center(styleLogo.Render("Keyboard shortcuts"), m.width))
 	sb.WriteString("\n\n")
 	for _, s := range shortcuts {
+		if s.key == "" {
+			sb.WriteString("\n")
+			continue
+		}
 		line := "  " +
-			styleHelpKey.Render(fmt.Sprintf("%-26s", s.key)) +
+			styleHelpKey.Render(fmt.Sprintf("%-30s", s.key)) +
 			"  " +
 			styleHelpDesc.Render(s.desc)
 		sb.WriteString(line + "\n")

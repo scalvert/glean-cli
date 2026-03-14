@@ -342,3 +342,19 @@ func TestSlashModeUnknownArgShowsError(t *testing.T) {
 	assert.Equal(t, roleSystem, last.Role)
 	assert.Contains(t, last.Content, "turbo")
 }
+
+func TestSlashInputDoesNotTriggerStreaming(t *testing.T) {
+	m := newTestModel(t)
+	m.textarea.SetValue("/mode fast")
+	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	r := updated.(*Model)
+	assert.False(t, r.isStreaming, "slash commands must not start an API call")
+	assert.Equal(t, components.AgentEnumFast, r.agentMode)
+}
+
+func TestStatusBarShowsAgentMode(t *testing.T) {
+	m := newTestModel(t)
+	m.agentMode = components.AgentEnumAdvanced
+	status := m.statusLine()
+	assert.Contains(t, status, "ADVANCED")
+}
