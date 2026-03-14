@@ -21,6 +21,10 @@ type streamDoneMsg struct {
 	err    error
 }
 
+// maxViewportHeight caps the conversation viewport so the TUI doesn't stretch
+// to fill the whole terminal when run without alt-screen mode.
+const maxViewportHeight = 20
+
 // Model is the Bubbletea model for the glean chat TUI.
 type Model struct {
 	// UI components
@@ -33,6 +37,7 @@ type Model struct {
 	sdk              *glean.Glean
 	session          *Session
 	ctx              context.Context
+	identity         string                   // "email · host" shown in status bar + welcome
 	conversationMsgs []components.ChatMessage // full history sent to SDK on each turn
 	history          strings.Builder          // rendered HTML for the viewport
 	width            int
@@ -42,7 +47,8 @@ type Model struct {
 }
 
 // New creates a fully-initialized TUI model.
-func New(sdk *glean.Glean, session *Session, ctx context.Context) (*Model, error) {
+// identity is shown in the status bar and welcome screen (e.g. "user@co.com · co-be.glean.com").
+func New(sdk *glean.Glean, session *Session, identity string, ctx context.Context) (*Model, error) {
 	ta := textarea.New()
 	ta.Placeholder = "Message Glean…  (shift+enter for a new line)"
 	ta.Focus()
@@ -77,6 +83,7 @@ func New(sdk *glean.Glean, session *Session, ctx context.Context) (*Model, error
 		renderer: renderer,
 		sdk:      sdk,
 		session:  session,
+		identity: identity,
 		ctx:      ctx,
 	}
 
@@ -197,6 +204,9 @@ func (m *Model) recalculateLayout() {
 	inputH := 5  // 3 content rows + 2 border rows (rounded border)
 	statusH := 1 // bottom status line
 	vpH := m.height - inputH - statusH
+	if vpH > maxViewportHeight {
+		vpH = maxViewportHeight
+	}
 	if vpH < 1 {
 		vpH = 1
 	}

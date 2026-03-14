@@ -9,7 +9,9 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/scalvert/glean-cli/internal/auth"
 	gleanClient "github.com/scalvert/glean-cli/internal/client"
+	"github.com/scalvert/glean-cli/internal/config"
 	"github.com/scalvert/glean-cli/internal/tui"
 	"github.com/spf13/cobra"
 )
@@ -49,12 +51,23 @@ func NewCmdRoot() *cobra.Command {
 				session = tui.LoadLatest()
 			}
 
-			model, err := tui.New(sdk, session, cmd.Context())
+			// Resolve identity string for the welcome screen and status bar.
+			// Format: "email · host" or just "host" if no OAuth token.
+			identity := ""
+			if cfg, err := config.LoadConfig(); err == nil && cfg.GleanHost != "" {
+				identity = cfg.GleanHost
+				if tok, err := auth.LoadTokens(cfg.GleanHost); err == nil && tok != nil && tok.Email != "" {
+					identity = tok.Email + "  ·  " + cfg.GleanHost
+				}
+			}
+
+			model, err := tui.New(sdk, session, identity, cmd.Context())
 			if err != nil {
 				return fmt.Errorf("failed to create TUI: %w", err)
 			}
 
-			p := tea.NewProgram(model, tea.WithAltScreen(), tea.WithContext(cmd.Context()))
+			// No WithAltScreen — renders inline without taking over the terminal.
+			p := tea.NewProgram(model, tea.WithContext(cmd.Context()))
 			_, err = p.Run()
 			return err
 		},

@@ -55,39 +55,55 @@ func (m *Model) View() string {
 	)
 }
 
-// welcomeView renders the centered logo and start hint when the session is empty.
+// welcomeView renders the compact welcome panel shown on an empty session.
+// No vertical padding to fill the viewport — without alt-screen the terminal
+// handles whitespace naturally.
 func (m *Model) welcomeView() string {
-	// Center each logo line individually so multi-line blocks render correctly.
-	// Applying styleLogo.Render to the entire block and then prepending spaces
-	// only pads the first physical line — subsequent lines start at column 0.
-	logoBlock := centerBlock(gleanLogo, styleLogo, m.width)
-	taglineStyled := styleTagline.Render(gleanTagline)
-	hintStyled := styleSourceHeader.Render("Start typing to begin a conversation")
-
-	logoH := strings.Count(gleanLogo, "\n") + 1
-	totalH := logoH + 5 // blank + tagline + blank + hint
-	topPad := (m.viewport.Height - totalH) / 2
-	if topPad < 1 {
-		topPad = 1
-	}
-
 	var sb strings.Builder
-	for range topPad {
+
+	// Logo.
+	sb.WriteString("\n")
+	sb.WriteString(centerBlock(gleanLogo, styleLogo, m.width))
+	sb.WriteString("\n\n")
+
+	// Identity line: "email · host" or just the tagline if no identity.
+	if m.identity != "" {
+		sb.WriteString(center(styleTagline.Render(m.identity), m.width))
+		sb.WriteString("\n")
+		sb.WriteString(center(styleSourceHeader.Render(gleanTagline), m.width))
+	} else {
+		sb.WriteString(center(styleTagline.Render(gleanTagline), m.width))
+	}
+	sb.WriteString("\n")
+
+	// Session preview: first user message from the saved session.
+	if preview := m.sessionPreview(); preview != "" {
+		sb.WriteString("\n")
+		sb.WriteString(center(styleSourceHeader.Render("Last session: "+preview), m.width))
 		sb.WriteString("\n")
 	}
-	sb.WriteString(logoBlock)
-	sb.WriteString("\n\n")
-	sb.WriteString(center(taglineStyled, m.width))
-	sb.WriteString("\n\n")
-	sb.WriteString(center(hintStyled, m.width))
 
-	// Pad out to fill the viewport height so the input box doesn't jump.
-	content := sb.String()
-	lines := strings.Count(content, "\n")
-	for i := lines; i < m.viewport.Height; i++ {
-		content += "\n"
+	sb.WriteString("\n")
+	sb.WriteString(center(styleSourceHeader.Render("Start typing to begin a conversation"), m.width))
+	sb.WriteString("\n")
+
+	return sb.String()
+}
+
+// sessionPreview returns a truncated first user message from the current session,
+// or "" if the session is empty.
+func (m *Model) sessionPreview() string {
+	for _, t := range m.session.Turns {
+		if t.Role == "user" && t.Content != "" {
+			msg := t.Content
+			const maxLen = 55
+			if len([]rune(msg)) > maxLen {
+				msg = string([]rune(msg)[:maxLen]) + "…"
+			}
+			return "\u201c" + msg + "\u201d" // "…"
+		}
 	}
-	return content
+	return ""
 }
 
 // statusLine renders the one-line hint bar at the bottom of the screen.
@@ -95,6 +111,8 @@ func (m *Model) statusLine() string {
 	var left string
 	if m.isStreaming {
 		left = m.spinner.View() + " " + styleStatusBar.Render("Searching…")
+	} else if m.identity != "" {
+		left = styleStatusBar.Render(m.identity)
 	} else {
 		turns := len(m.session.Turns)
 		if turns > 0 {
