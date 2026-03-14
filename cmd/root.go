@@ -24,7 +24,7 @@ var rootCmd *cobra.Command
 // It sets up the base command structure and adds all subcommands.
 func NewCmdRoot() *cobra.Command {
 	var verbosity int
-	var newSession bool
+	var continueSession bool
 
 	cmd := &cobra.Command{
 		Use:   "glean",
@@ -49,10 +49,11 @@ func NewCmdRoot() *cobra.Command {
 				return err
 			}
 
-			var session *tui.Session
-			if newSession {
-				session = &tui.Session{}
-			} else {
+			// Always start with a fresh session. Prior conversation context
+			// flashing back on startup is jarring and unexpected. Users who
+			// want to continue a prior conversation can use --continue.
+			session := &tui.Session{}
+			if continueSession {
 				session = tui.LoadLatest()
 			}
 
@@ -78,7 +79,7 @@ func NewCmdRoot() *cobra.Command {
 	}
 
 	cmd.PersistentFlags().CountVarP(&verbosity, "verbose", "v", "Increase verbosity level (can be used multiple times)")
-	cmd.Flags().BoolVar(&newSession, "new", false, "Start a new chat session (discard saved history)")
+	cmd.Flags().BoolVar(&continueSession, "continue", false, "Resume the most recent saved chat session")
 
 	cmd.AddGroup(&cobra.Group{
 		ID:    "core",
