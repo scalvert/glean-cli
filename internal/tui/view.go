@@ -116,8 +116,10 @@ func (m *Model) sessionPreview() string {
 func (m *Model) statusLine() string {
 	var left string
 	switch {
+	case m.isStreaming && !m.streamHasContent:
+		left = m.spinner.View() + " " + styleStatusBar.Render("Thinking…")
 	case m.isStreaming:
-		left = m.spinner.View() + " " + styleStatusBar.Render("Asking Glean…")
+		left = m.spinner.View() + " " + styleStatusBar.Render("Responding…")
 	default:
 		// Only show identity in the status bar if it contains an email address
 		// (i.e. includes "·"). The host alone is already shown in the header.

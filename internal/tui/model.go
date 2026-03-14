@@ -56,6 +56,7 @@ type Model struct {
 	currentResponse  strings.Builder          // accumulates the in-progress assistant response
 	currentSources   []Source                 // accumulates sources for the in-progress response
 	streamRenderLen  int                      // chars since last glamour render (throttle)
+	streamHasContent bool                     // true once first CONTENT message received
 	width            int
 	height           int
 	isStreaming      bool
@@ -172,6 +173,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.currentResponse.Reset()
 			m.currentSources = nil
 			m.streamRenderLen = 0
+			m.streamHasContent = false
 
 			turn := Turn{Role: roleUser, Content: question}
 			m.addTurnToHistory(turn)
@@ -252,6 +254,13 @@ func (m *Model) processStreamLine(line string) {
 
 	var newText strings.Builder
 	for _, msg := range resp.Messages {
+		// Only process CONTENT messages. UPDATE, CONTROL, DEBUG, DEBUG_EXTERNAL,
+		// HEADING, WARNING, SERVER_TOOL etc. are internal signals not meant for
+		// display. DEBUG/DEBUG_EXTERNAL carry Glean's internal "I'm thinking…"
+		// reasoning steps which must not be shown to the user.
+		if msg.MessageType != nil && *msg.MessageType != components.MessageTypeContent {
+			continue
+		}
 		for _, frag := range msg.Fragments {
 			if frag.Text != nil && *frag.Text != "" {
 				newText.WriteString(*frag.Text)
@@ -287,6 +296,7 @@ func (m *Model) processStreamLine(line string) {
 	// Append chunk to the accumulated response.
 	m.currentResponse.WriteString(chunk)
 	m.streamRenderLen += len(chunk)
+	m.streamHasContent = true
 
 	// Throttle glamour renders: only re-render every ~80 chars or when a
 	// newline arrives (sentence/paragraph boundary). This prevents the glamour
