@@ -58,14 +58,27 @@ func Login(ctx context.Context) error {
 		RedirectURL:  redirectURI,
 	}
 
-	fmt.Printf("Opening your browser to authenticate with Glean…\n\n")
+	// LocalServerReadyChan receives the full authorization URL once the callback
+	// server is up. Print it so users can open it manually if the browser
+	// doesn't launch automatically.
+	readyChan := make(chan string, 1)
+	go func() {
+		authURL, ok := <-readyChan
+		if !ok {
+			return
+		}
+		fmt.Printf("Opening your browser to authenticate with Glean…\n\n")
+		fmt.Printf("If your browser doesn't open, visit:\n  %s\n\n", authURL)
+		fmt.Printf("Waiting for you to complete login in the browser…\n")
+	}()
 
 	token, err := oauth2cli.GetToken(ctx, oauth2cli.Config{
 		OAuth2Config:           oauthCfg,
 		LocalServerBindAddress: []string{fmt.Sprintf("127.0.0.1:%d", port)},
 		AuthCodeOptions:        []oauth2.AuthCodeOption{oauth2.S256ChallengeOption(verifier)},
 		TokenRequestOptions:    []oauth2.AuthCodeOption{oauth2.VerifierOption(verifier)},
-		LocalServerSuccessHTML: "<html><body><h2>✓ Authenticated with Glean!</h2><p>You may close this tab.</p></body></html>",
+		LocalServerSuccessHTML: "<html><body><h2>✓ Authenticated with Glean!</h2><p>You may close this tab and return to your terminal.</p></body></html>",
+		LocalServerReadyChan:   readyChan,
 	})
 	if err != nil {
 		return fmt.Errorf("OAuth login failed: %w", err)
