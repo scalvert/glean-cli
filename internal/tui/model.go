@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"strings"
 
@@ -150,9 +151,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.resizeViewportToContent()
 			return m, nil
 
-		// Scroll keys go to the viewport when there is conversation content.
-		// Without this, the textarea captures all arrow/page keys and the
-		// viewport cannot be scrolled.
+			// Scroll keys: route to viewport when conversation exists.
 		case "up", "down", "pgup", "pgdown":
 			if m.history.Len() > 0 {
 				m.viewport, vpCmd = m.viewport.Update(msg)
@@ -220,6 +219,13 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.currentResponse.Reset()
 		m.currentSources = nil
 		return m, nil
+
+	// Mouse scroll events go to the viewport when there is content.
+	case tea.MouseMsg:
+		if m.history.Len() > 0 {
+			m.viewport, vpCmd = m.viewport.Update(msg)
+			return m, vpCmd
+		}
 	}
 
 	m.textarea, taCmd = m.textarea.Update(msg)
@@ -398,36 +404,34 @@ func (m *Model) resizeViewportToContent() {
 func (m *Model) addTurnToHistory(turn Turn) {
 	switch turn.Role {
 	case roleUser:
-		// Render user message as a distinct background box (like Claude Code).
-		// Width matches the viewport (m.width - 4 when set, else natural).
-		boxWidth := m.width - 4
-		if boxWidth < 20 {
-			boxWidth = 0
-		}
-		label := styleUserLabel.Render("you")
-		content := styleUserText.Render(turn.Content)
-		box := styleUserBox.Width(boxWidth).Render(label + "  " + content)
+		// Clean left-indented user message: bold blue "you" label + content.
+		// No background box — avoids width calculation fights with the viewport margin.
 		m.history.WriteString("\n")
-		m.history.WriteString(box)
+		m.history.WriteString("  " + styleUserLabel.Render("you") + "  ")
+		m.history.WriteString(styleUserText.Render(turn.Content))
 		m.history.WriteString("\n\n")
 
 	case roleAssistant:
 		rendered := m.renderMarkdown(turn.Content)
 		m.history.WriteString(rendered)
 		if len(turn.Sources) > 0 {
-			m.history.WriteString(styleSourceHeader.Render("  Sources\n"))
+			m.history.WriteString(styleSourceHeader.Render("Sources") + "\n")
 			for i, s := range turn.Sources {
 				title := s.Title
 				if title == "" {
 					title = s.URL
 				}
+				// Truncate long titles so they fit cleanly in the viewport.
+				const maxTitle = 60
+				if len([]rune(title)) > maxTitle {
+					title = string([]rune(title)[:maxTitle-1]) + "…"
+				}
 				ds := s.Datasource
 				if ds == "" {
 					ds = defaultDatasource
 				}
-				m.history.WriteString(styleSourceItem.Render(
-					"  ── [" + itoa(i+1) + "] " + ds + ": " + title + "\n",
-				))
+				line := fmt.Sprintf("  [%d] %s — %s", i+1, ds, title)
+				m.history.WriteString(styleSourceItem.Render(line) + "\n")
 			}
 			m.history.WriteString("\n")
 		}
@@ -479,17 +483,4 @@ func containsSource(sources []Source, url string) bool {
 		}
 	}
 	return false
-}
-
-// itoa is a tiny int-to-string helper to avoid importing strconv.
-func itoa(n int) string {
-	if n == 0 {
-		return "0"
-	}
-	b := make([]byte, 0, 4)
-	for n > 0 {
-		b = append([]byte{byte('0' + n%10)}, b...)
-		n /= 10
-	}
-	return string(b)
 }

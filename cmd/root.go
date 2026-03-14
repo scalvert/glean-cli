@@ -68,7 +68,7 @@ func NewCmdRoot() *cobra.Command {
 				return fmt.Errorf("failed to create TUI: %w", err)
 			}
 
-			p := tea.NewProgram(model, tea.WithAltScreen(), tea.WithContext(cmd.Context()))
+			p := tea.NewProgram(model, tea.WithAltScreen(), tea.WithMouseCellMotion(), tea.WithContext(cmd.Context()))
 			_, err = p.Run()
 			return err
 		},
