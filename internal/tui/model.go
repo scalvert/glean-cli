@@ -1,8 +1,10 @@
 package tui
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
+	"io"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/spinner"
@@ -11,23 +13,31 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/lipgloss"
-	glean "github.com/gleanwork/api-client-go"
 	"github.com/gleanwork/api-client-go/models/components"
+	"github.com/scalvert/glean-cli/internal/client"
+	"github.com/scalvert/glean-cli/internal/config"
 )
 
 const (
-	roleUser      = "user"
-	roleAssistant = "assistant"
+	roleUser          = "user"
+	roleAssistant     = "assistant"
+	defaultDatasource = "glean"
 )
 
-// streamDoneMsg signals that the API response has arrived.
-type streamDoneMsg struct {
-	ndjson string
-	err    error
+// streamLineMsg carries one parsed NDJSON line from the chat stream,
+// along with the scanner so the pump can schedule the next read.
+type streamLineMsg struct {
+	line    string
+	scanner *bufio.Scanner
+	body    io.ReadCloser
 }
 
-// maxViewportHeight caps the conversation viewport so the TUI doesn't stretch
-// to fill the whole terminal when run without alt-screen mode.
+// streamDoneMsg signals the stream has ended (normally or with error).
+type streamDoneMsg struct {
+	err error
+}
+
+// maxViewportHeight caps the conversation viewport height.
 const maxViewportHeight = 20
 
 // Model is the Bubbletea model for the glean chat TUI.
@@ -39,12 +49,14 @@ type Model struct {
 	renderer *glamour.TermRenderer
 
 	// State
-	sdk              *glean.Glean
+	cfg              *config.Config
 	session          *Session
 	ctx              context.Context
-	identity         string                   // "email · host" shown in status bar + welcome
-	conversationMsgs []components.ChatMessage // full history sent to SDK on each turn
-	history          strings.Builder          // rendered HTML for the viewport
+	identity         string                   // "email · host" shown in header + status
+	conversationMsgs []components.ChatMessage // full history sent on each turn (multi-turn context)
+	history          strings.Builder          // rendered conversation for the viewport
+	currentResponse  strings.Builder          // accumulates the in-progress assistant response
+	currentSources   []Source                 // accumulates sources for the in-progress response
 	width            int
 	height           int
 	isStreaming      bool
@@ -52,8 +64,7 @@ type Model struct {
 }
 
 // New creates a fully-initialized TUI model.
-// identity is shown in the status bar and welcome screen (e.g. "user@co.com · co-be.glean.com").
-func New(sdk *glean.Glean, session *Session, identity string, ctx context.Context) (*Model, error) {
+func New(cfg *config.Config, session *Session, identity string, ctx context.Context) (*Model, error) {
 	ta := textarea.New()
 	ta.Placeholder = "Message Glean…  (shift+enter for a new line)"
 	ta.Focus()
@@ -61,9 +72,6 @@ func New(sdk *glean.Glean, session *Session, identity string, ctx context.Contex
 	ta.CharLimit = 4096
 	ta.KeyMap.InsertNewline.SetKeys("shift+enter")
 	ta.SetHeight(3)
-	// Remove the default cursor-line background highlight that the textarea
-	// applies to the entire line the cursor is on — it creates a distracting
-	// block over the placeholder text on an otherwise empty input.
 	ta.FocusedStyle.CursorLine = lipgloss.NewStyle()
 
 	vp := viewport.New(0, 0)
@@ -77,7 +85,6 @@ func New(sdk *glean.Glean, session *Session, identity string, ctx context.Contex
 		glamour.WithWordWrap(100),
 	)
 	if err != nil {
-		// Non-fatal: fall back to plain text rendering
 		renderer = nil
 	}
 
@@ -86,13 +93,12 @@ func New(sdk *glean.Glean, session *Session, identity string, ctx context.Contex
 		textarea: ta,
 		spinner:  sp,
 		renderer: renderer,
-		sdk:      sdk,
+		cfg:      cfg,
 		session:  session,
 		identity: identity,
 		ctx:      ctx,
 	}
 
-	// Replay saved session into the history buffer and build SDK message list.
 	for _, turn := range session.Turns {
 		m.addTurnToHistory(turn)
 		m.addTurnToConversation(turn)
@@ -154,8 +160,9 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			m.textarea.Reset()
 			m.isStreaming = true
+			m.currentResponse.Reset()
+			m.currentSources = nil
 
-			// Record the user turn immediately (both visually and in session).
 			turn := Turn{Role: roleUser, Content: question}
 			m.addTurnToHistory(turn)
 			m.addTurnToConversation(turn)
@@ -172,25 +179,50 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, spCmd
 		}
 
+	// Each line from the stream: parse it, update the display, pump next line.
+	case streamLineMsg:
+		m.processStreamLine(msg.line)
+		next := msg.scanner
+		body := msg.body
+		return m, func() tea.Msg {
+			return pumpNextLine(next, body)
+		}
+
 	case streamDoneMsg:
 		m.isStreaming = false
 
 		if msg.err != nil {
 			m.appendError(msg.err)
-			m.viewport.SetContent(m.history.String())
-			m.viewport.GotoBottom()
-			return m, nil
+		} else if m.currentResponse.Len() > 0 {
+			// Finalize the assistant turn: render full response + sources.
+			text := m.currentResponse.String()
+			turn := Turn{Role: roleAssistant, Content: text, Sources: m.currentSources}
+			// The content has been rendered incrementally; finalize sources only.
+			if len(m.currentSources) > 0 {
+				m.history.WriteString(styleSourceHeader.Render("  Sources\n"))
+				for i, s := range m.currentSources {
+					title := s.Title
+					if title == "" {
+						title = s.URL
+					}
+					ds := s.Datasource
+					if ds == "" {
+						ds = defaultDatasource
+					}
+					m.history.WriteString(styleSourceItem.Render(
+						"  ── [" + itoa(i+1) + "] " + ds + ": " + title + "\n",
+					))
+				}
+				m.history.WriteString("\n")
+			}
+			m.session.AddTurn(roleAssistant, text, m.currentSources)
+			m.addTurnToConversation(turn)
 		}
 
-		text, sources := parseNDJSON(msg.ndjson)
-		if text != "" {
-			turn := Turn{Role: roleAssistant, Content: text, Sources: sources}
-			m.addTurnToHistory(turn)
-			m.addTurnToConversation(turn)
-			m.session.AddTurn(roleAssistant, text, sources)
-			m.viewport.SetContent(m.history.String())
-			m.viewport.GotoBottom()
-		}
+		m.viewport.SetContent(m.history.String())
+		m.viewport.GotoBottom()
+		m.currentResponse.Reset()
+		m.currentSources = nil
 		return m, nil
 	}
 
@@ -198,6 +230,113 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	m.viewport, vpCmd = m.viewport.Update(msg)
 
 	return m, tea.Batch(taCmd, vpCmd)
+}
+
+// processStreamLine parses one NDJSON line and appends text/sources to the
+// in-progress response, updating the viewport after each chunk.
+func (m *Model) processStreamLine(line string) {
+	// Strip SSE "data: " prefix if present.
+	line = strings.TrimPrefix(line, "data: ")
+	if line == "" || line == "[DONE]" {
+		return
+	}
+
+	var resp components.ChatResponse
+	if err := json.Unmarshal([]byte(line), &resp); err != nil {
+		return
+	}
+
+	var newText strings.Builder
+	for _, msg := range resp.Messages {
+		for _, frag := range msg.Fragments {
+			if frag.Text != nil && *frag.Text != "" {
+				newText.WriteString(*frag.Text)
+			}
+			for _, sr := range frag.StructuredResults {
+				if sr.Document == nil {
+					continue
+				}
+				src := Source{}
+				if sr.Document.Title != nil {
+					src.Title = *sr.Document.Title
+				}
+				if sr.Document.URL != nil {
+					src.URL = *sr.Document.URL
+				}
+				if sr.Document.Datasource != nil {
+					src.Datasource = *sr.Document.Datasource
+				} else if sr.Document.Metadata != nil && sr.Document.Metadata.Datasource != nil {
+					src.Datasource = *sr.Document.Metadata.Datasource
+				}
+				if !containsSource(m.currentSources, src.URL) {
+					m.currentSources = append(m.currentSources, src)
+				}
+			}
+		}
+	}
+
+	chunk := newText.String()
+	if chunk == "" {
+		return
+	}
+
+	// Append chunk to the accumulated response.
+	m.currentResponse.WriteString(chunk)
+
+	// Re-render the full in-progress response incrementally.
+	// Rebuild history from the saved turns + the current partial response.
+	m.rebuildViewport()
+}
+
+// rebuildViewport regenerates the viewport content from saved history +
+// the current in-progress streaming response.
+func (m *Model) rebuildViewport() {
+	var buf strings.Builder
+	buf.WriteString(m.history.String())
+
+	// Append the in-progress response as plain text (no markdown yet —
+	// glamour needs the full text to render correctly).
+	if m.currentResponse.Len() > 0 {
+		buf.WriteString(m.currentResponse.String())
+	}
+
+	m.viewport.SetContent(buf.String())
+	m.viewport.GotoBottom()
+}
+
+// callAPI starts the streaming chat request and returns the first pump cmd.
+func (m *Model) callAPI() tea.Cmd {
+	msgs := make([]components.ChatMessage, len(m.conversationMsgs))
+	copy(msgs, m.conversationMsgs)
+	cfg := m.cfg
+	ctx := m.ctx
+
+	return func() tea.Msg {
+		body, err := client.StreamChat(ctx, cfg, msgs)
+		if err != nil {
+			return streamDoneMsg{err: err}
+		}
+		scanner := bufio.NewScanner(body)
+		return pumpNextLine(scanner, body)
+	}
+}
+
+// pumpNextLine reads the next line from the scanner and returns the
+// appropriate tea.Msg. This is the streaming pump — each call schedules itself
+// as the next Cmd, giving bubbletea a chance to re-render between chunks.
+func pumpNextLine(scanner *bufio.Scanner, body io.ReadCloser) tea.Msg {
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" {
+			continue // skip blank lines between SSE events
+		}
+		return streamLineMsg{line: line, scanner: scanner, body: body}
+	}
+	body.Close()
+	if err := scanner.Err(); err != nil {
+		return streamDoneMsg{err: err}
+	}
+	return streamDoneMsg{}
 }
 
 // recalculateLayout updates widget sizes based on current terminal dimensions.
@@ -219,7 +358,7 @@ func (m *Model) recalculateLayout() {
 
 	m.viewport.Width = m.width
 	m.viewport.Height = vpH
-	m.textarea.SetWidth(m.width - 4) // 2 border + 2 padding
+	m.textarea.SetWidth(m.width - 4)
 
 	if m.renderer != nil {
 		wrapWidth := m.width - 4
@@ -232,37 +371,6 @@ func (m *Model) recalculateLayout() {
 		); err == nil {
 			m.renderer = r
 		}
-	}
-}
-
-// callAPI sends the full conversation history to Glean and returns a streamDoneMsg.
-func (m *Model) callAPI() tea.Cmd {
-	msgs := make([]components.ChatMessage, len(m.conversationMsgs))
-	copy(msgs, m.conversationMsgs)
-
-	sdk := m.sdk
-	ctx := m.ctx
-	return func() tea.Msg {
-		agentDefault := components.AgentEnumDefault
-		modeDefault := components.ModeDefault
-		stream := true
-
-		chatReq := components.ChatRequest{
-			Messages:    msgs,
-			AgentConfig: &components.AgentConfig{Agent: agentDefault.ToPointer(), Mode: modeDefault.ToPointer()},
-			Stream:      &stream,
-		}
-
-		resp, err := sdk.Client.Chat.CreateStream(ctx, chatReq, nil)
-		if err != nil {
-			return streamDoneMsg{err: err}
-		}
-
-		ndjson := ""
-		if resp.ChatRequestStream != nil {
-			ndjson = *resp.ChatRequestStream
-		}
-		return streamDoneMsg{ndjson: ndjson}
 	}
 }
 
@@ -287,10 +395,10 @@ func (m *Model) addTurnToHistory(turn Turn) {
 				}
 				ds := s.Datasource
 				if ds == "" {
-					ds = "glean"
+					ds = defaultDatasource
 				}
 				m.history.WriteString(styleSourceItem.Render(
-					"  " + strings.Repeat("─", 2) + " [" + itoa(i+1) + "] " + ds + ": " + title + "\n",
+					"  ── [" + itoa(i+1) + "] " + ds + ": " + title + "\n",
 				))
 			}
 			m.history.WriteString("\n")
@@ -298,8 +406,7 @@ func (m *Model) addTurnToHistory(turn Turn) {
 	}
 }
 
-// addTurnToConversation appends an SDK ChatMessage to the conversation history
-// that will be sent on the next API call (enables multi-turn context).
+// addTurnToConversation appends an SDK ChatMessage for multi-turn context.
 func (m *Model) addTurnToConversation(turn Turn) {
 	switch turn.Role {
 	case roleUser:
@@ -335,53 +442,6 @@ func (m *Model) appendError(err error) {
 	m.history.WriteString("\n")
 	m.history.WriteString(styleError.Render("  Error: " + err.Error()))
 	m.history.WriteString("\n\n")
-}
-
-// parseNDJSON extracts the full text and source citations from a buffered NDJSON response.
-func parseNDJSON(ndjson string) (string, []Source) {
-	var textParts []string
-	var sources []Source
-
-	for _, line := range strings.Split(ndjson, "\n") {
-		line = strings.TrimSpace(line)
-		if line == "" {
-			continue
-		}
-		var resp components.ChatResponse
-		if err := json.Unmarshal([]byte(line), &resp); err != nil {
-			continue
-		}
-		for _, msg := range resp.Messages {
-			for _, frag := range msg.Fragments {
-				if frag.Text != nil && *frag.Text != "" {
-					textParts = append(textParts, *frag.Text)
-				}
-				for _, sr := range frag.StructuredResults {
-					if sr.Document == nil {
-						continue
-					}
-					src := Source{}
-					if sr.Document.Title != nil {
-						src.Title = *sr.Document.Title
-					}
-					if sr.Document.URL != nil {
-						src.URL = *sr.Document.URL
-					}
-					if sr.Document.Datasource != nil {
-						src.Datasource = *sr.Document.Datasource
-					} else if sr.Document.Metadata != nil && sr.Document.Metadata.Datasource != nil {
-						src.Datasource = *sr.Document.Metadata.Datasource
-					}
-					// Deduplicate by URL
-					if !containsSource(sources, src.URL) {
-						sources = append(sources, src)
-					}
-				}
-			}
-		}
-	}
-
-	return strings.Join(textParts, ""), sources
 }
 
 func containsSource(sources []Source, url string) bool {

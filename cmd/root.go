@@ -39,8 +39,13 @@ func NewCmdRoot() *cobra.Command {
 			_ = verbosity // reserved for future debug logging
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			sdk, err := gleanClient.NewFromConfig()
+			cfg, err := config.LoadConfig()
 			if err != nil {
+				return err
+			}
+
+			// Validate credentials before opening the TUI.
+			if _, err := gleanClient.NewFromConfig(); err != nil {
 				return err
 			}
 
@@ -51,17 +56,13 @@ func NewCmdRoot() *cobra.Command {
 				session = tui.LoadLatest()
 			}
 
-			// Resolve identity string for the welcome screen and status bar.
-			// Format: "email · host" or just "host" if no OAuth token.
-			identity := ""
-			if cfg, err := config.LoadConfig(); err == nil && cfg.GleanHost != "" {
-				identity = cfg.GleanHost
-				if tok, err := auth.LoadTokens(cfg.GleanHost); err == nil && tok != nil && tok.Email != "" {
-					identity = tok.Email + "  ·  " + cfg.GleanHost
-				}
+			// Resolve identity: "email · host" or just host.
+			identity := cfg.GleanHost
+			if tok, err := auth.LoadTokens(cfg.GleanHost); err == nil && tok != nil && tok.Email != "" {
+				identity = tok.Email + "  ·  " + cfg.GleanHost
 			}
 
-			model, err := tui.New(sdk, session, identity, cmd.Context())
+			model, err := tui.New(cfg, session, identity, cmd.Context())
 			if err != nil {
 				return fmt.Errorf("failed to create TUI: %w", err)
 			}
