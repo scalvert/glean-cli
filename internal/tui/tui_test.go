@@ -3,6 +3,7 @@ package tui
 import (
 	"context"
 	"fmt"
+	"os"
 	"strings"
 	"testing"
 
@@ -357,4 +358,76 @@ func TestStatusBarShowsAgentMode(t *testing.T) {
 	m.agentMode = components.AgentEnumAdvanced
 	status := m.statusLine()
 	assert.Contains(t, status, "ADVANCED")
+}
+
+func TestParseFileQueryDetectsAt(t *testing.T) {
+	query, ok := parseFileQuery("hello @src/")
+	assert.True(t, ok)
+	assert.Equal(t, "src/", query)
+}
+
+func TestParseFileQueryNoAt(t *testing.T) {
+	_, ok := parseFileQuery("hello world")
+	assert.False(t, ok)
+}
+
+func TestParseFileQueryAtWithSpaceAfter(t *testing.T) {
+	_, ok := parseFileQuery("@foo bar")
+	assert.False(t, ok)
+}
+
+func TestParseFileQueryAtEnd(t *testing.T) {
+	query, ok := parseFileQuery("look at this @")
+	assert.True(t, ok)
+	assert.Equal(t, "", query)
+}
+
+func TestBuildFileContextPrependsFiles(t *testing.T) {
+	files := []attachedFile{
+		{Path: "go.mod", Content: "module foo"},
+	}
+	result := buildFileContext(files, "what does this do?")
+	assert.Contains(t, result, "[File: go.mod]")
+	assert.Contains(t, result, "module foo")
+	assert.Contains(t, result, "what does this do?")
+	assert.Less(t, strings.Index(result, "[File:"), strings.Index(result, "what does this do?"))
+}
+
+func TestBuildFileContextNoFiles(t *testing.T) {
+	result := buildFileContext(nil, "hello")
+	assert.Equal(t, "hello", result)
+}
+
+func TestReadAttachedFileRejectsBinary(t *testing.T) {
+	f, err := os.CreateTemp(t.TempDir(), "binary*.bin")
+	require.NoError(t, err)
+	_, _ = f.Write([]byte{0x00, 0x01, 0x02})
+	f.Close()
+
+	_, err = readAttachedFile(f.Name())
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "binary")
+}
+
+func TestReadAttachedFileTruncatesLargeFiles(t *testing.T) {
+	f, err := os.CreateTemp(t.TempDir(), "large*.txt")
+	require.NoError(t, err)
+	_, _ = f.WriteString(strings.Repeat("x", 15_000))
+	f.Close()
+
+	af, err := readAttachedFile(f.Name())
+	require.NoError(t, err)
+	assert.LessOrEqual(t, len(af.Content), 10_200)
+	assert.Contains(t, af.Content, "truncated")
+}
+
+func TestReadAttachedFileReadsNormalFile(t *testing.T) {
+	f, err := os.CreateTemp(t.TempDir(), "normal*.go")
+	require.NoError(t, err)
+	_, _ = f.WriteString("package main\n")
+	f.Close()
+
+	af, err := readAttachedFile(f.Name())
+	require.NoError(t, err)
+	assert.Equal(t, "package main\n", af.Content)
 }
