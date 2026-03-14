@@ -73,6 +73,12 @@ func (s *Session) Save() error {
 
 // AddTurn appends a turn to the session and saves immediately.
 func (s *Session) AddTurn(role, content string, sources []Source) {
-	s.Turns = append(s.Turns, Turn{Role: role, Content: content, Sources: sources})
+	s.AppendTurn(Turn{Role: role, Content: content, Sources: sources})
+}
+
+// AppendTurn appends a complete Turn (including Elapsed and any other fields)
+// to the session and saves immediately.
+func (s *Session) AppendTurn(turn Turn) {
+	s.Turns = append(s.Turns, turn)
 	_ = s.Save() // best-effort
 }

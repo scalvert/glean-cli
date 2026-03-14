@@ -50,7 +50,6 @@ type Model struct {
 	identity           string                   // "email · host" shown in header + status
 	conversationMsgs   []components.ChatMessage // full history sent on each turn (multi-turn context)
 	chatID             *string                  // Glean chatId — server manages conversation context
-	requestStart       time.Time                // when the current request started, for elapsed timing
 	startTime          time.Time                // session start, for stats on quit
 	lastCtrlC          time.Time                // for double ctrl+c detection
 	showExitHint       bool                     // show "press ctrl+c again to exit" hint
@@ -250,7 +249,6 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.textarea.Reset()
 			m.historyIdx = -1
 			m.isStreaming = true
-			m.requestStart = time.Now()
 
 			// Transition to active state: fix viewport at max height.
 			// This only runs once per session — after this the viewport never resizes.
@@ -289,7 +287,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				Elapsed: msg.elapsed,
 			}
 			m.addTurnToConversation(turn)
-			m.session.AddTurn(roleAssistant, msg.text, msg.sources)
+			m.session.AppendTurn(turn) // preserves Elapsed for renderConversation
 		}
 		m.viewport.SetContent(m.renderConversation())
 		m.viewport.GotoBottom()
