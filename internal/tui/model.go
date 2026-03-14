@@ -665,7 +665,7 @@ func (m *Model) renderConversation() string {
 			label = styleStatusAccent.Render("Gleaning") + "  " + styleSourceHeader.Render("·  "+elapsedStr)
 		}
 		sb.WriteString("\n")
-		sb.WriteString("  " + m.spinner.View() + "  " + label)
+		sb.WriteString(m.spinner.View() + "  " + label)
 		sb.WriteString("\n\n")
 	}
 
