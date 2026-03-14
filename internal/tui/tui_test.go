@@ -431,3 +431,23 @@ func TestReadAttachedFileReadsNormalFile(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "package main\n", af.Content)
 }
+
+func TestUpdateFilePickerClosesWhenNoAt(t *testing.T) {
+	m := newTestModel(t)
+	m.showFilePicker = true
+	m.filePickerItems = []string{"foo.go"}
+	m.textarea.SetValue("hello world")
+	m.updateFilePicker()
+	assert.False(t, m.showFilePicker)
+}
+
+func TestClosePickerResetsState(t *testing.T) {
+	m := newTestModel(t)
+	m.showFilePicker = true
+	m.filePickerItems = []string{"a.go", "b.go"}
+	m.filePickerIdx = 1
+	m.closePicker()
+	assert.False(t, m.showFilePicker)
+	assert.Nil(t, m.filePickerItems)
+	assert.Equal(t, 0, m.filePickerIdx)
+}

@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -72,6 +73,14 @@ type Model struct {
 	showHelp           bool
 	historyIdx         int
 	conversationActive bool
+
+	// File picker state — active when user types @ in the input.
+	showFilePicker  bool
+	filePickerQuery string
+	filePickerItems []string
+	filePickerIdx   int
+	attachedFiles   []attachedFile // files queued for next message
+
 	agentMode          components.AgentEnum // agent used for API calls; changed by /mode command
 	currentStage       string               // Glean thinking stage shown while streaming: "Searching", "Reading", etc.
 	currentDetail      string        // optional detail for the current stage
@@ -739,6 +748,90 @@ func friendlyError(err error) string {
 	default:
 		return msg
 	}
+}
+
+// updateFilePicker inspects the textarea value and opens/refreshes/closes
+// the file picker based on whether a live @query is present.
+func (m *Model) updateFilePicker() {
+	query, ok := parseFileQuery(m.textarea.Value())
+	if !ok {
+		if m.showFilePicker {
+			m.closePicker()
+		}
+		return
+	}
+	items := scanFiles(query)
+	if len(items) == 0 {
+		if m.showFilePicker {
+			m.closePicker()
+		}
+		return
+	}
+	m.filePickerQuery = query
+	m.filePickerItems = items
+	if !m.showFilePicker {
+		m.showFilePicker = true
+		m.filePickerIdx = 0
+		m.recalculateLayout()
+	} else if m.filePickerIdx >= len(m.filePickerItems) {
+		m.filePickerIdx = len(m.filePickerItems) - 1
+	}
+}
+
+// closePicker hides the file picker and resets its state.
+func (m *Model) closePicker() {
+	m.showFilePicker = false
+	m.filePickerItems = nil
+	m.filePickerIdx = 0
+	m.recalculateLayout()
+}
+
+// selectPickerItem handles Enter/Tab on the highlighted picker item.
+// Directories drill in; files are read, attached, and @query removed from textarea.
+func (m *Model) selectPickerItem() {
+	if m.filePickerIdx >= len(m.filePickerItems) {
+		return
+	}
+	selected := m.filePickerItems[m.filePickerIdx]
+
+	// Directory — drill in by updating the textarea @path.
+	if strings.HasSuffix(selected, "/") {
+		current := m.textarea.Value()
+		idx := strings.LastIndex(current, "@")
+		if idx >= 0 {
+			m.textarea.SetValue(current[:idx+1] + selected)
+			m.textarea.CursorEnd()
+		}
+		m.updateFilePicker()
+		return
+	}
+
+	// File — enforce 3-file limit.
+	if len(m.attachedFiles) >= 3 {
+		m.addSystemMessage("Maximum 3 files per message")
+		m.closePicker()
+		return
+	}
+
+	af, err := readAttachedFile(selected)
+	if err != nil {
+		m.addSystemMessage(fmt.Sprintf("Cannot attach %s: %s", selected, err.Error()))
+		m.closePicker()
+		return
+	}
+
+	m.attachedFiles = append(m.attachedFiles, af)
+
+	// Strip @query from textarea.
+	current := m.textarea.Value()
+	atIdx := strings.LastIndex(current, "@")
+	if atIdx >= 0 {
+		m.textarea.SetValue(current[:atIdx])
+		m.textarea.CursorEnd()
+	}
+
+	m.closePicker()
+	m.addSystemMessage(fmt.Sprintf("📎 %s attached (%d/3)", filepath.Base(selected), len(m.attachedFiles)))
 }
 
 // newGlamourRenderer creates a glamour renderer based on the dark style, but
