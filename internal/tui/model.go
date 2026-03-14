@@ -277,15 +277,8 @@ func (m *Model) processStreamLine(line string) {
 		}
 	}
 
-	chunk := newText.String()
-	if chunk == "" {
-		return
-	}
-
-	// Filter out Glean's chat stage preamble markers (**Searching:**, etc.).
-	// These are internal progress indicators, not user-facing content.
-	// cmd/chat.go does the same filtering for the non-TUI chat command.
-	if isStageMarker(chunk) {
+	chunk := stripStagePreamble(newText.String())
+	if strings.TrimSpace(chunk) == "" {
 		return
 	}
 
@@ -297,17 +290,38 @@ func (m *Model) processStreamLine(line string) {
 	m.rebuildViewport()
 }
 
-// isStageMarker returns true if text is a Glean chat stage preamble line
-// (**Searching:**, **Reading:**, **Writing:**, or a summarize line).
-// These are internal progress signals from the Chat API, not response content.
-func isStageMarker(text string) bool {
+// stripStagePreamble removes Glean chat stage preamble lines from a chunk.
+// Stage markers arrive interleaved with real content in the same fragment —
+// dropping the whole chunk (as isStageMarker did) removes actual content too.
+// This strips individual marker lines and keeps everything else.
+func stripStagePreamble(text string) string {
+	lines := strings.Split(text, "\n")
+	kept := lines[:0]
+	for _, line := range lines {
+		if !isStageLine(strings.TrimSpace(line)) {
+			kept = append(kept, line)
+		}
+	}
+	return strings.Join(kept, "\n")
+}
+
+// isStageLine returns true if a single line is a Glean preamble stage marker.
+func isStageLine(line string) bool {
+	if line == "" {
+		return false
+	}
+	// Explicit stage prefixes: **Searching:** query, **Reading:** docs, **Writing:**
 	for _, prefix := range []string{"**Searching:**", "**Reading:**", "**Writing:**"} {
-		if strings.HasPrefix(text, prefix) {
+		if strings.HasPrefix(line, prefix) {
 			return true
 		}
 	}
-	// "Searching:" variant (without surrounding **)
-	if strings.HasPrefix(strings.ToLower(text), "searching:") {
+	// Search topic lines: **Searching some query** (bold wrap, no colon)
+	if strings.HasPrefix(line, "**Searching ") && strings.HasSuffix(line, "**") {
+		return true
+	}
+	// Reading topic lines: **Reading some doc**
+	if strings.HasPrefix(line, "**Reading ") && strings.HasSuffix(line, "**") {
 		return true
 	}
 	return false
