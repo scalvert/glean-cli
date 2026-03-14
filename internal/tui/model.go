@@ -81,8 +81,14 @@ func New(cfg *config.Config, session *Session, identity string, ctx context.Cont
 
 	vp := viewport.New(0, 0)
 
+	// Custom braille circular spinner — looks like a spinning ball.
+	// Braille characters create a smooth circular motion that feels more
+	// premium than the default dot spinner.
 	sp := spinner.New()
-	sp.Spinner = spinner.Dot
+	sp.Spinner = spinner.Spinner{
+		Frames: []string{"⣾ ", "⣽ ", "⣻ ", "⢿ ", "⡿ ", "⣟ ", "⣯ ", "⣷ "},
+		FPS:    time.Second / 10,
+	}
 	sp.Style = styleStatusAccent
 
 	renderer, err := glamour.NewTermRenderer(
