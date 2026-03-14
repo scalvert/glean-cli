@@ -82,13 +82,19 @@ func Login(ctx context.Context) error {
 	}()
 
 	token, err := oauth2cli.GetToken(ctx, oauth2cli.Config{
-		OAuth2Config:           oauthCfg,
-		State:                  state,
-		LocalServerBindAddress: []string{fmt.Sprintf("127.0.0.1:%d", port)},
-		LocalServerReadyChan:   readyChan,
-		AuthCodeOptions:        []oauth2.AuthCodeOption{oauth2.S256ChallengeOption(verifier)},
-		TokenRequestOptions:    []oauth2.AuthCodeOption{oauth2.VerifierOption(verifier)},
-		LocalServerSuccessHTML: "<html><body><h2>✓ Authenticated with Glean!</h2><p>You may close this tab and return to your terminal.</p></body></html>",
+		OAuth2Config: oauthCfg,
+		State:        state,
+		// These two must match the redirect_uri registered via DCR exactly.
+		// oauth2cli overwrites oauthCfg.RedirectURL using RedirectURLHostname+port+
+		// LocalServerCallbackPath. Its defaults ("localhost", "") differ from our
+		// DCR registration ("127.0.0.1", "/callback"), causing a redirect_uri mismatch.
+		RedirectURLHostname:     "127.0.0.1",
+		LocalServerCallbackPath: "/callback",
+		LocalServerBindAddress:  []string{fmt.Sprintf("127.0.0.1:%d", port)},
+		LocalServerReadyChan:    readyChan,
+		AuthCodeOptions:         []oauth2.AuthCodeOption{oauth2.S256ChallengeOption(verifier)},
+		TokenRequestOptions:     []oauth2.AuthCodeOption{oauth2.VerifierOption(verifier)},
+		LocalServerSuccessHTML:  "<html><body><h2>✓ Authenticated with Glean!</h2><p>You may close this tab and return to your terminal.</p></body></html>",
 	})
 	if err != nil {
 		return fmt.Errorf("OAuth login failed: %w", err)
