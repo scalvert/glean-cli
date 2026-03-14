@@ -9,22 +9,12 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-// gleanLogo is a braille Unicode rendering of the Glean wordmark, generated
-// from the official logo image via chafa (--symbols braille --size 60x6).
-// Braille's 2×4 dot grid reproduces the circular "g" and curved letterforms
-// far more faithfully than ASCII art. Each line is 30 terminal columns wide.
-const gleanLogo = "⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-	"⠀⢀⣀⣀⣀⣴⡄⢸⣿⠀⠀⠀⣀⣀⣀⠀⠀⠀⢀⣀⣀⡀⠀⠀⠀⢀⣀⣀⡀⠀\n" +
-	"⣰⡿⠛⠛⠻⣿⡀⢸⣿⠀⣰⡿⠛⢛⣻⣷⡀⣰⡿⠛⠛⠻⣷⡀⣴⡿⠛⠛⢿⣦\n" +
-	"⢿⣇⠀⠀⢀⣿⠇⢸⣿⠀⢿⣷⠿⠟⢋⣭⠄⣿⣇⠀⠀⢀⣿⡇⣿⡇⠀⠀⢸⣿\n" +
-	"⠈⠻⠿⠾⠿⠋⣠⡈⠻⠿⠈⠻⠿⠾⠿⠋⠀⠈⠻⠿⠾⠿⠿⠇⠿⠇⠀⠀⠸⠿\n" +
-	"⠀⠀⣶⣶⣶⠿⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"
-
 const gleanTagline = "AI-powered search for your company's knowledge"
 
 // logoHeaderLines is the number of rows the header occupies, used by
 // recalculateLayout to size the viewport correctly.
-const logoHeaderLines = 10 // 1 blank + 6 braille + 1 blank + 1 identity + 1 blank
+// Layout: 1 blank + 1 header bar + 1 blank = 3 rows.
+const logoHeaderLines = 3
 
 // View implements tea.Model.
 func (m *Model) View() string {
@@ -80,19 +70,25 @@ func (m *Model) View() string {
 	return lipgloss.JoinVertical(lipgloss.Left, parts...)
 }
 
-// headerView renders the logo and identity line — shown on every screen.
+// headerView renders the compact single-line banner shown at the top of every screen.
+// Layout: [solid glean badge]  │  [identity or tagline]
 func (m *Model) headerView() string {
-	var sb strings.Builder
-	sb.WriteString("\n")
-	sb.WriteString(centerBlock(gleanLogo, styleLogo, m.width))
-	sb.WriteString("\n\n")
-	if m.identity != "" {
-		sb.WriteString(center(styleTagline.Render(m.identity), m.width))
-	} else {
-		sb.WriteString(center(styleTagline.Render(gleanTagline), m.width))
+	badge := lipgloss.NewStyle().
+		Background(lipgloss.Color(colorBrand)).
+		Foreground(lipgloss.Color("#FFFFFF")).
+		Bold(true).
+		Padding(0, 1).
+		Render("glean")
+
+	sep := styleStatusBar.Render("  │  ")
+
+	identity := m.identity
+	if identity == "" {
+		identity = "AI-powered search for your company's knowledge"
 	}
-	sb.WriteString("\n")
-	return sb.String()
+	right := styleTagline.Render(identity)
+
+	return "\n" + badge + sep + right + "\n"
 }
 
 // welcomeBody renders the hints shown below the logo when no conversation exists.
