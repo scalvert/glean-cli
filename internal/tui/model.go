@@ -204,29 +204,14 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if msg.err != nil {
 			m.appendError(msg.err)
 		} else if m.currentResponse.Len() > 0 {
-			// Finalize the assistant turn: render full response + sources.
 			text := m.currentResponse.String()
 			turn := Turn{Role: roleAssistant, Content: text, Sources: m.currentSources}
-			// The content has been rendered incrementally; finalize sources only.
-			if len(m.currentSources) > 0 {
-				m.history.WriteString(styleSourceHeader.Render("  Sources\n"))
-				for i, s := range m.currentSources {
-					title := s.Title
-					if title == "" {
-						title = s.URL
-					}
-					ds := s.Datasource
-					if ds == "" {
-						ds = defaultDatasource
-					}
-					m.history.WriteString(styleSourceItem.Render(
-						"  ── [" + itoa(i+1) + "] " + ds + ": " + title + "\n",
-					))
-				}
-				m.history.WriteString("\n")
-			}
-			m.session.AddTurn(roleAssistant, text, m.currentSources)
+			// addTurnToHistory renders markdown and appends sources to m.history.
+			// This is what was missing — the streaming text was never committed
+			// to m.history, so it vanished when currentResponse was reset.
+			m.addTurnToHistory(turn)
 			m.addTurnToConversation(turn)
+			m.session.AddTurn(roleAssistant, text, m.currentSources)
 		}
 
 		m.viewport.SetContent(m.history.String())
