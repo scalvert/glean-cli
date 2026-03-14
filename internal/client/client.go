@@ -9,32 +9,38 @@ import (
 	"strings"
 
 	glean "github.com/gleanwork/api-client-go"
+	"github.com/scalvert/glean-cli/internal/auth"
 	"github.com/scalvert/glean-cli/internal/config"
 )
 
 // New creates an authenticated Glean SDK client from the loaded configuration.
 //
-// Authentication priority (handled by config.LoadConfig):
-//  1. GLEAN_API_TOKEN environment variable
-//  2. System keyring
-//  3. ~/.glean/config.json
+// Authentication priority:
+//  1. GLEAN_API_TOKEN environment variable (via config.LoadConfig)
+//  2. System keyring / ~/.glean/config.json (via config.LoadConfig)
+//  3. OAuth token from local storage (via auth.LoadOAuthToken)
 //
 // The GleanHost value is accepted in two forms:
 //   - Full hostname: "linkedin-be.glean.com" → instance = "linkedin"
 //   - Short name:   "linkedin"              → passed as-is to WithInstance
 func New(cfg *config.Config) (*glean.Glean, error) {
 	if cfg.GleanHost == "" {
-		return nil, fmt.Errorf("Glean host not configured. Run 'glean config --host <host>' or set GLEAN_HOST")
+		return nil, fmt.Errorf("Glean host not configured. Run 'glean auth login' or set GLEAN_HOST")
 	}
-	if cfg.GleanToken == "" {
-		return nil, fmt.Errorf("Glean token not configured. Run 'glean config --token <token>' or set GLEAN_API_TOKEN")
+
+	token := cfg.GleanToken
+	if token == "" {
+		token = auth.LoadOAuthToken(cfg.GleanHost)
+	}
+	if token == "" {
+		return nil, fmt.Errorf("not authenticated — run 'glean auth login' or set GLEAN_API_TOKEN")
 	}
 
 	instance := extractInstance(cfg.GleanHost)
 
 	opts := []glean.SDKOption{
 		glean.WithInstance(instance),
-		glean.WithSecurity(cfg.GleanToken),
+		glean.WithSecurity(token),
 	}
 
 	if cfg.GleanEmail != "" {
