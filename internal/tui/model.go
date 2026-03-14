@@ -613,7 +613,19 @@ func (m *Model) resizeViewportToContent() {
 	inputH := 3
 	statusH := 1
 	spacerH := 2 // top delimiter + bottom delimiter, each 1 line
-	maxVpH := m.height - logoHeaderLines - spacerH - inputH - statusH
+	pickerH := 0
+	if m.showFilePicker {
+		n := len(m.filePickerItems)
+		if n > 5 {
+			n = 5
+		}
+		pickerH = n + 1
+	}
+	chipH := 0
+	if len(m.attachedFiles) > 0 {
+		chipH = 1
+	}
+	maxVpH := m.height - logoHeaderLines - spacerH - inputH - statusH - pickerH - chipH
 	if maxVpH < 4 {
 		maxVpH = 4
 	}
@@ -643,9 +655,21 @@ func (m *Model) maxViewportHeight() int {
 	const (
 		inputH  = 3 // 1-line textarea + 2 border rows
 		statusH = 1
-		spacerH = 2 // top delimiter + bottom delimiter, each 1 line
+		spacerH = 2 // top + bottom delimiters
 	)
-	h := m.height - logoHeaderLines - spacerH - inputH - statusH
+	pickerH := 0
+	if m.showFilePicker {
+		n := len(m.filePickerItems)
+		if n > 5 {
+			n = 5
+		}
+		pickerH = n + 1 // items + header line
+	}
+	chipH := 0
+	if len(m.attachedFiles) > 0 {
+		chipH = 1
+	}
+	h := m.height - logoHeaderLines - spacerH - inputH - statusH - pickerH - chipH
 	if h < 4 {
 		return 4
 	}

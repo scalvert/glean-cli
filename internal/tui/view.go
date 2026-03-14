@@ -2,6 +2,7 @@ package tui
 
 import (
 	"fmt"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -60,14 +61,18 @@ func (m *Model) View() string {
 	}
 
 	rule := styleDelimiter.Render(strings.Repeat("─", m.width))
-	return lipgloss.JoinVertical(lipgloss.Left,
-		header,
-		rule,
-		m.viewport.View(),
-		rule,
-		inputBox,
-		bottom,
-	)
+
+	parts := []string{header, rule, m.viewport.View(), rule}
+
+	if picker := m.filePickerView(); picker != "" {
+		parts = append(parts, picker)
+	}
+	if chip := m.attachedFilesView(); chip != "" {
+		parts = append(parts, chip)
+	}
+	parts = append(parts, inputBox, bottom)
+
+	return lipgloss.JoinVertical(lipgloss.Left, parts...)
 }
 
 // headerView renders the logo and identity line — shown on every screen.
@@ -180,6 +185,43 @@ func (m *Model) helpView() string {
 	sb.WriteString(center(styleStatusBar.Render("press ctrl+h to close"), m.width))
 	sb.WriteString("\n")
 	return sb.String()
+}
+
+// filePickerView renders the file picker overlay shown when the user types @.
+// Shows at most 5 items with the selected item highlighted in brand blue.
+func (m *Model) filePickerView() string {
+	if !m.showFilePicker || len(m.filePickerItems) == 0 {
+		return ""
+	}
+	maxItems := 5
+	items := m.filePickerItems
+	if len(items) > maxItems {
+		items = items[:maxItems]
+	}
+	var sb strings.Builder
+	sb.WriteString(stylePickerHeader.Render("  @ file") + "\n")
+	for i, item := range items {
+		if i == m.filePickerIdx {
+			sb.WriteString(stylePickerSelected.Render("  ▸ " + item))
+		} else {
+			sb.WriteString(stylePickerItem.Render("    " + item))
+		}
+		sb.WriteString("\n")
+	}
+	return sb.String()
+}
+
+// attachedFilesView renders a one-line row of file chips for files staged
+// for the next message. Returns "" when no files are attached.
+func (m *Model) attachedFilesView() string {
+	if len(m.attachedFiles) == 0 {
+		return ""
+	}
+	var parts []string
+	for _, f := range m.attachedFiles {
+		parts = append(parts, styleAttached.Render("📎 "+filepath.Base(f.Path)))
+	}
+	return "  " + strings.Join(parts, "   ")
 }
 
 // centerBlock renders each line of a multi-line string with the given style

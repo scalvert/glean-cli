@@ -89,4 +89,19 @@ var (
 	styleExitHint = lipgloss.NewStyle().
 			Foreground(lipgloss.Color(colorOrange)).
 			Bold(true)
+
+	// File picker overlay styles.
+	stylePickerHeader = lipgloss.NewStyle().
+				Foreground(lipgloss.Color(colorMuted)).
+				Italic(true)
+
+	stylePickerItem = lipgloss.NewStyle().
+			Foreground(lipgloss.Color(colorMuted))
+
+	stylePickerSelected = lipgloss.NewStyle().
+				Foreground(lipgloss.Color(colorBrand)).
+				Bold(true)
+
+	styleAttached = lipgloss.NewStyle().
+			Foreground(lipgloss.Color(colorBrand))
 )
