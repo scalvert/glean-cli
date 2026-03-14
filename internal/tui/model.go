@@ -37,9 +37,6 @@ type streamDoneMsg struct {
 	err error
 }
 
-// maxViewportHeight caps the conversation viewport height.
-const maxViewportHeight = 20
-
 // Model is the Bubbletea model for the glean chat TUI.
 type Model struct {
 	// UI components
@@ -141,6 +138,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+l":
 			m.history.Reset()
 			m.viewport.SetContent("")
+			m.resizeViewportToContent()
 			return m, nil
 
 		case "ctrl+r":
@@ -148,7 +146,17 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.conversationMsgs = nil
 			m.history.Reset()
 			m.viewport.SetContent("")
+			m.resizeViewportToContent()
 			return m, nil
+
+		// Scroll keys go to the viewport when there is conversation content.
+		// Without this, the textarea captures all arrow/page keys and the
+		// viewport cannot be scrolled.
+		case "up", "down", "pgup", "pgdown":
+			if m.history.Len() > 0 {
+				m.viewport, vpCmd = m.viewport.Update(msg)
+				return m, vpCmd
+			}
 
 		case "enter":
 			if m.isStreaming {
@@ -168,6 +176,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.addTurnToConversation(turn)
 			m.session.AddTurn(roleUser, question, nil)
 			m.viewport.SetContent(m.history.String())
+			m.resizeViewportToContent()
 			m.viewport.GotoBottom()
 
 			return m, tea.Batch(m.spinner.Tick, m.callAPI())
@@ -220,6 +229,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 		m.viewport.SetContent(m.history.String())
+		m.resizeViewportToContent()
 		m.viewport.GotoBottom()
 		m.currentResponse.Reset()
 		m.currentSources = nil
@@ -301,6 +311,7 @@ func (m *Model) rebuildViewport() {
 	}
 
 	m.viewport.SetContent(buf.String())
+	m.resizeViewportToContent()
 	m.viewport.GotoBottom()
 }
 
@@ -339,26 +350,15 @@ func pumpNextLine(scanner *bufio.Scanner, body io.ReadCloser) tea.Msg {
 	return streamDoneMsg{}
 }
 
-// recalculateLayout updates widget sizes based on current terminal dimensions.
+// recalculateLayout updates widget widths and the maximum viewport height on
+// terminal resize, then sizes the viewport to its current content.
 func (m *Model) recalculateLayout() {
 	if m.width == 0 || m.height == 0 {
 		return
 	}
-
-	inputH := 5  // 3 content rows + 2 border rows
-	statusH := 1 // status bar
-	spacerH := 1 // blank between body and input
-	vpH := m.height - logoHeaderLines - spacerH - inputH - statusH
-	if vpH > maxViewportHeight {
-		vpH = maxViewportHeight
-	}
-	if vpH < 4 {
-		vpH = 4
-	}
-
 	m.viewport.Width = m.width
-	m.viewport.Height = vpH
 	m.textarea.SetWidth(m.width - 4)
+	m.resizeViewportToContent()
 
 	if m.renderer != nil {
 		wrapWidth := m.width - 4
@@ -372,6 +372,38 @@ func (m *Model) recalculateLayout() {
 			m.renderer = r
 		}
 	}
+}
+
+// resizeViewportToContent sets the viewport height to exactly the number of
+// content lines when they fit in the available space, so the input box appears
+// right below the content (Claude Code style). Once content fills the screen
+// the viewport caps at maxVpH and becomes scrollable.
+func (m *Model) resizeViewportToContent() {
+	if m.width == 0 || m.height == 0 {
+		return
+	}
+	inputH := 5
+	statusH := 1
+	spacerH := 1
+	maxVpH := m.height - logoHeaderLines - spacerH - inputH - statusH
+	if maxVpH < 4 {
+		maxVpH = 4
+	}
+
+	// Count rendered content lines.
+	contentLines := strings.Count(m.history.String(), "\n") + 1
+	if m.currentResponse.Len() > 0 {
+		contentLines += strings.Count(m.currentResponse.String(), "\n") + 1
+	}
+
+	vpH := contentLines
+	if vpH > maxVpH {
+		vpH = maxVpH
+	}
+	if vpH < 1 {
+		vpH = 1
+	}
+	m.viewport.Height = vpH
 }
 
 // addTurnToHistory appends a rendered turn to the viewport history buffer.
