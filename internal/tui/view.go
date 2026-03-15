@@ -9,17 +9,17 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-// gleanMark is a braille rendering of the circular Glean "g" icon,
-// generated via chafa --symbols braille --size 12x6 from the outline icon.
-const gleanMark = "⠀⠀⠀⠀⠀⠀⠀⠄⠀⠀⠀⠀\n" +
-	"⠀⠀⠀⣠⠛⠉⠋⢈⠄⠀⠀⠀\n" +
-	"⠀⠀⢰⠄⠁⠀⠘⠈⠄⠀⠀⠀\n" +
-	"⠀⠀⠈⣄⠙⠛⠁⠏⡀⠄⠀⠀\n" +
-	"⠀⠀⠀⠀⠛⠛⠋⢁⡄⢉⢉⣄\n" +
-	"⠀⠀⠀⠀⠄⠁⠁⠀⠸⠑⠐⠄"
+// gleanMark is the "glean" wordmark in braille, generated via
+// chafa --symbols braille --size 60x6 from the official logo PNG.
+const gleanMark = "       ⡇⠈\n" +
+	"  ⣀⣀⣀⠛⡄⡇⠄   ⣀⣀⡀    ⣀⣀⡀   ⢀⣀⣀⡀\n" +
+	"⠏⢀⠛⠙⣄⠄⡀⡇⠄ ⠏⢀⠛⡤⠄⠈⡀⠋⢀⠛⠙⣄⠈⡀⠋⢀⠛⠛⡀⠙\n" +
+	"⡀⠸  ⢀⠄⠇⡇⠄ ⡀⠈⣀⠛⢋⠖ ⡀⠸  ⢀⠄⡇⠄⡇  ⢸⠄\n" +
+	"⠈⠻⣀⣁⣀⠋⣠⡈⠻⣀⠈⠛⣀⣁⣀⠋ ⠈⠻⣀⣁⣀⣀⠇⣀⠇  ⠸⣀\n" +
+	"  ⠉⠉⠉⣀⠋⠁"
 
 // logoHeaderLines is the number of rows the header occupies.
-// 1 blank + 6 mark rows + 1 blank = 8
+// 1 blank + 6 wordmark rows + 1 blank = 8
 const logoHeaderLines = 8
 
 // View implements tea.Model.
@@ -91,9 +91,9 @@ func (m *Model) headerView() string {
 		email = m.identity
 	}
 
-	// Right panel — Gemini-style, rows aligned to mark content:
-	// Row 0: blank
-	// Row 1: "Glean CLI" (app name, prominent)
+	// Right panel aligned to the wordmark rows:
+	// Row 0: blank (sparse top of wordmark)
+	// Row 1: "Glean CLI"
 	// Row 2: "Logged in as <email>"
 	// Row 3: "Connected to <host>"
 	// Rows 4–5: blank
