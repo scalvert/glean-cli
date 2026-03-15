@@ -9,16 +9,18 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-// gleanMark is a compact braille rendering of the circular Glean "g" icon,
-// generated via chafa --symbols braille --size 8x4 from the square icon.
-const gleanMark = "⠁⠀⠄⠄⢀⡀⠀⠄\n" +
-	"⠀⢠⢡⠉⡄⡄⠀⠀\n" +
-	"⠀⠈⠳⠶⡡⣡⠄⠀\n" +
-	"⠄⠀⠐⠛⠋⠁⠀⠄"
+// gleanMark is a braille rendering of the circular Glean "g" icon,
+// generated via chafa --symbols braille --size 12x6 from the outline icon.
+const gleanMark = "⠀⠀⠀⠀⠀⠀⠀⠄⠀⠀⠀⠀\n" +
+	"⠀⠀⠀⣠⠛⠉⠋⢈⠄⠀⠀⠀\n" +
+	"⠀⠀⢰⠄⠁⠀⠘⠈⠄⠀⠀⠀\n" +
+	"⠀⠀⠈⣄⠙⠛⠁⠏⡀⠄⠀⠀\n" +
+	"⠀⠀⠀⠀⠛⠛⠋⢁⡄⢉⢉⣄\n" +
+	"⠀⠀⠀⠀⠄⠁⠁⠀⠸⠑⠐⠄"
 
 // logoHeaderLines is the number of rows the header occupies.
-// 1 blank + 4 mark + 1 blank = 6
-const logoHeaderLines = 6
+// 1 blank + 6 mark rows + 1 blank = 8
+const logoHeaderLines = 8
 
 // View implements tea.Model.
 func (m *Model) View() string {
@@ -89,15 +91,18 @@ func (m *Model) headerView() string {
 		email = m.identity
 	}
 
-	// Right panel — Gemini-style:
-	// Row 0: "Glean CLI" (prominent app name)
-	// Row 1: "Logged in as <email>"
-	// Row 2: "Connected to <host>"
-	// Row 3: blank
-	infoLines := [4]string{
-		styleLogo.Bold(true).Render("Glean CLI"),
+	// Right panel — Gemini-style, rows aligned to mark content:
+	// Row 0: blank
+	// Row 1: "Glean CLI" (app name, prominent)
+	// Row 2: "Logged in as <email>"
+	// Row 3: "Connected to <host>"
+	// Rows 4–5: blank
+	infoLines := [6]string{
+		"",
+		styleLogo.Render("Glean CLI"),
 		styleTagline.Render("Logged in as " + email),
 		styleTagline.Render("Connected to " + host),
+		"",
 		"",
 	}
 
@@ -106,7 +111,11 @@ func (m *Model) headerView() string {
 	var sb strings.Builder
 	sb.WriteString("\n")
 	for i, line := range markLines {
-		sb.WriteString("  " + styleLogo.Render(line) + sep + infoLines[i] + "\n")
+		row := "  " + styleLogo.Render(line)
+		if info := infoLines[i]; info != "" {
+			row += sep + info
+		}
+		sb.WriteString(row + "\n")
 	}
 	sb.WriteString("\n")
 	return sb.String()
