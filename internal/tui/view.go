@@ -9,18 +9,21 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-// gleanMark is the "glean" wordmark in braille, generated via
-// chafa --symbols braille --size 60x6 from the official logo PNG.
-const gleanMark = "       ⡇⠈\n" +
-	"  ⣀⣀⣀⠛⡄⡇⠄   ⣀⣀⡀    ⣀⣀⡀   ⢀⣀⣀⡀\n" +
-	"⠏⢀⠛⠙⣄⠄⡀⡇⠄ ⠏⢀⠛⡤⠄⠈⡀⠋⢀⠛⠙⣄⠈⡀⠋⢀⠛⠛⡀⠙\n" +
-	"⡀⠸  ⢀⠄⠇⡇⠄ ⡀⠈⣀⠛⢋⠖ ⡀⠸  ⢀⠄⡇⠄⡇  ⢸⠄\n" +
-	"⠈⠻⣀⣁⣀⠋⣠⡈⠻⣀⠈⠛⣀⣁⣀⠋ ⠈⠻⣀⣁⣀⣀⠇⣀⠇  ⠸⣀\n" +
-	"  ⠉⠉⠉⣀⠋⠁"
+// gleanMark is the circular Glean "g" icon in braille, generated via
+// chafa --symbols braille --size 20x10 from glean-black-code-square.png,
+// with sparse outer rows trimmed to the 8 content-dense rows.
+const gleanMark = "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡀⠄⠀⠀⠀⠀⠀⠀\n" +
+	"⠀⠀⠀⠀⠀⢀⣠⠋⠉⠉⠙⠁⢀⠃⠀⠀⠀⠀⠀⠀\n" +
+	"⠀⠀⠀⠀⢠⠁⢀⠋⠉⠉⠛⡀⠈⡀⠀⠀⠀⠀⠀⠀\n" +
+	"⠀⠀⠀⠀⡇⠀⡇⠀⠀⠀⠀⡇⠀⡇⠀⠀⠀⠀⠀⠀\n" +
+	"⠀⠀⠀⠀⠘⡀⠈⠛⣀⣀⠋⠁⢀⠁⠀⠀⠀⠀⠀⠀\n" +
+	"⠀⠀⠀⠀⠀⠈⠙⣀⣀⣀⣠⠋⢀⠋⠙⡀⠄⠄⠀⠀\n" +
+	"⠀⠀⠀⠀⠀⠀⠄⠋⠛⠛⠉⠁⢀⣀⠔⠁⠄⠄⠉⡄\n" +
+	"⠀⠀⠀⠀⠀⠀⠄⠉⠛⠛⠉⠉⠁⠄⠄⡁⡁⢈⠲⢈"
 
 // logoHeaderLines is the number of rows the header occupies.
-// 1 blank + 6 wordmark rows + 1 blank = 8
-const logoHeaderLines = 8
+// 1 blank + 8 mark rows + 1 blank = 10
+const logoHeaderLines = 10
 
 // View implements tea.Model.
 func (m *Model) View() string {
@@ -45,44 +48,51 @@ func (m *Model) View() string {
 		bottom = styleExitHint.Render("  Press ctrl+c again to exit  ·  esc to cancel")
 	}
 
-	// Picker and chip are shown in both welcome and active states — the user
-	// can type @ before sending their first message.
-	picker := m.filePickerView()
+	// Chip shows attached files above the input box (always).
 	chip := m.attachedFilesView()
+
+	// Overlays appear BELOW the input box, above the status bar — like Claude Code.
+	// Only one overlay shows at a time: slash picker takes priority over file picker.
+	overlay := m.slashPickerView()
+	if overlay == "" {
+		overlay = m.filePickerView()
+	}
 
 	// Welcome state (no conversation yet): no viewport or delimiter rules.
 	if !m.conversationActive {
 		parts := []string{header, m.welcomeBody(), ""}
-		if picker != "" {
-			parts = append(parts, picker)
-		}
 		if chip != "" {
 			parts = append(parts, chip)
 		}
-		parts = append(parts, inputBox, bottom)
+		parts = append(parts, inputBox)
+		if overlay != "" {
+			parts = append(parts, overlay)
+		}
+		parts = append(parts, bottom)
 		return lipgloss.JoinVertical(lipgloss.Left, parts...)
 	}
 
 	// Active state: conversation viewport bounded by delimiter rules.
 	rule := styleDelimiter.Render(strings.Repeat("─", m.width))
 	parts := []string{header, rule, m.viewport.View(), rule}
-	if picker != "" {
-		parts = append(parts, picker)
-	}
 	if chip != "" {
 		parts = append(parts, chip)
 	}
-	parts = append(parts, inputBox, bottom)
+	parts = append(parts, inputBox)
+	if overlay != "" {
+		parts = append(parts, overlay)
+	}
+	parts = append(parts, bottom)
 	return lipgloss.JoinVertical(lipgloss.Left, parts...)
 }
 
-// headerView renders a compact two-panel header modelled on Gemini CLI:
-// Left:  Glean circular "g" mark in brand blue (4 rows)
-// Right: app name, login info — left-aligned beside the mark
+// headerView renders a two-panel header:
+// Left:  circular Glean "g" mark in brand blue (8 rows)
+// Right: "Glean CLI", email, host — left-aligned beside the mark
+// styleStatusAccent is used for the mark (guaranteed brand blue rendering).
 func (m *Model) headerView() string {
-	markLines := strings.Split(gleanMark, "\n") // 4 lines
+	markLines := strings.Split(gleanMark, "\n") // 8 lines
 
-	// Parse identity into email and host.
 	var email, host string
 	if parts := strings.SplitN(m.identity, "  ·  ", 2); len(parts) == 2 {
 		email = parts[0]
@@ -91,17 +101,15 @@ func (m *Model) headerView() string {
 		email = m.identity
 	}
 
-	// Right panel aligned to the wordmark rows:
-	// Row 0: blank (sparse top of wordmark)
-	// Row 1: "Glean CLI"
-	// Row 2: "Logged in as <email>"
-	// Row 3: "Connected to <host>"
-	// Rows 4–5: blank
-	infoLines := [6]string{
+	// Right panel: vertically centered on the 8-row mark.
+	// Rows 0–1: blank, Row 2: app name, Row 3: email, Row 4: host, Rows 5–7: blank.
+	infoLines := [8]string{
 		"",
-		styleLogo.Render("Glean CLI"),
+		"",
+		styleStatusAccent.Render("Glean CLI"),
 		styleTagline.Render("Logged in as " + email),
 		styleTagline.Render("Connected to " + host),
+		"",
 		"",
 		"",
 	}
@@ -111,7 +119,8 @@ func (m *Model) headerView() string {
 	var sb strings.Builder
 	sb.WriteString("\n")
 	for i, line := range markLines {
-		row := "  " + styleLogo.Render(line)
+		// Use styleStatusAccent — proven to render in Glean brand blue.
+		row := "  " + styleStatusAccent.Render(line)
 		if info := infoLines[i]; info != "" {
 			row += sep + info
 		}
@@ -121,25 +130,15 @@ func (m *Model) headerView() string {
 	return sb.String()
 }
 
-// welcomeBody renders left-aligned feature hints when no conversation exists.
+// welcomeBody renders general capability hints when no conversation exists.
 func (m *Model) welcomeBody() string {
 	var sb strings.Builder
 	sb.WriteString("\n")
 
 	if preview := m.sessionPreview(); preview != "" {
-		sb.WriteString("  " + styleSourceHeader.Render("Last session: "+preview))
-		sb.WriteString("\n\n")
+		sb.WriteString("  " + styleSourceHeader.Render("Last session: "+preview) + "\n\n")
 	} else {
-		hints := []struct{ cmd, desc string }{
-			{"/mode fast|advanced|auto", "switch agent reasoning depth"},
-			{"/clear", "start a new session"},
-			{"@filename", "attach a file to your message"},
-		}
-		for _, h := range hints {
-			sb.WriteString("  " + styleStatusAccent.Render(fmt.Sprintf("%-28s", h.cmd)) +
-				styleSourceHeader.Render(h.desc) + "\n")
-		}
-		sb.WriteString("\n")
+		sb.WriteString("  " + styleSourceHeader.Render("Type / for commands  ·  Type @ to attach files") + "\n\n")
 	}
 
 	sb.WriteString("  " + styleSourceHeader.Render("Start typing to ask Glean anything") + "\n")
@@ -222,6 +221,23 @@ func (m *Model) helpView() string {
 	sb.WriteString("\n")
 	sb.WriteString(center(styleStatusBar.Render("press ctrl+h to close"), m.width))
 	sb.WriteString("\n")
+	return sb.String()
+}
+
+// slashPickerView renders the slash command autocomplete shown when the user types /.
+func (m *Model) slashPickerView() string {
+	if !m.showSlashPicker || len(m.slashCandidates) == 0 {
+		return ""
+	}
+	var sb strings.Builder
+	for i, cmd := range m.slashCandidates {
+		name := styleStatusAccent.Render(fmt.Sprintf("  %-24s", cmd.name))
+		desc := styleSourceHeader.Render(cmd.desc)
+		if i == m.slashPickerIdx {
+			name = stylePickerSelected.Render(fmt.Sprintf("▸ %-24s", cmd.name))
+		}
+		sb.WriteString(name + "  " + desc + "\n")
+	}
 	return sb.String()
 }
 

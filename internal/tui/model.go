@@ -81,6 +81,11 @@ type Model struct {
 	filePickerIdx   int
 	attachedFiles   []attachedFile // files queued for next message
 
+	// Slash command picker — active when user types / in the input.
+	showSlashPicker bool
+	slashPickerIdx  int
+	slashCandidates []slashCmd
+
 	agentMode          components.AgentEnum // agent used for API calls; changed by /mode command
 	currentStage       string               // Glean thinking stage shown while streaming: "Searching", "Reading", etc.
 	currentDetail      string        // optional detail for the current stage
@@ -165,6 +170,30 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.recalculateLayout()
 
 	case tea.KeyMsg:
+		// Route navigation keys to the slash picker when it is open.
+		if m.showSlashPicker {
+			switch msg.String() {
+			case "up", "ctrl+p":
+				if m.slashPickerIdx > 0 {
+					m.slashPickerIdx--
+				}
+				return m, nil
+			case "down", "ctrl+n":
+				if m.slashPickerIdx < len(m.slashCandidates)-1 {
+					m.slashPickerIdx++
+				}
+				return m, nil
+			case "enter", "tab":
+				return m.selectSlashItem()
+			case "esc":
+				m.showSlashPicker = false
+				m.slashCandidates = nil
+				m.slashPickerIdx = 0
+				m.textarea.Reset()
+				return m, nil
+			}
+		}
+
 		// Route navigation keys to the file picker when it is open.
 		if m.showFilePicker {
 			switch msg.String() {
@@ -228,6 +257,9 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.filePickerItems = nil
 			m.filePickerIdx = 0
 			m.attachedFiles = nil
+			m.showSlashPicker = false
+			m.slashCandidates = nil
+			m.slashPickerIdx = 0
 			m.viewport.Height = 1 // will be resized by resizeViewportToContent on next render
 			m.viewport.SetContent(m.renderConversation())
 			m.resizeViewportToContent()
@@ -413,9 +445,12 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if _, isKey := msg.(tea.KeyMsg); !isKey {
 		m.viewport, vpCmd = m.viewport.Update(msg)
 	}
-	// Update file picker based on current textarea value after each keystroke.
+	// Update pickers based on current textarea value after each keystroke.
 	if _, isKey := msg.(tea.KeyMsg); isKey {
-		m.updateFilePicker()
+		m.updateSlashPicker()
+		if !m.showSlashPicker {
+			m.updateFilePicker()
+		}
 	}
 
 	return m, tea.Batch(taCmd, vpCmd)
@@ -624,6 +659,8 @@ func (m *Model) resizeViewportToContent() {
 			n = 5
 		}
 		pickerH = n + 1
+	} else if m.showSlashPicker {
+		pickerH = len(m.slashCandidates)
 	}
 	chipH := 0
 	if len(m.attachedFiles) > 0 {
