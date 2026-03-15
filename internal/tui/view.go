@@ -9,18 +9,16 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-// gleanLogo is a braille Unicode rendering of the Glean wordmark, generated
-// from the official logo image via chafa (--symbols braille --size 60x6).
-const gleanLogo = "⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-	"⠀⢀⣀⣀⣀⣴⡄⢸⣿⠀⠀⠀⣀⣀⣀⠀⠀⠀⢀⣀⣀⡀⠀⠀⠀⢀⣀⣀⡀⠀\n" +
-	"⣰⡿⠛⠛⠻⣿⡀⢸⣿⠀⣰⡿⠛⢛⣻⣷⡀⣰⡿⠛⠛⠻⣷⡀⣴⡿⠛⠛⢿⣦\n" +
-	"⢿⣇⠀⠀⢀⣿⠇⢸⣿⠀⢿⣷⠿⠟⢋⣭⠄⣿⣇⠀⠀⢀⣿⡇⣿⡇⠀⠀⢸⣿\n" +
-	"⠈⠻⠿⠾⠿⠋⣠⡈⠻⠿⠈⠻⠿⠾⠿⠋⠀⠈⠻⠿⠾⠿⠿⠇⠿⠇⠀⠀⠸⠿\n" +
-	"⠀⠀⣶⣶⣶⠿⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"
+// gleanMark is a compact braille rendering of the circular Glean "g" icon,
+// generated via chafa --symbols braille --size 8x4 from the square icon.
+const gleanMark = "⠁⠀⠄⠄⢀⡀⠀⠄\n" +
+	"⠀⢠⢡⠉⡄⡄⠀⠀\n" +
+	"⠀⠈⠳⠶⡡⣡⠄⠀\n" +
+	"⠄⠀⠐⠛⠋⠁⠀⠄"
 
 // logoHeaderLines is the number of rows the header occupies.
-// 1 blank + 6 braille + 1 blank = 8
-const logoHeaderLines = 8
+// 1 blank + 4 mark + 1 blank = 6
+const logoHeaderLines = 6
 
 // View implements tea.Model.
 func (m *Model) View() string {
@@ -76,12 +74,11 @@ func (m *Model) View() string {
 	return lipgloss.JoinVertical(lipgloss.Left, parts...)
 }
 
-// headerView renders a two-panel header:
-// Left:  compact 4-line Glean braille logo in brand blue
-// Right: email and host stacked vertically
-// A │ border stretches the full height of the logo.
+// headerView renders a compact two-panel header modelled on Gemini CLI:
+// Left:  Glean circular "g" mark in brand blue (4 rows)
+// Right: app name, login info — left-aligned beside the mark
 func (m *Model) headerView() string {
-	logoLines := strings.Split(gleanLogo, "\n") // 4 lines
+	markLines := strings.Split(gleanMark, "\n") // 4 lines
 
 	// Parse identity into email and host.
 	var email, host string
@@ -92,56 +89,51 @@ func (m *Model) headerView() string {
 		email = m.identity
 	}
 
-	// Right-panel: email on row 2, host on row 3. All other rows blank.
-	// The │ separator renders on every row so it spans the full logo height.
-	infoLines := [6]string{"", "", email, host, "", ""}
+	// Right panel — Gemini-style:
+	// Row 0: "Glean CLI" (prominent app name)
+	// Row 1: "Logged in as <email>"
+	// Row 2: "Connected to <host>"
+	// Row 3: blank
+	infoLines := [4]string{
+		styleLogo.Bold(true).Render("Glean CLI"),
+		styleTagline.Render("Logged in as " + email),
+		styleTagline.Render("Connected to " + host),
+		"",
+	}
 
-	sep := styleStatusBar.Render("  │  ")
+	sep := styleStatusBar.Render("   ")
 
 	var sb strings.Builder
 	sb.WriteString("\n")
-	for i, logoLine := range logoLines {
-		sb.WriteString(styleLogo.Render(logoLine))
-		sb.WriteString(sep) // always — gives separator full height
-		if info := infoLines[i]; info != "" {
-			if i == 2 {
-				sb.WriteString(styleStatusAccent.Render(info))
-			} else {
-				sb.WriteString(styleTagline.Render(info))
-			}
-		}
-		sb.WriteString("\n")
+	for i, line := range markLines {
+		sb.WriteString("  " + styleLogo.Render(line) + sep + infoLines[i] + "\n")
 	}
 	sb.WriteString("\n")
 	return sb.String()
 }
 
-// welcomeBody renders feature hints when no conversation exists.
+// welcomeBody renders left-aligned feature hints when no conversation exists.
 func (m *Model) welcomeBody() string {
 	var sb strings.Builder
 	sb.WriteString("\n")
 
 	if preview := m.sessionPreview(); preview != "" {
-		sb.WriteString(center(styleSourceHeader.Render("Last session: "+preview), m.width))
+		sb.WriteString("  " + styleSourceHeader.Render("Last session: "+preview))
 		sb.WriteString("\n\n")
 	} else {
-		// Feature hints — more useful than a generic tagline.
 		hints := []struct{ cmd, desc string }{
 			{"/mode fast|advanced|auto", "switch agent reasoning depth"},
 			{"/clear", "start a new session"},
 			{"@filename", "attach a file to your message"},
 		}
 		for _, h := range hints {
-			line := "  " + styleStatusAccent.Render(fmt.Sprintf("%-28s", h.cmd)) +
-				styleSourceHeader.Render(h.desc)
-			sb.WriteString(center(line, m.width))
-			sb.WriteString("\n")
+			sb.WriteString("  " + styleStatusAccent.Render(fmt.Sprintf("%-28s", h.cmd)) +
+				styleSourceHeader.Render(h.desc) + "\n")
 		}
 		sb.WriteString("\n")
 	}
 
-	sb.WriteString(center(styleSourceHeader.Render("Start typing to ask Glean anything"), m.width))
-	sb.WriteString("\n")
+	sb.WriteString("  " + styleSourceHeader.Render("Start typing to ask Glean anything") + "\n")
 	return sb.String()
 }
 
