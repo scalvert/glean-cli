@@ -9,19 +9,16 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-// gleanLogo is a braille Unicode rendering of the Glean wordmark.
-const gleanLogo = "⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-	"⠀⢀⣀⣀⣀⣴⡄⢸⣿⠀⠀⠀⣀⣀⣀⠀⠀⠀⢀⣀⣀⡀⠀⠀⠀⢀⣀⣀⡀⠀\n" +
-	"⣰⡿⠛⠛⠻⣿⡀⢸⣿⠀⣰⡿⠛⢛⣻⣷⡀⣰⡿⠛⠛⠻⣷⡀⣴⡿⠛⠛⢿⣦\n" +
-	"⢿⣇⠀⠀⢀⣿⠇⢸⣿⠀⢿⣷⠿⠟⢋⣭⠄⣿⣇⠀⠀⢀⣿⡇⣿⡇⠀⠀⢸⣿\n" +
-	"⠈⠻⠿⠾⠿⠋⣠⡈⠻⠿⠈⠻⠿⠾⠿⠋⠀⠈⠻⠿⠾⠿⠿⠇⠿⠇⠀⠀⠸⠿\n" +
-	"⠀⠀⣶⣶⣶⠿⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"
-
-const gleanTagline = "AI-powered search for your company's knowledge"
+// gleanLogo is a compact 4-line braille rendering of the Glean wordmark
+// generated via chafa --symbols braille --size 30x4.
+const gleanLogo = "     ⠄\n" +
+	"⣠⣉⠲⠁⠁⠄ ⠋⣉⡉⣄⢠⢉⠒⡉⡀⠏⣉⣉⠹\n" +
+	"⡀⣄⣀⢃ ⡀⡀⡈⠤⠔⡅⠸⠸⣀⠇⢸⠄  ⠄\n" +
+	" ⢩⠒⡴⠖ ⠁ ⠉⠉  ⠈⠉⠉⠁⠉  ⠉"
 
 // logoHeaderLines is the number of rows the header occupies.
-// 1 blank + 6 braille + 1 blank = 8
-const logoHeaderLines = 8
+// 1 blank + 4 braille + 1 blank = 6
+const logoHeaderLines = 6
 
 // View implements tea.Model.
 func (m *Model) View() string {
@@ -78,11 +75,11 @@ func (m *Model) View() string {
 }
 
 // headerView renders a two-panel header:
-// Left:  Glean braille logo in brand blue
-// Right: email, host, and tagline stacked vertically beside the logo
-// A vertical border separates the two panels.
+// Left:  compact 4-line Glean braille logo in brand blue
+// Right: email and host stacked vertically
+// A │ border stretches the full height of the logo.
 func (m *Model) headerView() string {
-	logoLines := strings.Split(gleanLogo, "\n") // always 6 lines
+	logoLines := strings.Split(gleanLogo, "\n") // 4 lines
 
 	// Parse identity into email and host.
 	var email, host string
@@ -93,20 +90,9 @@ func (m *Model) headerView() string {
 		email = m.identity
 	}
 
-	// Right-panel lines, starting on row 1 to sit flush with the logo content.
-	// Row 0: blank (aligns with sparse top of logo)
-	// Row 1: email
-	// Row 2: host
-	// Row 3: tagline
-	// Rows 4–5: blank
-	infoLines := [6]string{
-		"",
-		styleStatusAccent.Render(email),
-		styleTagline.Render(host),
-		styleSourceHeader.Render(gleanTagline),
-		"",
-		"",
-	}
+	// Right-panel content — email on row 1, host on row 2, rows 0 and 3 blank.
+	// The │ separator always renders so it spans the full logo height.
+	infoLines := [4]string{"", email, host, ""}
 
 	sep := styleStatusBar.Render("  │  ")
 
@@ -114,8 +100,13 @@ func (m *Model) headerView() string {
 	sb.WriteString("\n")
 	for i, logoLine := range logoLines {
 		sb.WriteString(styleLogo.Render(logoLine))
+		sb.WriteString(sep) // separator on every row
 		if info := infoLines[i]; info != "" {
-			sb.WriteString(sep + info)
+			if i == 1 {
+				sb.WriteString(styleStatusAccent.Render(info))
+			} else {
+				sb.WriteString(styleTagline.Render(info))
+			}
 		}
 		sb.WriteString("\n")
 	}
@@ -123,7 +114,7 @@ func (m *Model) headerView() string {
 	return sb.String()
 }
 
-// welcomeBody renders the hints shown below the logo when no conversation exists.
+// welcomeBody renders feature hints when no conversation exists.
 func (m *Model) welcomeBody() string {
 	var sb strings.Builder
 	sb.WriteString("\n")
@@ -132,8 +123,19 @@ func (m *Model) welcomeBody() string {
 		sb.WriteString(center(styleSourceHeader.Render("Last session: "+preview), m.width))
 		sb.WriteString("\n\n")
 	} else {
-		sb.WriteString(center(styleTagline.Render(gleanTagline), m.width))
-		sb.WriteString("\n\n")
+		// Feature hints — more useful than a generic tagline.
+		hints := []struct{ cmd, desc string }{
+			{"/mode fast|advanced|auto", "switch agent reasoning depth"},
+			{"/clear", "start a new session"},
+			{"@filename", "attach a file to your message"},
+		}
+		for _, h := range hints {
+			line := "  " + styleStatusAccent.Render(fmt.Sprintf("%-28s", h.cmd)) +
+				styleSourceHeader.Render(h.desc)
+			sb.WriteString(center(line, m.width))
+			sb.WriteString("\n")
+		}
+		sb.WriteString("\n")
 	}
 
 	sb.WriteString(center(styleSourceHeader.Render("Start typing to ask Glean anything"), m.width))
