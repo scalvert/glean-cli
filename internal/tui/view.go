@@ -9,16 +9,18 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-// gleanLogo is a compact 4-line braille rendering of the Glean wordmark
-// generated via chafa --symbols braille --size 30x4.
-const gleanLogo = "     ⠄\n" +
-	"⣠⣉⠲⠁⠁⠄ ⠋⣉⡉⣄⢠⢉⠒⡉⡀⠏⣉⣉⠹\n" +
-	"⡀⣄⣀⢃ ⡀⡀⡈⠤⠔⡅⠸⠸⣀⠇⢸⠄  ⠄\n" +
-	" ⢩⠒⡴⠖ ⠁ ⠉⠉  ⠈⠉⠉⠁⠉  ⠉"
+// gleanLogo is a braille Unicode rendering of the Glean wordmark, generated
+// from the official logo image via chafa (--symbols braille --size 60x6).
+const gleanLogo = "⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+	"⠀⢀⣀⣀⣀⣴⡄⢸⣿⠀⠀⠀⣀⣀⣀⠀⠀⠀⢀⣀⣀⡀⠀⠀⠀⢀⣀⣀⡀⠀\n" +
+	"⣰⡿⠛⠛⠻⣿⡀⢸⣿⠀⣰⡿⠛⢛⣻⣷⡀⣰⡿⠛⠛⠻⣷⡀⣴⡿⠛⠛⢿⣦\n" +
+	"⢿⣇⠀⠀⢀⣿⠇⢸⣿⠀⢿⣷⠿⠟⢋⣭⠄⣿⣇⠀⠀⢀⣿⡇⣿⡇⠀⠀⢸⣿\n" +
+	"⠈⠻⠿⠾⠿⠋⣠⡈⠻⠿⠈⠻⠿⠾⠿⠋⠀⠈⠻⠿⠾⠿⠿⠇⠿⠇⠀⠀⠸⠿\n" +
+	"⠀⠀⣶⣶⣶⠿⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"
 
 // logoHeaderLines is the number of rows the header occupies.
-// 1 blank + 4 braille + 1 blank = 6
-const logoHeaderLines = 6
+// 1 blank + 6 braille + 1 blank = 8
+const logoHeaderLines = 8
 
 // View implements tea.Model.
 func (m *Model) View() string {
@@ -90,9 +92,9 @@ func (m *Model) headerView() string {
 		email = m.identity
 	}
 
-	// Right-panel content — email on row 1, host on row 2, rows 0 and 3 blank.
-	// The │ separator always renders so it spans the full logo height.
-	infoLines := [4]string{"", email, host, ""}
+	// Right-panel: email on row 2, host on row 3. All other rows blank.
+	// The │ separator renders on every row so it spans the full logo height.
+	infoLines := [6]string{"", "", email, host, "", ""}
 
 	sep := styleStatusBar.Render("  │  ")
 
@@ -100,9 +102,9 @@ func (m *Model) headerView() string {
 	sb.WriteString("\n")
 	for i, logoLine := range logoLines {
 		sb.WriteString(styleLogo.Render(logoLine))
-		sb.WriteString(sep) // separator on every row
+		sb.WriteString(sep) // always — gives separator full height
 		if info := infoLines[i]; info != "" {
-			if i == 1 {
+			if i == 2 {
 				sb.WriteString(styleStatusAccent.Render(info))
 			} else {
 				sb.WriteString(styleTagline.Render(info))
