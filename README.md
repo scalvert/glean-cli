@@ -66,12 +66,11 @@ glean schema | jq '.commands'
 # Preview a request before sending
 glean search --dry-run --datasource confluence "Q1 planning"
 
-# Parse results with jq
-glean search "onboarding" --fields "results.document.title,results.document.url" \
-  | jq '.results[].document'
+# Parse results with jq — each result has .title and nested .document fields
+glean search "onboarding" | jq '.results[].title'
 
-# Stream results as NDJSON — one result object per line
-glean search "engineering docs" --output ndjson | jq .document.title
+# Stream results as NDJSON — one SearchResult object per line
+glean search "engineering docs" --output ndjson | jq .title
 ```
 
 ## Authentication
@@ -168,7 +167,7 @@ Use ↑/↓ to navigate matches, Enter to attach, Esc to dismiss.
 glean search "vacation policy"
 glean search "Q1 planning" --datasource confluence --page-size 5
 glean search "docs" --fields "results.document.title,results.document.url"
-glean search "docs" --output ndjson | jq .document.title
+glean search "docs" --output ndjson | jq .title
 glean search --json '{"query":"onboarding","pageSize":3}'
 glean search --dry-run "test"
 ```
@@ -250,10 +249,10 @@ glean shortcuts create --json '{"data":{"inputAlias":"jira","urlTemplate":"https
 glean pins create --json '{"queries":["onboarding"],"documentId":"https://..."}'
 
 # List available AI agents
-glean agents list | jq '.SearchAgentsResponse.agents[] | {id: .agent_id, name: .displayName}'
+glean agents list | jq '.SearchAgentsResponse.agents[] | {id: .agent_id, name: .name}'
 
 # Run an agent
-glean agents run --json '{"agentId":"<id>","query":"summarize Q1 planning docs"}'
+glean agents run --json '{"agent_id":"<id>"}'
 ```
 
 ## Agent Workflow
@@ -264,22 +263,19 @@ The CLI is designed as a first-class tool for AI coding agents. Every command re
 # 1. Discover all available commands
 glean schema | jq '.commands'
 
-# 2. Understand a command's exact request shape
-glean schema search | jq '.flags[] | {name, type, default}'
-glean schema shortcuts | jq '.flags'
+# 2. Understand a command's flags
+glean schema search | jq '.flags | keys'
+glean schema search | jq '.flags["--output"]'
 
 # 3. Preview the exact request before sending
 glean shortcuts create --dry-run \
   --json '{"data":{"inputAlias":"test","destinationUrl":"https://example.com"}}'
 
 # 4. Execute and parse results
-glean search "engineering values" \
-  --fields "results.document.title,results.document.url" \
-  | jq '.results[].document'
+glean search "engineering values" | jq '.results[].title'
 
-# 5. Stream NDJSON for large result sets
-glean search "all docs" --output ndjson --page-size 50 \
-  | while IFS= read -r line; do echo "$line" | jq .document.title; done
+# 5. Stream NDJSON for large result sets — one SearchResult object per line
+glean search "all docs" --output ndjson --page-size 50 | jq .title
 ```
 
 ### MCP Server
