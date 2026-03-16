@@ -9,20 +9,9 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-// gleanMark is a hand-crafted block-character "g" in the style of the Glean
-// circular icon — clean, predictable, renders correctly in any terminal.
-// Each row is 7 terminal columns wide, 5 rows tall.
-const gleanMark = " ████ \n" +
-	"█    █\n" +
-	"█  ███\n" +
-	"█    █\n" +
-	" ████ \n" +
-	"     █\n" +
-	" ████ "
-
 // logoHeaderLines is the number of rows the header occupies.
-// 1 blank + 7 mark rows + 1 blank = 9
-const logoHeaderLines = 9
+// 1 blank + 1 "Glean CLI" + 1 email + 1 host + 1 blank = 5
+const logoHeaderLines = 5
 
 // View implements tea.Model.
 func (m *Model) View() string {
@@ -85,13 +74,9 @@ func (m *Model) View() string {
 	return lipgloss.JoinVertical(lipgloss.Left, parts...)
 }
 
-// headerView renders a two-panel header:
-// Left:  circular Glean "g" mark in brand blue (8 rows)
-// Right: "Glean CLI", email, host — left-aligned beside the mark
-// styleStatusAccent is used for the mark (guaranteed brand blue rendering).
+// headerView renders a clean text header — no icon, just the essentials.
+// "Glean CLI" in brand blue bold, identity below in muted italic.
 func (m *Model) headerView() string {
-	markLines := strings.Split(gleanMark, "\n") // 7 lines
-
 	var email, host string
 	if parts := strings.SplitN(m.identity, "  ·  ", 2); len(parts) == 2 {
 		email = parts[0]
@@ -100,29 +85,14 @@ func (m *Model) headerView() string {
 		email = m.identity
 	}
 
-	// Right panel: vertically centered on the 7-row mark.
-	// Row 0: blank, Row 1: blank, Row 2: app name, Row 3: email, Row 4: host, Rows 5–6: blank.
-	infoLines := [7]string{
-		"",
-		"",
-		styleStatusAccent.Render("Glean CLI"),
-		styleTagline.Render("Logged in as " + email),
-		styleTagline.Render("Connected to " + host),
-		"",
-		"",
-	}
-
-	sep := styleStatusBar.Render("   ")
-
 	var sb strings.Builder
 	sb.WriteString("\n")
-	for i, line := range markLines {
-		// Use styleStatusAccent — proven to render in Glean brand blue.
-		row := "  " + styleStatusAccent.Render(line)
-		if info := infoLines[i]; info != "" {
-			row += sep + info
-		}
-		sb.WriteString(row + "\n")
+	sb.WriteString("  " + styleStatusAccent.Render("Glean CLI") + "\n")
+	if email != "" {
+		sb.WriteString("  " + styleTagline.Render("Logged in as "+email) + "\n")
+	}
+	if host != "" {
+		sb.WriteString("  " + styleTagline.Render("Connected to "+host) + "\n")
 	}
 	sb.WriteString("\n")
 	return sb.String()
