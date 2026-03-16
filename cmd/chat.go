@@ -175,4 +175,3 @@ func executeChat(cmd *cobra.Command, chatReq components.ChatRequest, showSpinner
 	fmt.Fprintln(cmd.OutOrStdout(), strings.TrimSpace(text))
 	return nil
 }
-

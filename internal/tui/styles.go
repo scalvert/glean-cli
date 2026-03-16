@@ -48,8 +48,8 @@ var (
 
 	// System messages — command feedback, mode changes.
 	styleSystem = lipgloss.NewStyle().
-		Foreground(lipgloss.Color(colorBrand)).
-		Italic(true)
+			Foreground(lipgloss.Color(colorBrand)).
+			Italic(true)
 
 	// Error text.
 	styleError = lipgloss.NewStyle().

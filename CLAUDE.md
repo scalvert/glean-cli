@@ -18,10 +18,23 @@ For TUI features specifically:
 
 Unit tests pass ≠ feature works. The TUI has UI state that tests cannot cover.
 
+## Mandatory Pre-Push Requirement
+
+**Before any `git push`, run tests and linters locally. They MUST pass.**
+
+```bash
+go test ./...           # all tests must pass
+golangci-lint run       # linter must be clean
+```
+
+Equivalently: `mise run test:all` (runs lint + test + build).
+
+Pushing code that breaks CI is unacceptable. No exceptions.
+
 ## Project
 
-- **Repo**: `github.com/scalvert/glean-cli` — personal, pre-1.0, breaking changes OK
-- **Module**: `github.com/scalvert/glean-cli`
+- **Repo**: `github.com/gleanwork/glean-cli` — pre-1.0, breaking changes OK
+- **Module**: `github.com/gleanwork/glean-cli`
 - **Task runner**: `mise` (not go-task)
 - **Go version**: 1.24
 

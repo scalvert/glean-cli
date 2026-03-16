@@ -28,6 +28,14 @@ const (
 	roleAssistant     = "assistant"
 	roleSystem        = "system"
 	defaultDatasource = "glean"
+
+	keyUp      = "ctrl+p"
+	keyDown    = "ctrl+n"
+	keyTab     = "tab"
+	keyEsc     = "esc"
+	keyNavUp   = "up"
+	keyNavDown = "down"
+	keyEnter   = "enter"
 )
 
 // streamStageMsg is sent from the API goroutine each time Glean signals a new
@@ -86,10 +94,10 @@ type Model struct {
 	slashPickerIdx  int
 	slashCandidates []slashCmd
 
-	agentMode          components.AgentEnum // agent used for API calls; changed by /mode command
-	currentStage       string               // Glean thinking stage shown while streaming: "Searching", "Reading", etc.
-	currentDetail      string        // optional detail for the current stage
-	streamCh           chan tea.Msg  // channel from the API goroutine; nil when not streaming
+	agentMode     components.AgentEnum // agent used for API calls; changed by /mode command
+	currentStage  string               // Glean thinking stage shown while streaming: "Searching", "Reading", etc.
+	currentDetail string               // optional detail for the current stage
+	streamCh      chan tea.Msg         // channel from the API goroutine; nil when not streaming
 }
 
 // New creates a fully-initialized TUI model.
@@ -173,19 +181,19 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// Route navigation keys to the slash picker when it is open.
 		if m.showSlashPicker {
 			switch msg.String() {
-			case "up", "ctrl+p":
+			case keyNavUp, keyUp:
 				if m.slashPickerIdx > 0 {
 					m.slashPickerIdx--
 				}
 				return m, nil
-			case "down", "ctrl+n":
+			case keyNavDown, keyDown:
 				if m.slashPickerIdx < len(m.slashCandidates)-1 {
 					m.slashPickerIdx++
 				}
 				return m, nil
-			case "enter", "tab":
+			case keyEnter, keyTab:
 				return m.selectSlashItem()
-			case "esc":
+			case keyEsc:
 				m.showSlashPicker = false
 				m.slashCandidates = nil
 				m.slashPickerIdx = 0
@@ -197,27 +205,27 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// Route navigation keys to the file picker when it is open.
 		if m.showFilePicker {
 			switch msg.String() {
-			case "up", "ctrl+p":
+			case keyNavUp, keyUp:
 				if m.filePickerIdx > 0 {
 					m.filePickerIdx--
 				}
 				return m, nil
-			case "down", "ctrl+n":
+			case keyNavDown, keyDown:
 				if m.filePickerIdx < len(m.filePickerItems)-1 {
 					m.filePickerIdx++
 				}
 				return m, nil
-			case "enter", "tab":
+			case keyEnter, keyTab:
 				m.selectPickerItem()
 				return m, nil
-			case "esc":
+			case keyEsc:
 				m.closePicker()
 				return m, nil
 			}
 		}
 
 		switch msg.String() {
-		case "esc":
+		case keyEsc:
 			if m.showExitHint {
 				// Cancel the pending exit.
 				m.showExitHint = false
@@ -843,7 +851,7 @@ func friendlyError(err error) string {
 	case strings.Contains(msg, "context deadline exceeded") || strings.Contains(msg, "Client.Timeout"):
 		return "Request timed out — Glean is still thinking. Try /mode fast for quicker responses, or ask again."
 	case strings.Contains(msg, "context canceled"):
-		return "Request cancelled."
+		return "Request canceled."
 	case strings.Contains(msg, "connection refused") || strings.Contains(msg, "no such host"):
 		return "Could not reach Glean — check your network connection."
 	case strings.Contains(msg, "HTTP 401") || strings.Contains(msg, "HTTP 403"):

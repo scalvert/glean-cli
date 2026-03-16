@@ -109,7 +109,6 @@ func NewCmdRoot() *cobra.Command {
 		NewCmdAPI(),
 		NewCmdSchema(),
 		NewCmdVersion(),
-		NewCmdGenerate(),
 	} {
 		sub.GroupID = "core"
 		cmd.AddCommand(sub)

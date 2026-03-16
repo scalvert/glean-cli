@@ -27,8 +27,6 @@ func newTestModel(t *testing.T) *Model {
 	return m
 }
 
-func ptr(s string) *string { return &s }
-
 // TestCtrlRResetsAllState verifies CHK-032: ctrl+r clears chatID, conversationMsgs,
 // conversationActive, session, and historyIdx so the new session is completely fresh.
 func TestCtrlRResetsAllState(t *testing.T) {

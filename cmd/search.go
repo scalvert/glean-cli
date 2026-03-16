@@ -11,7 +11,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-
 // NewCmdSearch creates and returns the search command.
 func NewCmdSearch() *cobra.Command {
 	opts := &search.Options{

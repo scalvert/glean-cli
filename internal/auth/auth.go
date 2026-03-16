@@ -15,9 +15,9 @@ import (
 	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
+	"github.com/gleanwork/glean-cli/internal/config"
 	"github.com/int128/oauth2cli"
 	"github.com/pkg/browser"
-	"github.com/gleanwork/glean-cli/internal/config"
 	"golang.org/x/oauth2"
 )
 
@@ -372,7 +372,8 @@ func dcrOrStaticClient(ctx context.Context, host, registrationEndpoint, redirect
 // resolveScopes returns the appropriate OAuth scopes for the given provider.
 // For Glean native OAuth, we request all scopes supported by the CLI commands.
 // The full list of supported scopes is available at:
-//   GET <host>/.well-known/oauth-authorization-server/oauth → scopes_supported
+//
+//	GET <host>/.well-known/oauth-authorization-server/oauth → scopes_supported
 func resolveScopes(provider *oidc.Provider) []string {
 	if provider != nil {
 		// Full OIDC: standard scopes for ID token + email

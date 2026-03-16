@@ -151,4 +151,3 @@ func TestChatCommand(t *testing.T) {
 		assert.Contains(t, b.String(), "Not saved")
 	})
 }
-

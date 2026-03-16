@@ -246,17 +246,6 @@ func (m *Model) attachedFilesView() string {
 	return "  " + strings.Join(parts, "   ")
 }
 
-// centerBlock renders each line of a multi-line string with the given style
-// and centers each line independently.
-func centerBlock(s string, style lipgloss.Style, termWidth int) string {
-	lines := strings.Split(s, "\n")
-	result := make([]string, len(lines))
-	for i, line := range lines {
-		result[i] = center(style.Render(line), termWidth)
-	}
-	return strings.Join(result, "\n")
-}
-
 // center horizontally centers a styled single-line string within termWidth columns.
 func center(s string, termWidth int) string {
 	visible := lipgloss.Width(s)
