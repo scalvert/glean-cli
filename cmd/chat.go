@@ -73,6 +73,8 @@ Example:
 				if dryRun {
 					return output.WriteJSON(cmd.OutOrStdout(), chatReq)
 				}
+				stream := true
+				chatReq.Stream = &stream
 				return executeChat(cmd, chatReq, false)
 			}
 			if dryRun {

@@ -10,6 +10,23 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestChatJSONPayloadSetsStreamTrue(t *testing.T) {
+	fixtures := testutils.NewFixtures(t, "basic_chat_response.json")
+	response := fixtures.LoadAsStream("basic_chat_response")
+	_, cleanup := testutils.SetupTestWithResponse(t, response)
+	defer cleanup()
+
+	b := bytes.NewBufferString("")
+	cmd := NewCmdChat()
+	cmd.SetOut(b)
+	cmd.SetArgs([]string{
+		"--json",
+		`{"messages":[{"author":"USER","messageType":"CONTENT","fragments":[{"text":"What is 2+2?"}]}]}`,
+	})
+	err := cmd.Execute()
+	require.NoError(t, err, "chat --json must succeed (not fail with content-type error)")
+}
+
 func TestChatCommand(t *testing.T) {
 	fixtures := testutils.NewFixtures(t,
 		"basic_chat_response.json",
