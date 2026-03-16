@@ -24,12 +24,46 @@ Example:
   glean collections create --json '{"name":"Onboarding","description":"New hire resources"}'`,
 	}
 	cmd.AddCommand(
+		newCollectionsListCmd(),
 		newCollectionsCreateCmd(),
 		newCollectionsDeleteCmd(),
 		newCollectionsUpdateCmd(),
 		newCollectionsAddItemsCmd(),
 		newCollectionsDeleteItemCmd(),
 	)
+	return cmd
+}
+
+func newCollectionsListCmd() *cobra.Command {
+	var jsonPayload, outputFormat string
+	var dryRun bool
+	cmd := &cobra.Command{
+		Use:   "list",
+		Short: "List collections",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			var req components.ListCollectionsRequest
+			if jsonPayload != "" {
+				if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
+					return fmt.Errorf("invalid --json: %w", err)
+				}
+			}
+			if dryRun {
+				return output.WriteJSON(cmd.OutOrStdout(), req)
+			}
+			sdk, err := gleanClient.NewFromConfig()
+			if err != nil {
+				return err
+			}
+			resp, err := sdk.Client.Collections.List(cmd.Context(), req, nil)
+			if err != nil {
+				return err
+			}
+			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+		},
+	}
+	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body")
+	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
+	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
 	return cmd
 }
 

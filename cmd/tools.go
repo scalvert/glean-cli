@@ -56,6 +56,23 @@ func newToolsRunCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "run",
 		Short: "Run a tool",
+		Long: `Run a tool by name with typed parameters.
+
+The --json payload must match the ToolsCallRequest schema:
+
+  {
+    "name": "toolName",
+    "parameters": {
+      "paramName": {"name": "paramName", "value": "paramValue"},
+      "nested": {"name": "nested", "properties": {"key": {"name": "key", "value": "val"}}}
+    }
+  }
+
+Each parameter entry is a ToolsCallParameter with fields:
+  name        (string, required) - parameter name
+  value       (string)           - value for primitive types
+  items       (array)            - value for array types (each element is a ToolsCallParameter)
+  properties  (object)           - value for object types (map of string to ToolsCallParameter)`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
 				return fmt.Errorf("--json is required")

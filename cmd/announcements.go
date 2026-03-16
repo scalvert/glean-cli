@@ -23,11 +23,23 @@ Example:
   glean announcements list`,
 	}
 	cmd.AddCommand(
+		newAnnouncementsListCmd(),
 		newAnnouncementsCreateCmd(),
 		newAnnouncementsUpdateCmd(),
 		newAnnouncementsDeleteCmd(),
 	)
 	return cmd
+}
+
+func newAnnouncementsListCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:   "list",
+		Short: "List announcements",
+		Long:  "List announcements. Note: the Glean API does not expose a list announcements endpoint. Use 'glean search' to find announcements.",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("the Glean API does not expose a list announcements endpoint; use 'glean search' to find announcements")
+		},
+	}
 }
 
 func newAnnouncementsCreateCmd() *cobra.Command {
