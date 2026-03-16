@@ -365,13 +365,36 @@ func dcrOrStaticClient(ctx context.Context, host, registrationEndpoint, redirect
 }
 
 // resolveScopes returns the appropriate OAuth scopes for the given provider.
+// For Glean native OAuth, we request all scopes supported by the CLI commands.
+// The full list of supported scopes is available at:
+//   GET <host>/.well-known/oauth-authorization-server/oauth → scopes_supported
 func resolveScopes(provider *oidc.Provider) []string {
 	if provider != nil {
 		// Full OIDC: standard scopes for ID token + email
 		return []string{oidc.ScopeOpenID, "email", "profile"}
 	}
-	// Glean native scopes (Glean's auth server does not support openid/profile)
-	return []string{"chat", "search", "email"}
+	// Glean native scopes — request all scopes required by CLI commands.
+	// Previously only "chat", "search", "email" were requested, which caused
+	// 401 errors on agents, tools, insights, verification, pins, shortcuts, etc.
+	return []string{
+		"activity",
+		"agents",
+		"announcements",
+		"answers",
+		"chat",
+		"collections",
+		"documents",
+		"email",
+		"entities",
+		"insights",
+		"offline_access", // enables token refresh
+		"pins",
+		"search",
+		"shortcuts",
+		"summarize",
+		"tools",
+		"verification",
+	}
 }
 
 // findFreePort finds an available TCP port on localhost.
