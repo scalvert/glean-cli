@@ -16,7 +16,7 @@ func TestDocumentsGetDryRun(t *testing.T) {
 	b := bytes.NewBufferString("")
 	cmd := NewCmdDocuments()
 	cmd.SetOut(b)
-	cmd.SetArgs([]string{"get", "--dry-run", "--json", `{"docIds":[]}`})
+	cmd.SetArgs([]string{"get", "--dry-run", "--json", `{"documentSpecs":[{"url":"https://glean.com"}]}`})
 
 	err := cmd.Execute()
 	require.NoError(t, err)

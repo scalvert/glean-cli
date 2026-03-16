@@ -16,7 +16,7 @@ func TestMessagesGetDryRun(t *testing.T) {
 	b := bytes.NewBufferString("")
 	cmd := NewCmdMessages()
 	cmd.SetOut(b)
-	cmd.SetArgs([]string{"get", "--dry-run", "--json", `{"messageIds":[]}`})
+	cmd.SetArgs([]string{"get", "--dry-run", "--json", `{"idType":"THREAD_ID","id":"test-id","datasource":"SLACK"}`})
 
 	err := cmd.Execute()
 	require.NoError(t, err)
