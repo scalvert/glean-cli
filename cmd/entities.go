@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/gleanwork/api-client-go/models/components"
 	gleanClient "github.com/scalvert/glean-cli/internal/client"
@@ -31,6 +32,7 @@ Example:
 
 func newEntitiesListCmd() *cobra.Command {
 	var jsonPayload, outputFormat string
+	var dryRun bool
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: "List entities",
@@ -40,7 +42,13 @@ func newEntitiesListCmd() *cobra.Command {
 			}
 			var req components.ListEntitiesRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
+				if strings.Contains(err.Error(), "ListEntitiesRequestEntityType") {
+					return fmt.Errorf("invalid entityType: valid values are PEOPLE, TEAMS, CUSTOM_ENTITIES")
+				}
 				return fmt.Errorf("invalid --json: %w", err)
+			}
+			if dryRun {
+				return output.WriteJSON(cmd.OutOrStdout(), req)
 			}
 			sdk, err := gleanClient.NewFromConfig()
 			if err != nil {
@@ -55,6 +63,7 @@ func newEntitiesListCmd() *cobra.Command {
 	}
 	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
 	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
+	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
 	return cmd
 }
 
