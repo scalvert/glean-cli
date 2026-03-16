@@ -21,7 +21,7 @@ Pins are manually promoted search results that appear at the top for specific qu
 
 Example:
   glean pins list
-  glean pins create --json '{"query":"onboarding","url":"https://wiki.example.com/onboarding"}'`,
+  glean pins create --json '{"queries":["onboarding","new hire"],"documentId":"https://wiki.example.com/onboarding"}'`,
 	}
 	cmd.AddCommand(
 		newPinsListCmd(),

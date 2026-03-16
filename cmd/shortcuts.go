@@ -20,8 +20,8 @@ Shortcuts are memorable short URLs that redirect to longer internal resources.
 
 Example:
   glean shortcuts list
-  glean shortcuts get <shortcut-id>
-  glean shortcuts create --json '{"urlTemplate":"https://example.com","shortcutId":"mylink"}'`,
+  glean shortcuts create --json '{"data":{"inputAlias":"onboarding","destinationUrl":"https://wiki.example.com/onboarding"}}'
+  glean shortcuts create --json '{"data":{"inputAlias":"jira","destinationUrl":"https://jira.example.com","urlTemplate":"https://jira.example.com/browse/{arg}"}}'`,
 	}
 	cmd.AddCommand(
 		newShortcutsListCmd(),

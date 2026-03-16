@@ -20,7 +20,8 @@ Document verification lets teams mark documents as reviewed and accurate for a g
 
 Example:
   glean verification list
-  glean verification remind --json '{"docId":{"datasource":"confluence","objectId":"12345"}}'`,
+  glean verification verify --json '{"documentId":"doc123","action":"VERIFY"}'
+  glean verification remind --json '{"documentId":"doc123","remindInDays":30}'`,
 	}
 	cmd.AddCommand(
 		newVerificationListCmd(),
