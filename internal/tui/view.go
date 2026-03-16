@@ -9,21 +9,20 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-// gleanMark is the circular Glean "g" icon in braille, generated via
-// chafa --symbols braille --size 20x10 from glean-black-code-square.png,
-// with sparse outer rows trimmed to the 8 content-dense rows.
-const gleanMark = "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡀⠄⠀⠀⠀⠀⠀⠀\n" +
-	"⠀⠀⠀⠀⠀⢀⣠⠋⠉⠉⠙⠁⢀⠃⠀⠀⠀⠀⠀⠀\n" +
-	"⠀⠀⠀⠀⢠⠁⢀⠋⠉⠉⠛⡀⠈⡀⠀⠀⠀⠀⠀⠀\n" +
-	"⠀⠀⠀⠀⡇⠀⡇⠀⠀⠀⠀⡇⠀⡇⠀⠀⠀⠀⠀⠀\n" +
-	"⠀⠀⠀⠀⠘⡀⠈⠛⣀⣀⠋⠁⢀⠁⠀⠀⠀⠀⠀⠀\n" +
-	"⠀⠀⠀⠀⠀⠈⠙⣀⣀⣀⣠⠋⢀⠋⠙⡀⠄⠄⠀⠀\n" +
-	"⠀⠀⠀⠀⠀⠀⠄⠋⠛⠛⠉⠁⢀⣀⠔⠁⠄⠄⠉⡄\n" +
-	"⠀⠀⠀⠀⠀⠀⠄⠉⠛⠛⠉⠉⠁⠄⠄⡁⡁⢈⠲⢈"
+// gleanMark is a hand-crafted block-character "g" in the style of the Glean
+// circular icon — clean, predictable, renders correctly in any terminal.
+// Each row is 7 terminal columns wide, 5 rows tall.
+const gleanMark = " ████ \n" +
+	"█    █\n" +
+	"█  ███\n" +
+	"█    █\n" +
+	" ████ \n" +
+	"     █\n" +
+	" ████ "
 
 // logoHeaderLines is the number of rows the header occupies.
-// 1 blank + 8 mark rows + 1 blank = 10
-const logoHeaderLines = 10
+// 1 blank + 7 mark rows + 1 blank = 9
+const logoHeaderLines = 9
 
 // View implements tea.Model.
 func (m *Model) View() string {
@@ -91,7 +90,7 @@ func (m *Model) View() string {
 // Right: "Glean CLI", email, host — left-aligned beside the mark
 // styleStatusAccent is used for the mark (guaranteed brand blue rendering).
 func (m *Model) headerView() string {
-	markLines := strings.Split(gleanMark, "\n") // 8 lines
+	markLines := strings.Split(gleanMark, "\n") // 7 lines
 
 	var email, host string
 	if parts := strings.SplitN(m.identity, "  ·  ", 2); len(parts) == 2 {
@@ -101,15 +100,14 @@ func (m *Model) headerView() string {
 		email = m.identity
 	}
 
-	// Right panel: vertically centered on the 8-row mark.
-	// Rows 0–1: blank, Row 2: app name, Row 3: email, Row 4: host, Rows 5–7: blank.
-	infoLines := [8]string{
+	// Right panel: vertically centered on the 7-row mark.
+	// Row 0: blank, Row 1: blank, Row 2: app name, Row 3: email, Row 4: host, Rows 5–6: blank.
+	infoLines := [7]string{
 		"",
 		"",
 		styleStatusAccent.Render("Glean CLI"),
 		styleTagline.Render("Logged in as " + email),
 		styleTagline.Render("Connected to " + host),
-		"",
 		"",
 		"",
 	}
