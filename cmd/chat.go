@@ -105,7 +105,7 @@ Example:
 
 	cmd.Flags().StringVar(&jsonPayload, "json", "", "Complete JSON chat request body (overrides all other flags)")
 	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print the request body without sending it")
-	cmd.Flags().IntVar(&timeoutMillis, "timeout", 30000, "Request timeout in milliseconds")
+	cmd.Flags().IntVar(&timeoutMillis, "timeout", 60000, "Request timeout in milliseconds (default 60s — chat queries often exceed 30s)")
 	cmd.Flags().BoolVar(&saveChat, "save", true, "Save the chat for later continuation")
 
 	return cmd
