@@ -69,6 +69,7 @@ func newEntitiesListCmd() *cobra.Command {
 
 func newEntitiesReadPeopleCmd() *cobra.Command {
 	var jsonPayload, outputFormat string
+	var dryRun bool
 	cmd := &cobra.Command{
 		Use:   "read-people",
 		Short: "Read people records",
@@ -79,6 +80,9 @@ func newEntitiesReadPeopleCmd() *cobra.Command {
 			var req components.PeopleRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
 				return fmt.Errorf("invalid --json: %w", err)
+			}
+			if dryRun {
+				return output.WriteJSON(cmd.OutOrStdout(), req)
 			}
 			sdk, err := gleanClient.NewFromConfig()
 			if err != nil {
@@ -93,5 +97,6 @@ func newEntitiesReadPeopleCmd() *cobra.Command {
 	}
 	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
 	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
+	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
 	return cmd
 }

@@ -99,6 +99,7 @@ func newAnnouncementsUpdateCmd() *cobra.Command {
 
 func newAnnouncementsDeleteCmd() *cobra.Command {
 	var jsonPayload string
+	var dryRun bool
 	cmd := &cobra.Command{
 		Use:   "delete",
 		Short: "Delete an announcement",
@@ -110,6 +111,9 @@ func newAnnouncementsDeleteCmd() *cobra.Command {
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
 				return fmt.Errorf("invalid --json: %w", err)
 			}
+			if dryRun {
+				return output.WriteJSON(cmd.OutOrStdout(), req)
+			}
 			sdk, err := gleanClient.NewFromConfig()
 			if err != nil {
 				return err
@@ -119,5 +123,6 @@ func newAnnouncementsDeleteCmd() *cobra.Command {
 		},
 	}
 	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
+	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
 	return cmd
 }
