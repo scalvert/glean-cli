@@ -1,6 +1,6 @@
 module github.com/scalvert/glean-cli
 
-go 1.24.2
+go 1.25.0
 
 require (
 	github.com/briandowns/spinner v1.23.0
@@ -24,7 +24,7 @@ require (
 	github.com/stretchr/testify v1.10.0
 	github.com/zalando/go-keyring v0.2.3
 	golang.org/x/oauth2 v0.28.0
-	golang.org/x/term v0.36.0
+	golang.org/x/term v0.41.0
 )
 
 require (
@@ -68,7 +68,7 @@ require (
 	github.com/yuin/goldmark-emoji v1.0.6 // indirect
 	golang.org/x/net v0.38.0 // indirect
 	golang.org/x/sync v0.18.0 // indirect
-	golang.org/x/sys v0.38.0 // indirect
+	golang.org/x/sys v0.42.0 // indirect
 	golang.org/x/text v0.30.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
