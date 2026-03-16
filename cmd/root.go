@@ -9,10 +9,10 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/scalvert/glean-cli/internal/auth"
-	gleanClient "github.com/scalvert/glean-cli/internal/client"
-	"github.com/scalvert/glean-cli/internal/config"
-	"github.com/scalvert/glean-cli/internal/tui"
+	"github.com/gleanwork/glean-cli/internal/auth"
+	gleanClient "github.com/gleanwork/glean-cli/internal/client"
+	"github.com/gleanwork/glean-cli/internal/config"
+	"github.com/gleanwork/glean-cli/internal/tui"
 	"github.com/spf13/cobra"
 )
 

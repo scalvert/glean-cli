@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	glean "github.com/gleanwork/api-client-go"
-	"github.com/scalvert/glean-cli/internal/auth"
-	"github.com/scalvert/glean-cli/internal/config"
+	"github.com/gleanwork/glean-cli/internal/auth"
+	"github.com/gleanwork/glean-cli/internal/config"
 )
 
 // New creates an authenticated Glean SDK client from the loaded configuration.

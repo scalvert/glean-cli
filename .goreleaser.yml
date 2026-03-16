@@ -29,9 +29,9 @@ archives:
 
 brews:
   - repository:
-      owner: scalvert
+      owner: gleanwork
       name: homebrew-tap
-    homepage: "https://github.com/scalvert/glean-cli"
+    homepage: "https://github.com/gleanwork/glean-cli"
     description: "A command-line interface for Glean operations"
     license: "MIT"
     install: |

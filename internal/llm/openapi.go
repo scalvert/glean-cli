@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/gleanwork/api-client-go/models/components"
-	gleanClient "github.com/scalvert/glean-cli/internal/client"
+	gleanClient "github.com/gleanwork/glean-cli/internal/client"
 )
 
 // GenerateOpenAPISpec generates an OpenAPI specification from the given input

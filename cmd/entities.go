@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/gleanwork/api-client-go/models/components"
-	gleanClient "github.com/scalvert/glean-cli/internal/client"
-	"github.com/scalvert/glean-cli/internal/output"
+	gleanClient "github.com/gleanwork/glean-cli/internal/client"
+	"github.com/gleanwork/glean-cli/internal/output"
 	"github.com/spf13/cobra"
 )
 

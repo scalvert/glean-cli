@@ -17,7 +17,7 @@ import (
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/int128/oauth2cli"
 	"github.com/pkg/browser"
-	"github.com/scalvert/glean-cli/internal/config"
+	"github.com/gleanwork/glean-cli/internal/config"
 	"golang.org/x/oauth2"
 )
 

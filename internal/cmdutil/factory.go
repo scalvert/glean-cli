@@ -12,7 +12,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/scalvert/glean-cli/internal/output"
+	"github.com/gleanwork/glean-cli/internal/output"
 )
 
 // RunFunc is a function that calls the SDK and returns a result to be serialized.

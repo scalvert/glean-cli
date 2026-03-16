@@ -46,5 +46,5 @@ To create a new release:
 
 After creating a release:
 1. The GitHub Actions workflow will be triggered automatically
-2. Monitor the release at: https://github.com/scalvert/glean-cli/actions
-3. Once complete, the release will be available at: https://github.com/scalvert/glean-cli/releases
+2. Monitor the release at: https://github.com/gleanwork/glean-cli/actions
+3. Once complete, the release will be available at: https://github.com/gleanwork/glean-cli/releases

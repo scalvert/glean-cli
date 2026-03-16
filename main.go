@@ -4,7 +4,7 @@ package main
 import (
 	"os"
 
-	"github.com/scalvert/glean-cli/cmd"
+	"github.com/gleanwork/glean-cli/cmd"
 )
 
 // version is set at build time via ldflags: -X main.version=<version>

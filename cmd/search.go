@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/gleanwork/api-client-go/models/components"
-	gleanClient "github.com/scalvert/glean-cli/internal/client"
-	"github.com/scalvert/glean-cli/internal/output"
-	"github.com/scalvert/glean-cli/internal/search"
+	gleanClient "github.com/gleanwork/glean-cli/internal/client"
+	"github.com/gleanwork/glean-cli/internal/output"
+	"github.com/gleanwork/glean-cli/internal/search"
 	"github.com/spf13/cobra"
 )
 

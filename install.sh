@@ -4,9 +4,9 @@ set -e
 # Glean CLI Installer
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/scalvert/glean-cli/main/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/gleanwork/glean-cli/main/install.sh | sh
 
-LATEST_VERSION=$(curl -s https://api.github.com/repos/scalvert/glean-cli/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+LATEST_VERSION=$(curl -s https://api.github.com/repos/gleanwork/glean-cli/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
 OS=$(uname -s)
 ARCH=$(uname -m)
 
@@ -20,7 +20,7 @@ case "$ARCH" in
 esac
 
 # Construct download URL
-DOWNLOAD_URL="https://github.com/scalvert/glean-cli/releases/download/${LATEST_VERSION}/glean-cli_${OS}_${ARCH}.tar.gz"
+DOWNLOAD_URL="https://github.com/gleanwork/glean-cli/releases/download/${LATEST_VERSION}/glean-cli_${OS}_${ARCH}.tar.gz"
 
 # Create temporary directory
 TMP_DIR=$(mktemp -d)

@@ -10,10 +10,10 @@ The Glean CLI (`glean`) brings Glean's search and AI capabilities directly to yo
 
 ```bash
 # Homebrew
-brew install scalvert/tap/glean-cli
+brew install gleanwork/tap/glean-cli
 
 # Manual
-curl -fsSL https://raw.githubusercontent.com/scalvert/glean-cli/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/gleanwork/glean-cli/main/install.sh | sh
 ```
 
 ## Quick Start
@@ -153,7 +153,7 @@ Manage credentials and connection settings.
 
 ```bash
 # Set host (use the full backend hostname)
-glean config --host linkedin-be.glean.com
+glean config --host your-company-be.glean.com
 
 # Set API token
 glean config --token your-token

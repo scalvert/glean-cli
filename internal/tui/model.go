@@ -19,8 +19,8 @@ import (
 	"github.com/charmbracelet/glamour/styles"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/gleanwork/api-client-go/models/components"
-	"github.com/scalvert/glean-cli/internal/client"
-	"github.com/scalvert/glean-cli/internal/config"
+	"github.com/gleanwork/glean-cli/internal/client"
+	"github.com/gleanwork/glean-cli/internal/config"
 )
 
 const (

@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/gleanwork/api-client-go/models/components"
-	"github.com/scalvert/glean-cli/internal/auth"
-	"github.com/scalvert/glean-cli/internal/config"
+	"github.com/gleanwork/glean-cli/internal/auth"
+	"github.com/gleanwork/glean-cli/internal/config"
 )
 
 // streamHTTPClient has a generous timeout for long-running AUTO/ADVANCED agent

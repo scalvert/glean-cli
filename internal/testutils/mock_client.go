@@ -8,8 +8,8 @@ import (
 	"net/http"
 
 	glean "github.com/gleanwork/api-client-go"
-	"github.com/scalvert/glean-cli/internal/client"
-	"github.com/scalvert/glean-cli/internal/config"
+	"github.com/gleanwork/glean-cli/internal/client"
+	"github.com/gleanwork/glean-cli/internal/config"
 )
 
 // MockTransport implements http.RoundTripper (the Do method expected by glean.HTTPClient).

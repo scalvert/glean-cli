@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/MakeNowJust/heredoc"
-	"github.com/scalvert/glean-cli/internal/auth"
+	"github.com/gleanwork/glean-cli/internal/auth"
 	"github.com/spf13/cobra"
 )
 

@@ -1,4 +1,4 @@
-module github.com/scalvert/glean-cli
+module github.com/gleanwork/glean-cli
 
 go 1.24.2
 

@@ -13,9 +13,9 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/briandowns/spinner"
-	"github.com/scalvert/glean-cli/internal/auth"
-	"github.com/scalvert/glean-cli/internal/config"
-	"github.com/scalvert/glean-cli/internal/output"
+	"github.com/gleanwork/glean-cli/internal/auth"
+	"github.com/gleanwork/glean-cli/internal/config"
+	"github.com/gleanwork/glean-cli/internal/output"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 )

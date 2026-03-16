@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/scalvert/glean-cli/internal/config"
-	"github.com/scalvert/glean-cli/internal/output"
+	"github.com/gleanwork/glean-cli/internal/config"
+	"github.com/gleanwork/glean-cli/internal/output"
 	"github.com/spf13/cobra"
 )
 
@@ -39,9 +39,8 @@ func NewCmdConfig() *cobra.Command {
 			Configure credentials for the Glean CLI.
 
 			Examples:
-			  # Set Glean host (either format works)
-			  glean config --host linkedin
-			  glean config --host linkedin-be.glean.com
+			  # Set Glean host (use your full backend hostname)
+			  glean config --host your-company-be.glean.com
 
 			  # Set Glean host and port (e.g. custom proxy)
 			  glean config --host foo.bar.com --port 7960
@@ -111,7 +110,7 @@ func NewCmdConfig() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&opts.host, "host", "", "Glean instance name or full hostname (e.g., 'linkedin' or 'linkedin-be.glean.com')")
+	cmd.Flags().StringVar(&opts.host, "host", "", "Glean backend hostname (e.g., 'your-company-be.glean.com')")
 	cmd.Flags().StringVar(&opts.port, "port", "", "Port for custom proxy (only applies to 'glean api' command; SDK commands use standard HTTPS)")
 	cmd.Flags().StringVar(&opts.token, "token", "", "Glean API token")
 	cmd.Flags().StringVar(&opts.email, "email", "", "Email address for API requests")

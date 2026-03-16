@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/scalvert/glean-cli/internal/schema"
+	"github.com/gleanwork/glean-cli/internal/schema"
 	"github.com/spf13/cobra"
 )
 
