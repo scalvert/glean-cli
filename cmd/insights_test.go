@@ -29,3 +29,20 @@ func TestInsightsGetDryRun(t *testing.T) {
 	err := cmd.Execute()
 	require.NoError(t, err)
 }
+
+func TestInsightsGetInvalidJSON(t *testing.T) {
+	cmd := NewCmdInsights()
+	cmd.SetErr(bytes.NewBufferString(""))
+	cmd.SetArgs([]string{"get", "--json", "not valid json"})
+	err := cmd.Execute()
+	assert.Error(t, err, "invalid JSON must return error")
+}
+
+func TestInsightsGetMissingJSON(t *testing.T) {
+	cmd := NewCmdInsights()
+	cmd.SetErr(bytes.NewBufferString(""))
+	cmd.SetArgs([]string{"get"})
+	err := cmd.Execute()
+	assert.Error(t, err, "missing --json must return error")
+	assert.Contains(t, err.Error(), "--json is required")
+}

@@ -40,3 +40,20 @@ func TestToolsListLive(t *testing.T) {
 	err := cmd.Execute()
 	require.NoError(t, err)
 }
+
+func TestToolsRunInvalidJSON(t *testing.T) {
+	cmd := NewCmdTools()
+	cmd.SetErr(bytes.NewBufferString(""))
+	cmd.SetArgs([]string{"run", "--json", "not valid json"})
+	err := cmd.Execute()
+	assert.Error(t, err, "invalid JSON must return error")
+}
+
+func TestToolsRunMissingJSON(t *testing.T) {
+	cmd := NewCmdTools()
+	cmd.SetErr(bytes.NewBufferString(""))
+	cmd.SetArgs([]string{"run"})
+	err := cmd.Execute()
+	assert.Error(t, err, "missing --json must return error")
+	assert.Contains(t, err.Error(), "--json is required")
+}

@@ -118,7 +118,7 @@ Example:
 
 	cmd.Flags().StringVar(&jsonPayload, "json", "", "Complete JSON request body (overrides all other flags)")
 	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format: json, ndjson, or text")
-	cmd.Flags().StringVar(&fields, "fields", "", "Comma-separated dot-path fields to include (e.g. results.document.title,results.document.url)")
+	cmd.Flags().StringVar(&fields, "fields", "", "Comma-separated dot-path fields to include (e.g. results.document.title,results.document.url). Results where all projected fields are missing appear as {}")
 	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print the request body without sending it")
 	cmd.Flags().IntVar(&opts.PageSize, "page-size", 10, "Number of results per page")
 	cmd.Flags().IntVar(&opts.MaxSnippetSize, "max-snippet-size", 0, "Maximum size of snippets")

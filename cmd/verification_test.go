@@ -29,3 +29,37 @@ func TestVerificationListLive(t *testing.T) {
 	err := cmd.Execute()
 	require.NoError(t, err)
 }
+
+func TestVerificationVerifyInvalidJSON(t *testing.T) {
+	cmd := NewCmdVerification()
+	cmd.SetErr(bytes.NewBufferString(""))
+	cmd.SetArgs([]string{"verify", "--json", "not valid json"})
+	err := cmd.Execute()
+	assert.Error(t, err, "invalid JSON must return error")
+}
+
+func TestVerificationVerifyMissingJSON(t *testing.T) {
+	cmd := NewCmdVerification()
+	cmd.SetErr(bytes.NewBufferString(""))
+	cmd.SetArgs([]string{"verify"})
+	err := cmd.Execute()
+	assert.Error(t, err, "missing --json must return error")
+	assert.Contains(t, err.Error(), "--json is required")
+}
+
+func TestVerificationRemindInvalidJSON(t *testing.T) {
+	cmd := NewCmdVerification()
+	cmd.SetErr(bytes.NewBufferString(""))
+	cmd.SetArgs([]string{"remind", "--json", "not valid json"})
+	err := cmd.Execute()
+	assert.Error(t, err, "invalid JSON must return error")
+}
+
+func TestVerificationRemindMissingJSON(t *testing.T) {
+	cmd := NewCmdVerification()
+	cmd.SetErr(bytes.NewBufferString(""))
+	cmd.SetArgs([]string{"remind"})
+	err := cmd.Execute()
+	assert.Error(t, err, "missing --json must return error")
+	assert.Contains(t, err.Error(), "--json is required")
+}

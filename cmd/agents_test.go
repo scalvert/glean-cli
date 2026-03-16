@@ -40,3 +40,30 @@ func TestAgentsRunDryRun(t *testing.T) {
 	err := cmd.Execute()
 	require.NoError(t, err)
 }
+
+func TestAgentsRunInvalidJSON(t *testing.T) {
+	cmd := NewCmdAgents()
+	cmd.SetErr(bytes.NewBufferString(""))
+	cmd.SetArgs([]string{"run", "--json", "not valid json"})
+	err := cmd.Execute()
+	assert.Error(t, err, "invalid JSON must return error")
+}
+
+func TestAgentsRunMissingJSON(t *testing.T) {
+	cmd := NewCmdAgents()
+	cmd.SetErr(bytes.NewBufferString(""))
+	cmd.SetArgs([]string{"run"})
+	err := cmd.Execute()
+	assert.Error(t, err, "missing --json must return error")
+	assert.Contains(t, err.Error(), "--json is required")
+}
+
+func TestAgentsListInvalidJSON(t *testing.T) {
+	_, cleanup := testutils.SetupTestWithResponse(t, []byte(`{}`))
+	defer cleanup()
+	cmd := NewCmdAgents()
+	cmd.SetErr(bytes.NewBufferString(""))
+	cmd.SetArgs([]string{"list", "--json", "not valid json"})
+	err := cmd.Execute()
+	assert.Error(t, err, "invalid JSON must return error")
+}
