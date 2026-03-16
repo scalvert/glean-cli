@@ -70,11 +70,11 @@ Example:
 				if err := json.Unmarshal([]byte(jsonPayload), &chatReq); err != nil {
 					return fmt.Errorf("invalid --json payload: %w", err)
 				}
+				stream := true
+				chatReq.Stream = &stream
 				if dryRun {
 					return output.WriteJSON(cmd.OutOrStdout(), chatReq)
 				}
-				stream := true
-				chatReq.Stream = &stream
 				return executeChat(cmd, chatReq, false)
 			}
 			if dryRun {
@@ -105,7 +105,7 @@ Example:
 
 	cmd.Flags().StringVar(&jsonPayload, "json", "", "Complete JSON chat request body (overrides all other flags)")
 	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print the request body without sending it")
-	cmd.Flags().IntVar(&timeoutMillis, "timeout", 60000, "Request timeout in milliseconds (default 60s — chat queries often exceed 30s)")
+	cmd.Flags().IntVar(&timeoutMillis, "timeout", 60000, "Request timeout in milliseconds (default 60000 — 60 seconds)")
 	cmd.Flags().BoolVar(&saveChat, "save", true, "Save the chat for later continuation")
 
 	return cmd
