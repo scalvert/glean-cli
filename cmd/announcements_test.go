@@ -8,15 +8,16 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAnnouncementsListExists(t *testing.T) {
+func TestAnnouncementsNoListSubcommand(t *testing.T) {
+	// The Glean API has no list-announcements endpoint, so no list subcommand.
+	// Attempting to run it should fail with "unknown command".
 	b := bytes.NewBufferString("")
 	cmd := NewCmdAnnouncements()
 	cmd.SetOut(b)
 	cmd.SetErr(b)
 	cmd.SetArgs([]string{"list"})
 	err := cmd.Execute()
-	require.Error(t, err, "list should return an error since the API doesn't support it")
-	assert.Contains(t, err.Error(), "does not expose a list announcements endpoint")
+	require.Error(t, err, "list must not exist — no list announcements endpoint in the API")
 }
 
 func TestAnnouncementsCreateDryRun(t *testing.T) {
@@ -37,5 +38,8 @@ func TestAnnouncementsHelp(t *testing.T) {
 	cmd.SetArgs([]string{"--help"})
 	err := cmd.Execute()
 	assert.NoError(t, err)
-	assert.Contains(t, b.String(), "list")
+	assert.Contains(t, b.String(), "Usage")
+	assert.Contains(t, b.String(), "create")
+	// No "list" subcommand — the Glean API doesn't expose list announcements.
+	assert.NotContains(t, b.String(), "list        ")
 }

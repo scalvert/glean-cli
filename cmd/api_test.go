@@ -5,7 +5,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/scalvert/glean-cli/internal/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -44,8 +43,9 @@ func TestAPICommand_Preview_WritesToCmdOut(t *testing.T) {
 }
 
 func TestAPICommandPreviewShowsAuthHeader(t *testing.T) {
-	cleanup := testutils.SetupTestConfig(t)
-	defer cleanup()
+	// Inject a test token via the env var that config.LoadConfig actually reads.
+	t.Setenv("GLEAN_API_TOKEN", "test-token-for-preview")
+	t.Setenv("GLEAN_HOST", "test.glean.com")
 
 	b := bytes.NewBufferString("")
 	cmd := NewCmdAPI()
