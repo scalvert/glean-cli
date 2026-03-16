@@ -1,34 +1,109 @@
 # <img src="demo/glean-logo.png" width="28" height="28" style="vertical-align: middle; margin-right: 4px"> Glean CLI
 
-> Work seamlessly with Glean from your command line.
+Your company's knowledge, search, and AI — from the command line.
 
-The Glean CLI (`glean`) brings Glean's search and AI capabilities directly to your terminal. Search across your company's knowledge, chat with Glean Assistant, invoke the full REST API surface, and wire Glean into AI agents via MCP — all from the command line.
+Search across your company's knowledge, chat with Glean Assistant, manage the full Glean API surface, and integrate Glean into automated workflows — all without leaving the terminal.
+
+<p>
+  <a href="https://github.com/gleanwork/glean-cli/releases"><img src="https://img.shields.io/github/v/release/gleanwork/glean-cli" alt="latest release"></a>
+  <a href="https://github.com/gleanwork/glean-cli/blob/main/LICENSE"><img src="https://img.shields.io/github/license/gleanwork/glean-cli" alt="license"></a>
+  <a href="https://github.com/gleanwork/glean-cli/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/gleanwork/glean-cli/ci.yml?branch=main&label=CI" alt="CI status"></a>
+</p>
+
+## Contents
+
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Why Glean CLI?](#why-glean-cli)
+- [Authentication](#authentication)
+- [Interactive TUI](#interactive-tui)
+- [Commands](#commands)
+- [Agent Workflow](#agent-workflow)
+- [Environment Variables](#environment-variables)
+- [Exit Codes](#exit-codes)
+- [Contributing](#contributing)
 
 ## Installation
 
 ```bash
-# Homebrew
+# Homebrew (recommended)
 brew install gleanwork/tap/glean-cli
 
 # Manual
 curl -fsSL https://raw.githubusercontent.com/gleanwork/glean-cli/main/install.sh | sh
 ```
 
+Pre-built binaries for macOS, Linux, and Windows are available on the [Releases](https://github.com/gleanwork/glean-cli/releases) page.
+
 ## Quick Start
 
 ```bash
-# 0. Authenticate (recommended: OAuth via browser)
-glean auth login
-
-# — OR — configure with an API token:
+# 1. Authenticate
+glean auth login                          # OAuth via browser (recommended)
+# — OR —
 glean config --host your-company-be.glean.com --token YOUR_API_TOKEN
 
-# 1. Search
+# 2. Search
 glean search "vacation policy"
 
-# 2. Chat
+# 3. Chat
 glean chat "Summarize our Q1 engineering goals"
+
+# 4. Open the interactive TUI
+glean
 ```
+
+## Why Glean CLI?
+
+If your workflow involves searching Glean, asking Glean AI questions, or wiring Glean data into scripts or agent pipelines — the CLI is faster than a browser tab and composable with everything else in your terminal.
+
+Every command returns structured JSON. Use `--dry-run` to preview requests before they're sent. Use `glean schema <command>` to get machine-readable flag documentation. Results pipe cleanly to `jq`, scripts, or any tool that reads stdin.
+
+```bash
+# Discover what commands are available
+glean schema | jq '.commands'
+
+# Preview a request before sending
+glean search --dry-run --datasource confluence "Q1 planning"
+
+# Parse results with jq
+glean search "onboarding" --fields "results.document.title,results.document.url" \
+  | jq '.results[].document'
+
+# Stream results as NDJSON — one result object per line
+glean search "engineering docs" --output ndjson | jq .document.title
+```
+
+## Authentication
+
+### OAuth (recommended)
+
+```bash
+glean auth login    # opens browser, completes PKCE flow
+glean auth status   # verify credentials and check expiry
+glean auth logout   # remove stored tokens
+```
+
+OAuth uses PKCE with Dynamic Client Registration — no client ID configuration required. After login, tokens are stored securely and refreshed automatically.
+
+For instances that don't support OAuth, `auth login` falls back to an API token prompt.
+
+### API Token
+
+```bash
+glean config --host your-company-be.glean.com --token YOUR_API_TOKEN
+```
+
+Tokens can also be supplied via the `GLEAN_API_TOKEN` environment variable (useful for CI/CD).
+
+### Checking your configuration
+
+```bash
+glean config --show               # human-readable
+glean config --show --output json # machine-readable JSON
+```
+
+Configuration is stored in the system keyring with fallback to `~/.glean/config.json`.
 
 ## Interactive TUI
 
@@ -39,11 +114,12 @@ glean            # open TUI
 glean --continue # resume the most recent session
 ```
 
-### TUI Keyboard Shortcuts
+### Keyboard Shortcuts
 
 | Key | Action |
 |-----|--------|
 | `enter` | Send message |
+| `↑` / `↓` | Scroll history / navigate command picker |
 | `ctrl+r` | New session |
 | `ctrl+l` | Clear screen |
 | `ctrl+y` | Copy last response |
@@ -62,149 +138,159 @@ Type `/` in the input to open the command picker:
 
 ### File Attachments
 
-Type `@` followed by a filename to attach a file to your message. The file's contents are injected into the request as context for Glean AI.
+Type `@` followed by a filename to attach a local file to your message. The file's contents are sent as context to Glean AI.
 
 ```
 @go.mod          # attach go.mod from current directory
 @src/config.go   # attach a specific file
 ```
 
-Up/Down to navigate matches, Enter to attach, Esc to dismiss.
-
-Session history is persisted to `~/.glean/sessions/latest.json`. To clear it:
-```bash
-rm -f ~/.glean/sessions/latest.json
-```
+Use ↑/↓ to navigate matches, Enter to attach, Esc to dismiss.
 
 ## Commands
 
-### `glean search`
+### Core
 
-Search across your company's knowledge.
+| Command | Description |
+|---------|-------------|
+| `glean search <query>` | Search across your company's knowledge |
+| `glean chat <message>` | Chat with Glean Assistant (non-interactive) |
+| `glean api <endpoint>` | Make a raw authenticated HTTP request to the Glean REST API |
+| `glean schema [command]` | Show machine-readable JSON schema for any command |
+| `glean mcp` | Start a stdio MCP server for AI agent integration |
+| `glean auth` | Authenticate with Glean |
+| `glean config` | Manage credentials and settings |
+| `glean version` | Print the CLI version |
+
+### `glean search`
 
 ```bash
 glean search "vacation policy"
-
-# Pipe to jq
-glean search "Q1 planning" | jq '.results[].document.title'
-
-# Filter by datasource or type
-glean search --datasource confluence "project planning"
-glean search --type document "Q1 reports"
-
-# Project specific fields (results.* prefix required)
-glean search --fields "results.document.title,results.document.url" "onboarding"
-
-# NDJSON — one result object per line, good for streaming pipelines
-glean search --output ndjson "engineering docs" | jq .document.title
-
-# Raw SDK request body
-glean search --json '{"query":"Q1 reports","pageSize":5}'
-
-# Preview request without sending
-glean search --dry-run --datasource confluence "test"
+glean search "Q1 planning" --datasource confluence --page-size 5
+glean search "docs" --fields "results.document.title,results.document.url"
+glean search "docs" --output ndjson | jq .document.title
+glean search --json '{"query":"onboarding","pageSize":3}'
+glean search --dry-run "test"
 ```
-
-Key flags:
 
 | Flag | Description |
 |------|-------------|
-| `--output` / `--format` | `json` (default), `ndjson`, or `text` |
-| `--fields` | Comma-separated dot-path projection (must include `results.` prefix) |
-| `--json` | Complete JSON request body; overrides all other flags |
-| `--dry-run` | Print request body without sending |
+| `--output` / `--format` | `json` (default), `ndjson` (one result per line), `text` |
+| `--fields` | Dot-path field projection — prefix paths with `results.` |
 | `--datasource` / `-d` | Filter by datasource (repeatable) |
 | `--type` / `-t` | Filter by document type (repeatable) |
 | `--page-size` | Results per page (default 10) |
+| `--json` | Raw SDK request body (overrides all flags) |
+| `--dry-run` | Print request body without sending |
 
 ### `glean chat`
 
-Ask Glean AI a question from the command line (non-interactive).
-
 ```bash
 glean chat "What are our company holidays?"
-glean chat "Summarize our engineering onboarding docs"
-
-# Structured multi-message request
+glean chat --timeout 120000 "Summarize all Q1 OKRs across teams"
 glean chat --json '{"messages":[{"author":"USER","messageType":"CONTENT","fragments":[{"text":"What is Glean?"}]}]}'
-
-# Preview request without sending
-glean chat --dry-run "test question"
+glean chat --dry-run "test"
 ```
-
-Key flags:
 
 | Flag | Description |
 |------|-------------|
-| `--json` | Complete JSON chat request body; overrides all other flags |
+| `--timeout` | Request timeout in milliseconds (default 60000) |
+| `--json` | Raw SDK request body (overrides all flags) |
 | `--dry-run` | Print request body without sending |
-| `--timeout` | Request timeout in milliseconds (default 60000 — 60 seconds) |
-| `--save` | Save the chat for later continuation (default true) |
-
-### `glean auth`
-
-Authenticate with Glean.
-
-```bash
-glean auth login    # OAuth via browser (recommended)
-glean auth status   # check current auth state
-glean auth logout   # remove stored credentials
-```
-
-OAuth uses PKCE with Dynamic Client Registration — no client ID configuration required for supported instances. For instances without OAuth, `auth login` falls back to an API token prompt.
+| `--save` | Persist chat for continuation (default true) |
 
 ### `glean api`
 
-Make an authenticated HTTP request to any Glean REST API endpoint.
+Raw authenticated HTTP access to any Glean REST API endpoint (relative to `/rest/api/v1/`).
 
 ```bash
-# GET
-glean api search --method POST --raw-field '{"query":"rust programming","pageSize":3}'
-
-# From a file
-glean api search --method POST --input search-params.json
-
-# Preview request (shows URL, headers, body)
+glean api search --method POST --raw-field '{"query":"rust","pageSize":3}'
 glean api --preview search --method POST --raw-field '{"query":"test"}'
 ```
 
-Endpoints are relative to `/rest/api/v1/`. Valid endpoints include: `search`, `chat`, `announcements`, `answers`, `collections`, `documents`, `entities`, `pins`, `shortcuts`, `tools`, and more.
+### API Namespace Commands
 
-### `glean schema`
+All namespace commands accept `--json`, `--output`, and `--dry-run`. Run `glean <command> --help` for full usage.
 
-Machine-readable JSON schema for any command — useful for agents discovering how to call the CLI.
+| Namespace | Subcommands | Description |
+|-----------|-------------|-------------|
+| `glean agents` | `list`, `get`, `schemas`, `run` | Manage and invoke Glean AI agents |
+| `glean answers` | `list`, `get`, `create`, `update`, `delete` | Curated Q&A pairs |
+| `glean announcements` | `create`, `update`, `delete` | Time-bounded company announcements |
+| `glean collections` | `list`, `get`, `create`, `update`, `delete`, `add-items`, `delete-item` | Curated document collections |
+| `glean documents` | `get`, `summarize`, `get-by-facets`, `get-permissions` | Document retrieval and summarization |
+| `glean entities` | `list`, `read-people` | People, teams, and custom entities |
+| `glean insights` | `get` | Search and usage analytics |
+| `glean messages` | `get` | Retrieve indexed messages (Slack, Teams, etc.) |
+| `glean pins` | `list`, `get`, `create`, `update`, `remove` | Promoted search results |
+| `glean shortcuts` | `list`, `get`, `create`, `update`, `delete` | Go-links / memorable short URLs |
+| `glean tools` | `list`, `run` | Glean platform tools |
+| `glean verification` | `list`, `verify`, `remind` | Document verification and review |
+| `glean activity` | `report`, `feedback` | User activity reporting |
+
+#### Example payloads
 
 ```bash
-glean schema              # list all 18 registered commands
-glean schema search       # flags, types, defaults, and examples for search
-glean schema shortcuts    # schema for shortcuts subcommands
+# Retrieve a document by URL
+glean documents get --json '{"documentSpecs":[{"url":"https://..."}]}'
+
+# Summarize a document
+glean documents summarize --json '{"documentSpecs":[{"url":"https://..."}]}'
+
+# Look up people
+glean entities list --json '{"entityType":"PEOPLE","query":"engineering"}'
+
+# Create a go-link
+glean shortcuts create --json '{"data":{"inputAlias":"onboarding","destinationUrl":"https://..."}}'
+
+# Create a shortcut with a variable template
+glean shortcuts create --json '{"data":{"inputAlias":"jira","urlTemplate":"https://jira.example.com/browse/{arg}"}}'
+
+# Pin a result for a query
+glean pins create --json '{"queries":["onboarding"],"documentId":"https://..."}'
+
+# List available AI agents
+glean agents list | jq '.SearchAgentsResponse.agents[] | {id: .agent_id, name: .displayName}'
+
+# Run an agent
+glean agents run --json '{"agentId":"<id>","query":"summarize Q1 planning docs"}'
 ```
 
-### `glean config`
+## Agent Workflow
 
-Manage credentials and connection settings.
+The CLI is designed as a first-class tool for AI coding agents. Every command returns JSON on stdout and errors on stderr with non-zero exit codes.
 
 ```bash
-glean config --host your-company-be.glean.com
-glean config --token your-token
-glean config --show               # show current config (token masked)
-glean config --show --output json # machine-readable output
-glean config --clear              # remove all stored credentials
+# 1. Discover all available commands
+glean schema | jq '.commands'
+
+# 2. Understand a command's exact request shape
+glean schema search | jq '.flags[] | {name, type, default}'
+glean schema shortcuts | jq '.flags'
+
+# 3. Preview the exact request before sending
+glean shortcuts create --dry-run \
+  --json '{"data":{"inputAlias":"test","destinationUrl":"https://example.com"}}'
+
+# 4. Execute and parse results
+glean search "engineering values" \
+  --fields "results.document.title,results.document.url" \
+  | jq '.results[].document'
+
+# 5. Stream NDJSON for large result sets
+glean search "all docs" --output ndjson --page-size 50 \
+  | while IFS= read -r line; do echo "$line" | jq .document.title; done
 ```
 
-Configuration is stored in the system keyring with fallback to `~/.glean/config.json`.
+### MCP Server
 
-### `glean mcp`
-
-Start a stdio MCP server that exposes Glean tools to AI agents (Claude Code, Cursor, etc.).
+For AI agents that support MCP, run `glean mcp` to expose Glean as an MCP tool server:
 
 ```bash
 glean mcp
 ```
 
-Available tools: `glean_search`, `glean_chat`, `glean_schema`, `glean_people`.
-
-To wire into Claude Code, add to `.claude/settings.json`:
+Add to `.claude/settings.json` for Claude Code:
 
 ```json
 {
@@ -214,55 +300,26 @@ To wire into Claude Code, add to `.claude/settings.json`:
 }
 ```
 
-## API Namespace Commands
+Available MCP tools: `glean_search`, `glean_chat`, `glean_schema`, `glean_people`.
 
-Thin passthroughs to the full Glean SDK surface. Every subcommand accepts `--json`, `--output`, and `--dry-run`.
+## Environment Variables
 
-```bash
-glean <command> --help          # full usage and examples
-glean <command> list --dry-run  # preview request before sending
-```
+| Variable | Description |
+|----------|-------------|
+| `GLEAN_API_TOKEN` | API token — overrides keyring and config file |
+| `GLEAN_HOST` | Glean backend hostname (e.g. `your-company-be.glean.com`) |
+| `GLEAN_EMAIL` | Email for impersonated API requests |
 
-| Command | Subcommands | Key example |
-|---------|-------------|-------------|
-| `glean agents` | list, get, schemas, run | `glean agents list` |
-| `glean answers` | list, get, create, update, delete | `glean answers list` |
-| `glean collections` | list, get, create, update, delete | `glean collections list` |
-| `glean documents` | get, summarize, get-by-facets, get-permissions | `glean documents get --json '{"documentSpecs":[{"url":"https://..."}]}'` |
-| `glean entities` | list, read-people | `glean entities list --json '{"entityType":"PEOPLE","query":"engineering"}'` |
-| `glean shortcuts` | list, get, create, update, delete | `glean shortcuts create --json '{"data":{"inputAlias":"onboarding","destinationUrl":"https://..."}}'` |
-| `glean pins` | list, get, create, update, remove | `glean pins list` |
-| `glean tools` | list, run | `glean tools list` |
-| `glean announcements` | create, update, delete | `glean announcements create --json '{"title":"...","startTime":"...","endTime":"..."}'` |
-| `glean activity` | report, feedback | `glean activity report --json '{"events":[...]}'` |
-| `glean insights` | get | `glean insights get --json '{}'` |
-| `glean messages` | get | `glean messages get --json '{"idType":"THREAD_ID","id":"...","datasource":"SLACK"}'` |
-| `glean verification` | list, verify, remind | `glean verification list` |
+Environment variables take precedence over stored configuration.
 
-## Agent Workflow
+## Exit Codes
 
-The CLI is designed as a first-class tool for AI coding agents. The recommended workflow:
+| Code | Meaning |
+|------|---------|
+| `0` | Success |
+| `1` | General error (authentication failure, API error, invalid input) |
 
-```bash
-# 1. Discover what's available
-glean schema | jq '.commands'
-
-# 2. Understand a command's flags and request shape
-glean schema search | jq '.flags[] | {name, type, default}'
-
-# 3. Preview the exact request before sending
-glean search --dry-run --datasource confluence "onboarding" | jq .
-
-# 4. Execute and parse results
-glean search "engineering best practices" \
-  --fields "results.document.title,results.document.url" \
-  | jq '.results[].document'
-
-# 5. Enumerate available AI agents
-glean agents list | jq '.SearchAgentsResponse.agents[] | {id: .agent_id, name: .displayName}'
-```
-
-Every command returns JSON on stdout and errors on stderr with non-zero exit codes — predictable for scripting.
+All error details are written to stderr. Stdout contains only structured output (JSON/NDJSON/text), making the CLI safe for piping.
 
 ## Shell Completions
 
@@ -272,19 +329,9 @@ glean completion zsh    # Zsh
 glean completion fish   # Fish
 ```
 
-## Environment Variables
-
-| Variable | Description |
-|----------|-------------|
-| `GLEAN_API_TOKEN` | API token (overrides keyring/config file) |
-| `GLEAN_HOST` | Glean backend hostname (e.g. `your-company-be.glean.com`) |
-| `GLEAN_EMAIL` | Email for impersonated API requests |
-
-Environment variables take precedence over the system keyring and `~/.glean/config.json`.
-
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and how to submit pull requests.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, coding conventions, and how to submit pull requests.
 
 ## License
 
