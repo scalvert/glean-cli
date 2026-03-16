@@ -66,6 +66,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
         with:
