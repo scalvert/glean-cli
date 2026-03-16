@@ -40,8 +40,8 @@ Pre-built binaries for macOS, Linux, and Windows are available on the [Releases]
 ```bash
 # 1. Authenticate
 glean auth login                          # OAuth via browser (recommended)
-# — OR —
-glean config --host your-company-be.glean.com --token YOUR_API_TOKEN
+# — OR set env vars for CI/CD:
+# export GLEAN_HOST=your-company-be.glean.com GLEAN_API_TOKEN=your-token
 
 # 2. Search
 glean search "vacation policy"
@@ -79,30 +79,25 @@ glean search "engineering docs" --output ndjson | jq .title
 
 ```bash
 glean auth login    # opens browser, completes PKCE flow
-glean auth status   # verify credentials and check expiry
-glean auth logout   # remove stored tokens
+glean auth status   # verify credentials, host, and token expiry
+glean auth logout   # remove all stored credentials
 ```
 
-OAuth uses PKCE with Dynamic Client Registration — no client ID configuration required. After login, tokens are stored securely and refreshed automatically.
+OAuth uses PKCE with Dynamic Client Registration — no client ID required. Tokens are stored securely in the system keyring and refreshed automatically.
 
-For instances that don't support OAuth, `auth login` falls back to an API token prompt.
+For instances that don't support OAuth, `auth login` falls back to prompting for an API token.
 
-### API Token
+### API Token (CI/CD)
+
+Set credentials via environment variables — no interactive login needed:
 
 ```bash
-glean config --host your-company-be.glean.com --token YOUR_API_TOKEN
+export GLEAN_API_TOKEN=your-token
+export GLEAN_HOST=your-company-be.glean.com
+glean search "test"
 ```
 
-Tokens can also be supplied via the `GLEAN_API_TOKEN` environment variable (useful for CI/CD).
-
-### Checking your configuration
-
-```bash
-glean config --show               # human-readable
-glean config --show --output json # machine-readable JSON
-```
-
-Configuration is stored in the system keyring with fallback to `~/.glean/config.json`.
+Credentials are resolved in this order: environment variables → system keyring → `~/.glean/config.json`.
 
 ## Interactive TUI
 
@@ -158,7 +153,6 @@ Use ↑/↓ to navigate matches, Enter to attach, Esc to dismiss.
 | `glean schema [command]` | Show machine-readable JSON schema for any command |
 | `glean mcp` | Start a stdio MCP server for AI agent integration |
 | `glean auth` | Authenticate with Glean |
-| `glean config` | Manage credentials and settings |
 | `glean version` | Print the CLI version |
 
 ### `glean search`
@@ -304,7 +298,6 @@ Available MCP tools: `glean_search`, `glean_chat`, `glean_schema`, `glean_people
 |----------|-------------|
 | `GLEAN_API_TOKEN` | API token — overrides keyring and config file |
 | `GLEAN_HOST` | Glean backend hostname (e.g. `your-company-be.glean.com`) |
-| `GLEAN_EMAIL` | Email for impersonated API requests |
 
 Environment variables take precedence over stored configuration.
 
