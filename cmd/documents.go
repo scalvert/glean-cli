@@ -105,7 +105,7 @@ func newDocumentsGetPermissionsCmd() *cobra.Command {
 		Short: "Get document permissions",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.GetDocPermissionsRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
@@ -135,7 +135,7 @@ func newDocumentsSummarizeCmd() *cobra.Command {
 		Short: "Summarize a document",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.SummarizeRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {

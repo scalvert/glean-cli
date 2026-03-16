@@ -38,7 +38,21 @@ func newEntitiesListCmd() *cobra.Command {
 		Short: "List entities",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
+			}
+			// Validate entityType before SDK unmarshal to provide a clear error.
+			var raw map[string]json.RawMessage
+			if err := json.Unmarshal([]byte(jsonPayload), &raw); err != nil {
+				return fmt.Errorf("invalid --json: %w", err)
+			}
+			if etRaw, ok := raw["entityType"]; ok {
+				var et string
+				if err := json.Unmarshal(etRaw, &et); err == nil {
+					validTypes := map[string]bool{"PEOPLE": true, "TEAMS": true, "CUSTOM_ENTITIES": true}
+					if !validTypes[et] {
+						return fmt.Errorf("invalid entityType %q: valid values are PEOPLE, TEAMS, CUSTOM_ENTITIES", et)
+					}
+				}
 			}
 			var req components.ListEntitiesRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
@@ -75,7 +89,7 @@ func newEntitiesReadPeopleCmd() *cobra.Command {
 		Short: "Read people records",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.PeopleRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {

@@ -118,7 +118,7 @@ func newAgentsRunCmd() *cobra.Command {
 		Short: "Run an agent (synchronous)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.AgentRunCreate
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {

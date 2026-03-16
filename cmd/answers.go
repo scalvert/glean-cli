@@ -37,7 +37,7 @@ func newAnswersListCmd() *cobra.Command {
 	var dryRun bool
 	cmd := &cobra.Command{
 		Use:   "list",
-		Short: "List answers",
+		Short: "List answers (deprecated: answer boards are being removed by Glean in October 2026)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var req components.ListAnswersRequest
 			if jsonPayload != "" {

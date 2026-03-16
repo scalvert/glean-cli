@@ -80,7 +80,7 @@ Each parameter entry is a ToolsCallParameter with fields:
   properties  (object)           - value for object types (map of string to ToolsCallParameter)`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.ToolsCallRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {

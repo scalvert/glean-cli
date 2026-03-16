@@ -38,6 +38,9 @@ func NewCmdConfig() *cobra.Command {
 		Long: heredoc.Doc(`
 			Configure credentials for the Glean CLI.
 
+			Note: Environment variables (GLEAN_API_TOKEN, GLEAN_HOST, GLEAN_EMAIL) take
+			precedence over stored configuration.
+
 			Examples:
 			  # Set Glean host (use your full backend hostname)
 			  glean config --host your-company-be.glean.com
@@ -78,6 +81,8 @@ func NewCmdConfig() *cobra.Command {
 					tokenDisplay = config.MaskToken(cfg.GleanToken)
 				}
 				fmt.Printf("  %-10s %s\n", "Token:", tokenDisplay)
+				fmt.Println("\nNote: Environment variables (GLEAN_API_TOKEN, GLEAN_HOST, GLEAN_EMAIL)")
+				fmt.Println("take precedence over stored configuration.")
 				return nil
 			}
 
