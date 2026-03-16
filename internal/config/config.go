@@ -27,17 +27,13 @@ var ConfigPath string
 
 const (
 	hostKey  = "host"
-	portKey  = "port"
 	tokenKey = "token"
-	emailKey = "email"
 )
 
 // Config holds the Glean API credentials and connection settings.
 type Config struct {
 	GleanHost         string `json:"host"`
-	GleanPort         string `json:"port"`
 	GleanToken        string `json:"token"`
-	GleanEmail        string `json:"email"`
 	OAuthClientID     string `json:"oauth_client_id,omitempty"`
 	OAuthClientSecret string `json:"oauth_client_secret,omitempty"`
 }
@@ -67,7 +63,7 @@ func ValidateAndTransformHost(host string) (string, error) {
 }
 
 // LoadConfig retrieves configuration using the following priority order:
-//  1. Environment variables (GLEAN_API_TOKEN, GLEAN_HOST, GLEAN_EMAIL, GLEAN_PORT)
+//  1. Environment variables (GLEAN_API_TOKEN, GLEAN_HOST)
 //  2. System keyring
 //  3. ~/.glean/config.json
 func LoadConfig() (*Config, error) {
@@ -77,17 +73,11 @@ func LoadConfig() (*Config, error) {
 	if cfg.GleanHost == "" {
 		cfg.GleanHost = keyringCfg.GleanHost
 	}
-	if cfg.GleanPort == "" {
-		cfg.GleanPort = keyringCfg.GleanPort
-	}
 	if cfg.GleanToken == "" {
 		cfg.GleanToken = keyringCfg.GleanToken
 	}
-	if cfg.GleanEmail == "" {
-		cfg.GleanEmail = keyringCfg.GleanEmail
-	}
 
-	if cfg.GleanHost == "" || cfg.GleanToken == "" || cfg.GleanEmail == "" {
+	if cfg.GleanHost == "" || cfg.GleanToken == "" {
 		fileCfg, err := loadFromFile()
 		if err != nil {
 			return nil, err
@@ -95,14 +85,14 @@ func LoadConfig() (*Config, error) {
 		if cfg.GleanHost == "" {
 			cfg.GleanHost = fileCfg.GleanHost
 		}
-		if cfg.GleanPort == "" {
-			cfg.GleanPort = fileCfg.GleanPort
-		}
 		if cfg.GleanToken == "" {
 			cfg.GleanToken = fileCfg.GleanToken
 		}
-		if cfg.GleanEmail == "" {
-			cfg.GleanEmail = fileCfg.GleanEmail
+		if cfg.OAuthClientID == "" {
+			cfg.OAuthClientID = fileCfg.OAuthClientID
+		}
+		if cfg.OAuthClientSecret == "" {
+			cfg.OAuthClientSecret = fileCfg.OAuthClientSecret
 		}
 	}
 
@@ -119,24 +109,12 @@ func loadFromEnv() *Config {
 	if v := os.Getenv("GLEAN_HOST"); v != "" {
 		cfg.GleanHost = v
 	}
-	if v := os.Getenv("GLEAN_PORT"); v != "" {
-		cfg.GleanPort = v
-	}
-	if v := os.Getenv("GLEAN_EMAIL"); v != "" {
-		cfg.GleanEmail = v
-	}
-	if v := os.Getenv("GLEAN_OAUTH_CLIENT_ID"); v != "" {
-		cfg.OAuthClientID = v
-	}
-	if v := os.Getenv("GLEAN_OAUTH_CLIENT_SECRET"); v != "" {
-		cfg.OAuthClientSecret = v
-	}
 	return cfg
 }
 
-// SaveConfig stores configuration in both the system keyring and file storage.
+// SaveConfig stores host and token in both the system keyring and file storage.
 // It returns an error only if both storage methods fail.
-func SaveConfig(host, port, token, email string) error {
+func SaveConfig(host, token string) error {
 	if host != "" {
 		validHost, err := ValidateAndTransformHost(host)
 		if err != nil {
@@ -151,18 +129,8 @@ func SaveConfig(host, port, token, email string) error {
 			keyringErr = err
 		}
 	}
-	if port != "" {
-		if err := keyringImpl.Set(ServiceName, portKey, port); err != nil {
-			keyringErr = err
-		}
-	}
 	if token != "" {
 		if err := keyringImpl.Set(ServiceName, tokenKey, token); err != nil {
-			keyringErr = err
-		}
-	}
-	if email != "" {
-		if err := keyringImpl.Set(ServiceName, emailKey, email); err != nil {
 			keyringErr = err
 		}
 	}
@@ -176,14 +144,8 @@ func SaveConfig(host, port, token, email string) error {
 	if host != "" {
 		cfg.GleanHost = host
 	}
-	if port != "" {
-		cfg.GleanPort = port
-	}
 	if token != "" {
 		cfg.GleanToken = token
-	}
-	if email != "" {
-		cfg.GleanEmail = email
 	}
 
 	if err := saveToFile(cfg); err != nil && keyringErr != nil {
@@ -193,22 +155,6 @@ func SaveConfig(host, port, token, email string) error {
 	return nil
 }
 
-// SaveOAuthClient persists the OAuth client ID and secret to the config file.
-// It merges with existing file config so other fields are preserved.
-func SaveOAuthClient(clientID, clientSecret string) error {
-	cfg := &Config{}
-	if existing, err := loadFromFile(); err == nil {
-		cfg = existing
-	}
-	if clientID != "" {
-		cfg.OAuthClientID = clientID
-	}
-	if clientSecret != "" {
-		cfg.OAuthClientSecret = clientSecret
-	}
-	return saveToFile(cfg)
-}
-
 // ClearConfig removes all stored configuration from both keyring and file storage.
 func ClearConfig() error {
 	var keyringErr error
@@ -216,13 +162,7 @@ func ClearConfig() error {
 	if err := keyringImpl.Delete(ServiceName, hostKey); err != nil && err != keyring.ErrNotFound {
 		keyringErr = err
 	}
-	if err := keyringImpl.Delete(ServiceName, portKey); err != nil && err != keyring.ErrNotFound {
-		keyringErr = err
-	}
 	if err := keyringImpl.Delete(ServiceName, tokenKey); err != nil && err != keyring.ErrNotFound {
-		keyringErr = err
-	}
-	if err := keyringImpl.Delete(ServiceName, emailKey); err != nil && err != keyring.ErrNotFound {
 		keyringErr = err
 	}
 
@@ -273,16 +213,8 @@ func loadFromKeyring() *Config {
 		cfg.GleanHost = host
 	}
 
-	if port, err := keyringImpl.Get(ServiceName, portKey); err == nil {
-		cfg.GleanPort = port
-	}
-
 	if token, err := keyringImpl.Get(ServiceName, tokenKey); err == nil {
 		cfg.GleanToken = token
-	}
-
-	if email, err := keyringImpl.Get(ServiceName, emailKey); err == nil {
-		cfg.GleanEmail = email
 	}
 
 	return cfg

@@ -66,21 +66,6 @@ glean chat --json '{"messages":[{"author":"USER","messageType":"CONTENT","fragme
 	})
 
 	schema.Register(schema.CommandSchema{
-		Command:     "config",
-		Description: "Manage Glean CLI configuration (host, token, email).",
-		Flags: map[string]schema.FlagSchema{
-			"--host":  {Type: "string", Description: "Glean instance hostname or short name (e.g. linkedin)"},
-			"--port":  {Type: "string", Description: "Optional port override"},
-			"--token": {Type: "string", Description: "Glean API token"},
-			"--email": {Type: "string", Description: "Email for X-Scio-Actas header (impersonation)"},
-			"--show":  {Type: "boolean", Default: false, Description: "Show current configuration"},
-			"--clear": {Type: "boolean", Default: false, Description: "Clear all stored configuration"},
-		},
-		Example: `glean config --host linkedin --token mytoken
-GLEAN_API_TOKEN=mytoken GLEAN_HOST=linkedin glean search "test"`,
-	})
-
-	schema.Register(schema.CommandSchema{
 		Command:     "version",
 		Description: "Print the glean CLI version string.",
 		Flags:       map[string]schema.FlagSchema{},

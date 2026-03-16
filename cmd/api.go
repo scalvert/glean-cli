@@ -156,9 +156,6 @@ func apiBaseURL(cfg *config.Config) string {
 	if host != "" && !strings.Contains(host, ".") {
 		host += "-be.glean.com"
 	}
-	if cfg.GleanPort != "" {
-		return fmt.Sprintf("https://%s:%s", host, cfg.GleanPort)
-	}
 	return fmt.Sprintf("https://%s", host)
 }
 
@@ -196,9 +193,6 @@ func rawAPIRequest(ctx context.Context, cfg *config.Config, method, endpoint str
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+token)
 	req.Header.Set("X-Glean-Auth-Type", "string")
-	if cfg.GleanEmail != "" {
-		req.Header.Set("X-Scio-Actas", cfg.GleanEmail)
-	}
 
 	httpClient := &http.Client{Timeout: 30 * time.Second}
 	httpResp, err := httpClient.Do(req)
@@ -243,9 +237,6 @@ func previewRequest(cmd *cobra.Command, cfg *config.Config, method, endpoint str
 	}
 	if token != "" {
 		fmt.Fprintf(w, "  Authorization: Bearer %s\n", config.MaskToken(token))
-	}
-	if cfg.GleanEmail != "" {
-		fmt.Fprintf(w, "  X-Scio-Actas: %s\n", cfg.GleanEmail)
 	}
 	fmt.Fprintf(w, "  X-Glean-Auth-Type: string\n")
 

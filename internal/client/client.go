@@ -5,7 +5,6 @@ package client
 
 import (
 	"fmt"
-	"net/http"
 	"strings"
 
 	glean "github.com/gleanwork/api-client-go"
@@ -43,10 +42,6 @@ func New(cfg *config.Config) (*glean.Glean, error) {
 		glean.WithSecurity(token),
 	}
 
-	if cfg.GleanEmail != "" {
-		opts = append(opts, glean.WithClient(actasClient(cfg.GleanEmail)))
-	}
-
 	return glean.New(opts...), nil
 }
 
@@ -78,20 +73,4 @@ func extractInstance(host string) string {
 		return strings.SplitN(host, ".", 2)[0]
 	}
 	return host
-}
-
-// actasHTTPClient wraps the default HTTP client to inject the X-Scio-Actas header
-// required for delegated/impersonation requests.
-type actasHTTPClient struct {
-	inner http.Client
-	email string
-}
-
-func (c *actasHTTPClient) Do(req *http.Request) (*http.Response, error) {
-	req.Header.Set("X-Scio-Actas", c.email)
-	return c.inner.Do(req)
-}
-
-func actasClient(email string) *actasHTTPClient {
-	return &actasHTTPClient{email: email}
 }

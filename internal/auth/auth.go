@@ -127,7 +127,7 @@ func Login(ctx context.Context) error {
 	return nil
 }
 
-// Logout removes stored OAuth tokens for the configured host.
+// Logout removes stored OAuth tokens and clears the config file.
 func Logout(ctx context.Context) error {
 	cfg, err := config.LoadConfig()
 	if err != nil || cfg.GleanHost == "" {
@@ -135,6 +135,10 @@ func Logout(ctx context.Context) error {
 	}
 	if err := DeleteTokens(cfg.GleanHost); err != nil {
 		return fmt.Errorf("removing tokens: %w", err)
+	}
+	// Also wipe the config file so any stored API token / host is cleared.
+	if config.ConfigPath != "" {
+		_ = os.Remove(config.ConfigPath)
 	}
 	fmt.Printf("✓ Logged out from Glean (%s)\n", cfg.GleanHost)
 	return nil
@@ -144,13 +148,14 @@ func Logout(ctx context.Context) error {
 func Status(ctx context.Context) error {
 	cfg, _ := config.LoadConfig()
 	if cfg == nil || cfg.GleanHost == "" {
-		fmt.Println("No Glean host configured.")
-		fmt.Println("Run 'glean config --host <host>' or 'glean auth login' to get started.")
+		fmt.Println("Not configured.")
+		fmt.Println("Run 'glean auth login' to authenticate.")
 		return nil
 	}
 
 	if cfg.GleanToken != "" {
-		fmt.Printf("✓ Authenticated via API token (%s)\n", cfg.GleanHost)
+		masked := config.MaskToken(cfg.GleanToken)
+		fmt.Printf("✓ Authenticated via API token\n  Host:  %s\n  Token: %s\n", cfg.GleanHost, masked)
 		return nil
 	}
 
@@ -289,7 +294,7 @@ func resolveHost(ctx context.Context) (string, error) {
 	host = strings.TrimPrefix(host, "http://")
 	host = strings.SplitN(host, "/", 2)[0]
 
-	_ = config.SaveConfig(host, "", "", "")
+	_ = config.SaveConfig(host, "")
 	return host, nil
 }
 
@@ -361,7 +366,7 @@ func dcrOrStaticClient(ctx context.Context, host, registrationEndpoint, redirect
 		return cfg.OAuthClientID, cfg.OAuthClientSecret, nil
 	}
 
-	return "", "", fmt.Errorf("no OAuth client available — set a client ID via 'glean config --oauth-client-id <id>'")
+	return "", "", fmt.Errorf("no OAuth client available — dynamic client registration failed and no static client is configured")
 }
 
 // resolveScopes returns the appropriate OAuth scopes for the given provider.
@@ -512,7 +517,7 @@ func promptForAPIToken(host string) error {
 	if token == "" {
 		return fmt.Errorf("no token provided")
 	}
-	if err := config.SaveConfig(host, "", token, ""); err != nil {
+	if err := config.SaveConfig(host, token); err != nil {
 		return fmt.Errorf("saving token: %w", err)
 	}
 	fmt.Printf("✓ API token saved for %s\n", host)

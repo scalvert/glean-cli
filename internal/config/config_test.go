@@ -166,7 +166,7 @@ func TestConfigOperations(t *testing.T) {
 
 	t.Run("save and load config with working keyring", func(t *testing.T) {
 		// Save config
-		err := SaveConfig("linkedin", "", "test-token", "test@example.com")
+		err := SaveConfig("linkedin", "test-token")
 		require.NoError(t, err)
 
 		// Load config
@@ -175,7 +175,6 @@ func TestConfigOperations(t *testing.T) {
 
 		assert.Equal(t, "linkedin-be.glean.com", cfg.GleanHost)
 		assert.Equal(t, "test-token", cfg.GleanToken)
-		assert.Equal(t, "test@example.com", cfg.GleanEmail)
 
 		// Verify config file was also created
 		assert.FileExists(t, configPath)
@@ -183,7 +182,7 @@ func TestConfigOperations(t *testing.T) {
 
 	t.Run("fallback to config file when keyring fails", func(t *testing.T) {
 		// First save config successfully
-		err := SaveConfig("linkedin", "", "test-token", "test@example.com")
+		err := SaveConfig("linkedin", "test-token")
 		require.NoError(t, err)
 
 		// Now simulate keyring failure
@@ -195,12 +194,11 @@ func TestConfigOperations(t *testing.T) {
 
 		assert.Equal(t, "linkedin-be.glean.com", cfg.GleanHost)
 		assert.Equal(t, "test-token", cfg.GleanToken)
-		assert.Equal(t, "test@example.com", cfg.GleanEmail)
 	})
 
 	t.Run("clear config removes from both storages", func(t *testing.T) {
 		// First save some config
-		err := SaveConfig("linkedin", "", "test-token", "test@example.com")
+		err := SaveConfig("linkedin", "test-token")
 		require.NoError(t, err)
 
 		// Reset mock error
@@ -223,7 +221,6 @@ func TestConfigOperations(t *testing.T) {
 		require.NoError(t, err)
 		assert.Empty(t, cfg.GleanHost)
 		assert.Empty(t, cfg.GleanToken)
-		assert.Empty(t, cfg.GleanEmail)
 	})
 
 	t.Run("save with both storages failing", func(t *testing.T) {
@@ -249,7 +246,7 @@ func TestConfigOperations(t *testing.T) {
 			os.MkdirAll(configDir, 0700)
 		}()
 
-		err = SaveConfig("linkedin", "", "test-token", "test@example.com")
+		err = SaveConfig("linkedin", "test-token")
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "failed to save config")
 		assert.Contains(t, err.Error(), "keyring error")
@@ -277,7 +274,7 @@ func TestLoadConfigEnvPriority(t *testing.T) {
 	})
 
 	t.Run("falls through to keyring when env vars absent", func(t *testing.T) {
-		require.NoError(t, SaveConfig("linkedin", "", "keyring-token", ""))
+		require.NoError(t, SaveConfig("linkedin", "keyring-token"))
 
 		cfg, err := LoadConfig()
 		require.NoError(t, err)
@@ -291,7 +288,7 @@ func TestLoadConfig_EnvTokenWithKeyringHost(t *testing.T) {
 	defer cleanupKeyring()
 	defer cleanupConfig()
 
-	err := SaveConfig("myhost.glean.com", "", "", "")
+	err := SaveConfig("myhost.glean.com", "")
 	require.NoError(t, err)
 	t.Setenv("GLEAN_API_TOKEN", "env-token")
 
@@ -326,7 +323,6 @@ func TestLoadFromFile(t *testing.T) {
 		require.NoError(t, err)
 		assert.Empty(t, cfg.GleanHost)
 		assert.Empty(t, cfg.GleanToken)
-		assert.Empty(t, cfg.GleanEmail)
 	})
 
 	t.Run("load invalid JSON returns error", func(t *testing.T) {
@@ -342,7 +338,6 @@ func TestLoadFromFile(t *testing.T) {
 		cfg := Config{
 			GleanHost:  "test-be.glean.com",
 			GleanToken: "test-token",
-			GleanEmail: "test@example.com",
 		}
 		data, err := json.MarshalIndent(cfg, "", "  ")
 		require.NoError(t, err)

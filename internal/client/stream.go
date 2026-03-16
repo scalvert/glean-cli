@@ -70,10 +70,6 @@ func StreamChat(ctx context.Context, cfg *config.Config, req components.ChatRequ
 	httpReq.Header.Set("Accept", "text/event-stream")
 	httpReq.Header.Set("Authorization", "Bearer "+token)
 
-	if cfg.GleanEmail != "" {
-		httpReq.Header.Set("X-Scio-Actas", cfg.GleanEmail)
-	}
-
 	resp, err := streamHTTPClient.Do(httpReq)
 	if err != nil {
 		return nil, fmt.Errorf("chat request failed: %w", err)

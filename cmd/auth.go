@@ -32,9 +32,6 @@ func newAuthLoginCmd() *cobra.Command {
 			If your Glean instance supports OAuth with Dynamic Client Registration
 			(most instances), no additional configuration is needed.
 
-			For instances with a pre-registered OAuth app, configure first:
-			  glean config --oauth-client-id <id>
-
 			For CI/CD environments, set GLEAN_API_TOKEN instead of using this command.
 
 			Examples:
@@ -52,9 +49,8 @@ func newAuthLogoutCmd() *cobra.Command {
 		Use:   "logout",
 		Short: "Remove stored Glean credentials",
 		Long: heredoc.Doc(`
-			Removes the OAuth token stored by 'glean auth login'.
-
-			To clear a static API token, use 'glean config --clear' instead.
+			Removes all stored Glean credentials — both OAuth tokens and any saved
+			API token or host stored in ~/.glean/config.json.
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return auth.Logout(cmd.Context())

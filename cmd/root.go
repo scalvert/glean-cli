@@ -106,7 +106,6 @@ func NewCmdRoot() *cobra.Command {
 		NewCmdAuth(),
 		NewCmdSearch(),
 		NewCmdChat(),
-		NewCmdConfig(),
 		NewCmdAPI(),
 		NewCmdSchema(),
 		NewCmdVersion(),
