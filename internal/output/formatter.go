@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"reflect"
+
+	"github.com/gleanwork/api-client-go/models/components"
 )
 
 // Format constants for --output flag values.
@@ -26,8 +28,19 @@ func WriteJSON(w io.Writer, v any) error {
 }
 
 // WriteNDJSON marshals each element of a slice as a separate JSON line to w.
+// For SearchResponse, it emits one result per line instead of the full envelope.
 // If v is not a slice, it writes the whole value as a single line.
 func WriteNDJSON(w io.Writer, v any) error {
+	// For search responses, emit one result per line
+	if sr, ok := v.(*components.SearchResponse); ok && sr != nil {
+		for _, result := range sr.Results {
+			if err := json.NewEncoder(w).Encode(result); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+
 	rv := reflect.ValueOf(v)
 	if rv.Kind() == reflect.Ptr {
 		if rv.IsNil() {

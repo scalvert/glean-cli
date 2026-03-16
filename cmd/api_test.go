@@ -5,6 +5,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/scalvert/glean-cli/internal/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -40,6 +41,21 @@ func TestAPICommand_Preview_WritesToCmdOut(t *testing.T) {
 	// Preview output must appear in buf (cmd.OutOrStdout())
 	// It should contain the HTTP method and endpoint info
 	assert.NotEmpty(t, buf.String(), "preview output should be written to cmd.OutOrStdout()")
+}
+
+func TestAPICommandPreviewShowsAuthHeader(t *testing.T) {
+	cleanup := testutils.SetupTestConfig(t)
+	defer cleanup()
+
+	b := bytes.NewBufferString("")
+	cmd := NewCmdAPI()
+	cmd.SetOut(b)
+	cmd.SetArgs([]string{"--preview", "--method", "POST", "--raw-field", `{"query":"test"}`, "search"})
+	err := cmd.Execute()
+	require.NoError(t, err)
+	out := b.String()
+	assert.Contains(t, out, "Authorization:", "auth header must appear in preview")
+	assert.NotContains(t, out, "Bearer \n", "auth token must not be empty")
 }
 
 func TestApiCmd(t *testing.T) {

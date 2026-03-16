@@ -13,6 +13,7 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/briandowns/spinner"
+	"github.com/scalvert/glean-cli/internal/auth"
 	"github.com/scalvert/glean-cli/internal/config"
 	"github.com/scalvert/glean-cli/internal/output"
 	"github.com/spf13/cobra"
@@ -187,8 +188,13 @@ func rawAPIRequest(ctx context.Context, cfg *config.Config, method, endpoint str
 		return nil, fmt.Errorf("error creating request: %w", err)
 	}
 
+	token := cfg.GleanToken
+	if token == "" {
+		token = auth.LoadOAuthToken(cfg.GleanHost)
+	}
+
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+cfg.GleanToken)
+	req.Header.Set("Authorization", "Bearer "+token)
 	req.Header.Set("X-Glean-Auth-Type", "string")
 	if cfg.GleanEmail != "" {
 		req.Header.Set("X-Scio-Actas", cfg.GleanEmail)
@@ -231,8 +237,12 @@ func previewRequest(cmd *cobra.Command, cfg *config.Config, method, endpoint str
 	fmt.Fprintf(w, "Request URL: %s\n", apiFullURL(cfg, endpoint))
 	fmt.Fprintf(w, "\nRequest Headers:\n")
 	fmt.Fprintf(w, "  Content-Type: application/json\n")
-	if cfg.GleanToken != "" {
-		fmt.Fprintf(w, "  Authorization: Bearer %s\n", config.MaskToken(cfg.GleanToken))
+	token := cfg.GleanToken
+	if token == "" {
+		token = auth.LoadOAuthToken(cfg.GleanHost)
+	}
+	if token != "" {
+		fmt.Fprintf(w, "  Authorization: Bearer %s\n", config.MaskToken(token))
 	}
 	if cfg.GleanEmail != "" {
 		fmt.Fprintf(w, "  X-Scio-Actas: %s\n", cfg.GleanEmail)

@@ -5,6 +5,7 @@ import (
 
 	"github.com/MakeNowJust/heredoc"
 	"github.com/scalvert/glean-cli/internal/config"
+	"github.com/scalvert/glean-cli/internal/output"
 	"github.com/spf13/cobra"
 )
 
@@ -29,6 +30,7 @@ type ConfigOptions struct {
 // and connection settings, with support for secure storage.
 func NewCmdConfig() *cobra.Command {
 	opts := ConfigOptions{}
+	var outputFormat string
 
 	cmd := &cobra.Command{
 		Use:   "config",
@@ -61,6 +63,10 @@ func NewCmdConfig() *cobra.Command {
 				cfg, err := config.LoadConfig()
 				if err != nil {
 					return fmt.Errorf("failed to access keyring: %w", err)
+				}
+
+				if outputFormat == "json" {
+					return output.WriteJSON(cmd.OutOrStdout(), cfg)
 				}
 
 				fmt.Println("Current configuration:")
@@ -113,6 +119,7 @@ func NewCmdConfig() *cobra.Command {
 	cmd.Flags().StringVar(&opts.oauthClientSecret, "oauth-client-secret", "", "OAuth client secret (for confidential OAuth apps)")
 	cmd.Flags().BoolVar(&opts.clear, "clear", false, "Clear all stored credentials")
 	cmd.Flags().BoolVar(&opts.show, "show", false, "Show current configuration")
+	cmd.Flags().StringVar(&outputFormat, "output", "text", "Output format: text, json")
 
 	return cmd
 }
