@@ -1,4 +1,4 @@
-# <img src="demo/glean-logo.png" width="28" height="28" style="vertical-align: middle; margin-right: 4px"> Glean CLI (Unofficial)
+# <img src="demo/glean-logo.png" width="28" height="28" style="vertical-align: middle; margin-right: 4px"> Glean CLI
 
 > Work seamlessly with Glean from your command line.
 
@@ -19,13 +19,13 @@ curl -fsSL https://raw.githubusercontent.com/scalvert/glean-cli/main/install.sh 
 ## Quick Start
 
 ```bash
-# 1. Configure credentials
-#    --host accepts either the short instance name or the full backend hostname:
-#      short:  your-company          (Glean appends -be.glean.com automatically)
-#      full:   your-company-be.glean.com
-glean config --host your-company --token your-token
+# 0. Authenticate (recommended: OAuth via browser)
+glean auth login
 
-# 2. Search
+# — OR — configure with an API token:
+glean config --host your-company-be.glean.com --token YOUR_API_TOKEN
+
+# 1. Search
 glean search "vacation policy"
 ```
 
@@ -60,7 +60,7 @@ glean search --output json "meeting notes"
 glean search --output ndjson "engineering docs" | head -3 | jq .document.title
 
 # Project specific fields
-glean search --fields "document.title,document.url" "onboarding"
+glean search --fields "results.document.title,results.document.url" "onboarding"
 
 # Filter by datasource or document type
 glean search --datasource confluence "project planning"
@@ -78,7 +78,7 @@ Key flags:
 | Flag | Description |
 |------|-------------|
 | `--output` | `json` (default), `ndjson`, or `text` |
-| `--fields` | Comma-separated dot-path projection (e.g. `document.title,document.url`) |
+| `--fields` | Comma-separated dot-path projection (e.g. `results.document.title,results.document.url`) |
 | `--json` | Complete JSON request body; overrides all other flags |
 | `--dry-run` | Print request body without sending |
 | `--datasource` | Filter by datasource (repeatable, `-d`) |
@@ -152,8 +152,7 @@ Key flags:
 Manage credentials and connection settings.
 
 ```bash
-# Set host — either short name or full hostname works
-glean config --host linkedin
+# Set host (use the full backend hostname)
 glean config --host linkedin-be.glean.com
 
 # Set API token
@@ -163,7 +162,7 @@ glean config --token your-token
 glean config --email you@company.com
 
 # Set multiple values at once
-glean config --host your-company --token your-token
+glean config --host your-company-be.glean.com --token your-token
 
 # Show current configuration (token is masked)
 glean config --show
