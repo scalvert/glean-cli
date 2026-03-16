@@ -32,10 +32,14 @@ Example:
 
 func newVerificationListCmd() *cobra.Command {
 	var outputFormat string
+	var dryRun bool
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: "List verifications pending review",
 		RunE: func(cmd *cobra.Command, args []string) error {
+			if dryRun {
+				return output.WriteJSON(cmd.OutOrStdout(), struct{}{})
+			}
 			sdk, err := gleanClient.NewFromConfig()
 			if err != nil {
 				return err
@@ -48,6 +52,7 @@ func newVerificationListCmd() *cobra.Command {
 		},
 	}
 	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
+	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
 	return cmd
 }
 

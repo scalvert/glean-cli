@@ -35,19 +35,23 @@ Example:
 
 func newPinsListCmd() *cobra.Command {
 	var jsonPayload, outputFormat string
+	var dryRun bool
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: "List pins",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			sdk, err := gleanClient.NewFromConfig()
-			if err != nil {
-				return err
-			}
 			var req operations.ListpinsRequestBody
 			if jsonPayload != "" {
 				if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
 					return fmt.Errorf("invalid --json: %w", err)
 				}
+			}
+			if dryRun {
+				return output.WriteJSON(cmd.OutOrStdout(), req)
+			}
+			sdk, err := gleanClient.NewFromConfig()
+			if err != nil {
+				return err
 			}
 			resp, err := sdk.Client.Pins.List(cmd.Context(), req, nil)
 			if err != nil {
@@ -58,6 +62,7 @@ func newPinsListCmd() *cobra.Command {
 	}
 	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body")
 	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
+	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
 	return cmd
 }
 
