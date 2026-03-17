@@ -65,7 +65,7 @@ func newVerificationVerifyCmd() *cobra.Command {
 		Short: "Mark a document as verified",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.VerifyRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
@@ -99,7 +99,7 @@ func newVerificationRemindCmd() *cobra.Command {
 		Short: "Send a verification reminder",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.ReminderRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {

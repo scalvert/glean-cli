@@ -147,7 +147,7 @@ fi
 git push origin "$version" --force
 
 echo "Release process started!"
-echo "Monitor the release at https://github.com/scalvert/glean-cli/actions"
+echo "Monitor the release at https://github.com/gleanwork/glean-cli/actions"
 '''
 
 [tasks.demo]

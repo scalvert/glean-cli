@@ -73,7 +73,7 @@ func newShortcutsGetCmd() *cobra.Command {
 		Short: "Get a shortcut by alias or ID",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			sdk, err := gleanClient.NewFromConfig()
 			if err != nil {
@@ -103,7 +103,7 @@ func newShortcutsCreateCmd() *cobra.Command {
 		Short: "Create a shortcut",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.CreateShortcutRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
@@ -137,7 +137,7 @@ func newShortcutsUpdateCmd() *cobra.Command {
 		Short: "Update a shortcut",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.UpdateShortcutRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
@@ -171,7 +171,7 @@ func newShortcutsDeleteCmd() *cobra.Command {
 		Short: "Delete a shortcut",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.DeleteShortcutRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {

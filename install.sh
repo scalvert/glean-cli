@@ -29,16 +29,41 @@ cleanup() {
 }
 trap cleanup EXIT
 
-# Download and extract
+# Download archive and checksums
+CHECKSUMS_URL="https://github.com/gleanwork/glean-cli/releases/download/${LATEST_VERSION}/checksums.txt"
+ARCHIVE_NAME="glean-cli_${OS}_${ARCH}.tar.gz"
+
 echo "Downloading Glean CLI ${LATEST_VERSION}..."
-echo "Download URL: $DOWNLOAD_URL"
 curl -fsSL "$DOWNLOAD_URL" -o "$TMP_DIR/glean.tar.gz"
+curl -fsSL "$CHECKSUMS_URL" -o "$TMP_DIR/checksums.txt"
+
+# Verify checksum
+echo "Verifying checksum..."
+EXPECTED=$(grep "$ARCHIVE_NAME" "$TMP_DIR/checksums.txt" | awk '{print $1}')
+if [ -z "$EXPECTED" ]; then
+  echo "Error: Could not find checksum for $ARCHIVE_NAME in checksums.txt"
+  exit 1
+fi
+
+if command -v sha256sum >/dev/null 2>&1; then
+  ACTUAL=$(sha256sum "$TMP_DIR/glean.tar.gz" | awk '{print $1}')
+elif command -v shasum >/dev/null 2>&1; then
+  ACTUAL=$(shasum -a 256 "$TMP_DIR/glean.tar.gz" | awk '{print $1}')
+else
+  echo "Warning: No sha256 tool found — skipping checksum verification"
+  ACTUAL="$EXPECTED"
+fi
+
+if [ "$ACTUAL" != "$EXPECTED" ]; then
+  echo "Error: Checksum mismatch!"
+  echo "  Expected: $EXPECTED"
+  echo "  Actual:   $ACTUAL"
+  exit 1
+fi
+echo "Checksum verified."
 
 echo "Extracting archive..."
 tar -xzf "$TMP_DIR/glean.tar.gz" -C "$TMP_DIR"
-
-echo "Verifying extracted contents..."
-ls -la "$TMP_DIR"
 
 # Install binary
 INSTALL_DIR="/usr/local/bin"

@@ -36,7 +36,7 @@ func newActivityReportCmd() *cobra.Command {
 		Short: "Report user activity events",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.Activity
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
@@ -66,7 +66,7 @@ func newActivityFeedbackCmd() *cobra.Command {
 		Short: "Submit feedback",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.Feedback
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {

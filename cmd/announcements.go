@@ -37,7 +37,7 @@ func newAnnouncementsCreateCmd() *cobra.Command {
 		Short: "Create an announcement",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.CreateAnnouncementRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
@@ -71,7 +71,7 @@ func newAnnouncementsUpdateCmd() *cobra.Command {
 		Short: "Update an announcement",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.UpdateAnnouncementRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
@@ -105,7 +105,7 @@ func newAnnouncementsDeleteCmd() *cobra.Command {
 		Short: "Delete an announcement",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.DeleteAnnouncementRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {

@@ -75,7 +75,7 @@ func newCollectionsCreateCmd() *cobra.Command {
 		Short: "Create a collection",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.CreateCollectionRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
@@ -109,7 +109,7 @@ func newCollectionsDeleteCmd() *cobra.Command {
 		Short: "Delete a collection",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.DeleteCollectionRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
@@ -139,7 +139,7 @@ func newCollectionsUpdateCmd() *cobra.Command {
 		Short: "Update a collection",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.EditCollectionRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
@@ -173,7 +173,7 @@ func newCollectionsAddItemsCmd() *cobra.Command {
 		Short: "Add items to a collection",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.AddCollectionItemsRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
@@ -207,7 +207,7 @@ func newCollectionsDeleteItemCmd() *cobra.Command {
 		Short: "Delete an item from a collection",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.DeleteCollectionItemRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {

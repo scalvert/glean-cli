@@ -8,7 +8,7 @@ updates:
       time: "09:00"
     open-pull-requests-limit: 10
     reviewers:
-      - "scalvert"
+      - "gleanwork/glean-cli"
     labels:
       - "dependencies"
       - "go"
@@ -24,7 +24,7 @@ updates:
       time: "09:00"
     open-pull-requests-limit: 5
     reviewers:
-      - "scalvert"
+      - "gleanwork/glean-cli"
     labels:
       - "dependencies"
       - "github-actions"

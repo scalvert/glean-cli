@@ -73,7 +73,7 @@ func newPinsGetCmd() *cobra.Command {
 		Short: "Get a pin",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.GetPinRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
@@ -103,7 +103,7 @@ func newPinsCreateCmd() *cobra.Command {
 		Short: "Create a pin",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.PinRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
@@ -137,7 +137,7 @@ func newPinsUpdateCmd() *cobra.Command {
 		Short: "Update a pin",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.EditPinRequest
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
@@ -171,7 +171,7 @@ func newPinsRemoveCmd() *cobra.Command {
 		Short: "Remove a pin",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" {
-				return fmt.Errorf("--json is required")
+				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
 			var req components.Unpin
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
