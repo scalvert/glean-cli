@@ -18,7 +18,7 @@ require (
 	github.com/charmbracelet/glamour v1.0.0
 	github.com/coreos/go-oidc/v3 v3.17.0
 	github.com/fatih/color v1.18.0
-	github.com/gleanwork/api-client-go v0.11.30
+	github.com/gleanwork/api-client-go v0.11.31
 	github.com/int128/oauth2cli v1.15.1
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	github.com/stretchr/testify v1.10.0
