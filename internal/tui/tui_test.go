@@ -19,7 +19,7 @@ import (
 func newTestModel(t *testing.T) *Model {
 	t.Helper()
 	cfg := &config.Config{GleanHost: "test-be.glean.com", GleanToken: "tok"}
-	m, err := New(cfg, &Session{}, "test@example.com · test", context.Background())
+	m, err := New(cfg, &Session{}, "test@example.com · test", "dev", context.Background())
 	require.NoError(t, err)
 	// Simulate a terminal size so layout calculations are predictable.
 	m.width = 120

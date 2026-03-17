@@ -87,7 +87,11 @@ func (m *Model) headerView() string {
 
 	var sb strings.Builder
 	sb.WriteString("\n")
-	sb.WriteString("  " + styleStatusAccent.Render("Glean CLI") + "\n")
+	title := "Glean CLI"
+	if m.version != "" && m.version != "dev" {
+		title += "  " + styleTagline.Render(m.version)
+	}
+	sb.WriteString("  " + styleStatusAccent.Render(title) + "\n")
 	if email != "" {
 		sb.WriteString("  " + styleTagline.Render("Logged in as "+email) + "\n")
 	}

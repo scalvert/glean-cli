@@ -68,6 +68,7 @@ type Model struct {
 	session            *Session
 	ctx                context.Context
 	identity           string                   // "email · host" shown in header + status
+	version            string                   // build-time version shown in header
 	conversationMsgs   []components.ChatMessage // full history sent on each turn (multi-turn context)
 	chatID             *string                  // Glean chatId — server manages conversation context
 	startTime          time.Time                // session start, for stats on quit
@@ -101,7 +102,7 @@ type Model struct {
 }
 
 // New creates a fully-initialized TUI model.
-func New(cfg *config.Config, session *Session, identity string, ctx context.Context) (*Model, error) {
+func New(cfg *config.Config, session *Session, identity, version string, ctx context.Context) (*Model, error) {
 	ta := textarea.New()
 	ta.Placeholder = "Message Glean…"
 	ta.Focus()
@@ -137,6 +138,7 @@ func New(cfg *config.Config, session *Session, identity string, ctx context.Cont
 		cfg:        cfg,
 		session:    session,
 		identity:   identity,
+		version:    version,
 		ctx:        ctx,
 		startTime:  time.Now(),
 		historyIdx: -1,
@@ -448,11 +450,13 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	m.textarea, taCmd = m.textarea.Update(msg)
 
-	// Grow the textarea vertically as content wraps, up to 6 lines.
-	// Shrink it back when the user deletes content.
+	// Grow the textarea vertically as content wraps, up to 6 visual rows.
+	// LineInfo().Height is the wrapped visual row count for the current line —
+	// correct even with InsertNewline disabled (unlike LineCount which counts
+	// logical lines and is always 1 when newlines are disabled).
 	if _, isKey := msg.(tea.KeyMsg); isKey {
 		const maxInputLines = 6
-		desired := m.textarea.LineCount()
+		desired := m.textarea.LineInfo().Height
 		if desired < 1 {
 			desired = 1
 		} else if desired > maxInputLines {

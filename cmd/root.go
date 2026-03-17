@@ -90,7 +90,7 @@ func NewCmdRoot() *cobra.Command {
 				}
 			}
 
-			model, err := tui.New(cfg, session, identity, cmd.Context())
+			model, err := tui.New(cfg, session, identity, cliVersion, cmd.Context())
 			if err != nil {
 				return fmt.Errorf("failed to create TUI: %w", err)
 			}
