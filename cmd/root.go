@@ -65,7 +65,7 @@ func NewCmdRoot() *cobra.Command {
 
 			// Validate credentials before opening the TUI.
 			if _, err := gleanClient.NewFromConfig(); err != nil {
-				return err
+				return authError(err)
 			}
 
 			// Always start with a fresh session. Prior conversation context
@@ -160,11 +160,29 @@ func NewCmdRoot() *cobra.Command {
 	return cmd
 }
 
+// errSilent is returned when we've already printed a user-friendly error
+// and don't want Cobra to print anything additional.
+var errSilent = fmt.Errorf("")
+
+// authError formats an authentication failure as a user-friendly message
+// written to stderr, then returns errSilent so Cobra prints nothing further.
+func authError(err error) error {
+	fmt.Fprintf(os.Stderr, "\nYou're not signed in to Glean.\n\n")
+	fmt.Fprintf(os.Stderr, "  Run:  glean auth login\n\n")
+	fmt.Fprintf(os.Stderr, "Or set environment variables:\n")
+	fmt.Fprintf(os.Stderr, "  export GLEAN_HOST=your-company-be.glean.com\n")
+	fmt.Fprintf(os.Stderr, "  export GLEAN_API_TOKEN=your-token\n\n")
+	_ = err // underlying error logged above; don't expose internal message
+	return errSilent
+}
+
 // Execute runs the root command and handles any errors.
 // It's the main entry point for the CLI application.
 func Execute() error {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		if err != errSilent {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		}
 		return err
 	}
 	return nil

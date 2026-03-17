@@ -447,6 +447,25 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	m.textarea, taCmd = m.textarea.Update(msg)
+
+	// Grow the textarea vertically as content wraps, up to 6 lines.
+	// Shrink it back when the user deletes content.
+	if _, isKey := msg.(tea.KeyMsg); isKey {
+		const maxInputLines = 6
+		desired := m.textarea.LineCount()
+		if desired < 1 {
+			desired = 1
+		} else if desired > maxInputLines {
+			desired = maxInputLines
+		}
+		if desired != m.textarea.Height() {
+			m.textarea.SetHeight(desired)
+			if m.conversationActive {
+				m.viewport.Height = m.maxViewportHeight()
+			}
+		}
+	}
+
 	// Key messages are routed to the viewport explicitly above (pgup, pgdown,
 	// up, down). Never pass typing events here — viewport handles keys like
 	// g, d, u which would cause content to jump while the user is typing.
@@ -701,8 +720,8 @@ func (m *Model) maxViewportHeight() int {
 	if m.width == 0 || m.height == 0 {
 		return 4
 	}
+	inputH := m.textarea.Height() + 2 // textarea rows + 2 border rows
 	const (
-		inputH  = 3 // 1-line textarea + 2 border rows
 		statusH = 1
 		spacerH = 2 // top + bottom delimiters
 	)
