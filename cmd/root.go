@@ -13,6 +13,7 @@ import (
 	gleanClient "github.com/gleanwork/glean-cli/internal/client"
 	"github.com/gleanwork/glean-cli/internal/config"
 	"github.com/gleanwork/glean-cli/internal/tui"
+	"github.com/gleanwork/glean-cli/internal/update"
 	"github.com/spf13/cobra"
 )
 
@@ -38,6 +39,12 @@ func NewCmdRoot() *cobra.Command {
 		`),
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			_ = verbosity // reserved for future debug logging
+		},
+		PersistentPostRun: func(cmd *cobra.Command, args []string) {
+			noticeCh := update.CheckAsync(cliVersion)
+			if notice := <-noticeCh; notice != "" {
+				fmt.Fprintf(os.Stderr, "\n%s\n", notice)
+			}
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := config.LoadConfig()
