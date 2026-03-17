@@ -19,11 +19,11 @@ require (
 	github.com/coreos/go-oidc/v3 v3.17.0
 	github.com/fatih/color v1.18.0
 	github.com/gleanwork/api-client-go v0.11.31
-	github.com/int128/oauth2cli v1.15.1
+	github.com/int128/oauth2cli v1.18.0
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	github.com/stretchr/testify v1.11.1
 	github.com/zalando/go-keyring v0.2.6
-	golang.org/x/oauth2 v0.28.0
+	golang.org/x/oauth2 v0.33.0
 	golang.org/x/term v0.36.0
 )
 

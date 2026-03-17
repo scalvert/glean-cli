@@ -89,11 +89,9 @@ func Login(ctx context.Context) error {
 	token, err := oauth2cli.GetToken(ctx, oauth2cli.Config{
 		OAuth2Config: oauthCfg,
 		State:        state,
-		// These two must match the redirect_uri registered via DCR exactly.
-		// oauth2cli overwrites oauthCfg.RedirectURL using RedirectURLHostname+port+
-		// LocalServerCallbackPath. Its defaults ("localhost", "") differ from our
-		// DCR registration ("127.0.0.1", "/callback"), causing a redirect_uri mismatch.
-		RedirectURLHostname:     "127.0.0.1",
+		// LocalServerBindAddress and LocalServerCallbackPath must match the
+		// redirect_uri registered via DCR exactly. oauth2cli constructs the
+		// redirect URL from LocalServerBindAddress (127.0.0.1:{port}) + path.
 		LocalServerCallbackPath: "/callback",
 		LocalServerBindAddress:  []string{fmt.Sprintf("127.0.0.1:%d", port)},
 		LocalServerReadyChan:    readyChan,
