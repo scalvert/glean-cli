@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/gleanwork/glean-cli/cmd"
+	"github.com/gleanwork/glean-cli/internal/client"
 )
 
 // version is set at build time via ldflags: -X main.version=<version>
@@ -12,6 +13,7 @@ var version = "dev"
 
 func main() {
 	cmd.SetVersion(version)
+	client.SetVersion(version)
 	if err := cmd.Execute(); err != nil {
 		os.Exit(1)
 	}

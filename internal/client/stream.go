@@ -69,6 +69,7 @@ func StreamChat(ctx context.Context, cfg *config.Config, req components.ChatRequ
 	httpReq.Header.Set("Content-Type", "application/json")
 	httpReq.Header.Set("Accept", "text/event-stream")
 	httpReq.Header.Set("Authorization", "Bearer "+token)
+	httpReq.Header.Set("User-Agent", "glean-cli/"+cliVersion)
 
 	resp, err := streamHTTPClient.Do(httpReq)
 	if err != nil {

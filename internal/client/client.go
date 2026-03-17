@@ -5,12 +5,39 @@ package client
 
 import (
 	"fmt"
+	"net/http"
 	"strings"
 
 	glean "github.com/gleanwork/api-client-go"
 	"github.com/gleanwork/glean-cli/internal/auth"
 	"github.com/gleanwork/glean-cli/internal/config"
 )
+
+// cliVersion is set at startup via SetVersion. Defaults to "dev" for local builds.
+var cliVersion = "dev"
+
+// SetVersion records the build-time version for use in the User-Agent header.
+func SetVersion(v string) { cliVersion = v }
+
+// Version returns the current CLI version string.
+func Version() string { return cliVersion }
+
+// userAgentTransport wraps an http.RoundTripper and appends the CLI identifier
+// to the User-Agent header on every request.
+type userAgentTransport struct {
+	base http.RoundTripper
+}
+
+func (t *userAgentTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	req = req.Clone(req.Context())
+	existing := req.Header.Get("User-Agent")
+	if existing != "" {
+		req.Header.Set("User-Agent", existing+" glean-cli/"+cliVersion)
+	} else {
+		req.Header.Set("User-Agent", "glean-cli/"+cliVersion)
+	}
+	return t.base.RoundTrip(req)
+}
 
 // New creates an authenticated Glean SDK client from the loaded configuration.
 //
@@ -40,6 +67,9 @@ func New(cfg *config.Config) (*glean.Glean, error) {
 	opts := []glean.SDKOption{
 		glean.WithInstance(instance),
 		glean.WithSecurity(token),
+		glean.WithClient(&http.Client{
+			Transport: &userAgentTransport{base: http.DefaultTransport},
+		}),
 	}
 
 	return glean.New(opts...), nil
