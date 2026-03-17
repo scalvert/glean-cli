@@ -31,6 +31,7 @@ brews:
   - repository:
       owner: gleanwork
       name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
     homepage: "https://github.com/gleanwork/glean-cli"
     description: "A command-line interface for Glean operations"
     license: "MIT"
