@@ -151,7 +151,6 @@ Use ↑/↓ to navigate matches, Enter to attach, Esc to dismiss.
 | `glean chat <message>` | Chat with Glean Assistant (non-interactive) |
 | `glean api <endpoint>` | Make a raw authenticated HTTP request to the Glean REST API |
 | `glean schema [command]` | Show machine-readable JSON schema for any command |
-| `glean mcp` | Start a stdio MCP server for AI agent integration |
 | `glean auth` | Authenticate with Glean |
 | `glean version` | Print the CLI version |
 
@@ -271,26 +270,6 @@ glean search "engineering values" | jq '.results[].title'
 # 5. Stream NDJSON for large result sets — one SearchResult object per line
 glean search "all docs" --output ndjson --page-size 50 | jq .title
 ```
-
-### MCP Server
-
-For AI agents that support MCP, run `glean mcp` to expose Glean as an MCP tool server:
-
-```bash
-glean mcp
-```
-
-Add to `.claude/settings.json` for Claude Code:
-
-```json
-{
-  "mcpServers": {
-    "glean": { "command": "glean", "args": ["mcp"] }
-  }
-}
-```
-
-Available MCP tools: `glean_search`, `glean_chat`, `glean_schema`, `glean_people`.
 
 ## Environment Variables
 
