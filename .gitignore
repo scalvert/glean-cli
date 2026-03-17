@@ -3,3 +3,7 @@ glean-cli
 .claude/worktrees/
 EVAL-CHECKLIST.md
 docs/
+dist/
+coverage.out
+coverage.txt
+*.test

@@ -297,6 +297,18 @@ glean completion zsh    # Zsh
 glean completion fish   # Fish
 ```
 
+## Agent Skills
+
+The `skills/` directory contains markdown skill files for AI coding agents (Claude Code, etc.). They describe how to use each CLI command effectively in an automated context — flag patterns, output formats, and composition examples.
+
+| File | Description |
+|------|-------------|
+| `skills/CONTEXT.md` | CLI-wide guidance: auth, output formats, error handling |
+| `skills/search.md` | How to use `glean search` in agent pipelines |
+| `skills/chat.md` | How to use `glean chat` for AI-assisted workflows |
+| `skills/schema.md` | How to use `glean schema` for command introspection |
+| `skills/shortcuts.md` | How to manage go-links programmatically |
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, coding conventions, and how to submit pull requests.

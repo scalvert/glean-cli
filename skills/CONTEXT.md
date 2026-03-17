@@ -25,12 +25,12 @@ description: CLI-wide guidance for using the glean command-line tool as an AI ag
 
 Three credential sources (priority order):
 1. `GLEAN_API_TOKEN` + `GLEAN_HOST` env vars (preferred for CI/scripting)
-2. System keyring (set via `glean config`)
+2. OAuth token via `glean auth login`
 3. `~/.glean/config.json`
 
 ```bash
 # CI/scripting (no interactive setup needed)
-GLEAN_API_TOKEN=mytoken GLEAN_HOST=mycompany glean search "test"
+GLEAN_API_TOKEN=mytoken GLEAN_HOST=mycompany-be.glean.com glean search "test"
 ```
 
 ## Quick Start
@@ -41,14 +41,11 @@ glean schema
 glean schema search
 
 # Search company knowledge
-glean search "vacation policy" | jq '.results[0].document.title'
-glean search --json '{"query":"Q1 reports","pageSize":5}' | jq '.results[].document.title'
+glean search "vacation policy" | jq '.results[0].title'
+glean search --json '{"query":"Q1 reports","pageSize":5}' | jq '.results[].title'
 
 # Chat with Glean AI
 glean chat "What are our engineering principles?"
-
-# Use as MCP server for Claude Code
-glean mcp
 ```
 
 ## Output Formats
