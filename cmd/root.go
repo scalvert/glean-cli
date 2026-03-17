@@ -27,8 +27,9 @@ func NewCmdRoot() *cobra.Command {
 	var continueSession bool
 
 	cmd := &cobra.Command{
-		Use:   "glean",
-		Short: "Glean CLI - A command-line interface for Glean operations.",
+		Use:     "glean",
+		Short:   "Glean CLI - A command-line interface for Glean operations.",
+		Version: cliVersion,
 		Long: heredoc.Doc(`
 			Work seamlessly with Glean from your command line.
 

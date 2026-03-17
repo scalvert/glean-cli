@@ -8,9 +8,13 @@ import (
 
 var cliVersion = "dev"
 
-// SetVersion stores the build-time version for use in the version command.
+// SetVersion stores the build-time version for use in the version command
+// and updates the root command's --version flag.
 func SetVersion(v string) {
 	cliVersion = v
+	if rootCmd != nil {
+		rootCmd.Version = v
+	}
 }
 
 // NewCmdVersion creates and returns the version command.
