@@ -68,6 +68,7 @@ func newShortcutsListCmd() *cobra.Command {
 
 func newShortcutsGetCmd() *cobra.Command {
 	var jsonPayload, outputFormat string
+	var dryRun bool
 	cmd := &cobra.Command{
 		Use:   "get",
 		Short: "Get a shortcut by alias or ID",
@@ -75,13 +76,16 @@ func newShortcutsGetCmd() *cobra.Command {
 			if jsonPayload == "" {
 				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
 			}
-			sdk, err := gleanClient.NewFromConfig()
-			if err != nil {
-				return err
-			}
 			var req components.GetShortcutRequestUnion
 			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
 				return fmt.Errorf("invalid --json: %w", err)
+			}
+			if dryRun {
+				return output.WriteJSON(cmd.OutOrStdout(), req)
+			}
+			sdk, err := gleanClient.NewFromConfig()
+			if err != nil {
+				return err
 			}
 			resp, err := sdk.Client.Shortcuts.Retrieve(cmd.Context(), req, nil)
 			if err != nil {
@@ -92,6 +96,7 @@ func newShortcutsGetCmd() *cobra.Command {
 	}
 	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
 	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
+	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
 	return cmd
 }
 
