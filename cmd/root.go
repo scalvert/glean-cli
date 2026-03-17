@@ -17,6 +17,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// cliVersion is set at startup via SetVersion from the ldflags-injected build version.
+var cliVersion = "dev"
+
+// SetVersion records the build-time version for use in --version and update checks.
+func SetVersion(v string) {
+	cliVersion = v
+	if rootCmd != nil {
+		rootCmd.Version = v
+	}
+}
+
 // rootCmd represents the base command when called without any subcommands.
 // It provides help information and coordinates all subcommands.
 var rootCmd *cobra.Command
@@ -116,7 +127,6 @@ func NewCmdRoot() *cobra.Command {
 		NewCmdChat(),
 		NewCmdAPI(),
 		NewCmdSchema(),
-		NewCmdVersion(),
 	} {
 		sub.GroupID = "core"
 		cmd.AddCommand(sub)

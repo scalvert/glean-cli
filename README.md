@@ -152,7 +152,7 @@ Use ↑/↓ to navigate matches, Enter to attach, Esc to dismiss.
 | `glean api <endpoint>` | Make a raw authenticated HTTP request to the Glean REST API |
 | `glean schema [command]` | Show machine-readable JSON schema for any command |
 | `glean auth` | Authenticate with Glean |
-| `glean version` | Print the CLI version |
+| `glean --version` | Print the CLI version |
 
 ### `glean search`
 

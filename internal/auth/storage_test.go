@@ -2,6 +2,7 @@ package auth
 
 import (
 	"os"
+	"runtime"
 	"testing"
 	"time"
 
@@ -68,6 +69,9 @@ func TestStoredTokens_IsExpired(t *testing.T) {
 }
 
 func TestStateDir_FilePermissions(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("Windows does not enforce Unix file permission bits")
+	}
 	withTempHome(t)
 	tok := &StoredTokens{AccessToken: "tok"}
 	require.NoError(t, SaveTokens("host.glean.com", tok))
