@@ -30,12 +30,7 @@ type userAgentTransport struct {
 
 func (t *userAgentTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	req = req.Clone(req.Context())
-	existing := req.Header.Get("User-Agent")
-	if existing != "" {
-		req.Header.Set("User-Agent", existing+" glean-cli/"+cliVersion)
-	} else {
-		req.Header.Set("User-Agent", "glean-cli/"+cliVersion)
-	}
+	req.Header.Set("User-Agent", "glean-cli/"+cliVersion)
 	return t.base.RoundTrip(req)
 }
 
