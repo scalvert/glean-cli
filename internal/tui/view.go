@@ -97,7 +97,7 @@ func (m *Model) headerView() string {
 	var sb strings.Builder
 	sb.WriteString("\n")
 	title := "Glean CLI"
-	if m.version != "" && m.version != "dev" {
+	if m.version != "" {
 		title += "  " + styleTagline.Render(m.version)
 	}
 	sb.WriteString("  " + styleStatusAccent.Render(title) + "\n")

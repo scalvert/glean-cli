@@ -229,6 +229,10 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		switch msg.String() {
 		case keyEsc:
+			if m.showHelp {
+				m.showHelp = false
+				return m, nil
+			}
 			if m.showExitHint {
 				// Cancel the pending exit.
 				m.showExitHint = false
@@ -322,11 +326,20 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "ctrl+y":
+			copied := false
 			for i := len(m.session.Turns) - 1; i >= 0; i-- {
 				if m.session.Turns[i].Role == roleAssistant {
-					_ = clipboard.WriteAll(m.session.Turns[i].Content)
+					if err := clipboard.WriteAll(m.session.Turns[i].Content); err != nil {
+						m.addSystemMessage("Copy failed: " + err.Error())
+					} else {
+						m.addSystemMessage("Copied last response to clipboard")
+						copied = true
+					}
 					break
 				}
+			}
+			if !copied && m.lastErr == nil {
+				m.addSystemMessage("Nothing to copy")
 			}
 			return m, nil
 
