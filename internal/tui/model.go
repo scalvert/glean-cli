@@ -449,27 +449,32 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	m.textarea, taCmd = m.textarea.Update(msg)
-
-	// Grow the textarea vertically as content wraps, up to 6 visual rows.
-	// LineInfo().Height is the wrapped visual row count for the current line —
-	// correct even with InsertNewline disabled (unlike LineCount which counts
-	// logical lines and is always 1 when newlines are disabled).
+	// Auto-grow: expand textarea to max height before processing the key so
+	// the internal viewport never scrolls (which would hide earlier lines).
+	// After the key is processed, shrink to the actual wrapped line count.
+	const maxInputLines = 6
 	if _, isKey := msg.(tea.KeyMsg); isKey {
-		const maxInputLines = 6
+		prevHeight := m.textarea.Height()
+		m.textarea.SetHeight(maxInputLines)
+		m.textarea, taCmd = m.textarea.Update(msg)
+
 		desired := m.textarea.LineInfo().Height
 		if desired < 1 {
 			desired = 1
 		} else if desired > maxInputLines {
 			desired = maxInputLines
 		}
-		if desired != m.textarea.Height() {
-			m.textarea.SetHeight(desired)
-			if m.conversationActive {
-				m.viewport.Height = m.maxViewportHeight()
+		m.textarea.SetHeight(desired)
+
+		if desired != prevHeight && m.conversationActive {
+			wasAtBottom := m.viewport.AtBottom()
+			m.viewport.Height = m.maxViewportHeight()
+			if wasAtBottom {
 				m.viewport.GotoBottom()
 			}
 		}
+	} else {
+		m.textarea, taCmd = m.textarea.Update(msg)
 	}
 
 	// Key messages are routed to the viewport explicitly above (pgup, pgdown,
