@@ -111,8 +111,9 @@ func New(cfg *config.Config, session *Session, identity, version string, ctx con
 	// shift+enter is terminal-dependent and unreliable; disable the claim.
 	ta.KeyMap.InsertNewline.SetEnabled(false)
 	ta.SetHeight(1)
-	ta.Prompt = styleStatusAccent.Render("❯") + " "
+	ta.Prompt = ""
 	ta.FocusedStyle.CursorLine = lipgloss.NewStyle()
+	ta.FocusedStyle.Prompt = lipgloss.NewStyle()
 
 	vp := viewport.New(0, 0)
 
@@ -466,6 +467,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.textarea.SetHeight(desired)
 			if m.conversationActive {
 				m.viewport.Height = m.maxViewportHeight()
+				m.viewport.GotoBottom()
 			}
 		}
 	}
@@ -653,7 +655,7 @@ func (m *Model) recalculateLayout() {
 		return
 	}
 	m.viewport.Width = m.width
-	m.textarea.SetWidth(m.width - 4)
+	m.textarea.SetWidth(m.width - 6)
 
 	// Always recalculate max height on resize; if active, pin to max.
 	if m.conversationActive {

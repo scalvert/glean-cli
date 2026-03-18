@@ -25,10 +25,11 @@ func (m *Model) View() string {
 	// Logo + identity — always visible, regardless of conversation state.
 	header := m.headerView()
 
-	// Input box — rounded border, full width.
+	caret := styleStatusAccent.Render("❯") + " "
+	inputContent := lipgloss.JoinHorizontal(lipgloss.Top, caret, m.textarea.View())
 	inputBox := styleInputFocused.
 		Width(m.width - 2).
-		Render(m.textarea.View())
+		Render(inputContent)
 
 	// After first ctrl+c, replace status bar with exit hint.
 	bottom := m.statusLine()
@@ -57,7 +58,7 @@ func (m *Model) View() string {
 			parts = append(parts, overlay)
 		}
 		parts = append(parts, bottom)
-		return lipgloss.JoinVertical(lipgloss.Left, parts...)
+		return m.padToHeight(lipgloss.JoinVertical(lipgloss.Left, parts...))
 	}
 
 	// Active state: conversation viewport bounded by delimiter rules.
@@ -71,7 +72,15 @@ func (m *Model) View() string {
 		parts = append(parts, overlay)
 	}
 	parts = append(parts, bottom)
-	return lipgloss.JoinVertical(lipgloss.Left, parts...)
+	return m.padToHeight(lipgloss.JoinVertical(lipgloss.Left, parts...))
+}
+
+func (m *Model) padToHeight(s string) string {
+	lines := strings.Count(s, "\n") + 1
+	if lines < m.height {
+		s += strings.Repeat("\n", m.height-lines)
+	}
+	return s
 }
 
 // headerView renders a clean text header — no icon, just the essentials.
