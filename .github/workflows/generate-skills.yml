@@ -39,7 +39,7 @@ jobs:
       - name: Check for changes
         id: diff
         run: |
-          if git diff --quiet skills/; then
+          if git diff --quiet skills/ && [ -z "$(git status --porcelain skills/)" ]; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
