@@ -151,6 +151,11 @@ func NewCmdRoot() *cobra.Command {
 		cmd.AddCommand(sub)
 	}
 
+	// Dev/maintenance commands (hidden from default help)
+	genSkills := NewCmdGenerateSkills()
+	genSkills.Hidden = true
+	cmd.AddCommand(genSkills)
+
 	// Propagate settings to all subcommands
 	for _, subCmd := range cmd.Commands() {
 		subCmd.SilenceUsage = true
