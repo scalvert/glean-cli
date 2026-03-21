@@ -299,9 +299,13 @@ glean completion fish   # Fish
 
 ## Agent Skills
 
-The `skills/` directory contains [Agent Skills](https://agentskills.io) for AI coding agents (Claude Code, Codex, etc.). Each skill teaches the agent how to use a specific CLI command effectively — flags, output formats, and composition patterns.
+The `skills/` directory contains [Agent Skills](https://agentskills.io) — structured instructions that teach AI coding agents how to use the Glean CLI effectively. Skills are supported by Claude Code, Cursor, GitHub Copilot, VS Code, Gemini CLI, OpenAI Codex, Goose, Amp, Roo Code, Junie, and [many others](https://agentskills.io).
+
+Each skill covers a specific command: flags, output formats, `--json` request shapes, and composition patterns.
 
 ### Install
+
+Use [`npx skills`](https://github.com/agentskills/agentskills) to install into your agent:
 
 ```bash
 # Install all skills at once
