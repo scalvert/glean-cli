@@ -1,0 +1,55 @@
+name: Generate Skills
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "cmd/**"
+      - "internal/schema/**"
+      - "internal/skills/**"
+  workflow_dispatch:
+
+concurrency:
+  group: generate-skills
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    name: Regenerate skills
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up mise
+        uses: jdx/mise-action@v4
+        with:
+          cache: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build CLI
+        run: go build -o glean
+
+      - name: Generate skills
+        run: ./glean generate-skills
+
+      - name: Check for changes
+        id: diff
+        run: |
+          if git diff --quiet skills/ && [ -z "$(git status --porcelain skills/)" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add skills/
+          git commit -m "chore: regenerate skills from schema registry [skip ci]"
+          git push

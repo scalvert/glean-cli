@@ -299,15 +299,41 @@ glean completion fish   # Fish
 
 ## Agent Skills
 
-The `skills/` directory contains markdown skill files for AI coding agents (Claude Code, etc.). They describe how to use each CLI command effectively in an automated context — flag patterns, output formats, and composition examples.
+The `skills/` directory contains [Agent Skills](https://agentskills.io) for AI coding agents (Claude Code, Codex, etc.). Each skill teaches the agent how to use a specific CLI command effectively — flags, output formats, and composition patterns.
 
-| File | Description |
-|------|-------------|
-| `skills/CONTEXT.md` | CLI-wide guidance: auth, output formats, error handling |
-| `skills/search.md` | How to use `glean search` in agent pipelines |
-| `skills/chat.md` | How to use `glean chat` for AI-assisted workflows |
-| `skills/schema.md` | How to use `glean schema` for command introspection |
-| `skills/shortcuts.md` | How to manage go-links programmatically |
+### Install
+
+```bash
+# Install all skills at once
+npx skills add https://github.com/gleanwork/glean-cli
+
+# Or pick only what you need
+npx skills add https://github.com/gleanwork/glean-cli/tree/main/skills/glean-search
+npx skills add https://github.com/gleanwork/glean-cli/tree/main/skills/glean-chat
+```
+
+### Available Skills
+
+| Skill | Description |
+|-------|-------------|
+| `glean-shared` | Shared patterns: auth, global flags, output formatting |
+| `glean-search` | Search across company knowledge |
+| `glean-chat` | Chat with Glean Assistant |
+| `glean-schema` | Runtime JSON schema introspection |
+| `glean-agents` | List, inspect, and run Glean AI agents |
+| `glean-documents` | Retrieve and summarize documents |
+| `glean-collections` | Manage curated document collections |
+| `glean-entities` | Look up people, teams, and entities |
+| `glean-answers` | Manage curated Q&A pairs |
+| `glean-shortcuts` | Manage go-links |
+| `glean-pins` | Manage promoted search results |
+| `glean-announcements` | Manage company announcements |
+| `glean-api` | Raw authenticated API access |
+| `glean-activity` | Report user activity and feedback |
+| `glean-verification` | Document verification workflows |
+| `glean-tools` | List and run platform tools |
+| `glean-messages` | Retrieve indexed messages |
+| `glean-insights` | Search and usage analytics |
 
 ## Contributing
 
