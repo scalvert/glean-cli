@@ -62,6 +62,15 @@ func BuildSearchRequest(opts *Options) components.SearchRequest {
 		}
 
 		for _, ff := range ro.FacetFilters {
+			// The Glean API has a dedicated DatasourcesFilter field that must
+			// be used for datasource filtering — the generic FacetFilters
+			// mechanism does not filter by datasource correctly.
+			if ff.FieldName == "datasource" {
+				for _, v := range ff.Values {
+					sdkOpts.DatasourcesFilter = append(sdkOpts.DatasourcesFilter, v.Value)
+				}
+				continue
+			}
 			name := ff.FieldName
 			sdkFF := components.FacetFilter{FieldName: &name}
 			for _, v := range ff.Values {
