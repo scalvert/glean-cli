@@ -19,6 +19,7 @@ const (
 	cacheFile     = ".glean/update-check.json"
 	checkInterval = 24 * time.Hour
 	releaseAPIURL = "https://api.github.com/repos/gleanwork/glean-cli/releases/latest"
+	devVersion    = "dev"
 )
 
 type cacheEntry struct {
@@ -44,7 +45,7 @@ func CheckAsync(currentVersion string) <-chan string {
 
 func check(currentVersion string) string {
 	// Skip for dev builds.
-	if currentVersion == "dev" || currentVersion == "" {
+	if currentVersion == devVersion || currentVersion == "" {
 		return ""
 	}
 

@@ -52,6 +52,10 @@ func NewCmdRoot() *cobra.Command {
 			_ = verbosity // reserved for future debug logging
 		},
 		PersistentPostRun: func(cmd *cobra.Command, args []string) {
+			// Skip update notice when the user is already running `glean update`.
+			if cmd.Name() == "update" {
+				return
+			}
 			noticeCh := update.CheckAsync(cliVersion)
 			if notice := <-noticeCh; notice != "" {
 				fmt.Fprintf(os.Stderr, "\n%s\n", notice)
@@ -155,6 +159,8 @@ func NewCmdRoot() *cobra.Command {
 	genSkills := NewCmdGenerateSkills()
 	genSkills.Hidden = true
 	cmd.AddCommand(genSkills)
+
+	cmd.AddCommand(NewCmdUpdate())
 
 	// Propagate settings to all subcommands
 	for _, subCmd := range cmd.Commands() {
