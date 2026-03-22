@@ -69,12 +69,14 @@ func ValidateAndTransformHost(host string) (string, error) {
 func LoadConfig() (*Config, error) {
 	cfg := loadFromEnv()
 
-	keyringCfg := loadFromKeyring()
-	if cfg.GleanHost == "" {
-		cfg.GleanHost = keyringCfg.GleanHost
-	}
-	if cfg.GleanToken == "" {
-		cfg.GleanToken = keyringCfg.GleanToken
+	if cfg.GleanHost == "" || cfg.GleanToken == "" {
+		keyringCfg := loadFromKeyring()
+		if cfg.GleanHost == "" {
+			cfg.GleanHost = keyringCfg.GleanHost
+		}
+		if cfg.GleanToken == "" {
+			cfg.GleanToken = keyringCfg.GleanToken
+		}
 	}
 
 	if cfg.GleanHost == "" || cfg.GleanToken == "" {
