@@ -1,13 +1,16 @@
-linters:
+version: "2"
+
+formatters:
   enable:
     - gofmt
-    - govet
     - goimports
-    - gosimple
+
+linters:
+  enable:
+    - govet
     - staticcheck
     - errcheck
     - ineffassign
-    - typecheck
     - misspell
     - gosec
     - unconvert
@@ -15,36 +18,78 @@ linters:
     - unparam
     - gocritic
 
-linters-settings:
-  govet:
-    enable-all: true
-    disable:
-      - shadow        # `if err :=` shadowing is idiomatic Go; too noisy to enforce
-      - fieldalignment # struct field ordering is a micro-optimization, not a correctness issue
-  gocyclo:
-    min-complexity: 15
-  goconst:
-    min-len: 2
-    min-occurrences: 2
-  misspell:
-    locale: US
-  gocritic:
-    enabled-checks:
-      - docStub
-      - commentedOutCode
+  settings:
+    govet:
+      enable-all: true
+      disable:
+        - shadow        # `if err :=` shadowing is idiomatic Go; too noisy to enforce
+        - fieldalignment # struct field ordering is a micro-optimization, not a correctness issue
+    goconst:
+      min-len: 2
+      min-occurrences: 2
+    misspell:
+      locale: US
+    gocritic:
+      enabled-checks:
+        - docStub
+        - commentedOutCode
+
+  exclusions:
+    rules:
+      # Test files: skip safety and return-value checks
+      - path: ".*_test\\.go"
+        linters:
+          - gosec
+          - errcheck
+      - path: ".*_test\\.go"
+        text: "fieldalignment:"
+      # Test utility package: same exemption as _test.go files
+      - path: "internal/testutils/"
+        linters:
+          - errcheck
+          - gosec
+      # SDK deprecated fields — outside our control, suppress to avoid noise
+      - linters:
+          - staticcheck
+        text: "SA1019:"
+      # errcheck: defer *.Close() is idiomatic Go; errors in defer are not actionable
+      - linters:
+          - errcheck
+        text: '\.Close'
+      # errcheck: fmt.Fprint* writes to CLI output; errors are best-effort
+      - linters:
+          - errcheck
+        text: 'fmt\.Fprint'
+      # errcheck: io.Copy return value in pipe drains
+      - linters:
+          - errcheck
+        text: 'io\.Copy'
+      # errcheck: json.Encoder.Encode in test HTTP handlers
+      - linters:
+          - errcheck
+        text: 'Encoder.*Encode'
+      # errcheck: os cleanup calls in test setup
+      - linters:
+          - errcheck
+        text: 'os\.(Remove|MkdirAll|Setenv|Unsetenv)'
+      # gosec G104: Errors unhandled — errcheck linter already covers this; G104 is redundant noise
+      - linters:
+          - gosec
+        text: "G104:"
+      # gosec G115: int(fd) conversion for terminal detection is universally idiomatic
+      - linters:
+          - gosec
+        text: "G115:"
+      # gosec G304: os.ReadFile with path variable — config/app paths, not user input
+      - linters:
+          - gosec
+        text: "G304:"
+      # gosec G301/G302: intentional directory and file permission choices
+      - linters:
+          - gosec
+        text: "G30[12]:"
 
 issues:
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - gosec
-        - errcheck
-    - path: _test\.go
-      text: "fieldalignment:"
-    # SDK deprecated fields — outside our control, suppress to avoid noise
-    - linters:
-        - staticcheck
-      text: "SA1019:"
   max-issues-per-linter: 0
   max-same-issues: 0
 

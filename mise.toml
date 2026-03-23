@@ -2,7 +2,7 @@
 
 [tools]
 go = "1.24"
-golangci-lint = "1"
+golangci-lint = "2"
 gotestsum = "latest"
 svu = "latest"
 

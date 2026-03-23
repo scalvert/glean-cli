@@ -30,7 +30,7 @@ var streamHTTPClient = &http.Client{Timeout: 10 * time.Minute}
 func StreamChat(ctx context.Context, cfg *config.Config, req components.ChatRequest) (io.ReadCloser, error) {
 	host := cfg.GleanHost
 	if host == "" {
-		return nil, fmt.Errorf("Glean host not configured")
+		return nil, fmt.Errorf("glean host not configured")
 	}
 
 	token := cfg.GleanToken

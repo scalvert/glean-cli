@@ -115,7 +115,7 @@ func buildFileContext(files []attachedFile, userMessage string) string {
 	}
 	var sb strings.Builder
 	for _, f := range files {
-		sb.WriteString(fmt.Sprintf("[File: %s]\n```\n%s\n```\n\n", f.Path, f.Content))
+		fmt.Fprintf(&sb, "[File: %s]\n```\n%s\n```\n\n", f.Path, f.Content)
 	}
 	sb.WriteString(userMessage)
 	return sb.String()

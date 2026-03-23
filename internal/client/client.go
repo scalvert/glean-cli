@@ -46,7 +46,7 @@ func (t *userAgentTransport) RoundTrip(req *http.Request) (*http.Response, error
 //   - Short name:   "linkedin"              → passed as-is to WithInstance
 func New(cfg *config.Config) (*glean.Glean, error) {
 	if cfg.GleanHost == "" {
-		return nil, fmt.Errorf("Glean host not configured. Run 'glean auth login' or set GLEAN_HOST")
+		return nil, fmt.Errorf("glean host not configured. Run 'glean auth login' or set GLEAN_HOST")
 	}
 
 	token := cfg.GleanToken
