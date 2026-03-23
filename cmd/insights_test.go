@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"testing"
 
+	"github.com/gkampitakis/go-snaps/snaps"
 	"github.com/gleanwork/glean-cli/internal/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -19,15 +20,27 @@ func TestInsightsHelp(t *testing.T) {
 	assert.Contains(t, b.String(), "Usage")
 }
 
+// get
+
 func TestInsightsGetDryRun(t *testing.T) {
-	_, cleanup := testutils.SetupTestWithResponse(t, []byte(`{}`))
-	defer cleanup()
+	// Dry-run must not require auth — SDK init is deferred until after the dry-run check.
 	b := bytes.NewBufferString("")
 	cmd := NewCmdInsights()
 	cmd.SetOut(b)
 	cmd.SetArgs([]string{"get", "--dry-run", "--json", `{}`})
 	err := cmd.Execute()
 	require.NoError(t, err)
+	snaps.MatchInlineSnapshot(t, b.String(), snaps.Inline(`{}
+`))
+}
+
+func TestInsightsGetMissingJSON(t *testing.T) {
+	cmd := NewCmdInsights()
+	cmd.SetErr(bytes.NewBufferString(""))
+	cmd.SetArgs([]string{"get"})
+	err := cmd.Execute()
+	assert.Error(t, err, "missing --json must return error")
+	assert.Contains(t, err.Error(), "--json is required")
 }
 
 func TestInsightsGetInvalidJSON(t *testing.T) {
@@ -38,11 +51,13 @@ func TestInsightsGetInvalidJSON(t *testing.T) {
 	assert.Error(t, err, "invalid JSON must return error")
 }
 
-func TestInsightsGetMissingJSON(t *testing.T) {
+func TestInsightsGetLive(t *testing.T) {
+	_, cleanup := testutils.SetupTestWithResponse(t, []byte(`{}`))
+	defer cleanup()
+	b := bytes.NewBufferString("")
 	cmd := NewCmdInsights()
-	cmd.SetErr(bytes.NewBufferString(""))
-	cmd.SetArgs([]string{"get"})
+	cmd.SetOut(b)
+	cmd.SetArgs([]string{"get", "--json", `{}`})
 	err := cmd.Execute()
-	assert.Error(t, err, "missing --json must return error")
-	assert.Contains(t, err.Error(), "--json is required")
+	require.NoError(t, err)
 }

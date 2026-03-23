@@ -46,12 +46,6 @@ func Write(w io.Writer, content []byte, opts Options) error {
 	return writeColorized(w, content, opts.Format)
 }
 
-// WriteString is a convenience wrapper for Write that accepts a string input.
-// It converts the string to bytes and delegates to Write for formatting and output.
-func WriteString(w io.Writer, content string, opts Options) error {
-	return Write(w, []byte(content), opts)
-}
-
 // shouldColorize determines if syntax highlighting should be applied based on
 // the terminal environment and user preferences.
 func shouldColorize(opts Options) bool {

@@ -1,12 +1,11 @@
 package cmd
 
 import (
-	"encoding/json"
-	"fmt"
+	"context"
 
+	glean "github.com/gleanwork/api-client-go"
 	"github.com/gleanwork/api-client-go/models/components"
-	gleanClient "github.com/gleanwork/glean-cli/internal/client"
-	"github.com/gleanwork/glean-cli/internal/output"
+	"github.com/gleanwork/glean-cli/internal/cmdutil"
 	"github.com/spf13/cobra"
 )
 
@@ -33,135 +32,59 @@ Example:
 }
 
 func newDocumentsGetCmd() *cobra.Command {
-	var jsonPayload, outputFormat string
-	var dryRun bool
-	cmd := &cobra.Command{
+	return cmdutil.Build(cmdutil.Spec[components.GetDocumentsRequest]{
 		Use:   "get",
 		Short: "Get documents by ID",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			var req components.GetDocumentsRequest
-			if jsonPayload != "" {
-				if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-					return fmt.Errorf("invalid --json: %w", err)
-				}
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.GetDocumentsRequest) (any, error) {
+			resp, err := sdk.Client.Documents.Retrieve(ctx, nil, &req)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			resp, err := sdk.Client.Documents.Retrieve(cmd.Context(), nil, &req)
-			if err != nil {
-				return err
-			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			return resp.GetDocumentsResponse, nil
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body")
-	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }
 
 func newDocumentsGetByFacetsCmd() *cobra.Command {
-	var jsonPayload, outputFormat string
-	var dryRun bool
-	cmd := &cobra.Command{
+	return cmdutil.Build(cmdutil.Spec[components.GetDocumentsByFacetsRequest]{
 		Use:   "get-by-facets",
 		Short: "Get documents by facets",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			var req components.GetDocumentsByFacetsRequest
-			if jsonPayload != "" {
-				if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-					return fmt.Errorf("invalid --json: %w", err)
-				}
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.GetDocumentsByFacetsRequest) (any, error) {
+			resp, err := sdk.Client.Documents.RetrieveByFacets(ctx, nil, &req)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			resp, err := sdk.Client.Documents.RetrieveByFacets(cmd.Context(), nil, &req)
-			if err != nil {
-				return err
-			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			return resp.GetDocumentsByFacetsResponse, nil
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body")
-	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }
 
 func newDocumentsGetPermissionsCmd() *cobra.Command {
-	var jsonPayload, outputFormat string
-	var dryRun bool
-	cmd := &cobra.Command{
-		Use:   "get-permissions",
-		Short: "Get document permissions",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if jsonPayload == "" {
-				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
-			}
-			var req components.GetDocPermissionsRequest
-			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-				return fmt.Errorf("invalid --json: %w", err)
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
+	return cmdutil.Build(cmdutil.Spec[components.GetDocPermissionsRequest]{
+		Use:          "get-permissions",
+		Short:        "Get document permissions",
+		JSONRequired: true,
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.GetDocPermissionsRequest) (any, error) {
+			resp, err := sdk.Client.Documents.RetrievePermissions(ctx, req, nil)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			resp, err := sdk.Client.Documents.RetrievePermissions(cmd.Context(), req, nil)
-			if err != nil {
-				return err
-			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			return resp.GetDocPermissionsResponse, nil
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
-	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }
 
 func newDocumentsSummarizeCmd() *cobra.Command {
-	var jsonPayload, outputFormat string
-	var dryRun bool
-	cmd := &cobra.Command{
-		Use:   "summarize",
-		Short: "Summarize a document",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if jsonPayload == "" {
-				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
-			}
-			var req components.SummarizeRequest
-			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-				return fmt.Errorf("invalid --json: %w", err)
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
+	return cmdutil.Build(cmdutil.Spec[components.SummarizeRequest]{
+		Use:          "summarize",
+		Short:        "Summarize a document",
+		JSONRequired: true,
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.SummarizeRequest) (any, error) {
+			resp, err := sdk.Client.Documents.Summarize(ctx, req, nil)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			resp, err := sdk.Client.Documents.Summarize(cmd.Context(), req, nil)
-			if err != nil {
-				return err
-			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			return resp.SummarizeResponse, nil
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
-	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }

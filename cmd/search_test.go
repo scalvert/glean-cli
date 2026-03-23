@@ -52,10 +52,7 @@ func TestSearchCommand_MissingQuery(t *testing.T) {
 }
 
 func TestSearchCommand_DryRun(t *testing.T) {
-	// Dry-run still calls NewFromConfig before checking --dry-run, so credentials are needed.
-	_, cleanup := testutils.SetupTestWithResponse(t, searchResponse())
-	defer cleanup()
-
+	// Dry-run should not require credentials — SDK init is deferred until after the dry-run check.
 	root := NewCmdRoot()
 	buf := &bytes.Buffer{}
 	root.SetOut(buf)

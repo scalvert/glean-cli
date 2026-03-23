@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/bradleyjkemp/cupaloy/v2"
+	"github.com/gkampitakis/go-snaps/snaps"
 	"github.com/gleanwork/glean-cli/internal/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -52,7 +52,10 @@ func TestChatCommand(t *testing.T) {
 		require.NoError(t, err)
 
 		// Verify output matches snapshot
-		cupaloy.SnapshotT(t, b.String())
+		snaps.MatchInlineSnapshot(t, b.String(), snaps.Inline(`Hello
+
+How can I help?
+`))
 	})
 
 	t.Run("chat with stages", func(t *testing.T) {
@@ -69,7 +72,10 @@ func TestChatCommand(t *testing.T) {
 		require.NoError(t, err)
 
 		// Verify output matches snapshot
-		cupaloy.SnapshotT(t, b.String())
+		snaps.MatchInlineSnapshot(t, b.String(), snaps.Inline(`The Glean Assistant is an AI-powered tool designed to enhance workplace productivity and information accessibility. It can provide a variety of information, including:
+
+1. **Intelligent Search**: Glean understands everyday language and can search for specific documents or provide an overview of team activities.
+`))
 	})
 
 	t.Run("chat with error response", func(t *testing.T) {
@@ -119,21 +125,6 @@ func TestChatCommand(t *testing.T) {
 		err := cmd.Execute()
 		require.NoError(t, err)
 		assert.Empty(t, b.String())
-	})
-
-	t.Run("chat with timeout flag", func(t *testing.T) {
-		response := fixtures.LoadAsStream("timeout_response")
-		_, cleanup := testutils.SetupTestWithResponse(t, response)
-		defer cleanup()
-
-		b := bytes.NewBufferString("")
-		cmd := NewCmdChat()
-		cmd.SetOut(b)
-		cmd.SetArgs([]string{"--timeout", "60000", "Test timeout"})
-
-		err := cmd.Execute()
-		require.NoError(t, err)
-		assert.Contains(t, b.String(), "Quick response")
 	})
 
 	t.Run("chat with save flag disabled", func(t *testing.T) {

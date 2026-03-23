@@ -1,13 +1,12 @@
 package cmd
 
 import (
-	"encoding/json"
-	"fmt"
+	"context"
 
+	glean "github.com/gleanwork/api-client-go"
 	"github.com/gleanwork/api-client-go/models/components"
 	"github.com/gleanwork/api-client-go/models/operations"
-	gleanClient "github.com/gleanwork/glean-cli/internal/client"
-	"github.com/gleanwork/glean-cli/internal/output"
+	"github.com/gleanwork/glean-cli/internal/cmdutil"
 	"github.com/spf13/cobra"
 )
 
@@ -34,161 +33,72 @@ Example:
 }
 
 func newPinsListCmd() *cobra.Command {
-	var jsonPayload, outputFormat string
-	var dryRun bool
-	cmd := &cobra.Command{
+	return cmdutil.Build(cmdutil.Spec[operations.ListpinsRequestBody]{
 		Use:   "list",
 		Short: "List pins",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			var req operations.ListpinsRequestBody
-			if jsonPayload != "" {
-				if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-					return fmt.Errorf("invalid --json: %w", err)
-				}
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
+		Run: func(ctx context.Context, sdk *glean.Glean, req operations.ListpinsRequestBody) (any, error) {
+			resp, err := sdk.Client.Pins.List(ctx, req, nil)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			resp, err := sdk.Client.Pins.List(cmd.Context(), req, nil)
-			if err != nil {
-				return err
-			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			return resp.ListPinsResponse, nil
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body")
-	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }
 
 func newPinsGetCmd() *cobra.Command {
-	var jsonPayload, outputFormat string
-	cmd := &cobra.Command{
-		Use:   "get",
-		Short: "Get a pin",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if jsonPayload == "" {
-				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
-			}
-			var req components.GetPinRequest
-			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-				return fmt.Errorf("invalid --json: %w", err)
-			}
-			sdk, err := gleanClient.NewFromConfig()
+	return cmdutil.Build(cmdutil.Spec[components.GetPinRequest]{
+		Use:          "get",
+		Short:        "Get a pin",
+		JSONRequired: true,
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.GetPinRequest) (any, error) {
+			resp, err := sdk.Client.Pins.Retrieve(ctx, req, nil)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			resp, err := sdk.Client.Pins.Retrieve(cmd.Context(), req, nil)
-			if err != nil {
-				return err
-			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			return resp.GetPinResponse, nil
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
-	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
-	return cmd
+	})
 }
 
 func newPinsCreateCmd() *cobra.Command {
-	var jsonPayload, outputFormat string
-	var dryRun bool
-	cmd := &cobra.Command{
-		Use:   "create",
-		Short: "Create a pin",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if jsonPayload == "" {
-				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
-			}
-			var req components.PinRequest
-			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-				return fmt.Errorf("invalid --json: %w", err)
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
+	return cmdutil.Build(cmdutil.Spec[components.PinRequest]{
+		Use:          "create",
+		Short:        "Create a pin",
+		JSONRequired: true,
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.PinRequest) (any, error) {
+			resp, err := sdk.Client.Pins.Create(ctx, req, nil)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			resp, err := sdk.Client.Pins.Create(cmd.Context(), req, nil)
-			if err != nil {
-				return err
-			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			return resp.PinDocument, nil
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
-	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }
 
 func newPinsUpdateCmd() *cobra.Command {
-	var jsonPayload, outputFormat string
-	var dryRun bool
-	cmd := &cobra.Command{
-		Use:   "update",
-		Short: "Update a pin",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if jsonPayload == "" {
-				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
-			}
-			var req components.EditPinRequest
-			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-				return fmt.Errorf("invalid --json: %w", err)
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
+	return cmdutil.Build(cmdutil.Spec[components.EditPinRequest]{
+		Use:          "update",
+		Short:        "Update a pin",
+		JSONRequired: true,
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.EditPinRequest) (any, error) {
+			resp, err := sdk.Client.Pins.Update(ctx, req, nil)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			resp, err := sdk.Client.Pins.Update(cmd.Context(), req, nil)
-			if err != nil {
-				return err
-			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			return resp.PinDocument, nil
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
-	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }
 
 func newPinsRemoveCmd() *cobra.Command {
-	var jsonPayload string
-	var dryRun bool
-	cmd := &cobra.Command{
-		Use:   "remove",
-		Short: "Remove a pin",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if jsonPayload == "" {
-				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
-			}
-			var req components.Unpin
-			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-				return fmt.Errorf("invalid --json: %w", err)
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
-			if err != nil {
-				return err
-			}
-			_, err = sdk.Client.Pins.Remove(cmd.Context(), req, nil)
-			return err
+	return cmdutil.Build(cmdutil.Spec[components.Unpin]{
+		Use:          "remove",
+		Short:        "Remove a pin",
+		JSONRequired: true,
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.Unpin) (any, error) {
+			_, err := sdk.Client.Pins.Remove(ctx, req, nil)
+			return nil, err
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }

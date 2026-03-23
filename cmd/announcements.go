@@ -1,12 +1,11 @@
 package cmd
 
 import (
-	"encoding/json"
-	"fmt"
+	"context"
 
+	glean "github.com/gleanwork/api-client-go"
 	"github.com/gleanwork/api-client-go/models/components"
-	gleanClient "github.com/gleanwork/glean-cli/internal/client"
-	"github.com/gleanwork/glean-cli/internal/output"
+	"github.com/gleanwork/glean-cli/internal/cmdutil"
 	"github.com/spf13/cobra"
 )
 
@@ -30,99 +29,43 @@ Example:
 }
 
 func newAnnouncementsCreateCmd() *cobra.Command {
-	var jsonPayload, outputFormat string
-	var dryRun bool
-	cmd := &cobra.Command{
-		Use:   "create",
-		Short: "Create an announcement",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if jsonPayload == "" {
-				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
-			}
-			var req components.CreateAnnouncementRequest
-			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-				return fmt.Errorf("invalid --json: %w", err)
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
+	return cmdutil.Build(cmdutil.Spec[components.CreateAnnouncementRequest]{
+		Use:          "create",
+		Short:        "Create an announcement",
+		JSONRequired: true,
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.CreateAnnouncementRequest) (any, error) {
+			resp, err := sdk.Client.Announcements.Create(ctx, req, nil)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			resp, err := sdk.Client.Announcements.Create(cmd.Context(), req, nil)
-			if err != nil {
-				return err
-			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			return resp.Announcement, nil
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
-	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }
 
 func newAnnouncementsUpdateCmd() *cobra.Command {
-	var jsonPayload, outputFormat string
-	var dryRun bool
-	cmd := &cobra.Command{
-		Use:   "update",
-		Short: "Update an announcement",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if jsonPayload == "" {
-				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
-			}
-			var req components.UpdateAnnouncementRequest
-			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-				return fmt.Errorf("invalid --json: %w", err)
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
+	return cmdutil.Build(cmdutil.Spec[components.UpdateAnnouncementRequest]{
+		Use:          "update",
+		Short:        "Update an announcement",
+		JSONRequired: true,
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.UpdateAnnouncementRequest) (any, error) {
+			resp, err := sdk.Client.Announcements.Update(ctx, req, nil)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			resp, err := sdk.Client.Announcements.Update(cmd.Context(), req, nil)
-			if err != nil {
-				return err
-			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			return resp.Announcement, nil
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
-	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }
 
 func newAnnouncementsDeleteCmd() *cobra.Command {
-	var jsonPayload string
-	var dryRun bool
-	cmd := &cobra.Command{
-		Use:   "delete",
-		Short: "Delete an announcement",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if jsonPayload == "" {
-				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
-			}
-			var req components.DeleteAnnouncementRequest
-			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-				return fmt.Errorf("invalid --json: %w", err)
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
-			if err != nil {
-				return err
-			}
-			_, err = sdk.Client.Announcements.Delete(cmd.Context(), req, nil)
-			return err
+	return cmdutil.Build(cmdutil.Spec[components.DeleteAnnouncementRequest]{
+		Use:          "delete",
+		Short:        "Delete an announcement",
+		JSONRequired: true,
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.DeleteAnnouncementRequest) (any, error) {
+			_, err := sdk.Client.Announcements.Delete(ctx, req, nil)
+			return nil, err
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }

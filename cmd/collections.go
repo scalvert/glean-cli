@@ -1,12 +1,11 @@
 package cmd
 
 import (
-	"encoding/json"
-	"fmt"
+	"context"
 
+	glean "github.com/gleanwork/api-client-go"
 	"github.com/gleanwork/api-client-go/models/components"
-	gleanClient "github.com/gleanwork/glean-cli/internal/client"
-	"github.com/gleanwork/glean-cli/internal/output"
+	"github.com/gleanwork/glean-cli/internal/cmdutil"
 	"github.com/spf13/cobra"
 )
 
@@ -20,7 +19,6 @@ Collections are curated groups of documents and links organized around a topic o
 
 Example:
   glean collections list
-  glean collections get <collection-id>
   glean collections create --json '{"name":"Onboarding","description":"New hire resources"}'`,
 	}
 	cmd.AddCommand(
@@ -35,196 +33,84 @@ Example:
 }
 
 func newCollectionsListCmd() *cobra.Command {
-	var jsonPayload, outputFormat string
-	var dryRun bool
-	cmd := &cobra.Command{
+	return cmdutil.Build(cmdutil.Spec[components.ListCollectionsRequest]{
 		Use:   "list",
 		Short: "List collections",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			var req components.ListCollectionsRequest
-			if jsonPayload != "" {
-				if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-					return fmt.Errorf("invalid --json: %w", err)
-				}
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.ListCollectionsRequest) (any, error) {
+			resp, err := sdk.Client.Collections.List(ctx, req, nil)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			resp, err := sdk.Client.Collections.List(cmd.Context(), req, nil)
-			if err != nil {
-				return err
-			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			return resp.ListCollectionsResponse, nil
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body")
-	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }
 
 func newCollectionsCreateCmd() *cobra.Command {
-	var jsonPayload, outputFormat string
-	var dryRun bool
-	cmd := &cobra.Command{
-		Use:   "create",
-		Short: "Create a collection",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if jsonPayload == "" {
-				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
-			}
-			var req components.CreateCollectionRequest
-			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-				return fmt.Errorf("invalid --json: %w", err)
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
+	return cmdutil.Build(cmdutil.Spec[components.CreateCollectionRequest]{
+		Use:          "create",
+		Short:        "Create a collection",
+		JSONRequired: true,
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.CreateCollectionRequest) (any, error) {
+			resp, err := sdk.Client.Collections.Create(ctx, req, nil)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			resp, err := sdk.Client.Collections.Create(cmd.Context(), req, nil)
-			if err != nil {
-				return err
-			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			return resp.OneOf, nil
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
-	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }
 
 func newCollectionsDeleteCmd() *cobra.Command {
-	var jsonPayload string
-	var dryRun bool
-	cmd := &cobra.Command{
-		Use:   "delete",
-		Short: "Delete a collection",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if jsonPayload == "" {
-				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
-			}
-			var req components.DeleteCollectionRequest
-			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-				return fmt.Errorf("invalid --json: %w", err)
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
-			if err != nil {
-				return err
-			}
-			_, err = sdk.Client.Collections.Delete(cmd.Context(), req, nil)
-			return err
+	return cmdutil.Build(cmdutil.Spec[components.DeleteCollectionRequest]{
+		Use:          "delete",
+		Short:        "Delete a collection",
+		JSONRequired: true,
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.DeleteCollectionRequest) (any, error) {
+			_, err := sdk.Client.Collections.Delete(ctx, req, nil)
+			return nil, err
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }
 
 func newCollectionsUpdateCmd() *cobra.Command {
-	var jsonPayload, outputFormat string
-	var dryRun bool
-	cmd := &cobra.Command{
-		Use:   "update",
-		Short: "Update a collection",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if jsonPayload == "" {
-				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
-			}
-			var req components.EditCollectionRequest
-			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-				return fmt.Errorf("invalid --json: %w", err)
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
+	return cmdutil.Build(cmdutil.Spec[components.EditCollectionRequest]{
+		Use:          "update",
+		Short:        "Update a collection",
+		JSONRequired: true,
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.EditCollectionRequest) (any, error) {
+			resp, err := sdk.Client.Collections.Update(ctx, req, nil)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			resp, err := sdk.Client.Collections.Update(cmd.Context(), req, nil)
-			if err != nil {
-				return err
-			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			return resp.EditCollectionResponse, nil
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
-	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }
 
 func newCollectionsAddItemsCmd() *cobra.Command {
-	var jsonPayload, outputFormat string
-	var dryRun bool
-	cmd := &cobra.Command{
-		Use:   "add-items",
-		Short: "Add items to a collection",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if jsonPayload == "" {
-				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
-			}
-			var req components.AddCollectionItemsRequest
-			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-				return fmt.Errorf("invalid --json: %w", err)
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
+	return cmdutil.Build(cmdutil.Spec[components.AddCollectionItemsRequest]{
+		Use:          "add-items",
+		Short:        "Add items to a collection",
+		JSONRequired: true,
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.AddCollectionItemsRequest) (any, error) {
+			resp, err := sdk.Client.Collections.AddItems(ctx, req, nil)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			resp, err := sdk.Client.Collections.AddItems(cmd.Context(), req, nil)
-			if err != nil {
-				return err
-			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			return resp.AddCollectionItemsResponse, nil
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
-	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }
 
 func newCollectionsDeleteItemCmd() *cobra.Command {
-	var jsonPayload string
-	var dryRun bool
-	cmd := &cobra.Command{
-		Use:   "delete-item",
-		Short: "Delete an item from a collection",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if jsonPayload == "" {
-				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
-			}
-			var req components.DeleteCollectionItemRequest
-			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-				return fmt.Errorf("invalid --json: %w", err)
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
-			if err != nil {
-				return err
-			}
-			_, err = sdk.Client.Collections.DeleteItem(cmd.Context(), req, nil)
-			return err
+	return cmdutil.Build(cmdutil.Spec[components.DeleteCollectionItemRequest]{
+		Use:          "delete-item",
+		Short:        "Delete an item from a collection",
+		JSONRequired: true,
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.DeleteCollectionItemRequest) (any, error) {
+			_, err := sdk.Client.Collections.DeleteItem(ctx, req, nil)
+			return nil, err
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }

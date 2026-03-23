@@ -44,7 +44,6 @@ func contentOnly(ndjson string) string {
 
 // NewCmdChat creates and returns the chat command.
 func NewCmdChat() *cobra.Command {
-	var timeoutMillis int
 	var saveChat bool
 	var jsonPayload string
 	var dryRun bool
@@ -58,6 +57,7 @@ The chat API allows you to have natural language conversations with Glean's AI.
 
 Example:
   glean chat "What are the company holidays?"
+  glean chat --no-save "What is the headcount?"
   glean chat --json '{"messages":[{"author":"USER","messageType":"CONTENT","fragments":[{"text":"What is Glean?"}]}]}'
   glean chat --dry-run "test question"`,
 		Args: cobra.MaximumNArgs(1),
@@ -78,9 +78,7 @@ Example:
 				return executeChat(cmd, chatReq, false)
 			}
 			if dryRun {
-				// Show what would be sent
 				q := args[0]
-				timeout := int64(timeoutMillis)
 				save := saveChat
 				stream := true
 				agentDefault := components.AgentEnumDefault
@@ -92,31 +90,28 @@ Example:
 						MessageType: components.MessageTypeContent.ToPointer(),
 						Fragments:   []components.ChatMessageFragment{{Text: &q}},
 					}},
-					AgentConfig:   &components.AgentConfig{Agent: agentDefault.ToPointer(), Mode: modeDefault.ToPointer()},
-					SaveChat:      &save,
-					TimeoutMillis: &timeout,
-					Stream:        &stream,
+					AgentConfig: &components.AgentConfig{Agent: agentDefault.ToPointer(), Mode: modeDefault.ToPointer()},
+					SaveChat:    &save,
+					Stream:      &stream,
 				}
 				return output.WriteJSON(cmd.OutOrStdout(), chatReq)
 			}
-			return executeChatMessage(cmd, args[0], timeoutMillis, saveChat)
+			return executeChatMessage(cmd, args[0], saveChat)
 		},
 	}
 
 	cmd.Flags().StringVar(&jsonPayload, "json", "", "Complete JSON chat request body (overrides all other flags)")
 	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print the request body without sending it")
-	cmd.Flags().IntVar(&timeoutMillis, "timeout", 60000, "Request timeout in milliseconds (default 60000 — 60 seconds)")
-	cmd.Flags().BoolVar(&saveChat, "save", true, "Save the chat for later continuation")
+	cmd.Flags().BoolVar(&saveChat, "save", true, "Persist this conversation to chat history (use --no-save for agent/script use to avoid polluting history)")
 
 	return cmd
 }
 
 // executeChatMessage builds a ChatRequest from a plain message string and calls executeChat.
-func executeChatMessage(cmd *cobra.Command, question string, timeoutMillis int, saveChat bool) error {
+func executeChatMessage(cmd *cobra.Command, question string, saveChat bool) error {
 	agentDefault := components.AgentEnumDefault
 	modeDefault := components.ModeDefault
 	authorUser := components.AuthorUser
-	timeout := int64(timeoutMillis)
 	save := saveChat
 	stream := true
 
@@ -132,9 +127,8 @@ func executeChatMessage(cmd *cobra.Command, question string, timeoutMillis int, 
 			Agent: agentDefault.ToPointer(),
 			Mode:  modeDefault.ToPointer(),
 		},
-		SaveChat:      &save,
-		TimeoutMillis: &timeout,
-		Stream:        &stream,
+		SaveChat: &save,
+		Stream:   &stream,
 	}
 	return executeChat(cmd, chatReq, true)
 }

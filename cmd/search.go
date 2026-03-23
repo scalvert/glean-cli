@@ -44,11 +44,6 @@ Example:
 				return fmt.Errorf("requires a query argument or --json payload")
 			}
 
-			sdk, err := gleanClient.NewFromConfig()
-			if err != nil {
-				return err
-			}
-
 			// --json path: parse directly into SearchRequest
 			if jsonPayload != "" {
 				var req components.SearchRequest
@@ -57,6 +52,10 @@ Example:
 				}
 				if dryRun {
 					return output.WriteJSON(cmd.OutOrStdout(), req)
+				}
+				sdk, err := gleanClient.NewFromConfig()
+				if err != nil {
+					return err
 				}
 				resp, err := sdk.Client.Search.Query(cmd.Context(), req, nil)
 				if err != nil {
@@ -104,6 +103,10 @@ Example:
 				return output.WriteJSON(cmd.OutOrStdout(), search.BuildSearchRequest(opts))
 			}
 
+			sdk, err := gleanClient.NewFromConfig()
+			if err != nil {
+				return err
+			}
 			resp, err := search.RunSearchSDK(cmd.Context(), opts, sdk)
 			if err != nil {
 				return err

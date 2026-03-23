@@ -1,14 +1,19 @@
 package cmd
 
 import (
-	"encoding/json"
-	"fmt"
+	"context"
 
+	glean "github.com/gleanwork/api-client-go"
 	"github.com/gleanwork/api-client-go/models/components"
-	gleanClient "github.com/gleanwork/glean-cli/internal/client"
-	"github.com/gleanwork/glean-cli/internal/output"
+	"github.com/gleanwork/glean-cli/internal/cmdutil"
 	"github.com/spf13/cobra"
 )
+
+// agentIDRequest is a CLI-only request struct for commands that take an agent
+// ID as their only input. Using camelCase JSON tag for CLI consistency.
+type agentIDRequest struct {
+	AgentID string `json:"agentId"`
+}
 
 func NewCmdAgents() *cobra.Command {
 	cmd := &cobra.Command{
@@ -20,8 +25,9 @@ Agents are AI-powered workflows that can search, reason, and act on your company
 
 Example:
   glean agents list
-  glean agents get <agent-id>
-  glean agents run --json '{"agentId":"<id>","query":"summarize Q1 results"}'`,
+  glean agents get --json '{"agentId":"<id>"}'
+  glean agents schemas --json '{"agentId":"<id>"}'
+  glean agents run --json '{"agentId":"<id>","messages":[{"author":"USER","fragments":[{"text":"summarize Q1 results"}]}]}'`,
 	}
 	cmd.AddCommand(
 		newAgentsListCmd(),
@@ -33,113 +39,60 @@ Example:
 }
 
 func newAgentsListCmd() *cobra.Command {
-	var jsonPayload, outputFormat string
-	var dryRun bool
-	cmd := &cobra.Command{
+	return cmdutil.Build(cmdutil.Spec[components.SearchAgentsRequest]{
 		Use:   "list",
 		Short: "List available agents",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			var req components.SearchAgentsRequest
-			if jsonPayload != "" {
-				if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-					return fmt.Errorf("invalid --json: %w", err)
-				}
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.SearchAgentsRequest) (any, error) {
+			resp, err := sdk.Client.Agents.List(ctx, req)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			resp, err := sdk.Client.Agents.List(cmd.Context(), req)
-			if err != nil {
-				return err
-			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			return resp.SearchAgentsResponse, nil
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body")
-	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format: json, ndjson, text")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }
 
 func newAgentsGetCmd() *cobra.Command {
-	var agentID, outputFormat string
-	cmd := &cobra.Command{
-		Use:   "get <agent-id>",
-		Short: "Get an agent by ID",
-		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			agentID = args[0]
-			sdk, err := gleanClient.NewFromConfig()
+	return cmdutil.Build(cmdutil.Spec[agentIDRequest]{
+		Use:          "get",
+		Short:        "Get an agent by ID",
+		JSONRequired: true,
+		Run: func(ctx context.Context, sdk *glean.Glean, req agentIDRequest) (any, error) {
+			resp, err := sdk.Client.Agents.Retrieve(ctx, req.AgentID, nil, nil)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			resp, err := sdk.Client.Agents.Retrieve(cmd.Context(), agentID, nil, nil)
-			if err != nil {
-				return err
-			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			return resp.Agent, nil
 		},
-	}
-	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
-	return cmd
+	})
 }
 
 func newAgentsSchemasCmd() *cobra.Command {
-	var outputFormat string
-	cmd := &cobra.Command{
-		Use:   "schemas <agent-id>",
-		Short: "Get the schemas for an agent",
-		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			sdk, err := gleanClient.NewFromConfig()
+	return cmdutil.Build(cmdutil.Spec[agentIDRequest]{
+		Use:          "schemas",
+		Short:        "Get the schemas for an agent",
+		JSONRequired: true,
+		Run: func(ctx context.Context, sdk *glean.Glean, req agentIDRequest) (any, error) {
+			resp, err := sdk.Client.Agents.RetrieveSchemas(ctx, req.AgentID, nil, nil)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			resp, err := sdk.Client.Agents.RetrieveSchemas(cmd.Context(), args[0], nil, nil)
-			if err != nil {
-				return err
-			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			return resp.AgentSchemas, nil
 		},
-	}
-	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
-	return cmd
+	})
 }
 
 func newAgentsRunCmd() *cobra.Command {
-	var jsonPayload, outputFormat string
-	var dryRun bool
-	cmd := &cobra.Command{
-		Use:   "run",
-		Short: "Run an agent (synchronous)",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if jsonPayload == "" {
-				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
-			}
-			var req components.AgentRunCreate
-			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-				return fmt.Errorf("invalid --json: %w", err)
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
+	return cmdutil.Build(cmdutil.Spec[components.AgentRunCreate]{
+		Use:          "run",
+		Short:        "Run an agent (synchronous)",
+		JSONRequired: true,
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.AgentRunCreate) (any, error) {
+			resp, err := sdk.Client.Agents.Run(ctx, req)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			resp, err := sdk.Client.Agents.Run(cmd.Context(), req)
-			if err != nil {
-				return err
-			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			return resp.AgentRunWaitResponse, nil
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
-	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }

@@ -1,12 +1,11 @@
 package cmd
 
 import (
-	"encoding/json"
-	"fmt"
+	"context"
 
+	glean "github.com/gleanwork/api-client-go"
 	"github.com/gleanwork/api-client-go/models/components"
-	gleanClient "github.com/gleanwork/glean-cli/internal/client"
-	"github.com/gleanwork/glean-cli/internal/output"
+	"github.com/gleanwork/glean-cli/internal/cmdutil"
 	"github.com/spf13/cobra"
 )
 
@@ -30,37 +29,24 @@ Example:
 }
 
 func newToolsListCmd() *cobra.Command {
-	var outputFormat string
-	var dryRun bool
-	cmd := &cobra.Command{
+	return cmdutil.Build(cmdutil.Spec[struct{}]{
 		Use:   "list",
 		Short: "List available tools",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), struct{}{})
-			}
-			sdk, err := gleanClient.NewFromConfig()
+		Run: func(ctx context.Context, sdk *glean.Glean, req struct{}) (any, error) {
+			resp, err := sdk.Client.Tools.List(ctx, nil)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			resp, err := sdk.Client.Tools.List(cmd.Context(), nil)
-			if err != nil {
-				return err
-			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			return resp.ToolsListResponse, nil
 		},
-	}
-	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }
 
 func newToolsRunCmd() *cobra.Command {
-	var jsonPayload, outputFormat string
-	var dryRun bool
-	cmd := &cobra.Command{
-		Use:   "run",
-		Short: "Run a tool",
+	return cmdutil.Build(cmdutil.Spec[components.ToolsCallRequest]{
+		Use:          "run",
+		Short:        "Run a tool",
+		JSONRequired: true,
 		Long: `Run a tool by name with typed parameters.
 
 The --json payload must match the ToolsCallRequest schema:
@@ -78,30 +64,12 @@ Each parameter entry is a ToolsCallParameter with fields:
   value       (string)           - value for primitive types
   items       (array)            - value for array types (each element is a ToolsCallParameter)
   properties  (object)           - value for object types (map of string to ToolsCallParameter)`,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if jsonPayload == "" {
-				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
-			}
-			var req components.ToolsCallRequest
-			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-				return fmt.Errorf("invalid --json: %w", err)
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.ToolsCallRequest) (any, error) {
+			resp, err := sdk.Client.Tools.Run(ctx, req)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			resp, err := sdk.Client.Tools.Run(cmd.Context(), req)
-			if err != nil {
-				return err
-			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			return resp.ToolsCallResponse, nil
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
-	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }

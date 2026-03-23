@@ -1,12 +1,11 @@
 package cmd
 
 import (
-	"encoding/json"
-	"fmt"
+	"context"
 
+	glean "github.com/gleanwork/api-client-go"
 	"github.com/gleanwork/api-client-go/models/components"
-	gleanClient "github.com/gleanwork/glean-cli/internal/client"
-	"github.com/gleanwork/glean-cli/internal/output"
+	"github.com/gleanwork/glean-cli/internal/cmdutil"
 	"github.com/spf13/cobra"
 )
 
@@ -29,61 +28,25 @@ Example:
 }
 
 func newActivityReportCmd() *cobra.Command {
-	var jsonPayload string
-	var dryRun bool
-	cmd := &cobra.Command{
-		Use:   "report",
-		Short: "Report user activity events",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if jsonPayload == "" {
-				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
-			}
-			var req components.Activity
-			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-				return fmt.Errorf("invalid --json: %w", err)
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
-			if err != nil {
-				return err
-			}
-			_, err = sdk.Client.Activity.Report(cmd.Context(), req)
-			return err
+	return cmdutil.Build(cmdutil.Spec[components.Activity]{
+		Use:          "report",
+		Short:        "Report user activity events",
+		JSONRequired: true,
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.Activity) (any, error) {
+			_, err := sdk.Client.Activity.Report(ctx, req)
+			return nil, err
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }
 
 func newActivityFeedbackCmd() *cobra.Command {
-	var jsonPayload string
-	var dryRun bool
-	cmd := &cobra.Command{
-		Use:   "feedback",
-		Short: "Submit feedback",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if jsonPayload == "" {
-				return fmt.Errorf("--json is required\n\nRun '%s --help' for the expected payload format", cmd.CommandPath())
-			}
-			var req components.Feedback
-			if err := json.Unmarshal([]byte(jsonPayload), &req); err != nil {
-				return fmt.Errorf("invalid --json: %w", err)
-			}
-			if dryRun {
-				return output.WriteJSON(cmd.OutOrStdout(), req)
-			}
-			sdk, err := gleanClient.NewFromConfig()
-			if err != nil {
-				return err
-			}
-			_, err = sdk.Client.Activity.Feedback(cmd.Context(), nil, &req)
-			return err
+	return cmdutil.Build(cmdutil.Spec[components.Feedback]{
+		Use:          "feedback",
+		Short:        "Submit feedback",
+		JSONRequired: true,
+		Run: func(ctx context.Context, sdk *glean.Glean, req components.Feedback) (any, error) {
+			_, err := sdk.Client.Activity.Feedback(ctx, nil, &req)
+			return nil, err
 		},
-	}
-	cmd.Flags().StringVar(&jsonPayload, "json", "", "JSON request body (required)")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
-	return cmd
+	})
 }
