@@ -18,8 +18,9 @@ require (
 	github.com/charmbracelet/glamour v1.0.0
 	github.com/coreos/go-oidc/v3 v3.17.0
 	github.com/fatih/color v1.18.0
-	github.com/gleanwork/api-client-go v0.11.31
+	github.com/gleanwork/api-client-go v0.11.34
 	github.com/int128/oauth2cli v1.18.0
+	github.com/minio/selfupdate v0.6.0
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	github.com/stretchr/testify v1.11.1
 	github.com/zalando/go-keyring v0.2.6
@@ -57,7 +58,6 @@ require (
 	github.com/mattn/go-localereader v0.0.1 // indirect
 	github.com/mattn/go-runewidth v0.0.19 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.27 // indirect
-	github.com/minio/selfupdate v0.6.0 // indirect
 	github.com/muesli/ansi v0.0.0-20230316100256-276c6243b2f6 // indirect
 	github.com/muesli/cancelreader v0.2.2 // indirect
 	github.com/muesli/reflow v0.3.0 // indirect
