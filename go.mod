@@ -1,6 +1,6 @@
 module github.com/gleanwork/glean-cli
 
-go 1.24.2
+go 1.25
 
 require (
 	github.com/briandowns/spinner v1.23.2
