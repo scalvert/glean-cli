@@ -22,15 +22,19 @@ func SetVersion(v string) { cliVersion = v }
 // Version returns the current CLI version string.
 func Version() string { return cliVersion }
 
-// userAgentTransport wraps an http.RoundTripper and appends the CLI identifier
-// to the User-Agent header on every request.
-type userAgentTransport struct {
-	base http.RoundTripper
+// cliTransport wraps an http.RoundTripper, sets the CLI User-Agent header,
+// and injects X-Glean-Auth-Type when the token originates from OAuth.
+type cliTransport struct {
+	base     http.RoundTripper
+	authType string // "OAUTH" or "" (empty = API token, no header set)
 }
 
-func (t *userAgentTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+func (t *cliTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	req = req.Clone(req.Context())
 	req.Header.Set("User-Agent", "glean-cli/"+cliVersion)
+	if t.authType != "" {
+		req.Header.Set("X-Glean-Auth-Type", t.authType)
+	}
 	return t.base.RoundTrip(req)
 }
 
@@ -50,8 +54,12 @@ func New(cfg *config.Config) (*glean.Glean, error) {
 	}
 
 	token := cfg.GleanToken
+	var authType string
 	if token == "" {
 		token = auth.LoadOAuthToken(cfg.GleanHost)
+		if token != "" {
+			authType = "OAUTH"
+		}
 	}
 	if token == "" {
 		return nil, fmt.Errorf("not authenticated — run 'glean auth login' or set GLEAN_API_TOKEN")
@@ -63,7 +71,7 @@ func New(cfg *config.Config) (*glean.Glean, error) {
 		glean.WithInstance(instance),
 		glean.WithSecurity(token),
 		glean.WithClient(&http.Client{
-			Transport: &userAgentTransport{base: http.DefaultTransport},
+			Transport: &cliTransport{base: http.DefaultTransport, authType: authType},
 		}),
 	}
 

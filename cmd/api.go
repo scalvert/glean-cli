@@ -186,13 +186,19 @@ func rawAPIRequest(ctx context.Context, cfg *config.Config, method, endpoint str
 	}
 
 	token := cfg.GleanToken
+	var authType string
 	if token == "" {
 		token = auth.LoadOAuthToken(cfg.GleanHost)
+		if token != "" {
+			authType = "OAUTH"
+		}
 	}
 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+token)
-	req.Header.Set("X-Glean-Auth-Type", "string")
+	if authType != "" {
+		req.Header.Set("X-Glean-Auth-Type", authType)
+	}
 
 	httpClient := &http.Client{Timeout: 30 * time.Second}
 	httpResp, err := httpClient.Do(req)
@@ -232,13 +238,19 @@ func previewRequest(cmd *cobra.Command, cfg *config.Config, method, endpoint str
 	fmt.Fprintf(w, "\nRequest Headers:\n")
 	fmt.Fprintf(w, "  Content-Type: application/json\n")
 	token := cfg.GleanToken
+	var authType string
 	if token == "" {
 		token = auth.LoadOAuthToken(cfg.GleanHost)
+		if token != "" {
+			authType = "OAUTH"
+		}
 	}
 	if token != "" {
 		fmt.Fprintf(w, "  Authorization: Bearer %s\n", config.MaskToken(token))
 	}
-	fmt.Fprintf(w, "  X-Glean-Auth-Type: string\n")
+	if authType != "" {
+		fmt.Fprintf(w, "  X-Glean-Auth-Type: %s\n", authType)
+	}
 
 	if body != nil {
 		fmt.Fprintf(w, "\nRequest Body:\n")

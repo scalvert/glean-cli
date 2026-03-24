@@ -34,8 +34,12 @@ func StreamChat(ctx context.Context, cfg *config.Config, req components.ChatRequ
 	}
 
 	token := cfg.GleanToken
+	var authType string
 	if token == "" {
 		token = auth.LoadOAuthToken(host)
+		if token != "" {
+			authType = "OAUTH"
+		}
 	}
 	if token == "" {
 		return nil, fmt.Errorf("not authenticated — run 'glean auth login'")
@@ -70,6 +74,9 @@ func StreamChat(ctx context.Context, cfg *config.Config, req components.ChatRequ
 	httpReq.Header.Set("Accept", "text/event-stream")
 	httpReq.Header.Set("Authorization", "Bearer "+token)
 	httpReq.Header.Set("User-Agent", "glean-cli/"+cliVersion)
+	if authType != "" {
+		httpReq.Header.Set("X-Glean-Auth-Type", authType)
+	}
 
 	resp, err := streamHTTPClient.Do(httpReq)
 	if err != nil {
