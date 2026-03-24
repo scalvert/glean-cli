@@ -61,11 +61,4 @@ checksum:
   name_template: 'checksums.txt'
 
 changelog:
-  sort: asc
-  filters:
-    exclude:
-      - '^docs:'
-      - '^test:'
-      - '^ci:'
-      - Merge pull request
-      - Merge branch
+  use: github-native
