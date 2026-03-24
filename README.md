@@ -349,6 +349,10 @@ npx skills add https://github.com/gleanwork/glean-cli/tree/main/skills/glean-cha
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, coding conventions, and how to submit pull requests.
 
+## Acknowledgments
+
+The Glean CLI's agent-first design — structured JSON output, `--dry-run` previews, `glean schema` introspection, and agent skills — was heavily inspired by the [Google Workspace CLI](https://github.com/googleworkspace/cli) built by [Justin Poehnelt](https://github.com/jpoehnelt). His work on `gws` and his writing on designing CLIs for AI agents shaped how we think about making command-line tools that work as well for agents as they do for humans.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
