@@ -25,7 +25,7 @@ Search across your company's knowledge, chat with Glean Assistant, manage the fu
 
 ## Installation
 
-```bash
+```bash snippet=readme/snippet-01.sh
 # Homebrew (recommended)
 brew install gleanwork/tap/glean-cli
 
@@ -37,7 +37,7 @@ Pre-built binaries for macOS, Linux, and Windows are available on the [Releases]
 
 ## Quick Start
 
-```bash
+```bash snippet=readme/snippet-02.sh
 # 1. Authenticate
 glean auth login                          # OAuth via browser (recommended)
 # — OR set env vars for CI/CD:
@@ -59,7 +59,7 @@ If your workflow involves searching Glean, asking Glean AI questions, or wiring 
 
 Every command returns structured JSON. Use `--dry-run` to preview requests before they're sent. Use `glean schema <command>` to get machine-readable flag documentation. Results pipe cleanly to `jq`, scripts, or any tool that reads stdin.
 
-```bash
+```bash snippet=readme/snippet-03.sh
 # Discover what commands are available
 glean schema | jq '.commands'
 
@@ -77,7 +77,7 @@ glean search "engineering docs" --output ndjson | jq .title
 
 ### OAuth (recommended)
 
-```bash
+```bash snippet=readme/snippet-04.sh
 glean auth login    # opens browser, completes PKCE flow
 glean auth status   # verify credentials, host, and token expiry
 glean auth logout   # remove all stored credentials
@@ -91,7 +91,7 @@ For instances that don't support OAuth, `auth login` falls back to prompting for
 
 Set credentials via environment variables — no interactive login needed:
 
-```bash
+```bash snippet=readme/snippet-05.sh
 export GLEAN_API_TOKEN=your-token
 export GLEAN_HOST=your-company-be.glean.com
 glean search "test"
@@ -103,7 +103,7 @@ Credentials are resolved in this order: environment variables → system keyring
 
 Running `glean` with no arguments opens a full-screen chat powered by Glean Assistant.
 
-```bash
+```bash snippet=readme/snippet-06.sh
 glean            # open TUI
 glean --continue # resume the most recent session
 ```
@@ -156,7 +156,7 @@ Use ↑/↓ to navigate matches, Enter to attach, Esc to dismiss.
 
 ### `glean search`
 
-```bash
+```bash snippet=readme/snippet-07.sh
 glean search "vacation policy"
 glean search "Q1 planning" --datasource confluence --page-size 5
 glean search "docs" --fields "results.document.title,results.document.url"
@@ -177,7 +177,7 @@ glean search --dry-run "test"
 
 ### `glean chat`
 
-```bash
+```bash snippet=readme/snippet-08.sh
 glean chat "What are our company holidays?"
 glean chat --timeout 120000 "Summarize all Q1 OKRs across teams"
 glean chat --json '{"messages":[{"author":"USER","messageType":"CONTENT","fragments":[{"text":"What is Glean?"}]}]}'
@@ -195,7 +195,7 @@ glean chat --dry-run "test"
 
 Raw authenticated HTTP access to any Glean REST API endpoint (relative to `/rest/api/v1/`).
 
-```bash
+```bash snippet=readme/snippet-09.sh
 glean api search --method POST --raw-field '{"query":"rust","pageSize":3}'
 glean api --preview search --method POST --raw-field '{"query":"test"}'
 ```
@@ -222,7 +222,7 @@ All namespace commands accept `--json`, `--output`, and `--dry-run`. Run `glean 
 
 #### Example payloads
 
-```bash
+```bash snippet=readme/snippet-10.sh
 # Retrieve a document by URL
 glean documents get --json '{"documentSpecs":[{"url":"https://..."}]}'
 
@@ -242,17 +242,23 @@ glean shortcuts create --json '{"data":{"inputAlias":"jira","urlTemplate":"https
 glean pins create --json '{"queries":["onboarding"],"documentId":"https://..."}'
 
 # List available AI agents
-glean agents list | jq '.SearchAgentsResponse.agents[] | {id: .agent_id, name: .name}'
+glean agents list | jq '.agents[] | {id: .agent_id, name: .name}'
+
+# Get a specific agent
+glean agents get --json '{"agentId":"<id>"}'
+
+# Get schemas for an agent
+glean agents schemas --json '{"agentId":"<id>"}'
 
 # Run an agent
-glean agents run --json '{"agent_id":"<id>"}'
+glean agents run --json '{"agentId":"<id>","messages":[{"author":"USER","fragments":[{"text":"summarize Q1 results"}]}]}'
 ```
 
 ## Agent Workflow
 
 The CLI is designed as a first-class tool for AI coding agents. Every command returns JSON on stdout and errors on stderr with non-zero exit codes.
 
-```bash
+```bash snippet=readme/snippet-11.sh
 # 1. Discover all available commands
 glean schema | jq '.commands'
 
@@ -291,7 +297,7 @@ All error details are written to stderr. Stdout contains only structured output 
 
 ## Shell Completions
 
-```bash
+```bash snippet=readme/snippet-12.sh
 glean completion bash   # Bash
 glean completion zsh    # Zsh
 glean completion fish   # Fish
@@ -307,7 +313,7 @@ Each skill covers a specific command: flags, output formats, `--json` request sh
 
 Use [`npx skills`](https://github.com/agentskills/agentskills) to install into your agent:
 
-```bash
+```bash snippet=readme/snippet-13.sh
 # Install all skills at once
 npx skills add https://github.com/gleanwork/glean-cli
 

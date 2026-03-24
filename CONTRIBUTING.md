@@ -13,32 +13,32 @@
 ### Getting Started
 
 1. Fork and clone the repository:
-```bash
+```bash snippet=contributing/snippet-01.sh
 git clone https://github.com/YOUR-USERNAME/glean-cli.git
 cd glean-cli
 ```
 
 2. Install development dependencies:
-```bash
+```bash snippet=contributing/snippet-02.sh
 mise run setup
 ```
 
 3. Build the project:
-```bash
+```bash snippet=contributing/snippet-03.sh
 mise run build
 ```
 
 ## Development Workflow
 
 1. Create a new branch for your changes:
-```bash
+```bash snippet=contributing/snippet-04.sh
 git checkout -b feature/your-feature-name
 ```
 
 2. Make your changes, following our coding standards and practices.
 
 3. Run tests:
-```bash
+```bash snippet=contributing/snippet-05.sh
 # Run tests with verbose output
 mise run test
 
@@ -50,7 +50,7 @@ mise run test:all
 ```
 
 4. Run linters:
-```bash
+```bash snippet=contributing/snippet-06.sh
 # Run linter
 mise run lint
 
@@ -59,12 +59,12 @@ mise run lint:fix
 ```
 
 5. Install locally to test your changes:
-```bash
+```bash snippet=contributing/snippet-07.sh
 mise run install
 ```
 
 6. Commit your changes using conventional commit messages:
-```bash
+```bash snippet=contributing/snippet-08.sh
 git commit -m "feat: add new feature"
 git commit -m "fix: resolve issue with X"
 ```
