@@ -65,3 +65,6 @@ jobs:
         with:
           version: v2.11.4
           args: --timeout=5m
+
+      - name: Check docs in sync with snippets
+        run: npx markdown-code check

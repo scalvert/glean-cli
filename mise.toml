@@ -150,6 +150,14 @@ echo "Release process started!"
 echo "Monitor the release at https://github.com/gleanwork/glean-cli/actions"
 '''
 
+[tasks."docs:check"]
+description = "Check that README code blocks are in sync with snippet files"
+run = "npx markdown-code check"
+
+[tasks."docs:sync"]
+description = "Sync README code blocks from snippet files"
+run = "npx markdown-code sync"
+
 [tasks.demo]
 description = "Generate demo GIF for README"
 depends = ["build"]
