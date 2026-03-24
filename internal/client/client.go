@@ -16,21 +16,42 @@ import (
 // cliVersion is set at startup via SetVersion. Defaults to "dev" for local builds.
 var cliVersion = "dev"
 
+// authTypeOAuth is the X-Glean-Auth-Type header value required for External IdP OAuth tokens.
+const authTypeOAuth = "OAUTH"
+
+// ResolveToken returns the bearer token and the X-Glean-Auth-Type value for the
+// request. API tokens (cfg.GleanToken) return an empty authType; OAuth tokens
+// sourced from local storage return authTypeOAuth.
+func ResolveToken(cfg *config.Config) (token, authType string) {
+	if cfg.GleanToken != "" {
+		return cfg.GleanToken, ""
+	}
+	tok := auth.LoadOAuthToken(cfg.GleanHost)
+	if tok != "" {
+		return tok, authTypeOAuth
+	}
+	return "", ""
+}
+
 // SetVersion records the build-time version for use in the User-Agent header.
 func SetVersion(v string) { cliVersion = v }
 
 // Version returns the current CLI version string.
 func Version() string { return cliVersion }
 
-// userAgentTransport wraps an http.RoundTripper and appends the CLI identifier
-// to the User-Agent header on every request.
-type userAgentTransport struct {
-	base http.RoundTripper
+// cliTransport wraps an http.RoundTripper, sets the CLI User-Agent header,
+// and injects X-Glean-Auth-Type when the token originates from OAuth.
+type cliTransport struct {
+	base     http.RoundTripper
+	authType string // "OAUTH" or "" (empty = API token, no header set)
 }
 
-func (t *userAgentTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+func (t *cliTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	req = req.Clone(req.Context())
 	req.Header.Set("User-Agent", "glean-cli/"+cliVersion)
+	if t.authType != "" {
+		req.Header.Set("X-Glean-Auth-Type", t.authType)
+	}
 	return t.base.RoundTrip(req)
 }
 
@@ -49,10 +70,7 @@ func New(cfg *config.Config) (*glean.Glean, error) {
 		return nil, fmt.Errorf("glean host not configured. Run 'glean auth login' or set GLEAN_HOST")
 	}
 
-	token := cfg.GleanToken
-	if token == "" {
-		token = auth.LoadOAuthToken(cfg.GleanHost)
-	}
+	token, authType := ResolveToken(cfg)
 	if token == "" {
 		return nil, fmt.Errorf("not authenticated — run 'glean auth login' or set GLEAN_API_TOKEN")
 	}
@@ -63,7 +81,7 @@ func New(cfg *config.Config) (*glean.Glean, error) {
 		glean.WithInstance(instance),
 		glean.WithSecurity(token),
 		glean.WithClient(&http.Client{
-			Transport: &userAgentTransport{base: http.DefaultTransport},
+			Transport: &cliTransport{base: http.DefaultTransport, authType: authType},
 		}),
 	}
 

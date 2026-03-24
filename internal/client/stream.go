@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/gleanwork/api-client-go/models/components"
-	"github.com/gleanwork/glean-cli/internal/auth"
 	"github.com/gleanwork/glean-cli/internal/config"
 )
 
@@ -33,10 +32,7 @@ func StreamChat(ctx context.Context, cfg *config.Config, req components.ChatRequ
 		return nil, fmt.Errorf("glean host not configured")
 	}
 
-	token := cfg.GleanToken
-	if token == "" {
-		token = auth.LoadOAuthToken(host)
-	}
+	token, authType := ResolveToken(cfg)
 	if token == "" {
 		return nil, fmt.Errorf("not authenticated — run 'glean auth login'")
 	}
@@ -70,6 +66,9 @@ func StreamChat(ctx context.Context, cfg *config.Config, req components.ChatRequ
 	httpReq.Header.Set("Accept", "text/event-stream")
 	httpReq.Header.Set("Authorization", "Bearer "+token)
 	httpReq.Header.Set("User-Agent", "glean-cli/"+cliVersion)
+	if authType != "" {
+		httpReq.Header.Set("X-Glean-Auth-Type", authType)
+	}
 
 	resp, err := streamHTTPClient.Do(httpReq)
 	if err != nil {
