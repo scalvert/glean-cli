@@ -16,6 +16,23 @@ import (
 // cliVersion is set at startup via SetVersion. Defaults to "dev" for local builds.
 var cliVersion = "dev"
 
+// authTypeOAuth is the X-Glean-Auth-Type header value required for External IdP OAuth tokens.
+const authTypeOAuth = "OAUTH"
+
+// ResolveToken returns the bearer token and the X-Glean-Auth-Type value for the
+// request. API tokens (cfg.GleanToken) return an empty authType; OAuth tokens
+// sourced from local storage return authTypeOAuth.
+func ResolveToken(cfg *config.Config) (token, authType string) {
+	if cfg.GleanToken != "" {
+		return cfg.GleanToken, ""
+	}
+	tok := auth.LoadOAuthToken(cfg.GleanHost)
+	if tok != "" {
+		return tok, authTypeOAuth
+	}
+	return "", ""
+}
+
 // SetVersion records the build-time version for use in the User-Agent header.
 func SetVersion(v string) { cliVersion = v }
 
@@ -53,14 +70,7 @@ func New(cfg *config.Config) (*glean.Glean, error) {
 		return nil, fmt.Errorf("glean host not configured. Run 'glean auth login' or set GLEAN_HOST")
 	}
 
-	token := cfg.GleanToken
-	var authType string
-	if token == "" {
-		token = auth.LoadOAuthToken(cfg.GleanHost)
-		if token != "" {
-			authType = "OAUTH"
-		}
-	}
+	token, authType := ResolveToken(cfg)
 	if token == "" {
 		return nil, fmt.Errorf("not authenticated — run 'glean auth login' or set GLEAN_API_TOKEN")
 	}
