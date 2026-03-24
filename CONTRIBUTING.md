@@ -6,7 +6,7 @@
 
 ### Prerequisites
 
-- Go 1.24 or higher
+- Go 1.25 or higher
 - [mise](https://mise.jdx.dev/getting-started.html) (tool and task runner)
 - Git
 
@@ -80,10 +80,12 @@ Run `mise tasks` to see all available tasks. Common tasks include:
 - `mise run lint:fix`: Run linters with auto-fix
 - `mise run install`: Install the CLI locally
 - `mise run clean`: Clean build artifacts
+- `mise run docs:check`: Verify README code blocks match snippet files
+- `mise run docs:sync`: Sync README code blocks from snippet files
 
 ## Pull Request Process
 
-1. Update documentation (README.md, code comments) if you're changing functionality.
+1. Update documentation (README.md, code comments) if you're changing functionality. README code examples live in `snippets/` — edit the `.sh` files there, then run `mise run docs:sync` to update the README.
 2. Add tests for any new features.
 3. Ensure all tests pass and linters are clean.
 4. Push your changes and create a pull request.

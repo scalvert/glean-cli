@@ -1,0 +1,33 @@
+{
+  "snippetRoot": "./snippets",
+  "markdownGlob": "**/*.md",
+  "excludeGlob": [
+    "node_modules/**",
+    ".git/**",
+    "dist/**",
+    "build/**",
+    "coverage/**",
+    ".next/**",
+    ".nuxt/**",
+    "out/**",
+    "target/**",
+    "vendor/**"
+  ],
+  "includeExtensions": [
+    ".ts",
+    ".js",
+    ".py",
+    ".java",
+    ".cpp",
+    ".c",
+    ".go",
+    ".rs",
+    ".php",
+    ".rb",
+    ".swift",
+    ".kt",
+    ".sh"
+  ],
+  "remoteTimeout": 30000,
+  "allowInsecureHttp": false
+}
