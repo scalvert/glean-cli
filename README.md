@@ -168,7 +168,7 @@ Use ↑/↓ to navigate matches, Enter to attach, Esc to dismiss.
 | Command                  | Description                                                 |
 | ------------------------ | ----------------------------------------------------------- |
 | `glean search <query>`   | Search across your company's knowledge                      |
-| `glean chat <message>`   | Chat with Glean Assistant (non-interactive)                 |
+| `glean chat [message]`   | Chat with Glean Assistant (non-interactive)                 |
 | `glean api <endpoint>`   | Make a raw authenticated HTTP request to the Glean REST API |
 | `glean schema [command]` | Show machine-readable JSON schema for any command           |
 | `glean auth`             | Authenticate with Glean                                     |
@@ -202,7 +202,12 @@ glean chat "What are our company holidays?"
 glean chat --timeout 120000 "Summarize all Q1 OKRs across teams"
 glean chat --json '{"messages":[{"author":"USER","messageType":"CONTENT","fragments":[{"text":"What is Glean?"}]}]}'
 glean chat --dry-run "test"
+echo "What is Glean?" | glean chat
+glean chat                                # interactive multiline input, Ctrl+D to send
 ```
+
+When called without a message argument, `glean chat` reads from stdin until EOF (Ctrl+D).
+This enables multiline messages and piping input from other commands.
 
 | Flag        | Description                                     |
 | ----------- | ----------------------------------------------- |
