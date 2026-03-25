@@ -1,0 +1,104 @@
+name: Bug Report
+description: Report a bug in the Glean CLI
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the sections below to help us diagnose the issue.
+
+  - type: input
+    id: version
+    attributes:
+      label: CLI Version
+      description: Run `glean --version` and paste the output.
+      placeholder: "0.5.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the bug.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: |
+        Exact commands to reproduce the issue.
+      placeholder: |
+        1. Run `glean tools list`
+        2. Observe duplicated entries in the output
+    validations:
+      required: true
+
+  - type: textarea
+    id: curl-test
+    attributes:
+      label: Does the same issue occur with a direct API call?
+      description: |
+        Many CLI commands are thin wrappers around the Glean REST API. Before reporting, please test whether the issue also occurs when calling the API directly with `curl` or `glean api`. This helps us determine whether the bug is in the CLI or the upstream API.
+
+        For example, if `glean search "test"` returns unexpected results:
+        ```bash
+        glean api search --method POST --raw-field '{"query":"test","pageSize":3}'
+        ```
+
+        Or with curl:
+        ```bash
+        curl -s -X POST "https://$GLEAN_HOST/rest/api/v1/search" \
+          -H "Authorization: Bearer $GLEAN_API_TOKEN" \
+          -H "Content-Type: application/json" \
+          -d '{"query":"test","pageSize":3}'
+        ```
+
+        Does the direct API call show the same issue?
+      placeholder: |
+        - [ ] Yes — the API returns the same unexpected result (likely an API-side issue)
+        - [ ] No — the API returns the correct result but the CLI does not (likely a CLI bug)
+        - [ ] I was unable to test this
+    validations:
+      required: true
+
+  - type: dropdown
+    id: auth-method
+    attributes:
+      label: Authentication method
+      options:
+        - OAuth (`glean auth login`)
+        - Environment variables (`GLEAN_API_TOKEN` + `GLEAN_HOST`)
+        - Config file (`~/.glean/config.json`)
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, shell, and any other relevant environment details.
+      placeholder: |
+        - OS: macOS 15.3
+        - Shell: zsh
+        - Go version (if building from source): 1.24
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant output or logs
+      description: Paste any error messages, stack traces, or unexpected output. Use `--dry-run` to capture the request payload if relevant.
+      render: shell
+    validations:
+      required: false
