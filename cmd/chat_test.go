@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"os"
 	"testing"
 
 	"github.com/gkampitakis/go-snaps/snaps"
@@ -25,6 +26,52 @@ func TestChatJSONPayloadSetsStreamTrue(t *testing.T) {
 	})
 	err := cmd.Execute()
 	require.NoError(t, err, "chat --json must succeed (not fail with content-type error)")
+}
+
+func TestChatStdinPipe(t *testing.T) {
+	fixtures := testutils.NewFixtures(t, "basic_chat_response.json")
+	response := fixtures.LoadAsStream("basic_chat_response")
+	_, cleanup := testutils.SetupTestWithResponse(t, response)
+	defer cleanup()
+
+	// Simulate piped stdin with a multiline message.
+	r, w, err := os.Pipe()
+	require.NoError(t, err)
+	_, err = w.WriteString("Hello\nThis is a multiline\nmessage")
+	require.NoError(t, err)
+	w.Close()
+
+	origStdin := os.Stdin
+	os.Stdin = r
+	defer func() { os.Stdin = origStdin }()
+
+	b := bytes.NewBufferString("")
+	cmd := NewCmdChat()
+	cmd.SetOut(b)
+	cmd.SetArgs([]string{})
+
+	err = cmd.Execute()
+	require.NoError(t, err)
+	assert.NotEmpty(t, b.String())
+}
+
+func TestChatStdinEmpty(t *testing.T) {
+	// Empty stdin should return an error.
+	r, w, err := os.Pipe()
+	require.NoError(t, err)
+	w.Close()
+
+	origStdin := os.Stdin
+	os.Stdin = r
+	defer func() { os.Stdin = origStdin }()
+
+	cmd := NewCmdChat()
+	cmd.SetArgs([]string{})
+	cmd.SilenceUsage = true
+
+	err = cmd.Execute()
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "no message provided")
 }
 
 func TestChatCommand(t *testing.T) {

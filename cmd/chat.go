@@ -3,6 +3,8 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"os"
 	"strings"
 	"time"
 
@@ -11,6 +13,7 @@ import (
 	gleanClient "github.com/gleanwork/glean-cli/internal/client"
 	"github.com/gleanwork/glean-cli/internal/output"
 	"github.com/spf13/cobra"
+	"golang.org/x/term"
 )
 
 // contentOnly extracts the user-visible text from a chat NDJSON stream.
@@ -55,15 +58,24 @@ func NewCmdChat() *cobra.Command {
 
 The chat API allows you to have natural language conversations with Glean's AI.
 
+When called without arguments, reads a message from stdin (type your message
+and press Ctrl+D to send). This enables multiline input and piping.
+
 Example:
   glean chat "What are the company holidays?"
   glean chat --no-save "What is the headcount?"
   glean chat --json '{"messages":[{"author":"USER","messageType":"CONTENT","fragments":[{"text":"What is Glean?"}]}]}'
-  glean chat --dry-run "test question"`,
+  glean chat --dry-run "test question"
+  echo "What is Glean?" | glean chat
+  glean chat                                # interactive multiline input, Ctrl+D to send`,
 		Args: cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if jsonPayload == "" && len(args) == 0 {
-				return fmt.Errorf("requires a message argument or --json payload")
+				message, err := readStdin()
+				if err != nil {
+					return err
+				}
+				args = []string{message}
 			}
 			if jsonPayload != "" {
 				var chatReq components.ChatRequest
@@ -105,6 +117,24 @@ Example:
 	cmd.Flags().BoolVar(&saveChat, "save", true, "Persist this conversation to chat history (use --no-save for agent/script use to avoid polluting history)")
 
 	return cmd
+}
+
+// readStdin reads a message from standard input. When stdin is a terminal
+// (interactive mode), it prints a prompt so the user knows to type and press
+// Ctrl+D. When stdin is a pipe, it reads silently.
+func readStdin() (string, error) {
+	if term.IsTerminal(int(os.Stdin.Fd())) {
+		fmt.Fprintln(os.Stderr, "Enter your message (press Ctrl+D to send):")
+	}
+	data, err := io.ReadAll(os.Stdin)
+	if err != nil {
+		return "", fmt.Errorf("reading stdin: %w", err)
+	}
+	message := strings.TrimSpace(string(data))
+	if message == "" {
+		return "", fmt.Errorf("no message provided")
+	}
+	return message, nil
 }
 
 // executeChatMessage builds a ChatRequest from a plain message string and calls executeChat.
