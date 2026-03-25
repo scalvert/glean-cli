@@ -5,6 +5,7 @@ Your company's knowledge, search, and AI — from the command line.
 Search across your company's knowledge, chat with Glean Assistant, manage the full Glean API surface, and integrate Glean into automated workflows — all without leaving the terminal.
 
 <p>
+  <a href="https://github.com/gleanwork/.github/blob/main/docs/repository-stability.md#prerelease"><img src="https://img.shields.io/badge/-Prerelease-F6F3EB?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMzIgMzIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0yNC4zMDA2IDIuOTU0MjdMMjAuNzY1NiAwLjE5OTk1MUwxNy45MDI4IDMuOTk1MjdDMTMuNTY1MyAxLjkzNDk1IDguMjMwMTkgMy4wODQzOSA1LjE5Mzk0IDcuMDA5ODNDMS42NTg4OCAxMS41NjQyIDIuNDgzIDE4LjExMzggNy4wMzczOCAyMS42NDg5QzguNzcyMzggMjIuOTkzNSAxMC43ODkzIDIzLjcwOTIgMTIuODI3OSAyMy44MTc3QzE2LjE0NjEgMjQuMDEyOCAxOS41MDc3IDIyLjYyNDggMjEuNjc2NSAxOS44MDU1QzI0LjczNDQgMTUuODggMjQuNTE3NSAxMC40MTQ4IDIxLjQ1OTYgNi43Mjc4OUwyNC4zMDA2IDIuOTU0MjdaTTE4LjExOTcgMTcuMDUxMkMxNi4xMDI4IDE5LjYzMiAxMi4zNzI1IDIwLjEwOTEgOS43NzAwMSAxOC4wOTIyQzcuMTg5MTkgMTYuMDc1MiA2LjcxMjA3IDEyLjMyMzMgOC43MjkwMSA5Ljc0MjQ2QzkuNzA0OTQgOC40ODQ1OCAxMS4xMTQ2IDcuNjgyMTQgMTIuNjc2MSA3LjQ4Njk2QzEzLjA0NDggNy40NDM1OCAxMy40MTM1IDcuNDIxOSAxMy43ODIyIDcuNDQzNThDMTQuOTc1IDcuNTA4NjUgMTYuMTI0NCA3Ljk0MjM5IDE3LjA3ODcgOC42Nzk3N0MxOS42NTk1IDEwLjcxODQgMjAuMTM2NiAxNC40NzAzIDE4LjExOTcgMTcuMDUxMloiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0yNC41MTc2IDIxLjY5MjJDMjMuOTMyIDIyLjQ1MTMgMjMuMjgxNCAyMy4xMjM2IDIyLjU2NTcgMjMuNzUyNUMyMS44NzE3IDI0LjMzODEgMjEuMTEyNyAyNC44ODAzIDIwLjMxMDIgMjUuMzM1N0MxOS41Mjk1IDI1Ljc2OTUgMTguNjgzNyAyNi4xMzgyIDE3LjgzNzggMjYuNDIwMUMxNi45OTIgMjYuNzAyIDE2LjEwMjggMjYuODk3MiAxNS4yMTM3IDI3LjAwNTdDMTQuMzI0NSAyNy4xMTQxIDEzLjQzNTMgMjcuMTU3NSAxMi41MjQ0IDI3LjA5MjRDMTEuNjEzNSAyNy4wMjczIDEwLjcyNDMgMjYuODc1NSA5Ljg1Njg0IDI2LjY1ODdMOS42NjE2NSAyNy4zNzQzTDguNzcyNDYgMzAuOTk2MkM5LjkwMDIxIDMxLjI5OTggMTEuMDQ5NyAzMS40NzMzIDEyLjIyMDggMzEuNTZDMTIuMjY0MiAzMS41NiAxMi4zMjkyIDMxLjU2IDEyLjM3MjYgMzEuNTZDMTMuNTAwMyAzMS42MjUxIDE0LjY0OTggMzEuNTgxNyAxNS43NTU4IDMxLjQ1MTZDMTYuOTI3IDMxLjI5OTggMTguMDk4MSAzMS4wMzk1IDE5LjIyNTggMzAuNjcwOEMyMC4zNTM2IDMwLjMwMjIgMjEuNDU5NyAyOS44MjUgMjIuNTAwNyAyOS4yMzk1QzIzLjU2MzQgMjguNjUzOSAyNC41NjEgMjcuOTM4MiAyNS40OTM1IDI3LjE1NzVDMjYuNDQ3OCAyNi4zNTUgMjcuMzE1MyAyNS40NDQyIDI4LjA3NDQgMjQuNDQ2NUMyOC4xODI4IDI0LjMxNjQgMjguMjY5NSAyNC4xNjQ2IDI4LjM3OCAyNC4wMTI4TDI0Ljc3NzkgMjEuMzQ1MkMyNC42Njk0IDIxLjQ1MzcgMjQuNjA0NCAyMS41ODM4IDI0LjUxNzYgMjEuNjkyMloiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg==&labelColor=343CED" alt="Prerelease"></a>
   <a href="https://github.com/gleanwork/glean-cli/releases"><img src="https://img.shields.io/github/v/release/gleanwork/glean-cli" alt="latest release"></a>
   <a href="https://github.com/gleanwork/glean-cli/blob/main/LICENSE"><img src="https://img.shields.io/github/license/gleanwork/glean-cli" alt="license"></a>
   <a href="https://github.com/gleanwork/glean-cli/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/gleanwork/glean-cli/ci.yml?branch=main&label=CI" alt="CI status"></a>
@@ -12,16 +13,35 @@ Search across your company's knowledge, chat with Glean Assistant, manage the fu
 
 ## Contents
 
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Why Glean CLI?](#why-glean-cli)
-- [Authentication](#authentication)
-- [Interactive TUI](#interactive-tui)
-- [Commands](#commands)
-- [Agent Workflow](#agent-workflow)
-- [Environment Variables](#environment-variables)
-- [Exit Codes](#exit-codes)
-- [Contributing](#contributing)
+- [ Glean CLI](#-glean-cli)
+  - [Contents](#contents)
+  - [Installation](#installation)
+  - [Quick Start](#quick-start)
+  - [Why Glean CLI?](#why-glean-cli)
+  - [Authentication](#authentication)
+    - [OAuth (recommended)](#oauth-recommended)
+    - [API Token (CI/CD)](#api-token-cicd)
+  - [Interactive TUI](#interactive-tui)
+    - [Keyboard Shortcuts](#keyboard-shortcuts)
+    - [Slash Commands](#slash-commands)
+    - [File Attachments](#file-attachments)
+  - [Commands](#commands)
+    - [Core](#core)
+    - [`glean search`](#glean-search)
+    - [`glean chat`](#glean-chat)
+    - [`glean api`](#glean-api)
+    - [API Namespace Commands](#api-namespace-commands)
+      - [Example payloads](#example-payloads)
+  - [Agent Workflow](#agent-workflow)
+  - [Environment Variables](#environment-variables)
+  - [Exit Codes](#exit-codes)
+  - [Shell Completions](#shell-completions)
+  - [Agent Skills](#agent-skills)
+    - [Install](#install)
+    - [Available Skills](#available-skills)
+  - [Contributing](#contributing)
+  - [Acknowledgments](#acknowledgments)
+  - [License](#license)
 
 ## Installation
 
@@ -110,25 +130,25 @@ glean --continue # resume the most recent session
 
 ### Keyboard Shortcuts
 
-| Key | Action |
-|-----|--------|
-| `enter` | Send message |
-| `↑` / `↓` | Scroll history / navigate command picker |
-| `ctrl+r` | New session |
-| `ctrl+l` | Clear screen |
-| `ctrl+y` | Copy last response |
-| `ctrl+h` | Toggle help |
-| `ctrl+c` / `esc` | Quit |
+| Key              | Action                                   |
+| ---------------- | ---------------------------------------- |
+| `enter`          | Send message                             |
+| `↑` / `↓`        | Scroll history / navigate command picker |
+| `ctrl+r`         | New session                              |
+| `ctrl+l`         | Clear screen                             |
+| `ctrl+y`         | Copy last response                       |
+| `ctrl+h`         | Toggle help                              |
+| `ctrl+c` / `esc` | Quit                                     |
 
 ### Slash Commands
 
 Type `/` in the input to open the command picker:
 
-| Command | Description |
-|---------|-------------|
+| Command                      | Description                  |
+| ---------------------------- | ---------------------------- |
 | `/mode auto\|fast\|advanced` | Switch agent reasoning depth |
-| `/clear` | Start a new session |
-| `/help` | Show keyboard shortcuts |
+| `/clear`                     | Start a new session          |
+| `/help`                      | Show keyboard shortcuts      |
 
 ### File Attachments
 
@@ -145,14 +165,14 @@ Use ↑/↓ to navigate matches, Enter to attach, Esc to dismiss.
 
 ### Core
 
-| Command | Description |
-|---------|-------------|
-| `glean search <query>` | Search across your company's knowledge |
-| `glean chat <message>` | Chat with Glean Assistant (non-interactive) |
-| `glean api <endpoint>` | Make a raw authenticated HTTP request to the Glean REST API |
-| `glean schema [command]` | Show machine-readable JSON schema for any command |
-| `glean auth` | Authenticate with Glean |
-| `glean --version` | Print the CLI version |
+| Command                  | Description                                                 |
+| ------------------------ | ----------------------------------------------------------- |
+| `glean search <query>`   | Search across your company's knowledge                      |
+| `glean chat <message>`   | Chat with Glean Assistant (non-interactive)                 |
+| `glean api <endpoint>`   | Make a raw authenticated HTTP request to the Glean REST API |
+| `glean schema [command]` | Show machine-readable JSON schema for any command           |
+| `glean auth`             | Authenticate with Glean                                     |
+| `glean --version`        | Print the CLI version                                       |
 
 ### `glean search`
 
@@ -165,15 +185,15 @@ glean search --json '{"query":"onboarding","pageSize":3}'
 glean search --dry-run "test"
 ```
 
-| Flag | Description |
-|------|-------------|
+| Flag                    | Description                                              |
+| ----------------------- | -------------------------------------------------------- |
 | `--output` / `--format` | `json` (default), `ndjson` (one result per line), `text` |
-| `--fields` | Dot-path field projection — prefix paths with `results.` |
-| `--datasource` / `-d` | Filter by datasource (repeatable) |
-| `--type` / `-t` | Filter by document type (repeatable) |
-| `--page-size` | Results per page (default 10) |
-| `--json` | Raw SDK request body (overrides all flags) |
-| `--dry-run` | Print request body without sending |
+| `--fields`              | Dot-path field projection — prefix paths with `results.` |
+| `--datasource` / `-d`   | Filter by datasource (repeatable)                        |
+| `--type` / `-t`         | Filter by document type (repeatable)                     |
+| `--page-size`           | Results per page (default 10)                            |
+| `--json`                | Raw SDK request body (overrides all flags)               |
+| `--dry-run`             | Print request body without sending                       |
 
 ### `glean chat`
 
@@ -184,12 +204,12 @@ glean chat --json '{"messages":[{"author":"USER","messageType":"CONTENT","fragme
 glean chat --dry-run "test"
 ```
 
-| Flag | Description |
-|------|-------------|
+| Flag        | Description                                     |
+| ----------- | ----------------------------------------------- |
 | `--timeout` | Request timeout in milliseconds (default 60000) |
-| `--json` | Raw SDK request body (overrides all flags) |
-| `--dry-run` | Print request body without sending |
-| `--save` | Persist chat for continuation (default true) |
+| `--json`    | Raw SDK request body (overrides all flags)      |
+| `--dry-run` | Print request body without sending              |
+| `--save`    | Persist chat for continuation (default true)    |
 
 ### `glean api`
 
@@ -204,21 +224,21 @@ glean api --preview search --method POST --raw-field '{"query":"test"}'
 
 All namespace commands accept `--json`, `--output`, and `--dry-run`. Run `glean <command> --help` for full usage.
 
-| Namespace | Subcommands | Description |
-|-----------|-------------|-------------|
-| `glean agents` | `list`, `get`, `schemas`, `run` | Manage and invoke Glean AI agents |
-| `glean answers` | `list`, `get`, `create`, `update`, `delete` | Curated Q&A pairs |
-| `glean announcements` | `create`, `update`, `delete` | Time-bounded company announcements |
-| `glean collections` | `list`, `get`, `create`, `update`, `delete`, `add-items`, `delete-item` | Curated document collections |
-| `glean documents` | `get`, `summarize`, `get-by-facets`, `get-permissions` | Document retrieval and summarization |
-| `glean entities` | `list`, `read-people` | People, teams, and custom entities |
-| `glean insights` | `get` | Search and usage analytics |
-| `glean messages` | `get` | Retrieve indexed messages (Slack, Teams, etc.) |
-| `glean pins` | `list`, `get`, `create`, `update`, `remove` | Promoted search results |
-| `glean shortcuts` | `list`, `get`, `create`, `update`, `delete` | Go-links / memorable short URLs |
-| `glean tools` | `list`, `run` | Glean platform tools |
-| `glean verification` | `list`, `verify`, `remind` | Document verification and review |
-| `glean activity` | `report`, `feedback` | User activity reporting |
+| Namespace             | Subcommands                                                             | Description                                    |
+| --------------------- | ----------------------------------------------------------------------- | ---------------------------------------------- |
+| `glean agents`        | `list`, `get`, `schemas`, `run`                                         | Manage and invoke Glean AI agents              |
+| `glean answers`       | `list`, `get`, `create`, `update`, `delete`                             | Curated Q&A pairs                              |
+| `glean announcements` | `create`, `update`, `delete`                                            | Time-bounded company announcements             |
+| `glean collections`   | `list`, `get`, `create`, `update`, `delete`, `add-items`, `delete-item` | Curated document collections                   |
+| `glean documents`     | `get`, `summarize`, `get-by-facets`, `get-permissions`                  | Document retrieval and summarization           |
+| `glean entities`      | `list`, `read-people`                                                   | People, teams, and custom entities             |
+| `glean insights`      | `get`                                                                   | Search and usage analytics                     |
+| `glean messages`      | `get`                                                                   | Retrieve indexed messages (Slack, Teams, etc.) |
+| `glean pins`          | `list`, `get`, `create`, `update`, `remove`                             | Promoted search results                        |
+| `glean shortcuts`     | `list`, `get`, `create`, `update`, `delete`                             | Go-links / memorable short URLs                |
+| `glean tools`         | `list`, `run`                                                           | Glean platform tools                           |
+| `glean verification`  | `list`, `verify`, `remind`                                              | Document verification and review               |
+| `glean activity`      | `report`, `feedback`                                                    | User activity reporting                        |
 
 #### Example payloads
 
@@ -279,19 +299,19 @@ glean search "all docs" --output ndjson --page-size 50 | jq .title
 
 ## Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| `GLEAN_API_TOKEN` | API token — overrides keyring and config file |
-| `GLEAN_HOST` | Glean backend hostname (e.g. `your-company-be.glean.com`) |
+| Variable          | Description                                               |
+| ----------------- | --------------------------------------------------------- |
+| `GLEAN_API_TOKEN` | API token — overrides keyring and config file             |
+| `GLEAN_HOST`      | Glean backend hostname (e.g. `your-company-be.glean.com`) |
 
 Environment variables take precedence over stored configuration.
 
 ## Exit Codes
 
-| Code | Meaning |
-|------|---------|
-| `0` | Success |
-| `1` | General error (authentication failure, API error, invalid input) |
+| Code | Meaning                                                          |
+| ---- | ---------------------------------------------------------------- |
+| `0`  | Success                                                          |
+| `1`  | General error (authentication failure, API error, invalid input) |
 
 All error details are written to stderr. Stdout contains only structured output (JSON/NDJSON/text), making the CLI safe for piping.
 
@@ -324,26 +344,26 @@ npx skills add https://github.com/gleanwork/glean-cli/tree/main/skills/glean-cha
 
 ### Available Skills
 
-| Skill | Description |
-|-------|-------------|
-| `glean-shared` | Shared patterns: auth, global flags, output formatting |
-| `glean-search` | Search across company knowledge |
-| `glean-chat` | Chat with Glean Assistant |
-| `glean-schema` | Runtime JSON schema introspection |
-| `glean-agents` | List, inspect, and run Glean AI agents |
-| `glean-documents` | Retrieve and summarize documents |
-| `glean-collections` | Manage curated document collections |
-| `glean-entities` | Look up people, teams, and entities |
-| `glean-answers` | Manage curated Q&A pairs |
-| `glean-shortcuts` | Manage go-links |
-| `glean-pins` | Manage promoted search results |
-| `glean-announcements` | Manage company announcements |
-| `glean-api` | Raw authenticated API access |
-| `glean-activity` | Report user activity and feedback |
-| `glean-verification` | Document verification workflows |
-| `glean-tools` | List and run platform tools |
-| `glean-messages` | Retrieve indexed messages |
-| `glean-insights` | Search and usage analytics |
+| Skill                 | Description                                            |
+| --------------------- | ------------------------------------------------------ |
+| `glean-shared`        | Shared patterns: auth, global flags, output formatting |
+| `glean-search`        | Search across company knowledge                        |
+| `glean-chat`          | Chat with Glean Assistant                              |
+| `glean-schema`        | Runtime JSON schema introspection                      |
+| `glean-agents`        | List, inspect, and run Glean AI agents                 |
+| `glean-documents`     | Retrieve and summarize documents                       |
+| `glean-collections`   | Manage curated document collections                    |
+| `glean-entities`      | Look up people, teams, and entities                    |
+| `glean-answers`       | Manage curated Q&A pairs                               |
+| `glean-shortcuts`     | Manage go-links                                        |
+| `glean-pins`          | Manage promoted search results                         |
+| `glean-announcements` | Manage company announcements                           |
+| `glean-api`           | Raw authenticated API access                           |
+| `glean-activity`      | Report user activity and feedback                      |
+| `glean-verification`  | Document verification workflows                        |
+| `glean-tools`         | List and run platform tools                            |
+| `glean-messages`      | Retrieve indexed messages                              |
+| `glean-insights`      | Search and usage analytics                             |
 
 ## Contributing
 
