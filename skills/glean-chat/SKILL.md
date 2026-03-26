@@ -19,7 +19,7 @@ glean chat [flags]
 |------|------|---------|-------------|
 | `--dry-run` | boolean | false | Print request body without sending |
 | `--json` | string |  | Complete JSON chat request body (overrides individual flags) |
-| `--message` | string |  | Chat message (positional arg; reads from stdin if omitted) |
+| `--message` | string |  | Chat message (positional arg) **(required)** |
 | `--save` | boolean | true | Save the chat session |
 | `--timeout` | integer | 30000 | Request timeout in milliseconds |
 
@@ -28,12 +28,7 @@ glean chat [flags]
 ```bash
 glean chat "What are the company holidays?"
 glean chat --json '{"messages":[{"author":"USER","messageType":"CONTENT","fragments":[{"text":"What is Glean?"}]}]}'
-echo "What is Glean?" | glean chat
-glean chat                                # interactive multiline input, Ctrl+D to send
 ```
-
-When called without a message argument, reads from stdin until EOF (Ctrl+D).
-This enables multiline messages and piping input from other commands.
 
 ## Discovering Commands
 
