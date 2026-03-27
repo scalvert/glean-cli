@@ -4,6 +4,7 @@
 // Every namespace subcommand follows the same contract:
 //   - Optional --json flag accepts a raw JSON payload
 //   - Optional --output flag (json | ndjson | text)
+//   - Optional --fields flag filters output to specific dot-path fields (e.g. agents.agent_id,agents.name)
 //   - Optional --dry-run flag prints the request without sending it (never requires auth)
 //   - camelCase input keys are transparently normalized to snake_case where the
 //     SDK uses snake_case JSON tags (e.g. agentId → agent_id)
@@ -13,6 +14,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"reflect"
 	"strings"
 
@@ -39,6 +41,11 @@ type Spec[Req any] struct {
 	// as the fallback to preserve the default behavior.
 	ErrTransform func(err error) error
 
+	// TextFn is the human-readable formatter called when --output text is set.
+	// If nil, text output falls back to JSON. The value passed is the result
+	// returned by Run (same type assertion rules apply as in Run).
+	TextFn func(w io.Writer, v any) error
+
 	// Run calls the SDK method and returns the response payload to serialize.
 	// The payload must be the inner component field — NOT the operation wrapper
 	// (e.g. return resp.ListCollectionsResponse, not resp).
@@ -51,9 +58,9 @@ type Spec[Req any] struct {
 //  2. Transparent camelCase → snake_case key normalization on --json input
 //  3. --dry-run check before SDK init (never requires auth)
 //  4. SDK init only when actually sending
-//  5. Consistent --json / --output / --dry-run flag registration
+//  5. Consistent --json / --output / --fields / --dry-run flag registration
 func Build[Req any](spec Spec[Req]) *cobra.Command {
-	var jsonPayload, outputFormat string
+	var jsonPayload, outputFormat, fields string
 	var dryRun bool
 
 	aliases := buildAliases(reflect.TypeOf(new(Req)).Elem())
@@ -94,7 +101,10 @@ func Build[Req any](spec Spec[Req]) *cobra.Command {
 			if result == nil {
 				return nil
 			}
-			return output.WriteFormatted(cmd.OutOrStdout(), result, outputFormat, nil)
+			if fields != "" {
+				return output.ProjectFields(cmd.OutOrStdout(), result, fields)
+			}
+			return output.WriteFormatted(cmd.OutOrStdout(), result, outputFormat, spec.TextFn)
 		},
 	}
 
@@ -104,6 +114,7 @@ func Build[Req any](spec Spec[Req]) *cobra.Command {
 	}
 	cmd.Flags().StringVar(&jsonPayload, "json", "", jsonUsage)
 	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format: json, ndjson, or text")
+	cmd.Flags().StringVar(&fields, "fields", "", "Comma-separated dot-path fields to include (e.g. agents.agent_id,agents.name)")
 	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print request without sending")
 	return cmd
 }

@@ -2,10 +2,13 @@ package cmd
 
 import (
 	"context"
+	"fmt"
+	"io"
 
 	glean "github.com/gleanwork/api-client-go"
 	"github.com/gleanwork/api-client-go/models/components"
 	"github.com/gleanwork/glean-cli/internal/cmdutil"
+	"github.com/gleanwork/glean-cli/internal/output"
 	"github.com/spf13/cobra"
 )
 
@@ -36,6 +39,21 @@ func newCollectionsListCmd() *cobra.Command {
 	return cmdutil.Build(cmdutil.Spec[components.ListCollectionsRequest]{
 		Use:   "list",
 		Short: "List collections",
+		TextFn: func(w io.Writer, v any) error {
+			resp, ok := v.(*components.ListCollectionsResponse)
+			if !ok {
+				return output.WriteJSON(w, v)
+			}
+			rows := make([][]string, len(resp.Collections))
+			for i, c := range resp.Collections {
+				rows[i] = []string{
+					fmt.Sprintf("%d", c.ID),
+					c.Name,
+					output.Truncate(c.Description, 60),
+				}
+			}
+			return output.WriteTable(w, []string{"ID", "NAME", "DESCRIPTION"}, rows)
+		},
 		Run: func(ctx context.Context, sdk *glean.Glean, req components.ListCollectionsRequest) (any, error) {
 			resp, err := sdk.Client.Collections.List(ctx, req, nil)
 			if err != nil {

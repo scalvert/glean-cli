@@ -56,13 +56,30 @@ func extractFields(value any, fields []string) any {
 					// Recurse into nested path
 					sub := extractFields(val, []string{parts[1]})
 					if existing, ok := result[key]; ok {
-						// Merge with existing sub-object
+						// Merge with existing sub-object (map case)
 						if em, ok := existing.(map[string]any); ok {
 							if sm, ok := sub.(map[string]any); ok {
 								for sk, sv := range sm {
 									em[sk] = sv
 								}
 								result[key] = em
+								continue
+							}
+						}
+						// Merge parallel slices element-by-element (e.g. agents.agent_id + agents.name)
+						if ea, ok := existing.([]any); ok {
+							if sa, ok := sub.([]any); ok && len(ea) == len(sa) {
+								for i, ev := range ea {
+									if em, ok := ev.(map[string]any); ok {
+										if sm, ok := sa[i].(map[string]any); ok {
+											for sk, sv := range sm {
+												em[sk] = sv
+											}
+											ea[i] = em
+										}
+									}
+								}
+								result[key] = ea
 								continue
 							}
 						}
