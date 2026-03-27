@@ -54,6 +54,52 @@ func TestAgentsListLive(t *testing.T) {
 	require.NoError(t, err)
 }
 
+func TestAgentsListFields(t *testing.T) {
+	body, _ := json.Marshal(map[string]any{
+		"agents": []map[string]any{
+			{"agent_id": "agent-1", "name": "Research Agent", "capabilities": map[string]any{}},
+			{"agent_id": "agent-2", "name": "Data Analyst", "capabilities": map[string]any{}},
+		},
+	})
+	_, cleanup := testutils.SetupTestWithResponse(t, body)
+	defer cleanup()
+
+	b := bytes.NewBufferString("")
+	cmd := NewCmdAgents()
+	cmd.SetOut(b)
+	cmd.SetArgs([]string{"list", "--fields", "agents.agent_id,agents.name"})
+	err := cmd.Execute()
+	require.NoError(t, err)
+
+	out := b.String()
+	assert.Contains(t, out, "agent-1")
+	assert.Contains(t, out, "Research Agent")
+	// capabilities should be filtered out
+	assert.NotContains(t, out, "capabilities")
+}
+
+func TestAgentsListOutputText(t *testing.T) {
+	body, _ := json.Marshal(map[string]any{
+		"agents": []map[string]any{
+			{"agent_id": "agent-1", "name": "Research Agent", "description": "Finds things", "capabilities": map[string]any{}},
+		},
+	})
+	_, cleanup := testutils.SetupTestWithResponse(t, body)
+	defer cleanup()
+
+	b := bytes.NewBufferString("")
+	cmd := NewCmdAgents()
+	cmd.SetOut(b)
+	cmd.SetArgs([]string{"list", "--output", "text"})
+	err := cmd.Execute()
+	require.NoError(t, err)
+
+	out := b.String()
+	assert.Contains(t, out, "agent-1")
+	assert.Contains(t, out, "Research Agent")
+	assert.Contains(t, out, "Finds things")
+}
+
 // get
 
 func TestAgentsGetDryRun(t *testing.T) {

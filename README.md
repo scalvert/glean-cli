@@ -227,7 +227,7 @@ glean api --preview search --method POST --raw-field '{"query":"test"}'
 
 ### API Namespace Commands
 
-All namespace commands accept `--json`, `--output`, and `--dry-run`. Run `glean <command> --help` for full usage.
+All namespace commands accept `--json`, `--output`, `--fields`, and `--dry-run`. Run `glean <command> --help` for full usage.
 
 | Namespace             | Subcommands                                                             | Description                                    |
 | --------------------- | ----------------------------------------------------------------------- | ---------------------------------------------- |
@@ -266,8 +266,11 @@ glean shortcuts create --json '{"data":{"inputAlias":"jira","urlTemplate":"https
 # Pin a result for a query
 glean pins create --json '{"queries":["onboarding"],"documentId":"https://..."}'
 
-# List available AI agents
-glean agents list | jq '.agents[] | {id: .agent_id, name: .name}'
+# List available AI agents (table view)
+glean agents list --output text
+
+# List agents — filter to specific fields without jq
+glean agents list --fields agents.agent_id,agents.name
 
 # Get a specific agent
 glean agents get --json '{"agentId":"<id>"}'
