@@ -2,10 +2,12 @@ package cmd
 
 import (
 	"context"
+	"io"
 
 	glean "github.com/gleanwork/api-client-go"
 	"github.com/gleanwork/api-client-go/models/components"
 	"github.com/gleanwork/glean-cli/internal/cmdutil"
+	"github.com/gleanwork/glean-cli/internal/output"
 	"github.com/spf13/cobra"
 )
 
@@ -32,6 +34,27 @@ func newToolsListCmd() *cobra.Command {
 	return cmdutil.Build(cmdutil.Spec[struct{}]{
 		Use:   "list",
 		Short: "List available tools",
+		TextFn: func(w io.Writer, v any) error {
+			resp, ok := v.(*components.ToolsListResponse)
+			if !ok {
+				return output.WriteJSON(w, v)
+			}
+			rows := make([][]string, len(resp.Tools))
+			for i, t := range resp.Tools {
+				name, desc, typ := "", "", ""
+				if t.Name != nil {
+					name = *t.Name
+				}
+				if t.Description != nil {
+					desc = output.Truncate(*t.Description, 60)
+				}
+				if t.Type != nil {
+					typ = string(*t.Type)
+				}
+				rows[i] = []string{name, typ, desc}
+			}
+			return output.WriteTable(w, []string{"NAME", "TYPE", "DESCRIPTION"}, rows)
+		},
 		Run: func(ctx context.Context, sdk *glean.Glean, req struct{}) (any, error) {
 			resp, err := sdk.Client.Tools.List(ctx, nil)
 			if err != nil {
