@@ -99,6 +99,10 @@ type Model struct {
 	currentStage  string               // Glean thinking stage shown while streaming: "Searching", "Reading", etc.
 	currentDetail string               // optional detail for the current stage
 	streamCh      chan tea.Msg         // channel from the API goroutine; nil when not streaming
+
+	// Mouse state
+	mouseEnabled  bool // when true, mouse scrolling works but text selection requires Shift+drag
+	showMouseHint bool // show hint about Shift+drag and ctrl+o toggle when user tries to select
 }
 
 // New creates a fully-initialized TUI model.
@@ -131,19 +135,20 @@ func New(cfg *config.Config, session *Session, identity, version string, ctx con
 	}
 
 	m := &Model{
-		viewport:   vp,
-		textarea:   ta,
-		spinner:    sp,
-		stopwatch:  stopwatch.New(),
-		renderer:   renderer,
-		cfg:        cfg,
-		session:    session,
-		identity:   identity,
-		version:    version,
-		ctx:        ctx,
-		startTime:  time.Now(),
-		historyIdx: -1,
-		agentMode:  components.AgentEnumAuto,
+		viewport:     vp,
+		textarea:     ta,
+		spinner:      sp,
+		stopwatch:    stopwatch.New(),
+		renderer:     renderer,
+		cfg:          cfg,
+		session:      session,
+		identity:     identity,
+		version:      version,
+		ctx:          ctx,
+		startTime:    time.Now(),
+		historyIdx:   -1,
+		agentMode:    components.AgentEnumAuto,
+		mouseEnabled: true,
 	}
 
 	for _, turn := range session.Turns {
@@ -162,7 +167,7 @@ func (m *Model) Session() *Session {
 
 // Init implements tea.Model.
 func (m *Model) Init() tea.Cmd {
-	return textarea.Blink
+	return tea.Batch(textarea.Blink, tea.EnableMouseCellMotion)
 }
 
 // Update implements tea.Model.
@@ -254,6 +259,17 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+h":
 			m.showHelp = !m.showHelp
 			return m, nil
+
+		case "ctrl+o":
+			m.mouseEnabled = !m.mouseEnabled
+			m.showMouseHint = false
+			var cmd tea.Cmd
+			if m.mouseEnabled {
+				cmd = tea.EnableMouseCellMotion
+			} else {
+				cmd = tea.DisableMouse
+			}
+			return m, cmd
 
 		case "ctrl+l":
 			m.lastErr = nil
@@ -456,6 +472,16 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	// Mouse scroll events go to the viewport when there is content.
 	case tea.MouseMsg:
+		// Detect potential text selection attempts (click/drag, not scroll).
+		// Show hint about Shift+drag and ctrl+o toggle when user drags with left button.
+		if m.mouseEnabled && msg.Button == tea.MouseButtonLeft && msg.Action == tea.MouseActionMotion {
+			m.showMouseHint = true
+		}
+		// Hide hint when button is released
+		if msg.Action == tea.MouseActionRelease {
+			m.showMouseHint = false
+		}
+
 		if m.session != nil && len(m.session.Turns) > 0 {
 			m.viewport, vpCmd = m.viewport.Update(msg)
 			return m, vpCmd

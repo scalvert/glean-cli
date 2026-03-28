@@ -507,3 +507,107 @@ func TestClosePickerResetsState(t *testing.T) {
 	assert.Nil(t, m.filePickerItems)
 	assert.Equal(t, 0, m.filePickerIdx)
 }
+
+// TestMouseEnabledByDefault verifies that mouse is enabled on init.
+func TestMouseEnabledByDefault(t *testing.T) {
+	m := newTestModel(t)
+	assert.True(t, m.mouseEnabled, "mouse should be enabled by default")
+}
+
+// TestCtrlOTogglesMouse verifies that ctrl+o toggles mouseEnabled state.
+func TestCtrlOTogglesMouse(t *testing.T) {
+	m := newTestModel(t)
+	assert.True(t, m.mouseEnabled, "starts enabled")
+
+	// First toggle: disable
+	updated, cmd := m.Update(tea.KeyMsg{Type: tea.KeyCtrlO})
+	r := updated.(*Model)
+	assert.False(t, r.mouseEnabled, "ctrl+o should disable mouse")
+	assert.NotNil(t, cmd, "should return DisableMouse command")
+
+	// Second toggle: re-enable
+	updated2, cmd2 := r.Update(tea.KeyMsg{Type: tea.KeyCtrlO})
+	r2 := updated2.(*Model)
+	assert.True(t, r2.mouseEnabled, "ctrl+o should re-enable mouse")
+	assert.NotNil(t, cmd2, "should return EnableMouseCellMotion command")
+}
+
+// TestMouseHintShowsWhileSelecting verifies the selection hint behavior.
+func TestMouseHintShowsWhileSelecting(t *testing.T) {
+	m := newTestModel(t)
+	m.session.Turns = []Turn{{Role: roleUser, Content: "test"}}
+	assert.False(t, m.showMouseHint, "hint should start hidden")
+
+	// Simulate left-button drag motion - should show hint
+	dragMsg := tea.MouseMsg{
+		Button: tea.MouseButtonLeft,
+		Action: tea.MouseActionMotion,
+	}
+	updated, _ := m.Update(dragMsg)
+	r := updated.(*Model)
+	assert.True(t, r.showMouseHint, "dragging with left button should show hint")
+
+	// Simulate mouse button release - should hide hint
+	releaseMsg := tea.MouseMsg{
+		Action: tea.MouseActionRelease,
+	}
+	updated2, _ := r.Update(releaseMsg)
+	r2 := updated2.(*Model)
+	assert.False(t, r2.showMouseHint, "releasing mouse should hide hint")
+}
+
+// TestMouseHintNotShownWhenDisabled verifies hint doesn't show when mouse is disabled.
+func TestMouseHintNotShownWhenDisabled(t *testing.T) {
+	m := newTestModel(t)
+	m.mouseEnabled = false
+	m.session.Turns = []Turn{{Role: roleUser, Content: "test"}}
+
+	// Simulate left-button drag motion
+	msg := tea.MouseMsg{
+		Button: tea.MouseButtonLeft,
+		Action: tea.MouseActionMotion,
+	}
+	updated, _ := m.Update(msg)
+	r := updated.(*Model)
+
+	assert.False(t, r.showMouseHint, "hint should not show when mouse is disabled")
+}
+
+// TestCtrlOClearsMouseHint verifies that toggling mouse mode clears the hint.
+func TestCtrlOClearsMouseHint(t *testing.T) {
+	m := newTestModel(t)
+	m.showMouseHint = true
+
+	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyCtrlO})
+	r := updated.(*Model)
+
+	assert.False(t, r.showMouseHint, "ctrl+o should clear mouse hint")
+}
+
+// TestViewShowsMouseHint verifies the hint is displayed in the view.
+func TestViewShowsMouseHint(t *testing.T) {
+	m := newTestModel(t)
+	m.showMouseHint = true
+
+	view := m.View()
+	assert.Contains(t, view, "To select text: hold Shift+drag")
+	assert.Contains(t, view, "ctrl+o to toggle mouse mode")
+}
+
+// TestStatusBarShowsMouseIndicator verifies mouse-off indicator in status bar.
+func TestStatusBarShowsMouseIndicator(t *testing.T) {
+	m := newTestModel(t)
+	m.mouseEnabled = false
+
+	status := m.statusLine()
+	assert.Contains(t, status, "🖱️ off", "status bar should show mouse indicator when disabled")
+}
+
+// TestStatusBarNoMouseIndicatorWhenEnabled verifies no indicator when mouse is enabled.
+func TestStatusBarNoMouseIndicatorWhenEnabled(t *testing.T) {
+	m := newTestModel(t)
+	m.mouseEnabled = true
+
+	status := m.statusLine()
+	assert.NotContains(t, status, "🖱️ off", "status bar should not show indicator when mouse is enabled")
+}
