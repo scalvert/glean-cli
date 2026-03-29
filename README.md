@@ -98,14 +98,14 @@ glean search "engineering docs" --output ndjson | jq .title
 ### OAuth (recommended)
 
 ```bash snippet=readme/snippet-04.sh
-glean auth login    # opens browser, completes PKCE flow
+glean auth login    # browser PKCE flow, or device flow for SSO/Okta
 glean auth status   # verify credentials, host, and token expiry
 glean auth logout   # remove all stored credentials
 ```
 
-OAuth uses PKCE with Dynamic Client Registration — no client ID required. Tokens are stored securely in the system keyring and refreshed automatically.
+OAuth uses PKCE with Dynamic Client Registration when available. For SSO configurations where DCR is unavailable (e.g. Okta), `auth login` falls back to the Device Authorization Grant (RFC 8628) — you'll approve the login on a verification page instead. Tokens are stored securely in the system keyring and refreshed automatically.
 
-For instances that don't support OAuth, `auth login` falls back to prompting for an API token.
+For instances that don't support OAuth at all, `auth login` falls back to prompting for an API token.
 
 ### API Token (CI/CD)
 

@@ -35,9 +35,12 @@ var (
 //go:embed success.html
 var successHTML string
 
-// Login performs the full OAuth 2.0 PKCE login flow for the configured Glean host.
-// If the host is not configured, prompts for a work email and auto-discovers it.
-// If the instance doesn't support OAuth, falls back to an inline API token prompt.
+// Login performs the full OAuth 2.0 login flow for the configured Glean host.
+//
+// Strategy (in order):
+//  1. Authorization Code + PKCE via DCR or static client
+//  2. Device Authorization Grant (RFC 8628) using the Glean-advertised client ID
+//  3. Inline API token prompt when OAuth is not available at all
 func Login(ctx context.Context) error {
 	loginLog.Log("starting login flow")
 
@@ -47,45 +50,50 @@ func Login(ctx context.Context) error {
 	}
 	loginLog.Log("host resolved: %s", host)
 
-	provider, endpoint, registrationEndpoint, err := discover(ctx, host)
+	disc, err := discover(ctx, host)
 	if err != nil {
 		loginLog.Log("OAuth discovery failed, falling back to API token: %v", err)
 		fmt.Fprintf(os.Stderr, "\nOAuth discovery failed: %v\n", err)
 		return promptForAPIToken(host)
 	}
-	loginLog.Log("OAuth discovery succeeded: auth=%s token=%s registration=%s", endpoint.AuthURL, endpoint.TokenURL, registrationEndpoint)
+	loginLog.Log("OAuth discovery succeeded: auth=%s token=%s registration=%s", disc.Endpoint.AuthURL, disc.Endpoint.TokenURL, disc.RegistrationEndpoint)
 
-	// Find a free port for the local callback server.
-	// This must happen before DCR so we register the exact redirect URI
-	// that oauth2cli will use — a mismatch causes a silent hang.
+	// Try DCR / static client first (standard authorization code flow).
+	if authCodeErr := tryAuthCodeLogin(ctx, host, disc); authCodeErr == nil {
+		return nil
+	} else if disc.DeviceFlowClientID != "" && disc.DeviceAuthEndpoint != "" {
+		fmt.Fprintf(os.Stderr, "Note: browser login failed (%v), trying device flow…\n", authCodeErr)
+		return deviceFlowLogin(ctx, host, disc)
+	} else {
+		return fmt.Errorf("authentication failed: %w", authCodeErr)
+	}
+}
+
+// tryAuthCodeLogin attempts the Authorization Code + PKCE flow via DCR or static client.
+func tryAuthCodeLogin(ctx context.Context, host string, disc *discoveryResult) error {
 	port, err := findFreePort()
 	if err != nil {
 		return fmt.Errorf("finding callback port: %w", err)
 	}
 	redirectURI := fmt.Sprintf("http://127.0.0.1:%d/glean-cli-callback", port)
 
-	// Always do fresh DCR per login — the redirect URI (port) changes each time.
-	clientID, clientSecret, err := dcrOrStaticClient(ctx, host, registrationEndpoint, redirectURI)
+	clientID, clientSecret, err := dcrOrStaticClient(ctx, host, disc.RegistrationEndpoint, redirectURI)
 	if err != nil {
-		return fmt.Errorf("resolving OAuth client: %w", err)
+		return err
 	}
 
 	verifier := oauth2.GenerateVerifier()
-	scopes := resolveScopes(provider)
+	scopes := resolveScopes(disc.Provider)
 	loginLog.Log("requesting scopes: %v", scopes)
 
 	oauthCfg := oauth2.Config{
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
-		Endpoint:     endpoint,
+		Endpoint:     disc.Endpoint,
 		Scopes:       scopes,
 		RedirectURL:  redirectURI,
 	}
 
-	// oauth2cli v1.15.1 does not open the browser itself — the caller must do it.
-	// LocalServerReadyChan receives the local server URL once the callback server
-	// is ready. We open the browser to that URL (which the local server redirects
-	// to the real OAuth page), and also print the direct auth URL as a fallback.
 	state := oauth2.GenerateVerifier()[:20]
 	authURL := oauthCfg.AuthCodeURL(state, oauth2.S256ChallengeOption(verifier))
 
@@ -97,7 +105,6 @@ func Login(ctx context.Context) error {
 			fmt.Printf("If your browser doesn't open, visit:\n  %s\n\n", authURL)
 			fmt.Printf("Waiting for you to complete login in the browser…\n")
 			if err := browser.OpenURL(localURL); err != nil {
-				// Browser failed to open — the printed URL is the fallback.
 				fmt.Printf("(Could not open browser automatically: %v)\n", err)
 			}
 		case <-ctx.Done():
@@ -121,7 +128,14 @@ func Login(ctx context.Context) error {
 		return fmt.Errorf("OAuth login failed: %w", err)
 	}
 
-	email := extractEmailFromToken(ctx, provider, clientID, token)
+	return saveAndPrintToken(ctx, host, disc, oauthCfg.ClientID, token)
+}
+
+// saveAndPrintToken persists the OAuth token and client, then prints a success message.
+func saveAndPrintToken(ctx context.Context, host string, disc *discoveryResult, clientID string, token *oauth2.Token) error {
+	_ = SaveClient(host, &StoredClient{ClientID: clientID})
+
+	email := extractEmailFromToken(ctx, disc.Provider, clientID, token)
 
 	stored := &StoredTokens{
 		AccessToken:   token.AccessToken,
@@ -129,7 +143,7 @@ func Login(ctx context.Context) error {
 		Expiry:        token.Expiry,
 		Email:         email,
 		TokenType:     token.TokenType,
-		TokenEndpoint: oauthCfg.Endpoint.TokenURL, // enables future token refresh
+		TokenEndpoint: disc.Endpoint.TokenURL,
 	}
 	if err := persistLoginState(host, stored); err != nil {
 		return err
@@ -356,6 +370,15 @@ func resolveHost(ctx context.Context) (string, error) {
 	return host, nil
 }
 
+// discoveryResult holds all OAuth metadata discovered for a Glean backend.
+type discoveryResult struct {
+	Provider             *oidc.Provider
+	Endpoint             oauth2.Endpoint
+	RegistrationEndpoint string
+	DeviceFlowClientID   string
+	DeviceAuthEndpoint   string
+}
+
 // discover resolves the OAuth2 endpoint and registration endpoint for the Glean backend.
 //
 // Strategy:
@@ -363,16 +386,13 @@ func resolveHost(ctx context.Context) (string, error) {
 //  2. Try OIDC discovery (oidc.NewProvider) for full OIDC support
 //  3. Fall back to RFC 8414 auth server metadata when OIDC is unavailable
 //     (Glean uses RFC 8414 but does not serve /.well-known/openid-configuration)
-//
-// Returns (provider, oauth2Endpoint, registrationEndpoint, error).
-// provider is nil when only RFC 8414 discovery succeeded.
-func discover(ctx context.Context, host string) (*oidc.Provider, oauth2.Endpoint, string, error) {
+func discover(ctx context.Context, host string) (*discoveryResult, error) {
 	baseURL := "https://" + host
 	discoveryLog.Log("fetching protected resource metadata: %s", baseURL)
 	meta, err := fetchProtectedResource(ctx, baseURL)
 	if err != nil {
 		discoveryLog.Log("protected resource metadata failed: %v", err)
-		return nil, oauth2.Endpoint{}, "", err
+		return nil, err
 	}
 
 	issuer := meta.AuthorizationServers[0]
@@ -383,31 +403,55 @@ func discover(ctx context.Context, host string) (*oidc.Provider, oauth2.Endpoint
 	provider, err := oidc.NewProvider(ctx, issuer)
 	if err == nil {
 		discoveryLog.Log("OIDC discovery succeeded")
-		// Still need registration_endpoint, which oidc.Provider doesn't expose.
-		authMeta, _ := fetchAuthServerMetadata(ctx, issuer)
-		regEndpoint := ""
-		if authMeta != nil {
-			regEndpoint = authMeta.RegistrationEndpoint
+		res := &discoveryResult{Provider: provider, Endpoint: provider.Endpoint()}
+		res.DeviceFlowClientID = meta.GleanDeviceFlowClientID
+
+		// Extract device_authorization_endpoint from OIDC provider claims
+		// (RFC 8414 metadata may omit it even when OIDC metadata includes it).
+		var providerClaims struct {
+			RegistrationEndpoint        string `json:"registration_endpoint"`
+			DeviceAuthorizationEndpoint string `json:"device_authorization_endpoint"`
 		}
-		return provider, provider.Endpoint(), regEndpoint, nil
+		if err := provider.Claims(&providerClaims); err == nil {
+			res.RegistrationEndpoint = providerClaims.RegistrationEndpoint
+			res.DeviceAuthEndpoint = providerClaims.DeviceAuthorizationEndpoint
+		}
+
+		// Supplement from RFC 8414 if OIDC claims were incomplete.
+		if res.RegistrationEndpoint == "" || res.DeviceAuthEndpoint == "" {
+			if authMeta, err := fetchAuthServerMetadata(ctx, issuer); err == nil {
+				if res.RegistrationEndpoint == "" {
+					res.RegistrationEndpoint = authMeta.RegistrationEndpoint
+				}
+				if res.DeviceAuthEndpoint == "" {
+					res.DeviceAuthEndpoint = authMeta.DeviceAuthorizationEndpoint
+				}
+			}
+		}
+		return res, nil
 	}
 	discoveryLog.Log("OIDC discovery failed: %v, falling back to RFC 8414", err)
 
 	// Fall back to RFC 8414 auth server metadata.
 	authMeta, err := fetchAuthServerMetadata(ctx, issuer)
 	if err != nil {
-		return nil, oauth2.Endpoint{}, "", fmt.Errorf("OAuth discovery failed for %s: %w", issuer, err)
+		return nil, fmt.Errorf("OAuth discovery failed for %s: %w", issuer, err)
 	}
 	if authMeta.AuthorizationEndpoint == "" || authMeta.TokenEndpoint == "" {
 		discoveryLog.Log("RFC 8414 metadata incomplete: auth=%q token=%q", authMeta.AuthorizationEndpoint, authMeta.TokenEndpoint)
-		return nil, oauth2.Endpoint{}, "", fmt.Errorf("OAuth metadata missing required endpoints for %s", issuer)
+		return nil, fmt.Errorf("OAuth metadata missing required endpoints for %s", issuer)
 	}
 	discoveryLog.Log("RFC 8414 discovery succeeded: auth=%s token=%s", authMeta.AuthorizationEndpoint, authMeta.TokenEndpoint)
 
-	return nil, oauth2.Endpoint{
-		AuthURL:  authMeta.AuthorizationEndpoint,
-		TokenURL: authMeta.TokenEndpoint,
-	}, authMeta.RegistrationEndpoint, nil
+	return &discoveryResult{
+		Endpoint: oauth2.Endpoint{
+			AuthURL:  authMeta.AuthorizationEndpoint,
+			TokenURL: authMeta.TokenEndpoint,
+		},
+		RegistrationEndpoint: authMeta.RegistrationEndpoint,
+		DeviceFlowClientID:   meta.GleanDeviceFlowClientID,
+		DeviceAuthEndpoint:   authMeta.DeviceAuthorizationEndpoint,
+	}, nil
 }
 
 // dcrOrStaticClient resolves the OAuth client_id/secret for a login session.
@@ -517,10 +561,11 @@ func fetchAuthServerMetadata(ctx context.Context, issuer string) (*authServerMet
 }
 
 type authServerMeta struct {
-	Issuer                string `json:"issuer"`
-	AuthorizationEndpoint string `json:"authorization_endpoint"`
-	TokenEndpoint         string `json:"token_endpoint"`
-	RegistrationEndpoint  string `json:"registration_endpoint,omitempty"`
+	Issuer                      string `json:"issuer"`
+	AuthorizationEndpoint       string `json:"authorization_endpoint"`
+	TokenEndpoint               string `json:"token_endpoint"`
+	RegistrationEndpoint        string `json:"registration_endpoint,omitempty"`
+	DeviceAuthorizationEndpoint string `json:"device_authorization_endpoint,omitempty"`
 }
 
 // extractEmailFromToken pulls the user email from the token.

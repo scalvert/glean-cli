@@ -22,8 +22,9 @@ func (e *ErrOAuthNotSupported) Error() string {
 }
 
 type protectedResourceMetadata struct {
-	Resource             string   `json:"resource"`
-	AuthorizationServers []string `json:"authorization_servers"`
+	Resource                string   `json:"resource"`
+	AuthorizationServers    []string `json:"authorization_servers"`
+	GleanDeviceFlowClientID string   `json:"glean_device_flow_client_id,omitempty"`
 }
 
 // fetchProtectedResource fetches RFC 9728 protected resource metadata.

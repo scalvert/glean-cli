@@ -22,9 +22,31 @@ func TestFetchProtectedResource_Success(t *testing.T) {
 	}))
 	defer srv.Close()
 
+	restore := overrideDiscoveryHTTPClient(srv.Client())
+	defer restore()
+
 	result, err := fetchProtectedResource(context.Background(), srv.URL)
 	require.NoError(t, err)
 	assert.Equal(t, []string{"https://auth.example.com"}, result.AuthorizationServers)
+}
+
+func TestFetchProtectedResource_DeviceFlowClientID(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, "/.well-known/oauth-protected-resource", r.URL.Path)
+		json.NewEncoder(w).Encode(map[string]any{
+			"resource":                    "https://example.glean.com",
+			"authorization_servers":       []string{"https://auth.example.com"},
+			"glean_device_flow_client_id": "device-flow-client-123",
+		})
+	}))
+	defer srv.Close()
+
+	restore := overrideDiscoveryHTTPClient(srv.Client())
+	defer restore()
+
+	result, err := fetchProtectedResource(context.Background(), srv.URL)
+	require.NoError(t, err)
+	assert.Equal(t, "device-flow-client-123", result.GleanDeviceFlowClientID)
 }
 
 func TestFetchProtectedResource_NotFound(t *testing.T) {
