@@ -12,6 +12,16 @@ import (
 
 var discoveryHTTPClient = &http.Client{Timeout: 10 * time.Second}
 
+// ErrOAuthNotSupported indicates the Glean instance does not have OAuth configured.
+// This is distinct from transient failures (network errors, rate limits, etc).
+type ErrOAuthNotSupported struct {
+	URL string
+}
+
+func (e *ErrOAuthNotSupported) Error() string {
+	return fmt.Sprintf("OAuth is not configured at %s", e.URL)
+}
+
 type protectedResourceMetadata struct {
 	Resource             string   `json:"resource"`
 	AuthorizationServers []string `json:"authorization_servers"`
@@ -36,7 +46,7 @@ func fetchProtectedResource(ctx context.Context, baseURL string) (*protectedReso
 	switch resp.StatusCode {
 	case http.StatusOK:
 	case http.StatusNotFound:
-		return nil, fmt.Errorf("OAuth not found at %s — instance may not support OAuth", u)
+		return nil, &ErrOAuthNotSupported{URL: u}
 	default:
 		return nil, fmt.Errorf("protected resource metadata returned HTTP %d", resp.StatusCode)
 	}

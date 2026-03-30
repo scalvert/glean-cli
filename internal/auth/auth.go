@@ -6,6 +6,7 @@ import (
 	_ "embed"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net"
 	"net/http"
@@ -35,6 +36,13 @@ func Login(ctx context.Context) error {
 
 	provider, endpoint, registrationEndpoint, err := discover(ctx, host)
 	if err != nil {
+		var notSupported *ErrOAuthNotSupported
+		if errors.As(err, &notSupported) {
+			fmt.Printf("\nThis Glean instance does not have OAuth configured.\n")
+		} else {
+			fmt.Fprintf(os.Stderr, "\nOAuth discovery failed: %v\n", err)
+			fmt.Fprintf(os.Stderr, "This may be a transient issue — retry with 'glean auth login'.\n")
+		}
 		return promptForAPIToken(host)
 	}
 
@@ -501,9 +509,9 @@ func EmailFromJWT(raw string) string {
 	return claims.Email
 }
 
-// promptForAPIToken handles instances that don't support OAuth.
+// promptForAPIToken prompts for a manual API token as a fallback.
 func promptForAPIToken(host string) error {
-	fmt.Printf("\nThis Glean instance doesn't support OAuth.\n")
+	fmt.Printf("You can authenticate with an API token instead.\n")
 	fmt.Printf("Contact your Glean administrator to generate an API token.\n")
 	fmt.Printf("  (Glean Admin → Settings → API Tokens)\n\n")
 	fmt.Print("Token: ")
