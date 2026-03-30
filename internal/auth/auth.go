@@ -504,7 +504,7 @@ func EmailFromJWT(raw string) string {
 
 // promptForAPIToken handles instances that don't support OAuth.
 func promptForAPIToken(host string) error {
-	fmt.Printf("You can authenticate with an API token instead.\n")
+	fmt.Printf("There was an issue with OAuth. You can try using an API token instead.\n")
 	fmt.Printf("Contact your Glean administrator to generate an API token.\n")
 	fmt.Printf("  (Glean Admin → Settings → API Tokens)\n\n")
 	fmt.Print("Token: ")

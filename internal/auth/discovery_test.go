@@ -76,7 +76,7 @@ func TestFetchProtectedResource_EmptyAuthorizationServers(t *testing.T) {
 
 	_, err := fetchProtectedResource(context.Background(), srv.URL)
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "no authorization_servers")
+	assert.Contains(t, err.Error(), "OAuth metadata is incomplete")
 	var notSupported *ErrOAuthNotSupported
 	assert.False(t, errors.As(err, &notSupported))
 }
@@ -91,14 +91,14 @@ func TestFetchProtectedResource_NullAuthorizationServers(t *testing.T) {
 
 	_, err := fetchProtectedResource(context.Background(), srv.URL)
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "no authorization_servers")
+	assert.Contains(t, err.Error(), "OAuth metadata is incomplete")
 	var notSupported *ErrOAuthNotSupported
 	assert.False(t, errors.As(err, &notSupported))
 }
 
 func TestErrOAuthNotSupported_ErrorMessage(t *testing.T) {
 	err := &ErrOAuthNotSupported{URL: "https://example.com/.well-known/oauth-protected-resource"}
-	assert.Equal(t, "OAuth is not configured at https://example.com/.well-known/oauth-protected-resource", err.Error())
+	assert.Equal(t, "OAuth protected resource metadata not found at https://example.com/.well-known/oauth-protected-resource", err.Error())
 }
 
 func TestRegisterClient_Success(t *testing.T) {
