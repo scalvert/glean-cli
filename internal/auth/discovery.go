@@ -12,6 +12,15 @@ import (
 
 var discoveryHTTPClient = &http.Client{Timeout: 10 * time.Second}
 
+// ErrOAuthNotSupported is returned when the protected resource endpoint returns 404.
+type ErrOAuthNotSupported struct {
+	URL string
+}
+
+func (e *ErrOAuthNotSupported) Error() string {
+	return fmt.Sprintf("OAuth protected resource metadata not found at %s", e.URL)
+}
+
 type protectedResourceMetadata struct {
 	Resource             string   `json:"resource"`
 	AuthorizationServers []string `json:"authorization_servers"`
@@ -36,7 +45,7 @@ func fetchProtectedResource(ctx context.Context, baseURL string) (*protectedReso
 	switch resp.StatusCode {
 	case http.StatusOK:
 	case http.StatusNotFound:
-		return nil, fmt.Errorf("OAuth not found at %s — instance may not support OAuth", u)
+		return nil, &ErrOAuthNotSupported{URL: u}
 	default:
 		return nil, fmt.Errorf("protected resource metadata returned HTTP %d", resp.StatusCode)
 	}
@@ -46,7 +55,7 @@ func fetchProtectedResource(ctx context.Context, baseURL string) (*protectedReso
 		return nil, fmt.Errorf("parsing protected resource metadata: %w", err)
 	}
 	if len(meta.AuthorizationServers) == 0 {
-		return nil, fmt.Errorf("protected resource metadata has no authorization_servers")
+		return nil, fmt.Errorf("server returned OK but OAuth metadata is incomplete (no authorization_servers)")
 	}
 	return &meta, nil
 }
