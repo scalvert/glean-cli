@@ -6,10 +6,6 @@ golangci-lint = "2"
 gotestsum = "latest"
 svu = "latest"
 
-[tasks.default]
-description = "List all tasks"
-run = "mise tasks"
-
 [tasks.setup]
 description = "Install required global Go dependencies"
 run = """
