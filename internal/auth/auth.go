@@ -114,8 +114,8 @@ func Login(ctx context.Context) error {
 		TokenType:     token.TokenType,
 		TokenEndpoint: oauthCfg.Endpoint.TokenURL, // enables future token refresh
 	}
-	if err := SaveTokens(host, stored); err != nil {
-		return fmt.Errorf("saving tokens: %w", err)
+	if err := persistLoginState(host, stored); err != nil {
+		return err
 	}
 
 	if email != "" {
@@ -126,7 +126,21 @@ func Login(ctx context.Context) error {
 	return nil
 }
 
-// Logout removes stored OAuth tokens and clears the config file.
+// persistLoginState stores the resolved host in config and persists OAuth tokens.
+// Saving the host here ensures a successful `glean auth login` remains usable
+// even when the host originally came from an environment variable.
+func persistLoginState(host string, tok *StoredTokens) error {
+	if err := config.SaveHostToFile(host); err != nil {
+		return fmt.Errorf("saving host: %w", err)
+	}
+	if err := SaveTokens(host, tok); err != nil {
+		return fmt.Errorf("saving tokens: %w", err)
+	}
+	return nil
+}
+
+// Logout removes stored OAuth tokens, OAuth client registration, and any saved
+// config/keyring credentials for the current host.
 func Logout(ctx context.Context) error {
 	cfg, err := config.LoadConfig()
 	if err != nil || cfg.GleanHost == "" {
@@ -135,9 +149,11 @@ func Logout(ctx context.Context) error {
 	if err := DeleteTokens(cfg.GleanHost); err != nil {
 		return fmt.Errorf("removing tokens: %w", err)
 	}
-	// Also wipe the config file so any stored API token / host is cleared.
-	if config.ConfigPath != "" {
-		_ = os.Remove(config.ConfigPath)
+	if err := DeleteClient(cfg.GleanHost); err != nil {
+		return fmt.Errorf("removing oauth client: %w", err)
+	}
+	if err := config.ClearConfig(); err != nil {
+		return fmt.Errorf("clearing config: %w", err)
 	}
 	fmt.Printf("✓ Logged out from Glean (%s)\n", cfg.GleanHost)
 	return nil
@@ -293,7 +309,7 @@ func resolveHost(ctx context.Context) (string, error) {
 	host = strings.TrimPrefix(host, "http://")
 	host = strings.SplitN(host, "/", 2)[0]
 
-	_ = config.SaveConfig(host, "")
+	_ = config.SaveHostToFile(host)
 	return host, nil
 }
 
