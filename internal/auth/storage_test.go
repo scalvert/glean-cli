@@ -62,6 +62,16 @@ func TestSaveAndLoadClient(t *testing.T) {
 	assert.Equal(t, "cid-123", got.ClientID)
 }
 
+func TestDeleteClient(t *testing.T) {
+	withTempHome(t)
+	cl := &StoredClient{ClientID: "cid-123", ClientSecret: "cs-abc"}
+	require.NoError(t, SaveClient("host.glean.com", cl))
+	require.NoError(t, DeleteClient("host.glean.com"))
+	got, err := LoadClient("host.glean.com")
+	require.NoError(t, err)
+	assert.Nil(t, got)
+}
+
 func TestStoredTokens_IsExpired(t *testing.T) {
 	assert.True(t, (&StoredTokens{Expiry: time.Now().Add(-time.Minute)}).IsExpired())
 	assert.False(t, (&StoredTokens{Expiry: time.Now().Add(time.Hour)}).IsExpired())

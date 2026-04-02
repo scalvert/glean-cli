@@ -157,6 +157,28 @@ func SaveConfig(host, token string) error {
 	return nil
 }
 
+// SaveHostToFile persists only the host in ~/.glean/config.json without touching
+// the system keyring. This is intended for OAuth flows where the host is not
+// secret and persisting it should not trigger OS keychain prompts.
+func SaveHostToFile(host string) error {
+	if host != "" {
+		validHost, err := ValidateAndTransformHost(host)
+		if err != nil {
+			return err
+		}
+		host = validHost
+	}
+
+	cfg := &Config{}
+	existingCfg, err := loadFromFile()
+	if err == nil {
+		cfg = existingCfg
+	}
+	cfg.GleanHost = host
+
+	return saveToFile(cfg)
+}
+
 // ClearConfig removes all stored configuration from both keyring and file storage.
 func ClearConfig() error {
 	var keyringErr error

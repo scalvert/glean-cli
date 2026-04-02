@@ -123,3 +123,12 @@ func LoadClient(host string) (*StoredClient, error) {
 	}
 	return &cl, nil
 }
+
+// DeleteClient removes a stored client registration for the given host.
+func DeleteClient(host string) error {
+	err := os.Remove(clientPath(host))
+	if os.IsNotExist(err) {
+		return nil
+	}
+	return err
+}
