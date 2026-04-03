@@ -283,10 +283,12 @@ func refreshOAuthToken(host string, tok *StoredTokens) (*StoredTokens, error) {
 }
 
 // resolveHost returns the configured Glean host, prompting for email if needed.
+// The returned host is always normalized (e.g. "linkedin" → "linkedin-be.glean.com")
+// so that all downstream callers (token storage, config persistence) use a consistent value.
 func resolveHost(ctx context.Context) (string, error) {
 	cfg, _ := config.LoadConfig()
 	if cfg != nil && cfg.GleanHost != "" {
-		return cfg.GleanHost, nil
+		return config.NormalizeHost(cfg.GleanHost), nil
 	}
 
 	fmt.Print("Enter your work email: ")

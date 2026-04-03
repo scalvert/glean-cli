@@ -83,6 +83,29 @@ func TestOAuthTokenResolvesWhenHostIsPersisted(t *testing.T) {
 	assert.Equal(t, "OAUTH", authType)
 }
 
+func TestShortFormHostNormalizesConsistently(t *testing.T) {
+	isolateAuthState(t)
+
+	const shortHost = "acme"
+	const normalizedHost = "acme-be.glean.com"
+
+	// Simulate: GLEAN_HOST=acme (short form) was set during login.
+	// persistLoginState normalizes the host in the config file,
+	// and SaveTokens must use the same normalized value.
+	require.NoError(t, config.SaveHostToFile(shortHost))
+	require.NoError(t, auth.SaveTokens(config.NormalizeHost(shortHost), oauthToken()))
+
+	// Simulate next session: no env var, host loaded from config file.
+	cfg, err := config.LoadConfig()
+	require.NoError(t, err)
+	require.Equal(t, normalizedHost, cfg.GleanHost, "config file should contain normalized host")
+
+	// Token lookup must use the same normalized host.
+	token, authType := gleanClient.ResolveToken(cfg)
+	assert.Equal(t, "oauth-access-token", token, "tokens should be found via normalized host")
+	assert.Equal(t, "OAUTH", authType)
+}
+
 func TestLogoutClearsPersistedHostAndOAuthTokens(t *testing.T) {
 	isolateAuthState(t)
 
