@@ -35,10 +35,10 @@ func CleanseSearchResponse(resp any) (any, error) {
 type allowlist map[string]allowlist
 
 var responseAllowlist = allowlist{
-	"results":       resultAllowlist,
-	"cursor":        nil,
+	"results":        resultAllowlist,
+	"cursor":         nil,
 	"hasMoreResults": nil,
-	"requestID":     nil,
+	"requestID":      nil,
 }
 
 var resultAllowlist = allowlist{
@@ -70,7 +70,7 @@ var personAllowlist = allowlist{
 }
 
 var snippetAllowlist = allowlist{
-	"snippet": nil,
+	"snippet":  nil,
 	"mimeType": nil,
 }
 
