@@ -36,7 +36,7 @@ func (m *Model) View() string {
 	if m.showExitHint {
 		bottom = styleExitHint.Render("  Press ctrl+c again to exit  ·  esc to cancel")
 	}
-	if m.showMouseHint {
+	if m.showMouseHint && !m.showExitHint {
 		bottom = styleExitHint.Render("  To select text: hold Shift+drag  ·  ctrl+o to toggle mouse mode")
 	}
 
