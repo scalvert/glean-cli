@@ -28,10 +28,11 @@ func WriteJSON(w io.Writer, v any) error {
 }
 
 // WriteNDJSON marshals each element of a slice as a separate JSON line to w.
-// For SearchResponse, it emits one result per line instead of the full envelope.
+// For SearchResponse (SDK struct or cleansed map), it emits one result per line
+// instead of the full envelope.
 // If v is not a slice, it writes the whole value as a single line.
 func WriteNDJSON(w io.Writer, v any) error {
-	// For search responses, emit one result per line
+	// SDK struct: emit one result per line
 	if sr, ok := v.(*components.SearchResponse); ok && sr != nil {
 		for _, result := range sr.Results {
 			if err := json.NewEncoder(w).Encode(result); err != nil {
@@ -39,6 +40,18 @@ func WriteNDJSON(w io.Writer, v any) error {
 			}
 		}
 		return nil
+	}
+
+	// Cleansed map: emit one result per line (stopgap — remove when POST /api/search ships)
+	if m, ok := v.(map[string]any); ok {
+		if results, ok := m["results"].([]any); ok {
+			for _, result := range results {
+				if err := json.NewEncoder(w).Encode(result); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
 	}
 
 	rv := reflect.ValueOf(v)
