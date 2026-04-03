@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/gleanwork/api-client-go/models/components"
@@ -11,6 +12,44 @@ import (
 	"github.com/gleanwork/glean-cli/internal/search"
 	"github.com/spf13/cobra"
 )
+
+func searchTextFn(w io.Writer, v any) error {
+	resp, ok := v.(*components.SearchResponse)
+	if !ok {
+		return output.WriteJSON(w, v)
+	}
+	var rows [][]string
+	for _, r := range resp.Results {
+		title, source, url, snippet := "", "", "", ""
+		if r.Document != nil {
+			if r.Document.Title != nil {
+				title = *r.Document.Title
+			}
+			if r.Document.Datasource != nil {
+				source = *r.Document.Datasource
+			}
+			if r.Document.URL != nil {
+				url = *r.Document.URL
+			}
+		}
+		if title == "" && r.Title != nil {
+			title = *r.Title
+		}
+		if url == "" {
+			url = r.URL
+		}
+		if len(r.Snippets) > 0 && r.Snippets[0].Text != nil {
+			snippet = *r.Snippets[0].Text
+		}
+		rows = append(rows, []string{
+			output.Truncate(title, 50),
+			source,
+			url,
+			output.Truncate(snippet, 60),
+		})
+	}
+	return output.WriteTable(w, []string{"TITLE", "SOURCE", "URL", "SNIPPET"}, rows)
+}
 
 // NewCmdSearch creates and returns the search command.
 func NewCmdSearch() *cobra.Command {
@@ -63,6 +102,11 @@ Example:
 				if err != nil {
 					return fmt.Errorf("search request failed: %w", err)
 				}
+				// Text output operates on the raw SDK struct directly;
+				// cleansing is redundant since the table selects its own fields.
+				if outputFormat == output.OutputText {
+					return output.WriteFormatted(cmd.OutOrStdout(), resp.SearchResponse, outputFormat, searchTextFn)
+				}
 				var result any = resp.SearchResponse
 				if !raw {
 					result, err = output.CleanseSearchResponse(result)
@@ -70,7 +114,7 @@ Example:
 						return err
 					}
 				}
-				return output.WriteFormatted(cmd.OutOrStdout(), result, outputFormat, nil)
+				return output.WriteFormatted(cmd.OutOrStdout(), result, outputFormat, searchTextFn)
 			}
 
 			// flag-based path
@@ -120,6 +164,11 @@ Example:
 			if err != nil {
 				return err
 			}
+			// Text output operates on the raw SDK struct directly;
+			// cleansing is redundant since the table selects its own fields.
+			if outputFormat == output.OutputText {
+				return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, searchTextFn)
+			}
 			var result any = resp
 			if !raw {
 				result, err = output.CleanseSearchResponse(result)
@@ -137,7 +186,7 @@ Example:
 				}
 				return output.ProjectFields(cmd.OutOrStdout(), result, fields)
 			}
-			return output.WriteFormatted(cmd.OutOrStdout(), result, outputFormat, nil)
+			return output.WriteFormatted(cmd.OutOrStdout(), result, outputFormat, searchTextFn)
 		},
 	}
 
