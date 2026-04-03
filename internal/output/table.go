@@ -69,8 +69,10 @@ func writePlainTable(w io.Writer, headers []string, rows [][]string) error {
 	return tw.Flush()
 }
 
-// Truncate shortens s to at most n runes, appending "…" if truncated.
+// Truncate collapses whitespace runs (including newlines) into single spaces,
+// then shortens s to at most n runes, appending "…" if truncated.
 func Truncate(s string, n int) string {
+	s = strings.Join(strings.Fields(s), " ")
 	runes := []rune(s)
 	if len(runes) <= n {
 		return s

@@ -77,6 +77,49 @@ func TestSearchCommand_JSONPayload(t *testing.T) {
 	assert.Contains(t, buf.String(), "Engineering Docs")
 }
 
+func TestSearchCommand_OutputText(t *testing.T) {
+	body, _ := json.Marshal(map[string]any{
+		"results": []map[string]any{
+			{
+				"document": map[string]any{
+					"title":      "Vacation Policy",
+					"datasource": "gdrive",
+					"url":        "https://docs.example.com/vacation",
+				},
+				"snippets": []map[string]any{
+					{"text": "All employees are entitled to 20 days PTO"},
+				},
+			},
+			{
+				"document": map[string]any{
+					"title":      "Holiday Guide",
+					"datasource": "confluence",
+					"url":        "https://wiki.example.com/holidays",
+				},
+			},
+		},
+	})
+	_, cleanup := testutils.SetupTestWithResponse(t, body)
+	defer cleanup()
+
+	root := NewCmdRoot()
+	buf := &bytes.Buffer{}
+	root.SetOut(buf)
+	root.SetArgs([]string{"search", "--output", "text", "vacation"})
+	err := root.Execute()
+	require.NoError(t, err)
+
+	out := buf.String()
+	assert.Contains(t, out, "TITLE")
+	assert.Contains(t, out, "SOURCE")
+	assert.Contains(t, out, "URL")
+	assert.Contains(t, out, "SNIPPET")
+	assert.Contains(t, out, "Vacation Policy")
+	assert.Contains(t, out, "gdrive")
+	assert.Contains(t, out, "Holiday Guide")
+	assert.NotContains(t, out, "{")
+}
+
 func TestSearchCommand_OutputNDJSON(t *testing.T) {
 	_, cleanup := testutils.SetupTestWithResponse(t, searchResponse("Doc A", "Doc B"))
 	defer cleanup()

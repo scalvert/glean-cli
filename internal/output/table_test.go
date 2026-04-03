@@ -64,6 +64,9 @@ func TestTruncate(t *testing.T) {
 		{"", 5, ""},
 		{"短い", 10, "短い"},
 		{"これは長いテキストです", 6, "これは長い…"},
+		{"Line one\nLine two\nLine three", 20, "Line one Line two L…"},
+		{"has\ttabs\tand  spaces", 20, "has tabs and spaces"},
+		{"\n\nnewlines only\n\n", 15, "newlines only"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
