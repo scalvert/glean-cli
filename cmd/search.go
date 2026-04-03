@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/gleanwork/api-client-go/models/components"
 	gleanClient "github.com/gleanwork/glean-cli/internal/client"
@@ -23,6 +24,7 @@ func NewCmdSearch() *cobra.Command {
 	var outputFormat string
 	var dryRun bool
 	var fields string
+	var raw bool
 
 	cmd := &cobra.Command{
 		Use:   "search [query]",
@@ -61,7 +63,14 @@ Example:
 				if err != nil {
 					return fmt.Errorf("search request failed: %w", err)
 				}
-				return output.WriteFormatted(cmd.OutOrStdout(), resp.SearchResponse, outputFormat, nil)
+				var result any = resp.SearchResponse
+				if !raw {
+					result, err = output.CleanseSearchResponse(result)
+					if err != nil {
+						return err
+					}
+				}
+				return output.WriteFormatted(cmd.OutOrStdout(), result, outputFormat, nil)
 			}
 
 			// flag-based path
@@ -111,10 +120,24 @@ Example:
 			if err != nil {
 				return err
 			}
-			if fields != "" {
-				return output.ProjectFields(cmd.OutOrStdout(), resp, fields)
+			var result any = resp
+			if !raw {
+				result, err = output.CleanseSearchResponse(result)
+				if err != nil {
+					return err
+				}
 			}
-			return output.WriteFormatted(cmd.OutOrStdout(), resp, outputFormat, nil)
+			if fields != "" {
+				if !raw {
+					if stripped := output.WarnStrippedFields(fields); len(stripped) > 0 {
+						fmt.Fprintf(cmd.ErrOrStderr(),
+							"Warning: field(s) %s not available in cleansed output (use --raw for the full response)\n",
+							strings.Join(stripped, ", "))
+					}
+				}
+				return output.ProjectFields(cmd.OutOrStdout(), result, fields)
+			}
+			return output.WriteFormatted(cmd.OutOrStdout(), result, outputFormat, nil)
 		},
 	}
 
@@ -122,6 +145,7 @@ Example:
 	cmd.Flags().StringVar(&outputFormat, "output", "json", "Output format: json, ndjson, or text")
 	cmd.Flags().StringVar(&fields, "fields", "", "Comma-separated dot-path fields to include (e.g. results.document.title,results.document.url). Results where all projected fields are missing appear as {}")
 	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print the request body without sending it")
+	cmd.Flags().BoolVar(&raw, "raw", false, "Output the full SDK response without cleansing")
 	cmd.Flags().IntVar(&opts.PageSize, "page-size", 10, "Number of results per page")
 	cmd.Flags().IntVar(&opts.MaxSnippetSize, "max-snippet-size", 0, "Maximum size of snippets")
 	cmd.Flags().IntVar(&opts.TimeoutMillis, "timeout", 30000, "Request timeout in milliseconds")
