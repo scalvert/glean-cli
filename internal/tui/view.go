@@ -36,6 +36,9 @@ func (m *Model) View() string {
 	if m.showExitHint {
 		bottom = styleExitHint.Render("  Press ctrl+c again to exit  ·  esc to cancel")
 	}
+	if m.showMouseHint && !m.showExitHint {
+		bottom = styleExitHint.Render("  To select text: hold Shift+drag  ·  ctrl+o to toggle mouse mode")
+	}
 
 	// Chip shows attached files above the input box (always).
 	chip := m.attachedFilesView()
@@ -157,7 +160,11 @@ func (m *Model) statusLine() string {
 		left = modeLabel
 	}
 
-	right := styleStatusBar.Render("ctrl+r new  ctrl+l clear  ctrl+y copy  ctrl+h help  ctrl+c quit")
+	mouseIndicator := ""
+	if !m.mouseEnabled {
+		mouseIndicator = "  🖱️ off"
+	}
+	right := styleStatusBar.Render("ctrl+r new  ctrl+l clear  ctrl+y copy  ctrl+h help  ctrl+c quit" + mouseIndicator)
 
 	leftW := lipgloss.Width(left)
 	rightW := lipgloss.Width(right)
@@ -176,6 +183,7 @@ func (m *Model) helpView() string {
 		{"↑ / ↓  or  pgup / pgdn", "Scroll history"},
 		{"ctrl+r", "New session (clear history)"},
 		{"ctrl+l", "Clear screen"},
+		{"ctrl+o", "Toggle mouse scrolling/selection"},
 		{"ctrl+c  /  esc", "Quit"},
 		{"ctrl+h", "Toggle this help"},
 		{"", ""},
