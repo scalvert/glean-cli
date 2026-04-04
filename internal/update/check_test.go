@@ -25,6 +25,10 @@ func TestIsNewer(t *testing.T) {
 		{"older version", "v0.1.0", "v0.2.0", false},
 		{"without v prefix", "0.2.1", "0.2.0", true},
 		{"mixed v prefix", "v0.2.1", "0.2.0", true},
+		{"double digit minor newer", "v0.10.0", "v0.9.2", true},
+		{"double digit minor older", "v0.9.2", "v0.10.0", false},
+		{"double digit patch newer", "v0.9.12", "v0.9.9", true},
+		{"double digit major newer", "v10.0.0", "v9.0.0", true},
 	}
 
 	for _, tt := range tests {
