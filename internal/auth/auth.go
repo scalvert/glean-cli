@@ -6,6 +6,7 @@ import (
 	_ "embed"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net"
 	"net/http"
@@ -35,6 +36,12 @@ var (
 //go:embed success.html
 var successHTML string
 
+// errNoOAuthClient is returned by dcrOrStaticClient when neither DCR nor a
+// static client is available. Login uses this to decide whether device flow
+// is an appropriate fallback (as opposed to transient failures like network
+// timeouts or the user closing their browser).
+var errNoOAuthClient = errors.New("no OAuth client available")
+
 // Login performs the full OAuth 2.0 login flow for the configured Glean host.
 //
 // Strategy (in order):
@@ -59,14 +66,22 @@ func Login(ctx context.Context) error {
 	loginLog.Log("OAuth discovery succeeded: auth=%s token=%s registration=%s", disc.Endpoint.AuthURL, disc.Endpoint.TokenURL, disc.RegistrationEndpoint)
 
 	// Try DCR / static client first (standard authorization code flow).
-	if authCodeErr := tryAuthCodeLogin(ctx, host, disc); authCodeErr == nil {
+	authCodeErr := tryAuthCodeLogin(ctx, host, disc)
+	if authCodeErr == nil {
 		return nil
-	} else if disc.DeviceFlowClientID != "" && disc.DeviceAuthEndpoint != "" {
-		fmt.Fprintf(os.Stderr, "Note: browser login failed (%v), trying device flow…\n", authCodeErr)
-		return deviceFlowLogin(ctx, host, disc)
-	} else {
-		return fmt.Errorf("authentication failed: %w", authCodeErr)
 	}
+
+	// Only fall back to device flow when the auth code flow failed because no
+	// OAuth client could be obtained (DCR unsupported + no static client).
+	// Transient failures (network, user closing browser, port conflicts) should
+	// not silently switch to a different grant type.
+	canDeviceFlow := disc.DeviceFlowClientID != "" && disc.DeviceAuthEndpoint != ""
+	if errors.Is(authCodeErr, errNoOAuthClient) && canDeviceFlow {
+		fmt.Fprintf(os.Stderr, "Note: no OAuth client available, trying device flow…\n")
+		return deviceFlowLogin(ctx, host, disc)
+	}
+
+	return fmt.Errorf("authentication failed: %w", authCodeErr)
 }
 
 // tryAuthCodeLogin attempts the Authorization Code + PKCE flow via DCR or static client.
@@ -460,6 +475,7 @@ func discover(ctx context.Context, host string) (*discoveryResult, error) {
 // credentials can be reused for token refresh later.
 // Falls back to a static client configured via glean config --oauth-client-id.
 func dcrOrStaticClient(ctx context.Context, host, registrationEndpoint, redirectURI string) (string, string, error) {
+	var dcrErr error
 	if registrationEndpoint != "" {
 		dcrLog.Log("registering client at %s with redirect %s", registrationEndpoint, redirectURI)
 		cl, err := registerClient(ctx, registrationEndpoint, redirectURI)
@@ -470,7 +486,7 @@ func dcrOrStaticClient(ctx context.Context, host, registrationEndpoint, redirect
 			}
 			return cl.ClientID, cl.ClientSecret, nil
 		}
-		// DCR failed — log and fall through to static client
+		dcrErr = err
 		dcrLog.Log("DCR failed: %v, trying static client", err)
 		fmt.Printf("Note: dynamic client registration failed (%v), trying static client\n", err)
 	} else {
@@ -483,7 +499,10 @@ func dcrOrStaticClient(ctx context.Context, host, registrationEndpoint, redirect
 		return cfg.OAuthClientID, cfg.OAuthClientSecret, nil
 	}
 
-	return "", "", fmt.Errorf("no OAuth client available — dynamic client registration failed and no static client is configured")
+	if dcrErr != nil {
+		return "", "", fmt.Errorf("%w: dynamic client registration failed (%v) and no static client is configured", errNoOAuthClient, dcrErr)
+	}
+	return "", "", fmt.Errorf("%w: no registration endpoint and no static client configured", errNoOAuthClient)
 }
 
 // resolveScopes returns the appropriate OAuth scopes for the given provider.
