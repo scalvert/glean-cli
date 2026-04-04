@@ -13,6 +13,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"golang.org/x/mod/semver"
 )
 
 const (
@@ -96,13 +98,17 @@ func fetchLatestTag() (string, error) {
 }
 
 // isNewer returns true if latestTag represents a version strictly greater
-// than currentVersion. Both are expected in "vMAJOR.MINOR.PATCH" form.
+// than currentVersion. Both may be in "vMAJOR.MINOR.PATCH" or "MAJOR.MINOR.PATCH" form.
 func isNewer(latestTag, currentVersion string) bool {
-	latest := strings.TrimPrefix(latestTag, "v")
-	current := strings.TrimPrefix(currentVersion, "v")
-	// Simple lexicographic comparison works for semver with zero-padded or
-	// equal-length segments. For a pre-1.0 CLI this is sufficient.
-	return latest > current
+	return semver.Compare(canonical(latestTag), canonical(currentVersion)) > 0
+}
+
+// canonical ensures the version has a "v" prefix as required by golang.org/x/mod/semver.
+func canonical(v string) string {
+	if !strings.HasPrefix(v, "v") {
+		v = "v" + v
+	}
+	return v
 }
 
 func cacheFilePath() string {
