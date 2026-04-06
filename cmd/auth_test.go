@@ -2,13 +2,11 @@ package cmd
 
 import (
 	"bytes"
-	"path/filepath"
 	"testing"
 
-	"github.com/gleanwork/glean-cli/internal/config"
+	"github.com/gleanwork/glean-cli/internal/auth/authtest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/zalando/go-keyring"
 )
 
 func TestAuthCmd_Help(t *testing.T) {
@@ -33,25 +31,8 @@ func TestAuthCmd_HasSubcommands(t *testing.T) {
 	assert.Contains(t, subNames, "status")
 }
 
-func isolateAuthState(t *testing.T) {
-	t.Helper()
-
-	home := t.TempDir()
-	t.Setenv("HOME", home)
-
-	oldPath := config.ConfigPath
-	config.ConfigPath = filepath.Join(home, ".glean", "config.json")
-	t.Cleanup(func() { config.ConfigPath = oldPath })
-
-	oldService := config.ServiceName
-	config.ServiceName = "glean-cli-test-cmd-auth"
-	t.Cleanup(func() { config.ServiceName = oldService })
-
-	keyring.MockInit()
-}
-
 func TestAuthStatusCmd_NoConfig(t *testing.T) {
-	isolateAuthState(t)
+	authtest.IsolateAuthState(t)
 
 	root := NewCmdRoot()
 	buf := &bytes.Buffer{}
@@ -63,7 +44,7 @@ func TestAuthStatusCmd_NoConfig(t *testing.T) {
 }
 
 func TestAuthLogoutCmd_NoPanic(t *testing.T) {
-	isolateAuthState(t)
+	authtest.IsolateAuthState(t)
 
 	root := NewCmdRoot()
 	buf := &bytes.Buffer{}

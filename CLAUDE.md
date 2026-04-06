@@ -5,7 +5,7 @@
 **Never say a feature is complete without running the actual binary.**
 
 ```bash
-cd /Users/steve.calvert/workspace/personal/glean-cli
+cd /Users/steve.calvert/workspace/glean/glean-cli
 mise run build          # build the binary
 ./glean                 # run the TUI and test the feature manually
 ```
@@ -56,10 +56,25 @@ mise run test:all       # lint + test + build (CI equivalent)
 
 ## TUI Architecture Rules
 
-- **Worktree LSP errors are noise** — the worktree (`/.claude/worktrees/`) is stale. Always build in the main repo at `/Users/steve.calvert/workspace/personal/glean-cli`
+- **Worktree LSP errors are noise** — the worktree (`/.claude/worktrees/`) is stale. Always build in the main repo at `/Users/steve.calvert/workspace/glean/glean-cli`
 - **Viewport key isolation** — never pass `tea.KeyMsg` to viewport in the catch-all; scroll keys are handled explicitly above
 - **Collect-then-display for content** — streaming stages show live via channel; content waits until complete
 - **No viewport jumping** — `conversationActive` pins viewport height; `recalculateLayout()` only called on terminal resize or deliberate state changes
+
+## Auth Test Isolation
+
+**All tests that touch auth, config, or keyring state MUST call `authtest.IsolateAuthState(t)`.**
+
+```go
+import "github.com/gleanwork/glean-cli/internal/auth/authtest"
+
+func TestSomethingWithAuth(t *testing.T) {
+    authtest.IsolateAuthState(t)
+    // ... test code
+}
+```
+
+This redirects HOME, config path, and keyring to a temp directory so tests never read or delete real credentials. Without it, tests can silently wipe `~/.glean/config.json` and keyring entries.
 
 ## Common Mistakes to Avoid
 
