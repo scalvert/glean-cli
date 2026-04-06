@@ -48,9 +48,15 @@ func TestCleanseSearchResponse_StripsUIFields(t *testing.T) {
 				"url":                 "https://example.com/doc",
 				"snippets": []any{
 					map[string]any{
-						"snippet":  "The platform team will focus on...",
+						"text":                "The platform team will focus on...",
+						"snippet":             "deprecated snippet value",
+						"mimeType":            "text/plain",
+						"snippetTextOrdering": float64(1),
+						"ranges":              []any{map[string]any{"start": float64(0), "end": float64(5)}},
+					},
+					map[string]any{
+						"text":     "",
 						"mimeType": "text/plain",
-						"ranges":   []any{map[string]any{"start": float64(0), "end": float64(5)}},
 					},
 				},
 				"document": map[string]any{
@@ -69,15 +75,33 @@ func TestCleanseSearchResponse_StripsUIFields(t *testing.T) {
 						"objectType": "page",
 						"author": map[string]any{
 							"name":         "Steve",
-							"email":        "steve@co.com",
 							"obfuscatedId": "ABC123",
 							"metadata":     map[string]any{"loggingId": "XYZ"},
 						},
+						"owner": map[string]any{
+							"name":         "Jane",
+							"obfuscatedId": "DEF456",
+							"metadata":     map[string]any{"loggingId": "UVW"},
+						},
+						"assignedTo": map[string]any{
+							"name":         "Bob",
+							"obfuscatedId": "GHI789",
+						},
+						"updatedBy": map[string]any{
+							"name":         "Alice",
+							"obfuscatedId": "JKL012",
+						},
 						"updateTime":       "2026-03-28T14:30:00Z",
 						"createTime":       "2026-01-15T09:00:00Z",
+						"status":           "In Progress",
+						"priority":         "P1",
 						"container":        "Engineering Space",
+						"datasourceId":     "JIRA-123",
 						"interactions":     map[string]any{"numViews": float64(42)},
 						"documentCategory": "PUBLISHED_CONTENT",
+						"loggingId":        "log_abc",
+						"documentId":       "did_123",
+						"visibility":       map[string]any{"level": "PUBLIC"},
 						"pins":             []any{},
 						"collections":      []any{},
 					},
@@ -131,13 +155,15 @@ func TestCleanseSearchResponse_StripsUIFields(t *testing.T) {
 	assert.NotContains(t, r, "attachments")
 	assert.NotContains(t, r, "clusterType")
 
-	// Snippets: only snippet and mimeType
+	// Snippets: only text and mimeType, empty snippets filtered out
 	snippets := r["snippets"].([]any)
-	require.Len(t, snippets, 1)
+	require.Len(t, snippets, 1, "empty snippet should be filtered out")
 	snip := snippets[0].(map[string]any)
-	assert.Contains(t, snip, "snippet")
+	assert.Contains(t, snip, "text")
 	assert.Contains(t, snip, "mimeType")
+	assert.NotContains(t, snip, "snippet", "deprecated snippet field should be stripped")
 	assert.NotContains(t, snip, "ranges")
+	assert.NotContains(t, snip, "snippetTextOrdering")
 
 	// Document: only allowed keys
 	doc := r["document"].(map[string]any)
@@ -153,25 +179,47 @@ func TestCleanseSearchResponse_StripsUIFields(t *testing.T) {
 	assert.NotContains(t, doc, "parentDocument")
 	assert.NotContains(t, doc, "sections")
 
-	// Document metadata: only allowed keys
+	// Document metadata: allowed keys kept, noise stripped
 	meta := doc["metadata"].(map[string]any)
 	assert.Contains(t, meta, "datasource")
 	assert.Contains(t, meta, "objectType")
 	assert.Contains(t, meta, "author")
+	assert.Contains(t, meta, "owner")
+	assert.Contains(t, meta, "assignedTo")
+	assert.Contains(t, meta, "updatedBy")
 	assert.Contains(t, meta, "updateTime")
 	assert.Contains(t, meta, "createTime")
-	assert.NotContains(t, meta, "container")
+	assert.Contains(t, meta, "status")
+	assert.Contains(t, meta, "priority")
+	assert.Contains(t, meta, "container")
+	assert.Contains(t, meta, "datasourceId")
 	assert.NotContains(t, meta, "interactions")
 	assert.NotContains(t, meta, "documentCategory")
+	assert.NotContains(t, meta, "loggingId")
+	assert.NotContains(t, meta, "documentId")
+	assert.NotContains(t, meta, "visibility")
 	assert.NotContains(t, meta, "pins")
 	assert.NotContains(t, meta, "collections")
 
-	// Author filtered to name and email only
+	// Author filtered to name only (email doesn't exist in API responses)
 	author := meta["author"].(map[string]any)
 	assert.Equal(t, "Steve", author["name"])
-	assert.Equal(t, "steve@co.com", author["email"])
-	assert.NotContains(t, author, "metadata")
 	assert.NotContains(t, author, "obfuscatedId")
+	assert.NotContains(t, author, "metadata")
+
+	// Other person fields also filtered to name only
+	owner := meta["owner"].(map[string]any)
+	assert.Equal(t, "Jane", owner["name"])
+	assert.NotContains(t, owner, "obfuscatedId")
+	assert.NotContains(t, owner, "metadata")
+
+	assignedTo := meta["assignedTo"].(map[string]any)
+	assert.Equal(t, "Bob", assignedTo["name"])
+	assert.NotContains(t, assignedTo, "obfuscatedId")
+
+	updatedBy := meta["updatedBy"].(map[string]any)
+	assert.Equal(t, "Alice", updatedBy["name"])
+	assert.NotContains(t, updatedBy, "obfuscatedId")
 }
 
 func TestCleanseSearchResponse_EmptyResults(t *testing.T) {
@@ -294,7 +342,7 @@ func TestCleanseSearchResponse_SDKStruct(t *testing.T) {
 }
 
 func TestWarnStrippedFields_AllowedFields(t *testing.T) {
-	stripped := WarnStrippedFields("results.title,results.url,results.document.datasource")
+	stripped := WarnStrippedFields("results.title,results.url,results.document.datasource,results.document.metadata.status,results.document.metadata.owner.name")
 	assert.Empty(t, stripped)
 }
 
@@ -321,6 +369,64 @@ func TestWarnStrippedFields_TopLevelStripped(t *testing.T) {
 func TestWarnStrippedFields_Empty(t *testing.T) {
 	stripped := WarnStrippedFields("")
 	assert.Nil(t, stripped)
+}
+
+func TestCleanseSearchResponse_FiltersEmptySnippets(t *testing.T) {
+	input := map[string]any{
+		"results": []any{
+			map[string]any{
+				"title": "Doc With Snippets",
+				"url":   "https://example.com",
+				"document": map[string]any{
+					"title":      "Doc",
+					"datasource": "gdrive",
+				},
+				"snippets": []any{
+					map[string]any{"text": "real content", "mimeType": "text/plain"},
+					map[string]any{"text": "", "mimeType": "text/plain"},
+					map[string]any{"mimeType": "text/plain"},
+					map[string]any{"text": "another real one", "mimeType": "text/html"},
+				},
+			},
+		},
+	}
+
+	result, err := CleanseSearchResponse(input)
+	require.NoError(t, err)
+
+	m := result.(map[string]any)
+	results := m["results"].([]any)
+	r := results[0].(map[string]any)
+	snippets := r["snippets"].([]any)
+	require.Len(t, snippets, 2, "should keep only snippets with non-empty text")
+	assert.Equal(t, "real content", snippets[0].(map[string]any)["text"])
+	assert.Equal(t, "another real one", snippets[1].(map[string]any)["text"])
+}
+
+func TestCleanseSearchResponse_AllSnippetsEmptyRemovesKey(t *testing.T) {
+	input := map[string]any{
+		"results": []any{
+			map[string]any{
+				"title": "Doc",
+				"url":   "https://example.com",
+				"document": map[string]any{
+					"title":      "Doc",
+					"datasource": "gdrive",
+				},
+				"snippets": []any{
+					map[string]any{"text": "", "mimeType": "text/plain"},
+					map[string]any{"text": "", "mimeType": "text/plain"},
+				},
+			},
+		},
+	}
+
+	result, err := CleanseSearchResponse(input)
+	require.NoError(t, err)
+
+	m := result.(map[string]any)
+	r := m["results"].([]any)[0].(map[string]any)
+	assert.NotContains(t, r, "snippets", "snippets key should be removed when all snippets are empty")
 }
 
 func TestCleanseSearchResponse_RoundTripsToJSON(t *testing.T) {

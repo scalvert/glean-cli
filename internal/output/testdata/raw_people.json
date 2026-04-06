@@ -1,0 +1,1722 @@
+{
+  "trackingToken": "KHtaFeDIa6g3eaCn",
+  "sessionInfo": {
+    "lastQuery": "who is steve calvert",
+    "lastSeen": "2026-04-06T15:32:59.351772093Z",
+    "sessionTrackingToken": "9l6wAmXijfrmz88e",
+    "tabId": "YaWFavjlpSjUH81H"
+  },
+  "results": [
+    {
+      "structuredResults": [
+        {
+          "person": {
+            "metadata": {
+              "aliasEmails": [
+                "steve.calvert@glean.com",
+                "steve.calvert@askscio.com"
+              ],
+              "bio": "Developer Platform Lead",
+              "datasourceProfile": [
+                {
+                  "datasource": "GSUITE",
+                  "handle": "Steve Calvert",
+                  "url": "https://contacts.google.com/p/117560105031537462447"
+                },
+                {
+                  "datasource": "SLACK",
+                  "handle": "Steve C",
+                  "nativeAppUrl": "slack://channel?team=TGLEMJFFG\u0026id=U08FYA0668Z",
+                  "url": "https://askscio.slack.com/team/U08FYA0668Z"
+                },
+                {
+                  "datasource": "SLACK",
+                  "handle": "Steve C",
+                  "nativeAppUrl": "slack://channel?team=TGLEMJFFG\u0026id=U08FYA0668Z",
+                  "url": "https://askscio.slack.com/team/U08FYA0668Z"
+                },
+                {
+                  "datasource": "MICROSOFTTEAMS",
+                  "handle": "Steve Calvert",
+                  "url": "https://teams.microsoft.com/l/chat/0/0?users=steve.calvert@glean.com"
+                },
+                {
+                  "datasource": "GITHUB",
+                  "handle": "steve-calvert-glean",
+                  "url": "https://github.com/pulls?q=is:pr+author:steve-calvert-glean"
+                },
+                {
+                  "datasource": "JIRA",
+                  "handle": "Steve Calvert",
+                  "url": "https://askscio.atlassian.net/jira/people/712020:68db0833-8703-46a1-9ae3-2d27735cd76d"
+                }
+              ],
+              "department": "302 Software Engineering",
+              "departmentCount": 295,
+              "email": "steve.calvert@glean.com",
+              "firstName": "Steve",
+              "isSignedUp": true,
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "lastName": "Calvert",
+              "location": "Palo Alto CA US",
+              "loggingId": "1C6D65D6601F40C7D8F378787210E821",
+              "managementChain": [
+                {
+                  "metadata": {
+                    "aliasEmails": [
+                      "arvind@glean.com",
+                      "arvind@askscio.com"
+                    ],
+                    "datasourceProfile": [
+                      {
+                        "datasource": "GSUITE",
+                        "handle": "Arvind Jain",
+                        "url": "https://contacts.google.com/p/109874819842543867427"
+                      },
+                      {
+                        "datasource": "SLACK",
+                        "handle": "Arvind",
+                        "nativeAppUrl": "slack://channel?team=TGLEMJFFG\u0026id=UGKBG9L7P",
+                        "url": "https://askscio.slack.com/team/UGKBG9L7P"
+                      },
+                      {
+                        "datasource": "SLACK",
+                        "handle": "Arvind",
+                        "nativeAppUrl": "slack://channel?team=TGLEMJFFG\u0026id=UGKBG9L7P",
+                        "url": "https://askscio.slack.com/team/UGKBG9L7P"
+                      },
+                      {
+                        "datasource": "MICROSOFTTEAMS",
+                        "handle": "Arvind Jain",
+                        "url": "https://teams.microsoft.com/l/chat/0/0?users=arvind@glean.com"
+                      },
+                      {
+                        "datasource": "GITHUB",
+                        "handle": "arvind-scio",
+                        "url": "https://github.com/pulls?q=is:pr+author:arvind-scio"
+                      },
+                      {
+                        "datasource": "JIRA",
+                        "handle": "Arvind Jain",
+                        "url": "https://askscio.atlassian.net/jira/people/5c748ebef2f4366be3ccd763"
+                      }
+                    ],
+                    "department": "102 CEO",
+                    "departmentCount": 4,
+                    "directReportsCount": 11,
+                    "email": "arvind@glean.com",
+                    "firstName": "Arvind",
+                    "isSignedUp": true,
+                    "lastExtensionUse": "0001-01-01T00:00:00Z",
+                    "lastName": "Jain",
+                    "location": "Palo Alto CA US",
+                    "loggingId": "B79FBD4A4DE91C22381F3A7A196693D8",
+                    "orgSizeCount": 1267,
+                    "photoUrl": "https://avatars.slack-edge.com/2023-05-23/5315049247796_cd3986adf07fb792000e_192.png",
+                    "socialNetwork": [
+                      {
+                        "name": "linkedin",
+                        "profileUrl": "https://www.linkedin.com/in/arvind-jain-5935161/"
+                      }
+                    ],
+                    "startDate": "2019-02-25",
+                    "startDatePercentile": 99.92139,
+                    "structuredLocation": {
+                      "country": "United States",
+                      "countryCode": "US"
+                    },
+                    "teams": [
+                      {
+                        "joinDate": "1970-01-01T00:00:00Z",
+                        "name": "Glean",
+                        "relationship": "MEMBER"
+                      },
+                      {
+                        "id": "TEAM_PEOPLE_DEPARTMENT_1F5947C1A9997BD9BE5B075623C4D3CF",
+                        "joinDate": "1970-01-01T00:00:00Z",
+                        "name": "102 CEO",
+                        "relationship": "MEMBER"
+                      }
+                    ],
+                    "timezone": "Pacific Daylight Time",
+                    "timezoneIANA": "America/Los_Angeles",
+                    "timezoneOffset": -25200,
+                    "title": "CEO",
+                    "type": "FULL_TIME",
+                    "uneditedPhotoUrl": "https://avatars.slack-edge.com/2023-05-23/5315049247796_cd3986adf07fb792000e_192.png"
+                  },
+                  "name": "Arvind Jain",
+                  "obfuscatedId": "B79FBD4A4DE91C22381F3A7A196693D8"
+                },
+                {
+                  "metadata": {
+                    "aliasEmails": [
+                      "trvish@glean.com",
+                      "trvish@askscio.com"
+                    ],
+                    "datasourceProfile": [
+                      {
+                        "datasource": "GSUITE",
+                        "handle": "Vish T R",
+                        "url": "https://contacts.google.com/p/106751494877019494811"
+                      },
+                      {
+                        "datasource": "O365",
+                        "handle": "Tirunelveli Vishwanath",
+                        "url": "https://nam.delve.office.com/?u=04607f77-9ad5-488a-b3c5-9ac3eb5c7dc3"
+                      },
+                      {
+                        "datasource": "SLACK",
+                        "handle": "Vish",
+                        "nativeAppUrl": "slack://channel?team=TGLEMJFFG\u0026id=UGLGZCZD4",
+                        "url": "https://askscio.slack.com/team/UGLGZCZD4"
+                      },
+                      {
+                        "datasource": "SLACK",
+                        "handle": "Vish",
+                        "nativeAppUrl": "slack://channel?team=TGLEMJFFG\u0026id=UGLGZCZD4",
+                        "url": "https://askscio.slack.com/team/UGLGZCZD4"
+                      },
+                      {
+                        "datasource": "MICROSOFTTEAMS",
+                        "handle": "Vishwanath T",
+                        "url": "https://teams.microsoft.com/l/chat/0/0?users=trvish@glean.com"
+                      },
+                      {
+                        "datasource": "MICROSOFTTEAMS",
+                        "handle": "Tirunelveli Vishwanath",
+                        "url": "https://teams.microsoft.com/l/chat/0/0?users=trvish@msglean.onmicrosoft.com"
+                      },
+                      {
+                        "datasource": "MICROSOFTTEAMS",
+                        "handle": "Tirunelveli Vishwanath",
+                        "url": "https://teams.microsoft.com/l/chat/0/0?users=trvish@msglean.onmicrosoft.com"
+                      },
+                      {
+                        "datasource": "GITHUB",
+                        "handle": "trvish-scio",
+                        "url": "https://github.com/pulls?q=is:pr+author:trvish-scio"
+                      },
+                      {
+                        "datasource": "JIRA",
+                        "handle": "Vish T R",
+                        "url": "https://askscio.atlassian.net/jira/people/5c74902b16d489436f2b33aa"
+                      },
+                      {
+                        "datasource": "SERVICENOW",
+                        "handle": "TR Vishwanath",
+                        "url": "https://dev97813.service-now.com/sys_user.do?sys_id=de1a15362f222010de1257ab2799b6cf"
+                      }
+                    ],
+                    "department": "301 R \u0026 D Leadership",
+                    "departmentCount": 2,
+                    "directReportsCount": 15,
+                    "email": "trvish@glean.com",
+                    "firstName": "Vish",
+                    "isSignedUp": true,
+                    "lastExtensionUse": "0001-01-01T00:00:00Z",
+                    "lastName": "T R",
+                    "location": "Palo Alto CA US",
+                    "loggingId": "A128BE9D255F61AD6787E3C35CB7CE4B",
+                    "orgSizeCount": 203,
+                    "photoUrl": "https://avatars.slack-edge.com/2021-09-16/2501680660370_edf0e263177440f12f5a_192.png",
+                    "startDate": "2019-02-26",
+                    "startDatePercentile": 99.842766,
+                    "structuredLocation": {
+                      "country": "United States",
+                      "countryCode": "US"
+                    },
+                    "teams": [
+                      {
+                        "joinDate": "1970-01-01T00:00:00Z",
+                        "name": "Glean",
+                        "relationship": "MEMBER"
+                      },
+                      {
+                        "id": "TEAM_PEOPLE_DEPARTMENT_A110AB29ECCB2901CC3E6FA0D02FA1C9",
+                        "joinDate": "1970-01-01T00:00:00Z",
+                        "name": "301 R \u0026 D Leadership",
+                        "relationship": "MEMBER"
+                      }
+                    ],
+                    "timezone": "Pacific Daylight Time",
+                    "timezoneIANA": "America/Los_Angeles",
+                    "timezoneOffset": -25200,
+                    "title": "Software Engineer",
+                    "type": "FULL_TIME",
+                    "uneditedPhotoUrl": "https://avatars.slack-edge.com/2021-09-16/2501680660370_edf0e263177440f12f5a_192.png"
+                  },
+                  "name": "Vish T R",
+                  "obfuscatedId": "A128BE9D255F61AD6787E3C35CB7CE4B"
+                }
+              ],
+              "manager": {
+                "metadata": {
+                  "aliasEmails": [
+                    "trvish@glean.com",
+                    "trvish@askscio.com"
+                  ],
+                  "datasourceProfile": [
+                    {
+                      "datasource": "GSUITE",
+                      "handle": "Vish T R",
+                      "url": "https://contacts.google.com/p/106751494877019494811"
+                    },
+                    {
+                      "datasource": "O365",
+                      "handle": "Tirunelveli Vishwanath",
+                      "url": "https://nam.delve.office.com/?u=04607f77-9ad5-488a-b3c5-9ac3eb5c7dc3"
+                    },
+                    {
+                      "datasource": "SLACK",
+                      "handle": "Vish",
+                      "nativeAppUrl": "slack://channel?team=TGLEMJFFG\u0026id=UGLGZCZD4",
+                      "url": "https://askscio.slack.com/team/UGLGZCZD4"
+                    },
+                    {
+                      "datasource": "SLACK",
+                      "handle": "Vish",
+                      "nativeAppUrl": "slack://channel?team=TGLEMJFFG\u0026id=UGLGZCZD4",
+                      "url": "https://askscio.slack.com/team/UGLGZCZD4"
+                    },
+                    {
+                      "datasource": "MICROSOFTTEAMS",
+                      "handle": "Vishwanath T",
+                      "url": "https://teams.microsoft.com/l/chat/0/0?users=trvish@glean.com"
+                    },
+                    {
+                      "datasource": "MICROSOFTTEAMS",
+                      "handle": "Tirunelveli Vishwanath",
+                      "url": "https://teams.microsoft.com/l/chat/0/0?users=trvish@msglean.onmicrosoft.com"
+                    },
+                    {
+                      "datasource": "MICROSOFTTEAMS",
+                      "handle": "Tirunelveli Vishwanath",
+                      "url": "https://teams.microsoft.com/l/chat/0/0?users=trvish@msglean.onmicrosoft.com"
+                    },
+                    {
+                      "datasource": "GITHUB",
+                      "handle": "trvish-scio",
+                      "url": "https://github.com/pulls?q=is:pr+author:trvish-scio"
+                    },
+                    {
+                      "datasource": "JIRA",
+                      "handle": "Vish T R",
+                      "url": "https://askscio.atlassian.net/jira/people/5c74902b16d489436f2b33aa"
+                    },
+                    {
+                      "datasource": "SERVICENOW",
+                      "handle": "TR Vishwanath",
+                      "url": "https://dev97813.service-now.com/sys_user.do?sys_id=de1a15362f222010de1257ab2799b6cf"
+                    }
+                  ],
+                  "department": "301 R \u0026 D Leadership",
+                  "departmentCount": 2,
+                  "directReportsCount": 15,
+                  "email": "trvish@glean.com",
+                  "firstName": "Vish",
+                  "isSignedUp": true,
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "lastName": "T R",
+                  "location": "Palo Alto CA US",
+                  "loggingId": "A128BE9D255F61AD6787E3C35CB7CE4B",
+                  "orgSizeCount": 203,
+                  "photoUrl": "https://avatars.slack-edge.com/2021-09-16/2501680660370_edf0e263177440f12f5a_192.png",
+                  "startDate": "2019-02-26",
+                  "startDatePercentile": 99.842766,
+                  "structuredLocation": {
+                    "country": "United States",
+                    "countryCode": "US"
+                  },
+                  "teams": [
+                    {
+                      "joinDate": "1970-01-01T00:00:00Z",
+                      "name": "Glean",
+                      "relationship": "MEMBER"
+                    },
+                    {
+                      "id": "TEAM_PEOPLE_DEPARTMENT_A110AB29ECCB2901CC3E6FA0D02FA1C9",
+                      "joinDate": "1970-01-01T00:00:00Z",
+                      "name": "301 R \u0026 D Leadership",
+                      "relationship": "MEMBER"
+                    }
+                  ],
+                  "timezone": "Pacific Daylight Time",
+                  "timezoneIANA": "America/Los_Angeles",
+                  "timezoneOffset": -25200,
+                  "title": "Software Engineer",
+                  "type": "FULL_TIME",
+                  "uneditedPhotoUrl": "https://avatars.slack-edge.com/2021-09-16/2501680660370_edf0e263177440f12f5a_192.png"
+                },
+                "name": "Vish T R",
+                "obfuscatedId": "A128BE9D255F61AD6787E3C35CB7CE4B"
+              },
+              "orgSizeCount": 1,
+              "phone": "+14154160703",
+              "photoUrl": "https://scio-prod-be.glean.com/api/v1/images?key=eyJ0eXBlIjoiVUdDIiwiaWQiOiIwIiwiZHMiOiJHQUxMRVJZLUlNQUdFLVBJQ0tFUiIsImNpZCI6ImJiNWY0MjNmLTEwZDktNDQ2ZC05OTQ4LTA5YjRjMjBiMGI1ZSIsImV4dCI6Ii5qcGVnIn0=",
+              "startDate": "2025-02-25",
+              "startDatePercentile": 58.333332,
+              "structuredLocation": {
+                "country": "United States",
+                "countryCode": "US"
+              },
+              "teams": [
+                {
+                  "id": "TEAM_SLACK2_2B3F960D2606690C0A7C6B2C69B45300",
+                  "joinDate": "1970-01-01T00:00:00Z",
+                  "name": "Developer Platform Members Only",
+                  "relationship": "MEMBER"
+                },
+                {
+                  "id": "TEAM_PEOPLE_DEPARTMENT_BEAADEEE30280BC8B210DA32291B9D14",
+                  "joinDate": "1970-01-01T00:00:00Z",
+                  "name": "302 Software Engineering",
+                  "relationship": "MEMBER"
+                }
+              ],
+              "timezone": "Pacific Daylight Time",
+              "timezoneIANA": "America/Los_Angeles",
+              "timezoneOffset": -25200,
+              "title": "Software Engineer",
+              "type": "FULL_TIME",
+              "uneditedPhotoUrl": "https://avatars.slack-edge.com/2025-02-28/8531974305986_ccabb965b56547aac7ec_192.jpg"
+            },
+            "name": "Steve Calvert",
+            "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+          },
+          "prominence": "HERO",
+          "trackingToken": "KHtaFeDIa6g3eaCn,CkEKEEtIdGFGZURJYTZnM2VhQ24aIDFDNkQ2NUQ2NjAxRjQwQzdEOEYzNzg3ODcyMTBFODIxIgZwZW9wbGUqA2FsbA=="
+        }
+      ],
+      "url": ""
+    },
+    {
+      "attachmentCount": 2,
+      "attachments": [
+        {
+          "document": {
+            "datasource": "gdrive",
+            "docType": "Document",
+            "id": "GDRIVE_11D-mdsHwTQxeeFpFSmsK7loC1Py1ZMDl8q_MQLXL1Vs",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                },
+                "name": "Steve Calvert",
+                "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                },
+                "name": "Steve Calvert",
+                "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+              },
+              "createTime": "2026-03-27T00:16:42Z",
+              "datasource": "gdrive",
+              "datasourceId": "11D-mdsHwTQxeeFpFSmsK7loC1Py1ZMDl8q_MQLXL1Vs",
+              "datasourceInstance": "gdrive",
+              "documentCategory": "COLLABORATIVE_CONTENT",
+              "documentId": "GDRIVE_11D-mdsHwTQxeeFpFSmsK7loC1Py1ZMDl8q_MQLXL1Vs",
+              "interactions": {},
+              "loggingId": "C04CE15C179163EBBCE3747B717D049D",
+              "mimeType": "application/vnd.google-apps.document",
+              "objectType": "Document",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                },
+                "name": "Steve Calvert",
+                "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+              },
+              "updateTime": "2026-03-30T22:03:56Z",
+              "updatedBy": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "C0025504789B35B3EFE9FAF166D674F1"
+                },
+                "name": "Aryaman Gulati",
+                "obfuscatedId": "C0025504789B35B3EFE9FAF166D674F1"
+              },
+              "visibility": "DOMAIN_LINK"
+            },
+            "title": "Platform APIs: Fixing Primitive Zero",
+            "url": "https://docs.google.com/document/d/11D-mdsHwTQxeeFpFSmsK7loC1Py1ZMDl8q_MQLXL1Vs"
+          },
+          "snippets": [
+            {
+              "mimeType": "text/plain",
+              "ranges": [
+                {
+                  "endIndex": 21,
+                  "startIndex": 8,
+                  "type": "BOLD"
+                }
+              ],
+              "snippet": "",
+              "snippetTextOrdering": 2,
+              "text": "Author: Steve Calvert",
+              "url": "https://docs.google.com/document/d/11D-mdsHwTQxeeFpFSmsK7loC1Py1ZMDl8q_MQLXL1Vs?tab=t.0#heading=h.b0k3h3lylvlt"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "text": "# Unified API Surface"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 1,
+              "text": "# Platform APIs: Fixing Primitive Zero",
+              "url": "https://docs.google.com/document/d/11D-mdsHwTQxeeFpFSmsK7loC1Py1ZMDl8q_MQLXL1Vs?tab=t.0#heading=h.b0k3h3lylvlt"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 3,
+              "text": "Status: Draft",
+              "url": "https://docs.google.com/document/d/11D-mdsHwTQxeeFpFSmsK7loC1Py1ZMDl8q_MQLXL1Vs?tab=t.0#heading=h.b0k3h3lylvlt"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 4,
+              "text": "Last Updated: Mar 26, 2026",
+              "url": "https://docs.google.com/document/d/11D-mdsHwTQxeeFpFSmsK7loC1Py1ZMDl8q_MQLXL1Vs?tab=t.0#heading=h.b0k3h3lylvlt"
+            },
+            {
+              "mimeType": "text/plain",
+              "ranges": [
+                {
+                  "endIndex": 34,
+                  "startIndex": 8,
+                  "type": "LINK",
+                  "url": "https://docs.google.com/document/d/1f_b1y8Q2wD6P6UCMzbzweTTGlEBv1DNupl_wxIv4_aw/edit"
+                }
+              ],
+              "snippet": "",
+              "snippetTextOrdering": 5,
+              "text": "Parent: Glean Platform: Primitives",
+              "url": "https://docs.google.com/document/d/11D-mdsHwTQxeeFpFSmsK7loC1Py1ZMDl8q_MQLXL1Vs?tab=t.0#heading=h.b0k3h3lylvlt"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 6,
+              "text": "The API is Primitive Zero — it gates every platform recipe — and it is currently too",
+              "url": "https://docs.google.com/document/d/11D-mdsHwTQxeeFpFSmsK7loC1Py1ZMDl8q_MQLXL1Vs?tab=t.0#heading=h.b0k3h3lylvlt"
+            }
+          ],
+          "title": "Platform APIs: Fixing Primitive Zero",
+          "trackingToken": "KHtaFeDIa6g3eaCn,CtsBChBLSHRhRmVESWE2ZzNlYUNuEAIaM0dEUklWRV8xMUQtbWRzSHdUUXhlZUZwRlNtc0s3bG9DMVB5MVpNRGw4cV9NUUxYTDFWcyIGZ2RyaXZlKgNhbGwyCERvY3VtZW50OhVDT0xMQUJPUkFUSVZFX0NPTlRFTlRAAUgBUl4aM0dEUklWRV8xZl9iMXk4UTJ3RDZQNlVDTXpiendlVFRHbEVCdjFETnVwbF93eEl2NF9hdyIGZ2RyaXZlKghEb2N1bWVudDIVQ09MTEFCT1JBVElWRV9DT05URU5U",
+          "url": "https://docs.google.com/document/d/11D-mdsHwTQxeeFpFSmsK7loC1Py1ZMDl8q_MQLXL1Vs"
+        },
+        {
+          "document": {
+            "datasource": "googlecalendar",
+            "docType": "event",
+            "id": "GOOGLECALENDAR_Event_57534DFAC3932C81BF5ABB122EA81C97",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "C0025504789B35B3EFE9FAF166D674F1"
+                },
+                "name": "Aryaman Gulati",
+                "obfuscatedId": "C0025504789B35B3EFE9FAF166D674F1"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "C0025504789B35B3EFE9FAF166D674F1"
+                },
+                "name": "Aryaman Gulati",
+                "obfuscatedId": "C0025504789B35B3EFE9FAF166D674F1"
+              },
+              "createTime": "2026-03-27T17:00:00Z",
+              "customData": {
+                "attachmentUrls": {
+                  "stringValue": "https://drive.google.com/file/d/1vB9XG7y_VzrU4NLHBroFOUmK_3yScQfi/view?usp=drive_web\nhttps://drive.google.com/file/d/1PD0cXlRRvA2-sJ-JulDXvVQBfSGqF7Fy/view?usp=drive_web\nhttps://docs.google.com/document/d/1BqskDPP_jgpznUzu-boDZkLWRhjjPS9Azo4CRscAYE8/edit?usp=meet_tnfm_calendar\nhttps://docs.google.com/document/d/1EhX8hq2H2kAI4rf7jn6n6fciycx6pIHVB5vui9U6ifY/edit?usp=meet_tnfm_calendar\nhttps://docs.google.com/document/d/11D-mdsHwTQxeeFpFSmsK7loC1Py1ZMDl8q_MQLXL1Vs/edit?tab=t.0\nhttps://docs.google.com/document/d/1f_b1y8Q2wD6P6UCMzbzweTTGlEBv1DNupl_wxIv4_aw/edit?tab=t.78l3ux75obof"
+                },
+                "attendeeDetails": {
+                  "stringValue": "[{\"name\":\"aryaman.gulati@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"team-pact\",\"responseStatus\":\"needsAction\"}]"
+                },
+                "conferenceProvider": {
+                  "stringValue": "Google Meet"
+                },
+                "conferenceUri": {
+                  "stringValue": "https://meet.google.com/yyc-aqvi-hht"
+                },
+                "created": {
+                  "stringValue": "2026-03-26T22:20:04.000Z"
+                },
+                "creatorName": {
+                  "stringValue": "Aryaman Gulati"
+                },
+                "eventEndTime": {
+                  "stringValue": "2026-03-27T11:00:00.000-07:00"
+                },
+                "eventStartTime": {
+                  "stringValue": "2026-03-27T10:00:00.000-07:00"
+                },
+                "eventStatus": {
+                  "stringValue": "confirmed"
+                },
+                "eventType": {
+                  "stringValue": "default"
+                },
+                "guestsCanSeeOtherGuests": {
+                  "stringValue": "true"
+                },
+                "location": {
+                  "stringValue": "Glean-PA-3rd Fl-PA-302 - Glean Eggs and Ham (6) [VC], Glean-SF-3rd Fl-SF-316 - Gleaner Things (5) [VC]"
+                },
+                "meetUrl": {
+                  "stringValue": "https://meet.google.com/yyc-aqvi-hht"
+                },
+                "meetingParticipants": {
+                  "stringListValue": [
+                    "Aryaman Gulati",
+                    "team-pact@glean.com",
+                    "c_18834duh5udjcgv1n90er8b5d45v4@resource.calendar.google.com",
+                    "c_188d0r8f1k6osibmgc0knk76nsgia@resource.calendar.google.com"
+                  ]
+                },
+                "organizer": {
+                  "stringListValue": [
+                    "C0025504789B35B3EFE9FAF166D674F1"
+                  ]
+                },
+                "participants": {
+                  "stringListValue": [
+                    "C0025504789B35B3EFE9FAF166D674F1"
+                  ]
+                },
+                "responseStatus": {
+                  "stringValue": "accepted"
+                },
+                "transcriptUrl": {
+                  "stringValue": "https://docs.google.com/document/d/1EhX8hq2H2kAI4rf7jn6n6fciycx6pIHVB5vui9U6ifY/edit?usp=meet_tnfm_calendar"
+                }
+              },
+              "datasource": "googlecalendar",
+              "datasourceId": "57534DFAC3932C81BF5ABB122EA81C97",
+              "datasourceInstance": "googlecalendar",
+              "documentCategory": "CALENDAR",
+              "documentId": "GOOGLECALENDAR_Event_57534DFAC3932C81BF5ABB122EA81C97",
+              "interactions": {},
+              "loggingId": "B28743A985288A16968BBFEBCB60A03A",
+              "mimeType": "event",
+              "objectType": "event",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "C0025504789B35B3EFE9FAF166D674F1"
+                },
+                "name": "Aryaman Gulati",
+                "obfuscatedId": "C0025504789B35B3EFE9FAF166D674F1"
+              },
+              "updateTime": "2026-03-27T17:00:00Z",
+              "visibility": "SPECIFIC_PEOPLE_AND_GROUPS"
+            },
+            "title": "Discussion: Glean as a Platform — Initiatives, Bets, and Features",
+            "url": "https://www.google.com/calendar/event?authuser=steve.calvert%40glean.com\u0026eid=MDk1Z3IwajFidnVzNjJ1cTZvMGtuaGduZm4g"
+          },
+          "snippets": [
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "text": "Platform APIs: Fixing Primitive Zero"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 1,
+              "text": "We are discussing:"
+            },
+            {
+              "mimeType": "text/plain",
+              "ranges": [
+                {
+                  "endIndex": 112,
+                  "startIndex": 89,
+                  "type": "LINK",
+                  "url": "https://docs.google.com/document/d/1f_b1y8Q2wD6P6UCMzbzweTTGlEBv1DNupl_wxIv4_aw/edit?tab=t.78l3ux75obof"
+                }
+              ],
+              "snippet": "",
+              "snippetTextOrdering": 2,
+              "text": "Scheduling this time for the group together to discuss and align on how we translate our Glean Platform Strategy into concrete next steps."
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 3,
+              "text": "To ground us, the platform strategy clearly lays out:"
+            }
+          ],
+          "title": "Discussion: Glean as a Platform — Initiatives, Bets, and Features",
+          "trackingToken": "KHtaFeDIa6g3eaCn,CtUBChBLSHRhRmVESWE2ZzNlYUNuEAQaNUdPT0dMRUNBTEVOREFSX0V2ZW50XzU3NTM0REZBQzM5MzJDODFCRjVBQkIxMjJFQTgxQzk3Ig5nb29nbGVjYWxlbmRhcioDYWxsMgVldmVudDoIQ0FMRU5EQVJAAUgDUl4aM0dEUklWRV8xZl9iMXk4UTJ3RDZQNlVDTXpiendlVFRHbEVCdjFETnVwbF93eEl2NF9hdyIGZ2RyaXZlKghEb2N1bWVudDIVQ09MTEFCT1JBVElWRV9DT05URU5U",
+          "url": "https://www.google.com/calendar/event?authuser=steve.calvert%40glean.com\u0026eid=MDk1Z3IwajFidnVzNjJ1cTZvMGtuaGduZm4g"
+        }
+      ],
+      "document": {
+        "datasource": "gdrive",
+        "docType": "Document",
+        "id": "GDRIVE_1f_b1y8Q2wD6P6UCMzbzweTTGlEBv1DNupl_wxIv4_aw",
+        "metadata": {
+          "assignedTo": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+            },
+            "name": "Steve Calvert",
+            "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+          },
+          "author": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+            },
+            "name": "Steve Calvert",
+            "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+          },
+          "container": "Glean Platform",
+          "containerId": "GDRIVE_1lR0rd7jduCDc4M9FZEz2esDobS-7ZNBK",
+          "createTime": "2026-02-15T20:07:07Z",
+          "datasource": "gdrive",
+          "datasourceId": "1f_b1y8Q2wD6P6UCMzbzweTTGlEBv1DNupl_wxIv4_aw",
+          "datasourceInstance": "gdrive",
+          "documentCategory": "COLLABORATIVE_CONTENT",
+          "documentId": "GDRIVE_1f_b1y8Q2wD6P6UCMzbzweTTGlEBv1DNupl_wxIv4_aw",
+          "interactions": {
+            "shares": [
+              {
+                "numDaysAgo": 7
+              }
+            ]
+          },
+          "loggingId": "B778767085484CEBFFC29C190CA38D09",
+          "mimeType": "application/vnd.google-apps.document",
+          "objectType": "Document",
+          "owner": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+            },
+            "name": "Steve Calvert",
+            "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+          },
+          "updateTime": "2026-04-04T20:16:04Z",
+          "updatedBy": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "D75B00F84F7E7EFD3ABA42015F41D661"
+            },
+            "name": "Richard Chao",
+            "obfuscatedId": "D75B00F84F7E7EFD3ABA42015F41D661"
+          },
+          "visibility": "DOMAIN_LINK"
+        },
+        "parentDocument": {
+          "datasource": "gdrive",
+          "docType": "Folder",
+          "id": "GDRIVE_1lR0rd7jduCDc4M9FZEz2esDobS-7ZNBK",
+          "title": "Glean Platform",
+          "url": "https://drive.google.com/drive/folders/1lR0rd7jduCDc4M9FZEz2esDobS-7ZNBK"
+        },
+        "sections": [
+          {
+            "title": "Glean Platform: Primitives",
+            "url": "https://docs.google.com/document/d/1f_b1y8Q2wD6P6UCMzbzweTTGlEBv1DNupl_wxIv4_aw?tab=t.78l3ux75obof#heading=h.oji9g6m4vqzt"
+          },
+          {
+            "title": "A Note to Readers",
+            "url": "https://docs.google.com/document/d/1f_b1y8Q2wD6P6UCMzbzweTTGlEBv1DNupl_wxIv4_aw?tab=t.78l3ux75obof#heading=h.amzd2owrk2rw"
+          },
+          {
+            "title": "0. Intent",
+            "url": "https://docs.google.com/document/d/1f_b1y8Q2wD6P6UCMzbzweTTGlEBv1DNupl_wxIv4_aw?tab=t.78l3ux75obof#heading=h.nr74j426k27n"
+          }
+        ],
+        "title": "Glean Platform: Primitives",
+        "url": "https://docs.google.com/document/d/1f_b1y8Q2wD6P6UCMzbzweTTGlEBv1DNupl_wxIv4_aw"
+      },
+      "mustIncludeSuggestions": {},
+      "snippets": [
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 35,
+              "startIndex": 28,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 2,
+          "text": "Author: Aryaman GulatiSteve Calvert",
+          "url": "https://docs.google.com/document/d/1f_b1y8Q2wD6P6UCMzbzweTTGlEBv1DNupl_wxIv4_aw?tab=t.78l3ux75obof#heading=h.oji9g6m4vqzt"
+        },
+        {
+          "mimeType": "text/plain",
+          "snippet": "",
+          "text": "# Platform Primitives"
+        },
+        {
+          "mimeType": "text/plain",
+          "snippet": "",
+          "snippetTextOrdering": 1,
+          "text": "# Glean Platform: Primitives",
+          "url": "https://docs.google.com/document/d/1f_b1y8Q2wD6P6UCMzbzweTTGlEBv1DNupl_wxIv4_aw?tab=t.78l3ux75obof#heading=h.oji9g6m4vqzt"
+        },
+        {
+          "mimeType": "text/plain",
+          "snippet": "",
+          "snippetTextOrdering": 3,
+          "text": "Status: Draft",
+          "url": "https://docs.google.com/document/d/1f_b1y8Q2wD6P6UCMzbzweTTGlEBv1DNupl_wxIv4_aw?tab=t.78l3ux75obof#heading=h.oji9g6m4vqzt"
+        },
+        {
+          "mimeType": "text/plain",
+          "snippet": "",
+          "snippetTextOrdering": 4,
+          "text": "Last updated: Mar 30, 2026",
+          "url": "https://docs.google.com/document/d/1f_b1y8Q2wD6P6UCMzbzweTTGlEBv1DNupl_wxIv4_aw?tab=t.78l3ux75obof#heading=h.oji9g6m4vqzt"
+        },
+        {
+          "mimeType": "text/plain",
+          "snippet": "",
+          "snippetTextOrdering": 5,
+          "text": "# A Note to Readers",
+          "url": "https://docs.google.com/document/d/1f_b1y8Q2wD6P6UCMzbzweTTGlEBv1DNupl_wxIv4_aw?tab=t.78l3ux75obof#heading=h.amzd2owrk2rw"
+        },
+        {
+          "mimeType": "text/plain",
+          "snippet": "",
+          "snippetTextOrdering": 6,
+          "text": "This document is structured for two reading speeds. Sections 1 through 4 (roughly 6 pages)",
+          "url": "https://docs.google.com/document/d/1f_b1y8Q2wD6P6UCMzbzweTTGlEBv1DNupl_wxIv4_aw?tab=t.78l3ux75obof#heading=h.amzd2owrk2rw"
+        }
+      ],
+      "title": "Glean Platform: Primitives",
+      "trackingToken": "KHtaFeDIa6g3eaCn,CnkKEEtIdGFGZURJYTZnM2VhQ24QARozR0RSSVZFXzFmX2IxeThRMndENlA2VUNNemJ6d2VUVEdsRUJ2MUROdXBsX3d4SXY0X2F3IgZnZHJpdmUqA2FsbDIIRG9jdW1lbnQ6FUNPTExBQk9SQVRJVkVfQ09OVEVOVEAB",
+      "url": "https://docs.google.com/document/d/1f_b1y8Q2wD6P6UCMzbzweTTGlEBv1DNupl_wxIv4_aw"
+    },
+    {
+      "document": {
+        "connectorType": "FEDERATED_SEARCH",
+        "datasource": "slack",
+        "docType": "Conversation",
+        "id": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0A74DX9Q8N_1775149112.810579",
+        "metadata": {
+          "author": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "453B507678BC074D7D4D458262477BA6"
+            },
+            "name": "Harshi Murthy",
+            "obfuscatedId": "453B507678BC074D7D4D458262477BA6"
+          },
+          "container": "team-pact",
+          "containerId": "SLACK2_IKZLDP4_PublicChannel_TGLEMJFFG_C0A74DX9Q8N",
+          "createTime": "2026-04-02T16:58:32Z",
+          "customData": {
+            "parentConversationId": {
+              "stringValue": "SLACK2_IKZLDP4_TGLEMJFFG\\_C0A74DX9Q8N_1775149112.810579_1775149112.810579__Conversation"
+            },
+            "showChannelInMetadata": {
+              "booleanValue": true
+            }
+          },
+          "datasource": "slack",
+          "datasourceInstance": "slack2_ikzldp4",
+          "documentCategory": "UNCATEGORIZED",
+          "documentId": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0A74DX9Q8N_1775149112.810579",
+          "interactions": {},
+          "loggingId": "A8671A83BD904C88DFF2C2B6884F8C7E",
+          "objectType": "Conversation",
+          "updateTime": "1970-01-01T00:00:00Z",
+          "visibility": "DOMAIN_VISIBLE"
+        },
+        "parentDocument": {
+          "id": "SLACK2_IKZLDP4_PublicChannel_TGLEMJFFG_C0A74DX9Q8N",
+          "title": "team-pact"
+        },
+        "title": "Thread between Harshi and Steve",
+        "url": "https://askscio.slack.com/archives/C0A74DX9Q8N/p1775149112810579?thread_ts=1775149112.810579\u0026cid=C0A74DX9Q8N"
+      },
+      "fullTextList": [
+        "Harshi Murthy (2026-04-02 16:58): @Steve C \nhttps://www.linkedin.com/posts/mcp-gives-models-access-to-tools-but-it-ugcPost-7445511038512316416-LQQs?utm_source=share\u0026utm_medium=member_ios\u0026rcm=ACoAABuTDaQBmJylk4xKxhr84sMEHoiR6eeE82c (https://www.linkedin.com/posts/mcp-gives-models-access-to-tools-but-it-ugcPost-7445511038512316416-LQQs?utm_source=share\u0026utm_medium=member_ios\u0026rcm=ACoAABuTDaQBmJylk4xKxhr84sMEHoiR6eeE82c) ",
+        "Steve Calvert (2026-04-02 16:58): groan"
+      ],
+      "nativeAppUrl": "slack://channel?id=C0A74DX9Q8N\u0026message=1775149112.810579\u0026team=TGLEMJFFG\u0026thread_ts=1775149112.810579",
+      "relatedResults": [
+        {
+          "relation": "CONVERSATION_MESSAGES",
+          "results": [
+            {
+              "document": {
+                "id": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0A74DX9Q8N_1775149112.810579",
+                "metadata": {
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "453B507678BC074D7D4D458262477BA6"
+                    },
+                    "name": "Harshi Murthy",
+                    "obfuscatedId": "453B507678BC074D7D4D458262477BA6"
+                  },
+                  "container": "team-pact",
+                  "createTime": "2026-04-02T16:58:32Z",
+                  "documentId": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0A74DX9Q8N_1775149112.810579",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "453B507678BC074D7D4D458262477BA6"
+                    },
+                    "name": "Harshi Murthy",
+                    "obfuscatedId": "453B507678BC074D7D4D458262477BA6"
+                  },
+                  "updateTime": "1970-01-01T00:00:00Z"
+                }
+              },
+              "nativeAppUrl": "slack://channel?id=C0A74DX9Q8N\u0026message=1775149112.810579\u0026team=TGLEMJFFG\u0026thread_ts=1775149112.810579",
+              "snippets": [
+                {
+                  "mimeType": "text/plain",
+                  "ranges": [
+                    {
+                      "endIndex": 6,
+                      "startIndex": 1,
+                      "type": "BOLD"
+                    }
+                  ],
+                  "snippet": "",
+                  "text": "@Steve C \nhttps://www.linkedin.com/posts/mcp-gives-models-access-to-tools-but-it-ugcPost-7445511038512316416-LQQs?utm_source=share\u0026utm_medium=member_ios\u0026rcm=ACoAABuTDaQBmJylk4xKxhr84sMEHoiR6eeE82c (https://www.linkedin.com/posts/mcp-gives-models-access-to-tools-but-it-ugcPost-7445511038512316416-LQQs?utm_source=share\u0026utm_medium=member_ios\u0026rcm=ACoAABuTDaQBmJylk4xKxhr84sMEHoiR6eeE82c) "
+                }
+              ],
+              "url": "https://askscio.slack.com/archives/C0A74DX9Q8N/p1775149112810579?thread_ts=1775149112.810579\u0026cid=C0A74DX9Q8N"
+            },
+            {
+              "document": {
+                "id": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0A74DX9Q8N_1775149137.546039",
+                "metadata": {
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                    },
+                    "name": "Steve Calvert",
+                    "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+                  },
+                  "container": "team-pact",
+                  "createTime": "2026-04-02T16:58:57Z",
+                  "documentId": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0A74DX9Q8N_1775149137.546039",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                    },
+                    "name": "Steve Calvert",
+                    "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+                  },
+                  "updateTime": "1970-01-01T00:00:00Z"
+                }
+              },
+              "nativeAppUrl": "slack://channel?id=C0A74DX9Q8N\u0026message=1775149137.546039\u0026team=TGLEMJFFG\u0026thread_ts=1775149112.810579",
+              "snippets": [
+                {
+                  "mimeType": "text/plain",
+                  "snippet": "",
+                  "text": "groan"
+                }
+              ],
+              "url": "https://askscio.slack.com/archives/C0A74DX9Q8N/p1775149137546039?thread_ts=1775149112.810579\u0026cid=C0A74DX9Q8N"
+            }
+          ]
+        }
+      ],
+      "title": "Thread between Harshi and Steve",
+      "trackingToken": "KHtaFeDIa6g3eaCn,CpsBChBLSHRhRmVESWE2ZzNlYUNuEAIaV1NMQUNLMl9JS1pMRFA0X1RHTEVNSkZGR1xfQzBBNzREWDlROE5fMTc3NTE0OTExMi44MTA1NzlfMTc3NTE0OTExMi44MTA1NzlfX0NvbnZlcnNhdGlvbiIFc2xhY2sqA2FsbDIMQ29udmVyc2F0aW9uQAJaEEZFREVSQVRFRF9TRUFSQ0g=",
+      "url": "https://askscio.slack.com/archives/C0A74DX9Q8N/p1775149112810579?thread_ts=1775149112.810579\u0026cid=C0A74DX9Q8N"
+    },
+    {
+      "document": {
+        "connectorType": "FEDERATED_SEARCH",
+        "datasource": "slack",
+        "docType": "Conversation",
+        "id": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0A74DX9Q8N_1774477110.213549",
+        "metadata": {
+          "author": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "F446055CDE3C65D7F36B45AFD14F2C5C"
+            },
+            "name": "Sharad Jain",
+            "obfuscatedId": "F446055CDE3C65D7F36B45AFD14F2C5C"
+          },
+          "container": "team-pact",
+          "containerId": "SLACK2_IKZLDP4_PublicChannel_TGLEMJFFG_C0A74DX9Q8N",
+          "createTime": "2026-03-25T22:18:30Z",
+          "customData": {
+            "parentConversationId": {
+              "stringValue": "SLACK2_IKZLDP4_TGLEMJFFG\\_C0A74DX9Q8N_1774477110.213549_1774477110.213549__Conversation"
+            },
+            "showChannelInMetadata": {
+              "booleanValue": true
+            }
+          },
+          "datasource": "slack",
+          "datasourceInstance": "slack2_ikzldp4",
+          "documentCategory": "UNCATEGORIZED",
+          "documentId": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0A74DX9Q8N_1774477110.213549",
+          "interactions": {},
+          "loggingId": "AF763CAEDACED1EC61746B9B51FDB906",
+          "objectType": "Conversation",
+          "updateTime": "1970-01-01T00:00:00Z",
+          "visibility": "DOMAIN_VISIBLE"
+        },
+        "parentDocument": {
+          "id": "SLACK2_IKZLDP4_PublicChannel_TGLEMJFFG_C0A74DX9Q8N",
+          "title": "team-pact"
+        },
+        "title": "Thread between Sharad and Steve",
+        "url": "https://askscio.slack.com/archives/C0A74DX9Q8N/p1774477110213549?thread_ts=1774477110.213549\u0026cid=C0A74DX9Q8N"
+      },
+      "fullTextList": [
+        "Sharad Jain (2026-03-25 22:18): fyi",
+        "Steve Calvert (2026-03-25 22:20): Quick everyone, delete all your MCPs!!! "
+      ],
+      "nativeAppUrl": "slack://channel?id=C0A74DX9Q8N\u0026message=1774477110.213549\u0026team=TGLEMJFFG\u0026thread_ts=1774477110.213549",
+      "relatedResults": [
+        {
+          "relation": "CONVERSATION_MESSAGES",
+          "results": [
+            {
+              "document": {
+                "id": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0A74DX9Q8N_1774477110.213549",
+                "metadata": {
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "F446055CDE3C65D7F36B45AFD14F2C5C"
+                    },
+                    "name": "Sharad Jain",
+                    "obfuscatedId": "F446055CDE3C65D7F36B45AFD14F2C5C"
+                  },
+                  "container": "team-pact",
+                  "createTime": "2026-03-25T22:18:30Z",
+                  "documentId": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0A74DX9Q8N_1774477110.213549",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "F446055CDE3C65D7F36B45AFD14F2C5C"
+                    },
+                    "name": "Sharad Jain",
+                    "obfuscatedId": "F446055CDE3C65D7F36B45AFD14F2C5C"
+                  },
+                  "updateTime": "1970-01-01T00:00:00Z"
+                }
+              },
+              "nativeAppUrl": "slack://channel?id=C0A74DX9Q8N\u0026message=1774477110.213549\u0026team=TGLEMJFFG\u0026thread_ts=1774477110.213549",
+              "snippets": [
+                {
+                  "mimeType": "text/plain",
+                  "snippet": "",
+                  "text": "fyi"
+                }
+              ],
+              "url": "https://askscio.slack.com/archives/C0A74DX9Q8N/p1774477110213549?thread_ts=1774477110.213549\u0026cid=C0A74DX9Q8N"
+            },
+            {
+              "document": {
+                "id": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0A74DX9Q8N_1774477239.809329",
+                "metadata": {
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                    },
+                    "name": "Steve Calvert",
+                    "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+                  },
+                  "container": "team-pact",
+                  "createTime": "2026-03-25T22:20:39Z",
+                  "documentId": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0A74DX9Q8N_1774477239.809329",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                    },
+                    "name": "Steve Calvert",
+                    "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+                  },
+                  "updateTime": "1970-01-01T00:00:00Z"
+                }
+              },
+              "nativeAppUrl": "slack://channel?id=C0A74DX9Q8N\u0026message=1774477239.809329\u0026team=TGLEMJFFG\u0026thread_ts=1774477110.213549",
+              "snippets": [
+                {
+                  "mimeType": "text/plain",
+                  "snippet": "",
+                  "text": "Quick everyone, delete all your MCPs!!! "
+                }
+              ],
+              "url": "https://askscio.slack.com/archives/C0A74DX9Q8N/p1774477239809329?thread_ts=1774477110.213549\u0026cid=C0A74DX9Q8N"
+            }
+          ]
+        }
+      ],
+      "title": "Thread between Sharad and Steve",
+      "trackingToken": "KHtaFeDIa6g3eaCn,CpsBChBLSHRhRmVESWE2ZzNlYUNuEAMaV1NMQUNLMl9JS1pMRFA0X1RHTEVNSkZGR1xfQzBBNzREWDlROE5fMTc3NDQ3NzExMC4yMTM1NDlfMTc3NDQ3NzExMC4yMTM1NDlfX0NvbnZlcnNhdGlvbiIFc2xhY2sqA2FsbDIMQ29udmVyc2F0aW9uQANaEEZFREVSQVRFRF9TRUFSQ0g=",
+      "url": "https://askscio.slack.com/archives/C0A74DX9Q8N/p1774477110213549?thread_ts=1774477110.213549\u0026cid=C0A74DX9Q8N"
+    }
+  ],
+  "errorInfo": {},
+  "requestID": "0b4a02b33963921d3613d0906ceb5d1d",
+  "backendTimeMillis": 704,
+  "experimentIds": [
+    220791,
+    220792,
+    223191,
+    223192,
+    1000,
+    1001,
+    196740,
+    196741,
+    71945,
+    71946,
+    222769,
+    222770,
+    223197,
+    223198,
+    221861,
+    221863,
+    169432,
+    169433
+  ],
+  "metadata": {
+    "rewrittenQuery": "who is steve calvert",
+    "searchedQuery": "who is steve calvert",
+    "searchedQueryWithoutNegation": "",
+    "originalQuery": "who is steve calvert"
+  },
+  "facetResults": [
+    {
+      "sourceName": "last_updated_at",
+      "operatorName": "SelectSingle",
+      "buckets": [
+        {
+          "count": 30845,
+          "value": {
+            "stringValue": "all",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 96,
+          "value": {
+            "stringValue": "past_day",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2634,
+          "value": {
+            "stringValue": "past_month",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 513,
+          "value": {
+            "stringValue": "past_week",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 20703,
+          "value": {
+            "stringValue": "past_year",
+            "iconConfig": {}
+          }
+        }
+      ]
+    },
+    {
+      "sourceName": "from",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 14,
+          "value": {
+            "stringValue": "alla.mezhvinsky@glean.com",
+            "displayLabel": "Alla Mezhvinsky",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-03-24/8652427093123_d0d51c1127d7c327ada0_192.png"
+            }
+          }
+        },
+        {
+          "count": 20,
+          "value": {
+            "stringValue": "allan.livingston@glean.com",
+            "displayLabel": "Allan Livingston",
+            "iconConfig": {
+              "url": "https://scio-prod-be.glean.com/api/v1/images?key=eyJ0eXBlIjoiVUdDIiwiaWQiOiIwIiwiZHMiOiJHQUxMRVJZLUlNQUdFLVBJQ0tFUiIsImNpZCI6ImM0ZmQzNmI3LWQwYjgtNDNlOS1hYTU2LWE1Mjc0ZmI2YjgxOSIsImV4dCI6Ii5wbmcifQ=="
+            }
+          }
+        },
+        {
+          "count": 3,
+          "value": {
+            "stringValue": "anna.chibukhchyan@glean.com",
+            "displayLabel": "Anna Chibukhchyan",
+            "iconConfig": {
+              "url": "https://scio-prod-be.glean.com/api/v1/images?key=eyJ0eXBlIjoiVUdDIiwiaWQiOiIwIiwiZHMiOiJHQUxMRVJZLUlNQUdFLUNST1BQRVIiLCJjaWQiOiJlYzk0MGI0Yy1jMDkxLTQ2MTItOWE3OC0zMzY3Y2VkYzExYzIiLCJleHQiOiIuanBlZyJ9\u0026crop=eyJjcm9wU3R5bGUiOiJzcXVhcmUiLCJoZWlnaHQiOjE3OCwib3JpZ2luYWxVcmwiOiJodHRwczovL3NjaW8tcHJvZC1iZS5nbGVhbi5jb20vYXBpL3YxL2ltYWdlcz9rZXk9ZXlKMGVYQmxJam9pVlVkRElpd2lhV1FpT2lJd0lpd2laSE1pT2lKSFFVeE1SVkpaTFVsTlFVZEZMVkJKUTB0RlVpSXNJbU5wWkNJNklqZ3hOMkkzTldVNExUUXpNMk10TkdReE5TMDRZbVpsTFdNeE1UTXhNMlJpWldOaE9TSXNJbVY0ZENJNklpNXdibWNpZlE9PSIsIndpZHRoIjoxNzgsIngiOjksInkiOjEyfQ=="
+            }
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "barla.dhanush@glean.com",
+            "displayLabel": "Barla Dhanush",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-01-20/8318926798947_b8906ba164709717b66e_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "ben.morey@glean.com",
+            "displayLabel": "Ben Morey",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-03-16/8609043130773_bf1cbbc5d56e0482c215_192.png"
+            }
+          }
+        },
+        {
+          "count": 7,
+          "value": {
+            "stringValue": "dan@glean.com",
+            "displayLabel": "Dan Fergusson",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2023-11-01/6126955309330_bf4d92b5b3c679812105_192.png"
+            }
+          }
+        },
+        {
+          "count": 3,
+          "value": {
+            "stringValue": "jaishree.giri@glean.com",
+            "displayLabel": "Jaishree Giri",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-07/9646887500342_00abf4d3cdc12f20d534_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "michael.wiradharma@glean.com",
+            "displayLabel": "Michael Wiradharma",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-04-21/8787310892722_549edc8309aa327e1bb3_192.png"
+            }
+          }
+        },
+        {
+          "count": 10,
+          "value": {
+            "stringValue": "praveen.yalagandula@glean.com",
+            "displayLabel": "Praveen Yalagandula",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-11/7414016129780_bf67415213bf98c9b107_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 3,
+          "value": {
+            "stringValue": "preeyal.sarawgi@glean.com",
+            "displayLabel": "Preeyal Sarawgi",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-09/7390137859350_ed08f424a2b7939004e5_192.png"
+            }
+          }
+        },
+        {
+          "count": 5,
+          "value": {
+            "stringValue": "stephen.chu@glean.com",
+            "displayLabel": "Stephen Chu",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-01/9607282793623_eddf5ea9e16d05630af6_192.png"
+            }
+          }
+        },
+        {
+          "count": 3,
+          "value": {
+            "stringValue": "\"Anthropic",
+            "displayLabel": "\"Anthropic",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 7,
+          "value": {
+            "stringValue": "\"Cardente",
+            "displayLabel": "\"Cardente",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 3,
+          "value": {
+            "stringValue": "\"Davis",
+            "displayLabel": "\"Davis",
+            "iconConfig": {}
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "type",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 13,
+          "datasource": "gdrive",
+          "value": {
+            "stringValue": "Application",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 15,
+          "datasource": "gdrive",
+          "value": {
+            "stringValue": "Audio",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 9667,
+          "datasource": "gdrive",
+          "value": {
+            "stringValue": "Code",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 10,
+          "datasource": "gdrive",
+          "value": {
+            "stringValue": "Compressed Archive",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 6,
+          "datasource": "microsoftteams",
+          "value": {
+            "stringValue": "Conversation",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 3900,
+          "datasource": "slack",
+          "value": {
+            "stringValue": "Conversation",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "datasource": "developers",
+          "value": {
+            "stringValue": "Document",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 873,
+          "datasource": "gdrive",
+          "value": {
+            "stringValue": "Document",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 7,
+          "datasource": "gleandocs",
+          "value": {
+            "stringValue": "Document",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 9,
+          "datasource": "gleanwebsite",
+          "value": {
+            "stringValue": "Document",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "datasource": "weberywsrygleaniverseevents",
+          "value": {
+            "stringValue": "Document",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "datasource": "gdrive",
+          "value": {
+            "stringValue": "Drawing",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2036,
+          "datasource": "gdrive",
+          "value": {
+            "stringValue": "Folder",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 5,
+          "datasource": "gdrive",
+          "value": {
+            "stringValue": "Font",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 347,
+          "datasource": "gdrive",
+          "value": {
+            "stringValue": "Image",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 3,
+          "datasource": "gdrive",
+          "value": {
+            "stringValue": "Other",
+            "iconConfig": {}
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "collection",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "2024 Q4 R\u0026D OKRs (FY25)",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "2025 Q1 R\u0026D OKRs (FY26)",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "2025 Q2 R\u0026D OKRs (FY26)",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Agent Strategy",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Agent UX research sessions",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "Agents 2025",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "Agents Launch - R\u0026D Docs",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "Agents Product Docs",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Agents Reframe",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "Applied Science planning",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 5,
+          "value": {
+            "stringValue": "Applied Science Q1FY27 Planning",
+            "iconConfig": {}
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "suggested",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 24,
+          "value": {
+            "stringValue": "Go Links",
+            "iconConfig": {}
+          }
+        }
+      ]
+    },
+    {
+      "sourceName": "datasource",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 5,
+          "value": {
+            "stringValue": "answers",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "collections",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 8,
+          "value": {
+            "stringValue": "confluence",
+            "displayLabel": "Confluence - Cloud",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "developers",
+            "displayLabel": "Developers",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 13256,
+          "value": {
+            "stringValue": "gdrive",
+            "displayLabel": "Google Drive",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 4022,
+          "value": {
+            "stringValue": "github",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 9,
+          "value": {
+            "stringValue": "gleanwebsite",
+            "displayLabel": "Glean Website",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 8877,
+          "value": {
+            "stringValue": "gmailnative",
+            "displayLabel": "Gmail",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 217,
+          "value": {
+            "stringValue": "gong",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 259,
+          "value": {
+            "stringValue": "googlecalendar",
+            "displayLabel": "Google Calendar",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 3,
+          "value": {
+            "stringValue": "wiz",
+            "displayLabel": "Wiz",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "people",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "slack",
+            "iconConfig": {}
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "suggested",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "my history",
+            "iconConfig": {}
+          }
+        }
+      ]
+    }
+  ],
+  "resultTabs": [
+    {
+      "count": 26317,
+      "id": "all"
+    },
+    {
+      "count": 13256,
+      "datasource": "gdrive",
+      "datasourceInstance": "gdrive",
+      "id": "gdrive"
+    },
+    {
+      "count": 4022,
+      "datasource": "github",
+      "id": "github"
+    },
+    {
+      "count": 1,
+      "datasource": "developers",
+      "datasourceInstance": "developers",
+      "id": "developers"
+    },
+    {
+      "count": 8877,
+      "datasource": "gmailnative",
+      "datasourceInstance": "gmailnative",
+      "id": "gmailnative"
+    },
+    {
+      "count": 9,
+      "datasource": "gleanwebsite",
+      "datasourceInstance": "gleanwebsite",
+      "id": "gleanwebsite"
+    },
+    {
+      "count": 8,
+      "datasource": "confluence",
+      "id": "confluence"
+    },
+    {
+      "count": 5,
+      "datasource": "answers",
+      "datasourceInstance": "answers",
+      "id": "answers"
+    },
+    {
+      "count": 2,
+      "datasource": "collections",
+      "datasourceInstance": "collections",
+      "id": "collections"
+    },
+    {
+      "count": 131,
+      "datasource": "gong",
+      "id": "gong"
+    },
+    {
+      "count": 1,
+      "datasource": "people",
+      "datasourceInstance": "people",
+      "id": "people"
+    },
+    {
+      "count": 2,
+      "datasource": "slack",
+      "id": "slack"
+    },
+    {
+      "count": 3,
+      "datasource": "wiz",
+      "datasourceInstance": "wiz",
+      "id": "wiz"
+    }
+  ],
+  "resultTabIds": [
+    "all"
+  ],
+  "cursor": "eyJSZXN1bHRTdGFydCI6MSwiUmFuZG9tQ2FjaGVLZXkiOiIyMzk4NDcyMDUyOTIzMjIzMDE2IiwiUGFnZUR1cGVNZXRhZGF0YSI6eyJQYWdlSWQiOjEsIlJlc3VsdFRva2VucyI6bnVsbH0sIkN1cnNvckNhY2hlS2V5IjoiYWU1ZWJiMDUtOWFmZC00ZjhiLWI1MWQtY2Y4ODk5Njk2Y2RiIiwiTnVtTm9uQW5zd2VyU3RydWN0dXJlZFJlc3VsdHNTaG93biI6MX0=",
+  "hasMoreResults": true
+}
