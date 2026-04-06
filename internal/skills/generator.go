@@ -100,6 +100,7 @@ type FlagInfo struct {
 
 // SkillData holds all data needed to render a SKILL.md template.
 type SkillData struct {
+	Prefix      string
 	Name        string
 	Description string
 	Command     string
@@ -117,13 +118,13 @@ type SubcommandInfo struct {
 }
 
 var skillTmpl = template.Must(template.New("skill").Parse(`---
-name: glean-cli-{{ .Command }}
+name: {{ .Prefix }}{{ .Command }}
 description: "{{ .Description }}"
 ---
 
 # glean {{ .Command }}
 
-> **PREREQUISITE:** Read ` + "`../glean-cli-shared/SKILL.md`" + ` for auth, global flags, and security rules.
+> **PREREQUISITE:** Read ` + "`../{{ .Prefix }}shared/SKILL.md`" + ` for auth, global flags, and security rules.
 
 {{ .SchemaDesc }}
 
@@ -163,7 +164,7 @@ glean schema | jq '.commands'
 `))
 
 var sharedTmpl = template.Must(template.New("shared").Parse(`---
-name: glean-cli-shared
+name: {{ .Prefix }}shared
 description: "Glean CLI: Shared patterns for authentication, global flags, output formatting, and security rules."
 compatibility: Requires the glean binary on $PATH. Install via brew install gleanwork/tap/glean-cli
 ---
@@ -234,7 +235,7 @@ Exit code 0 = success, non-zero = error.
 | Command | Description |
 |---------|-------------|
 {{ range .Commands -}}
-| [glean {{ .Name }}](../glean-cli-{{ .Name }}/SKILL.md) | {{ .Description }} |
+| [glean {{ .Name }}](../{{ $.Prefix }}{{ .Name }}/SKILL.md) | {{ .Description }} |
 {{ end }}
 `))
 
@@ -301,8 +302,9 @@ func writeSharedSkill(outputDir string, commands []CommandEntry) error {
 	defer f.Close()
 
 	data := struct {
+		Prefix   string
 		Commands []CommandEntry
-	}{Commands: commands}
+	}{Prefix: skillPrefix, Commands: commands}
 	return sharedTmpl.Execute(f, data)
 }
 
@@ -371,6 +373,7 @@ func buildSkillData(name string, s schema.CommandSchema) SkillData {
 	}
 
 	return SkillData{
+		Prefix:      skillPrefix,
 		Name:        skillPrefix + name,
 		Description: desc,
 		Command:     name,
