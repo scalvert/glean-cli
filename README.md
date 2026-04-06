@@ -346,32 +346,32 @@ Use [`npx skills`](https://github.com/agentskills/agentskills) to install into y
 npx skills add https://github.com/gleanwork/glean-cli
 
 # Or pick only what you need
-npx skills add https://github.com/gleanwork/glean-cli/tree/main/skills/glean-search
-npx skills add https://github.com/gleanwork/glean-cli/tree/main/skills/glean-chat
+npx skills add https://github.com/gleanwork/glean-cli/tree/main/skills/glean-cli-search
+npx skills add https://github.com/gleanwork/glean-cli/tree/main/skills/glean-cli-chat
 ```
 
 ### Available Skills
 
-| Skill                 | Description                                            |
-| --------------------- | ------------------------------------------------------ |
-| `glean-shared`        | Shared patterns: auth, global flags, output formatting |
-| `glean-search`        | Search across company knowledge                        |
-| `glean-chat`          | Chat with Glean Assistant                              |
-| `glean-schema`        | Runtime JSON schema introspection                      |
-| `glean-agents`        | List, inspect, and run Glean AI agents                 |
-| `glean-documents`     | Retrieve and summarize documents                       |
-| `glean-collections`   | Manage curated document collections                    |
-| `glean-entities`      | Look up people, teams, and entities                    |
-| `glean-answers`       | Manage curated Q&A pairs                               |
-| `glean-shortcuts`     | Manage go-links                                        |
-| `glean-pins`          | Manage promoted search results                         |
-| `glean-announcements` | Manage company announcements                           |
-| `glean-api`           | Raw authenticated API access                           |
-| `glean-activity`      | Report user activity and feedback                      |
-| `glean-verification`  | Document verification workflows                        |
-| `glean-tools`         | List and run platform tools                            |
-| `glean-messages`      | Retrieve indexed messages                              |
-| `glean-insights`      | Search and usage analytics                             |
+| Skill                     | Description                                            |
+| ------------------------- | ------------------------------------------------------ |
+| `glean-cli-shared`        | Shared patterns: auth, global flags, output formatting |
+| `glean-cli-search`        | Search across company knowledge                        |
+| `glean-cli-chat`          | Chat with Glean Assistant                              |
+| `glean-cli-schema`        | Runtime JSON schema introspection                      |
+| `glean-cli-agents`        | List, inspect, and run Glean AI agents                 |
+| `glean-cli-documents`     | Retrieve and summarize documents                       |
+| `glean-cli-collections`   | Manage curated document collections                    |
+| `glean-cli-entities`      | Look up people, teams, and entities                    |
+| `glean-cli-answers`       | Manage curated Q&A pairs                               |
+| `glean-cli-shortcuts`     | Manage go-links                                        |
+| `glean-cli-pins`          | Manage promoted search results                         |
+| `glean-cli-announcements` | Manage company announcements                           |
+| `glean-cli-api`           | Raw authenticated API access                           |
+| `glean-cli-activity`      | Report user activity and feedback                      |
+| `glean-cli-verification`  | Document verification workflows                        |
+| `glean-cli-tools`         | List and run platform tools                            |
+| `glean-cli-messages`      | Retrieve indexed messages                              |
+| `glean-cli-insights`      | Search and usage analytics                             | 545db25 (refactor: namespace skills as glean-cli-* via generator)
 
 ## Contributing
 
