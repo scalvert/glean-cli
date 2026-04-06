@@ -352,8 +352,8 @@ npx skills add https://github.com/gleanwork/glean-cli/tree/main/skills/glean-cli
 
 ### Available Skills
 
-| Skill                 | Description                                            |
-| --------------------- | ------------------------------------------------------ |
+| Skill                     | Description                                            |
+| ------------------------- | ------------------------------------------------------ |
 | `glean-cli-shared`        | Shared patterns: auth, global flags, output formatting |
 | `glean-cli-search`        | Search across company knowledge                        |
 | `glean-cli-chat`          | Chat with Glean Assistant                              |
@@ -371,7 +371,7 @@ npx skills add https://github.com/gleanwork/glean-cli/tree/main/skills/glean-cli
 | `glean-cli-verification`  | Document verification workflows                        |
 | `glean-cli-tools`         | List and run platform tools                            |
 | `glean-cli-messages`      | Retrieve indexed messages                              |
-| `glean-cli-insights`      | Search and usage analytics                             |
+| `glean-cli-insights`      | Search and usage analytics                             | 545db25 (refactor: namespace skills as glean-cli-* via generator)
 
 ## Contributing
 
