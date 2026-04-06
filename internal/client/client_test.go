@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/gleanwork/glean-cli/internal/config"
+	"github.com/gleanwork/glean-cli/internal/httputil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -19,36 +20,40 @@ func (m *mockRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) 
 	return m.fn(req)
 }
 
-func TestCLITransport_OAuthSetsHeader(t *testing.T) {
+func TestTransport_OAuthSetsHeader(t *testing.T) {
+	httputil.SetVersion("test")
+
 	var captured *http.Request
 	base := &mockRoundTripper{fn: func(req *http.Request) (*http.Response, error) {
 		captured = req
 		return &http.Response{StatusCode: 200, Body: io.NopCloser(strings.NewReader(""))}, nil
 	}}
 
-	transport := &cliTransport{base: base, authType: authTypeOAuth}
+	transport := httputil.NewTransport(base, httputil.WithHeader("X-Glean-Auth-Type", authTypeOAuth))
 	req, err := http.NewRequest("GET", "https://example.com", nil)
 	require.NoError(t, err)
 	_, _ = transport.RoundTrip(req)
 
 	assert.Equal(t, authTypeOAuth, captured.Header.Get("X-Glean-Auth-Type"))
-	assert.Contains(t, captured.Header.Get("User-Agent"), "glean-cli/")
+	assert.Equal(t, "glean-cli/test", captured.Header.Get("User-Agent"))
 }
 
-func TestCLITransport_APITokenOmitsHeader(t *testing.T) {
+func TestTransport_APITokenOmitsHeader(t *testing.T) {
+	httputil.SetVersion("test")
+
 	var captured *http.Request
 	base := &mockRoundTripper{fn: func(req *http.Request) (*http.Response, error) {
 		captured = req
 		return &http.Response{StatusCode: 200, Body: io.NopCloser(strings.NewReader(""))}, nil
 	}}
 
-	transport := &cliTransport{base: base, authType: ""}
+	transport := httputil.NewTransport(base)
 	req, err := http.NewRequest("GET", "https://example.com", nil)
 	require.NoError(t, err)
 	_, _ = transport.RoundTrip(req)
 
 	assert.Empty(t, captured.Header.Get("X-Glean-Auth-Type"))
-	assert.Contains(t, captured.Header.Get("User-Agent"), "glean-cli/")
+	assert.Equal(t, "glean-cli/test", captured.Header.Get("User-Agent"))
 }
 
 func TestResolveToken_APIToken(t *testing.T) {

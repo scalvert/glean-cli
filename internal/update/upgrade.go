@@ -16,6 +16,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gleanwork/glean-cli/internal/httputil"
 	"github.com/minio/selfupdate"
 )
 
@@ -121,7 +122,7 @@ func assetFilename() string {
 
 // download fetches a URL and returns the body bytes.
 func download(url string) ([]byte, error) {
-	client := &http.Client{Timeout: 120 * time.Second}
+	client := httputil.NewHTTPClient(120 * time.Second)
 	resp, err := client.Get(url)
 	if err != nil {
 		return nil, err
