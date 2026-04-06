@@ -1,0 +1,107 @@
+{
+  "results": [
+    {
+      "title": "Glean Platform: Primitives",
+      "url": "https://docs.google.com/document/d/1f_b1y8Q2wD6P6UCMzbzweTTGlEBv1DNupl_wxIv4_aw",
+      "snippets": [
+        {
+          "text": "Author: Aryaman GulatiSteve Calvert",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "# Platform Primitives",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "# Glean Platform: Primitives",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "Status: Draft",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "Last updated: Mar 30, 2026",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "# A Note to Readers",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "This document is structured for two reading speeds. Sections 1 through 4 (roughly 6 pages)",
+          "mimeType": "text/plain"
+        }
+      ],
+      "document": {
+        "title": "Glean Platform: Primitives",
+        "url": "https://docs.google.com/document/d/1f_b1y8Q2wD6P6UCMzbzweTTGlEBv1DNupl_wxIv4_aw",
+        "datasource": "gdrive",
+        "docType": "Document",
+        "metadata": {
+          "datasource": "gdrive",
+          "objectType": "Document",
+          "author": {
+            "name": "Steve Calvert"
+          },
+          "owner": {
+            "name": "Steve Calvert"
+          },
+          "assignedTo": {
+            "name": "Steve Calvert"
+          },
+          "updatedBy": {
+            "name": "Richard Chao"
+          },
+          "updateTime": "2026-04-04T20:16:04Z",
+          "createTime": "2026-02-15T20:07:07Z",
+          "container": "Glean Platform",
+          "datasourceId": "1f_b1y8Q2wD6P6UCMzbzweTTGlEBv1DNupl_wxIv4_aw"
+        }
+      }
+    },
+    {
+      "title": "Thread between Harshi and Steve",
+      "url": "https://askscio.slack.com/archives/C0A74DX9Q8N/p1775149112810579?thread_ts=1775149112.810579&cid=C0A74DX9Q8N",
+      "document": {
+        "title": "Thread between Harshi and Steve",
+        "url": "https://askscio.slack.com/archives/C0A74DX9Q8N/p1775149112810579?thread_ts=1775149112.810579&cid=C0A74DX9Q8N",
+        "datasource": "slack",
+        "docType": "Conversation",
+        "metadata": {
+          "datasource": "slack",
+          "objectType": "Conversation",
+          "author": {
+            "name": "Harshi Murthy"
+          },
+          "updateTime": "1970-01-01T00:00:00Z",
+          "createTime": "2026-04-02T16:58:32Z",
+          "container": "team-pact"
+        }
+      }
+    },
+    {
+      "title": "Thread between Sharad and Steve",
+      "url": "https://askscio.slack.com/archives/C0A74DX9Q8N/p1774477110213549?thread_ts=1774477110.213549&cid=C0A74DX9Q8N",
+      "document": {
+        "title": "Thread between Sharad and Steve",
+        "url": "https://askscio.slack.com/archives/C0A74DX9Q8N/p1774477110213549?thread_ts=1774477110.213549&cid=C0A74DX9Q8N",
+        "datasource": "slack",
+        "docType": "Conversation",
+        "metadata": {
+          "datasource": "slack",
+          "objectType": "Conversation",
+          "author": {
+            "name": "Sharad Jain"
+          },
+          "updateTime": "1970-01-01T00:00:00Z",
+          "createTime": "2026-03-25T22:18:30Z",
+          "container": "team-pact"
+        }
+      }
+    }
+  ],
+  "cursor": "eyJSZXN1bHRTdGFydCI6MSwiUmFuZG9tQ2FjaGVLZXkiOiIyMzk4NDcyMDUyOTIzMjIzMDE2IiwiUGFnZUR1cGVNZXRhZGF0YSI6eyJQYWdlSWQiOjEsIlJlc3VsdFRva2VucyI6bnVsbH0sIkN1cnNvckNhY2hlS2V5IjoiYWU1ZWJiMDUtOWFmZC00ZjhiLWI1MWQtY2Y4ODk5Njk2Y2RiIiwiTnVtTm9uQW5zd2VyU3RydWN0dXJlZFJlc3VsdHNTaG93biI6MX0=",
+  "hasMoreResults": true,
+  "requestID": "0b4a02b33963921d3613d0906ceb5d1d"
+}

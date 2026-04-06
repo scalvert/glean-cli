@@ -1,0 +1,82 @@
+{
+  "results": [
+    {
+      "title": "R&D Execution Plan for FY26 Q4 (Nov/Dec/Jan)",
+      "url": "https://docs.google.com/document/d/1PDizicDihka7s1VguJU1LJptAOzFLAiHSvC6QlycV6A",
+      "snippets": [
+        {
+          "text": "Q4 is where we turn bold bets into business results\u2014where we land the users, hit the KPI targets in our FY26 plan. Q4 is also the quarter where we set ourselves up for an even better FY27 to take Glean to the next level. ",
+          "mimeType": "text/plain"
+        }
+      ],
+      "document": {
+        "title": "R&D Execution Plan for FY26 Q4 (Nov/Dec/Jan)",
+        "url": "https://docs.google.com/document/d/1PDizicDihka7s1VguJU1LJptAOzFLAiHSvC6QlycV6A",
+        "datasource": "gdrive",
+        "docType": "Document",
+        "metadata": {
+          "datasource": "gdrive",
+          "objectType": "Document",
+          "author": {
+            "name": "Jen Zagofsky"
+          },
+          "owner": {
+            "name": "Jen Zagofsky"
+          },
+          "assignedTo": {
+            "name": "Jen Zagofsky"
+          },
+          "updatedBy": {
+            "name": "Onder Polat"
+          },
+          "updateTime": "2026-01-17T00:50:21Z",
+          "createTime": "2025-11-03T02:27:32Z",
+          "datasourceId": "1PDizicDihka7s1VguJU1LJptAOzFLAiHSvC6QlycV6A"
+        }
+      }
+    },
+    {
+      "title": "Thread between Escalations, Wayne, and 2 others",
+      "url": "https://askscio.slack.com/archives/C0ADKNJER1N/p1775252236153429?thread_ts=1775252236.153429&cid=C0ADKNJER1N",
+      "document": {
+        "title": "Thread between Escalations, Wayne, and 2 others",
+        "url": "https://askscio.slack.com/archives/C0ADKNJER1N/p1775252236153429?thread_ts=1775252236.153429&cid=C0ADKNJER1N",
+        "datasource": "slack",
+        "docType": "Conversation",
+        "metadata": {
+          "datasource": "slack",
+          "objectType": "Conversation",
+          "author": {
+            "name": "chris.\u200bfreeman"
+          },
+          "updateTime": "1970-01-01T00:00:00Z",
+          "createTime": "2026-04-03T21:37:16Z",
+          "container": "help-mcp-server"
+        }
+      }
+    },
+    {
+      "title": "Sharad",
+      "url": "https://askscio.slack.com/archives/C0A74DX9Q8N/p1775081523150139?thread_ts=1775081523.150139&cid=C0A74DX9Q8N",
+      "document": {
+        "title": "Sharad",
+        "url": "https://askscio.slack.com/archives/C0A74DX9Q8N/p1775081523150139?thread_ts=1775081523.150139&cid=C0A74DX9Q8N",
+        "datasource": "slack",
+        "docType": "Conversation",
+        "metadata": {
+          "datasource": "slack",
+          "objectType": "Conversation",
+          "author": {
+            "name": "Sharad Jain"
+          },
+          "updateTime": "1970-01-01T00:00:00Z",
+          "createTime": "2026-04-01T22:12:03Z",
+          "container": "team-pact"
+        }
+      }
+    }
+  ],
+  "cursor": "eyJSZXN1bHRTdGFydCI6MzEsIlJhbmRvbUNhY2hlS2V5IjoiNTU2MTEyODU3ODkzMjk1NzA5NyIsIlBhZ2VEdXBlTWV0YWRhdGEiOnsiUGFnZUlkIjoxLCJSZXN1bHRUb2tlbnMiOm51bGx9LCJDdXJzb3JDYWNoZUtleSI6ImIxY2QyMzA3LTVmNmQtNDViZC04YTM0LWMxMTI5ZWQ4NDM1YyJ9",
+  "hasMoreResults": true,
+  "requestID": "59a6ec2006d88492956ab9c42480d885"
+}

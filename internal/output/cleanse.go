@@ -27,6 +27,16 @@ func CleanseSearchResponse(resp any) (any, error) {
 
 	if results, ok := result["results"].([]any); ok {
 		result["results"] = filterEmptyResults(results)
+		for _, r := range result["results"].([]any) {
+			if m, ok := r.(map[string]any); ok {
+				if snippets, ok := m["snippets"].([]any); ok {
+					m["snippets"] = filterEmptySnippets(snippets)
+					if len(m["snippets"].([]any)) == 0 {
+						delete(m, "snippets")
+					}
+				}
+			}
+		}
 	}
 
 	return result, nil
@@ -57,20 +67,26 @@ var documentAllowlist = allowlist{
 }
 
 var metadataAllowlist = allowlist{
-	"datasource": nil,
-	"objectType": nil,
-	"author":     personAllowlist,
-	"updateTime": nil,
-	"createTime": nil,
+	"datasource":   nil,
+	"objectType":   nil,
+	"author":       personAllowlist,
+	"owner":        personAllowlist,
+	"assignedTo":   personAllowlist,
+	"updatedBy":    personAllowlist,
+	"updateTime":   nil,
+	"createTime":   nil,
+	"status":       nil,
+	"priority":     nil,
+	"container":    nil,
+	"datasourceId": nil,
 }
 
 var personAllowlist = allowlist{
-	"name":  nil,
-	"email": nil,
+	"name": nil,
 }
 
 var snippetAllowlist = allowlist{
-	"snippet":  nil,
+	"text":     nil,
 	"mimeType": nil,
 }
 
@@ -167,6 +183,21 @@ func filterEmptyResults(results []any) []any {
 			continue
 		}
 		// No document and no title — skip this empty result
+	}
+	return out
+}
+
+// filterEmptySnippets removes snippets where the text field is empty or missing.
+func filterEmptySnippets(snippets []any) []any {
+	out := make([]any, 0, len(snippets))
+	for _, s := range snippets {
+		m, ok := s.(map[string]any)
+		if !ok {
+			continue
+		}
+		if text, ok := m["text"].(string); ok && text != "" {
+			out = append(out, s)
+		}
 	}
 	return out
 }

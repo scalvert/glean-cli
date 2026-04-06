@@ -1,0 +1,2915 @@
+{
+  "trackingToken": "cECla84C8x3dDFYp",
+  "sessionInfo": {
+    "lastQuery": "quarterly planning",
+    "lastSeen": "2026-04-06T15:33:06.509775156Z",
+    "sessionTrackingToken": "lu6eqddoyUcNZr3n",
+    "tabId": "oigbpJmpp7UxnVr2"
+  },
+  "results": [
+    {
+      "allClusteredResults": [
+        {
+          "clusterType": "FRESHNESS",
+          "clusteredResults": [
+            {
+              "document": {
+                "datasource": "gdrive",
+                "docType": "Document",
+                "id": "GDRIVE_1ZAW1bP06itN--4v7DUONZwVNTkMzMlHIOB0x0mvVjLw",
+                "metadata": {
+                  "assignedTo": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "9D3ADD79909166094DB6ABBBDD65E1DE"
+                    },
+                    "name": "Emrecan Dogan",
+                    "obfuscatedId": "9D3ADD79909166094DB6ABBBDD65E1DE"
+                  },
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "9D3ADD79909166094DB6ABBBDD65E1DE"
+                    },
+                    "name": "Emrecan Dogan",
+                    "obfuscatedId": "9D3ADD79909166094DB6ABBBDD65E1DE"
+                  },
+                  "createTime": "2025-08-06T00:09:25Z",
+                  "datasource": "gdrive",
+                  "datasourceId": "1ZAW1bP06itN--4v7DUONZwVNTkMzMlHIOB0x0mvVjLw",
+                  "datasourceInstance": "gdrive",
+                  "documentCategory": "COLLABORATIVE_CONTENT",
+                  "documentId": "GDRIVE_1ZAW1bP06itN--4v7DUONZwVNTkMzMlHIOB0x0mvVjLw",
+                  "interactions": {},
+                  "loggingId": "30ED6912A34D6822F87F2C9FC84E557C",
+                  "mimeType": "application/vnd.google-apps.document",
+                  "objectType": "Document",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "9D3ADD79909166094DB6ABBBDD65E1DE"
+                    },
+                    "name": "Emrecan Dogan",
+                    "obfuscatedId": "9D3ADD79909166094DB6ABBBDD65E1DE"
+                  },
+                  "updateTime": "2025-11-17T02:04:11Z",
+                  "updatedBy": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "90626173EE5666BB891147D9B1F40378"
+                    },
+                    "name": "Onder Polat",
+                    "obfuscatedId": "90626173EE5666BB891147D9B1F40378"
+                  },
+                  "verification": {
+                    "state": "UNVERIFIED"
+                  },
+                  "visibility": "DOMAIN_VISIBLE"
+                },
+                "parentDocument": {
+                  "id": "GDRIVE_0ABEA3vq51xS3Uk9PVA"
+                },
+                "title": "R\u0026D Execution Plan for FY26 Q3 (Aug / Sep / Oct)",
+                "url": "https://docs.google.com/document/d/1ZAW1bP06itN--4v7DUONZwVNTkMzMlHIOB0x0mvVjLw"
+              },
+              "title": "R\u0026D Execution Plan for FY26 Q3 (Aug / Sep / Oct)",
+              "trackingToken": "cECla84C8x3dDFYp,CnkKEGNFQ2xhODRDOHgzZERGWXAQARozR0RSSVZFXzFaQVcxYlAwNml0Ti0tNHY3RFVPTlp3Vk5Ua016TWxISU9CMHgwbXZWakx3IgZnZHJpdmUqA2FsbDIIRG9jdW1lbnQ6FUNPTExBQk9SQVRJVkVfQ09OVEVOVEgB",
+              "url": "https://docs.google.com/document/d/1ZAW1bP06itN--4v7DUONZwVNTkMzMlHIOB0x0mvVjLw"
+            }
+          ],
+          "visibleCountHint": 3
+        }
+      ],
+      "attachmentCount": 12,
+      "attachments": [
+        {
+          "document": {
+            "datasource": "gdrive",
+            "docType": "Document",
+            "id": "GDRIVE_10rxDfHoLdTzNW4Ein0D736hV0IFUNLng-OrEhpZh6fI",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "container": "Meet Recordings",
+              "createTime": "2025-12-05T20:04:32Z",
+              "datasource": "gdrive",
+              "datasourceId": "10rxDfHoLdTzNW4Ein0D736hV0IFUNLng-OrEhpZh6fI",
+              "datasourceInstance": "gdrive",
+              "documentCategory": "COLLABORATIVE_CONTENT",
+              "documentId": "GDRIVE_10rxDfHoLdTzNW4Ein0D736hV0IFUNLng-OrEhpZh6fI",
+              "interactions": {},
+              "loggingId": "432B45FF78B069B58E6451DAC283EBF7",
+              "mimeType": "application/vnd.google-apps.document",
+              "objectType": "Document",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "updateTime": "2025-12-05T21:04:57Z",
+              "updatedBy": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "visibility": "SPECIFIC_PEOPLE_AND_GROUPS"
+            },
+            "parentDocument": {
+              "title": "Meet Recordings"
+            },
+            "title": "RND Weekly Projects Check-In - 2025/12/05 13:23 CST - Notes by Gemini",
+            "url": "https://docs.google.com/document/d/10rxDfHoLdTzNW4Ein0D736hV0IFUNLng-OrEhpZh6fI"
+          },
+          "snippets": [
+            {
+              "mimeType": "text/plain",
+              "ranges": [
+                {
+                  "endIndex": 122,
+                  "startIndex": 118,
+                  "type": "BOLD"
+                }
+              ],
+              "snippet": "",
+              "text": "· Image Generation Launch and Billing Integration Someone in 404 | Sixglean Candles (Glean HQ, 4th Fl) reiterated the plan to ship the more expensive nano banana pro model for image gen and emphasized the need for full billing integration before GA.",
+              "url": "https://docs.google.com/document/d/10rxDfHoLdTzNW4Ein0D736hV0IFUNLng-OrEhpZh6fI?tab=t.kflbqvun150f#heading=h.lfgshwczp7uj"
+            }
+          ],
+          "title": "RND Weekly Projects Check-In - 2025/12/05 13:23 CST - Notes by Gemini",
+          "trackingToken": "cECla84C8x3dDFYp,CtkBChBjRUNsYTg0Qzh4M2RERllwEAEaM0dEUklWRV8xMHJ4RGZIb0xkVHpOVzRFaW4wRDczNmhWMElGVU5MbmctT3JFaHBaaDZmSSIGZ2RyaXZlKgNhbGwyCERvY3VtZW50OhVDT0xMQUJPUkFUSVZFX0NPTlRFTlRIAVJeGjNHRFJJVkVfMVBEaXppY0RpaGthN3MxVmd1SlUxTEpwdEFPekZMQWlIU3ZDNlFseWNWNkEiBmdkcml2ZSoIRG9jdW1lbnQyFUNPTExBQk9SQVRJVkVfQ09OVEVOVA==",
+          "url": "https://docs.google.com/document/d/10rxDfHoLdTzNW4Ein0D736hV0IFUNLng-OrEhpZh6fI"
+        },
+        {
+          "document": {
+            "datasource": "gdrive",
+            "docType": "Text",
+            "id": "GDRIVE_11mDSflL2AWu9Xplh9ixGS_DpzhuCRcS3",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "container": "Meet Recordings",
+              "createTime": "2025-12-05T20:59:30Z",
+              "datasource": "gdrive",
+              "datasourceId": "11mDSflL2AWu9Xplh9ixGS_DpzhuCRcS3",
+              "datasourceInstance": "gdrive",
+              "documentCategory": "COLLABORATIVE_CONTENT",
+              "documentId": "GDRIVE_11mDSflL2AWu9Xplh9ixGS_DpzhuCRcS3",
+              "interactions": {},
+              "loggingId": "40D3B762AAE5C9CC8D438A79D2559B99",
+              "mimeType": "text/plain",
+              "objectType": "Text",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "updateTime": "2025-12-05T20:59:30Z",
+              "updatedBy": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "visibility": "SPECIFIC_PEOPLE_AND_GROUPS"
+            },
+            "parentDocument": {
+              "title": "Meet Recordings"
+            },
+            "title": "RND Weekly Projects Check-In - 2025/12/05 13:23 CST - Chat",
+            "url": "https://drive.google.com/file/d/11mDSflL2AWu9Xplh9ixGS_DpzhuCRcS3"
+          },
+          "snippets": [
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "text": "00:14:42.401,00:14:45.401"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 1,
+              "text": "Chaitanya Asawa: You can send to all Glean users with signup timestamp (but this doesn't get users who have never tried)"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 2,
+              "text": "00:15:01.538,00:15:04.538"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 3,
+              "text": "Chaitanya Asawa: It's a bit harder to determine product access, Eric An can"
+            }
+          ],
+          "title": "RND Weekly Projects Check-In - 2025/12/05 13:23 CST - Chat",
+          "trackingToken": "cECla84C8x3dDFYp,CsoBChBjRUNsYTg0Qzh4M2RERllwEAIaKEdEUklWRV8xMW1EU2ZsTDJBV3U5WHBsaDlpeEdTX0Rwemh1Q1JjUzMiBmdkcml2ZSoDYWxsMgRUZXh0OhVDT0xMQUJPUkFUSVZFX0NPTlRFTlRIAlJeGjNHRFJJVkVfMVBEaXppY0RpaGthN3MxVmd1SlUxTEpwdEFPekZMQWlIU3ZDNlFseWNWNkEiBmdkcml2ZSoIRG9jdW1lbnQyFUNPTExBQk9SQVRJVkVfQ09OVEVOVA==",
+          "url": "https://drive.google.com/file/d/11mDSflL2AWu9Xplh9ixGS_DpzhuCRcS3"
+        },
+        {
+          "document": {
+            "datasource": "gdrive",
+            "docType": "Video",
+            "id": "GDRIVE_1cU2nxhV_I9X9fAGBZN7taHLG_T7cQAA7",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "container": "Meet Recordings",
+              "createTime": "2025-12-05T20:59:30Z",
+              "datasource": "gdrive",
+              "datasourceId": "1cU2nxhV_I9X9fAGBZN7taHLG_T7cQAA7",
+              "datasourceInstance": "gdrive",
+              "documentCategory": "COLLABORATIVE_CONTENT",
+              "documentId": "GDRIVE_1cU2nxhV_I9X9fAGBZN7taHLG_T7cQAA7",
+              "interactions": {},
+              "loggingId": "CEA9D8415EAA37A3B85B27C71251CA7A",
+              "mimeType": "video/mp4",
+              "objectType": "Video",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "updateTime": "2025-12-05T20:59:30Z",
+              "updatedBy": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "visibility": "SPECIFIC_PEOPLE_AND_GROUPS"
+            },
+            "parentDocument": {
+              "title": "Meet Recordings"
+            },
+            "title": "RND Weekly Projects Check-In - 2025/12/05 13:23 CST - Recording",
+            "url": "https://drive.google.com/file/d/1cU2nxhV_I9X9fAGBZN7taHLG_T7cQAA7"
+          },
+          "snippets": [
+            {
+              "snippet": ""
+            }
+          ],
+          "title": "RND Weekly Projects Check-In - 2025/12/05 13:23 CST - Recording",
+          "trackingToken": "cECla84C8x3dDFYp,CssBChBjRUNsYTg0Qzh4M2RERllwEAQaKEdEUklWRV8xY1UybnhoVl9JOVg5ZkFHQlpON3RhSExHX1Q3Y1FBQTciBmdkcml2ZSoDYWxsMgVWaWRlbzoVQ09MTEFCT1JBVElWRV9DT05URU5USARSXhozR0RSSVZFXzFQRGl6aWNEaWhrYTdzMVZndUpVMUxKcHRBT3pGTEFpSFN2QzZRbHljVjZBIgZnZHJpdmUqCERvY3VtZW50MhVDT0xMQUJPUkFUSVZFX0NPTlRFTlQ=",
+          "url": "https://drive.google.com/file/d/1cU2nxhV_I9X9fAGBZN7taHLG_T7cQAA7"
+        },
+        {
+          "document": {
+            "datasource": "googlecalendar",
+            "docType": "event",
+            "id": "GOOGLECALENDAR_Event_2A85F4097AB50892B8C2CF1D9AC79CD1",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "createTime": "2025-12-05T19:30:00Z",
+              "customData": {
+                "attachmentUrls": {
+                  "stringValue": "https://drive.google.com/file/d/1cU2nxhV_I9X9fAGBZN7taHLG_T7cQAA7/view?usp=drive_web\nhttps://drive.google.com/file/d/11mDSflL2AWu9Xplh9ixGS_DpzhuCRcS3/view?usp=drive_web\nhttps://docs.google.com/document/d/10rxDfHoLdTzNW4Ein0D736hV0IFUNLng-OrEhpZh6fI/edit?usp=meet_tnfm_calendar\nhttps://docs.google.com/document/d/1PDizicDihka7s1VguJU1LJptAOzFLAiHSvC6QlycV6A/edit?usp=sharing"
+                },
+                "attendeeDetails": {
+                  "stringValue": "[{\"name\":\"Emrecan Dogan\",\"responseStatus\":\"accepted\"},{\"name\":\"Steve Calvert\",\"responseStatus\":\"accepted\"},{\"name\":\"Rohan Vora\",\"responseStatus\":\"accepted\"},{\"name\":\"akash.sagar@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"Jassim Latif\",\"responseStatus\":\"needsAction\"},{\"name\":\"Shishir Agrawal\",\"responseStatus\":\"accepted\"},{\"name\":\"Tony Gentilcore\",\"responseStatus\":\"accepted\"},{\"name\":\"Allan Livingston\",\"responseStatus\":\"accepted\"},{\"name\":\"cynthia.castro@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"James Pratama\",\"responseStatus\":\"accepted\"},{\"name\":\"Thai Tran\",\"responseStatus\":\"accepted\"},{\"name\":\"Mayank Malhotra\",\"responseStatus\":\"accepted\"},{\"name\":\"Christian Ervin\",\"responseStatus\":\"needsAction\"},{\"name\":\"Meera Shah\",\"responseStatus\":\"accepted\"},{\"name\":\"Onder Polat\",\"responseStatus\":\"accepted\"},{\"name\":\"Arpit Agrawal\",\"responseStatus\":\"accepted\"},{\"name\":\"Seema Jethani\",\"responseStatus\":\"needsAction\"},{\"name\":\"Vardhman Singh\",\"responseStatus\":\"needsAction\"},{\"name\":\"Vishwanath T R\",\"responseStatus\":\"accepted\"},{\"name\":\"Jen Zagofsky\",\"responseStatus\":\"accepted\"},{\"name\":\"alice@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"benjamin.mcmahan@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"cathy.chen@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"chaitanya@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"devansh.dwivedi@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"kiran.bondalapati@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"kumar@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"max.comolli@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"naveen.vardhi@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"nilesh.dalvi@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"pradnya.karbhari@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"roshan.dheram@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"sneha.chaudhari@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"tao.zhou@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"veraj.paruthi@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"arjun@glean.com\",\"responseStatus\":\"declined\"},{\"name\":\"abhi.samantapudi@glean.com\",\"responseStatus\":\"accepted\"}]"
+                },
+                "conferenceProvider": {
+                  "stringValue": "Google Meet"
+                },
+                "conferenceUri": {
+                  "stringValue": "https://meet.google.com/edp-wcng-rok"
+                },
+                "created": {
+                  "stringValue": "2025-10-17T23:29:53.000Z"
+                },
+                "creatorName": {
+                  "stringValue": "Cynthia Castro"
+                },
+                "eventEndTime": {
+                  "stringValue": "2025-12-05T14:00:00.000-06:00"
+                },
+                "eventStartTime": {
+                  "stringValue": "2025-12-05T13:30:00.000-06:00"
+                },
+                "eventStatus": {
+                  "stringValue": "confirmed"
+                },
+                "eventType": {
+                  "stringValue": "default"
+                },
+                "guestsCanSeeOtherGuests": {
+                  "stringValue": "true"
+                },
+                "location": {
+                  "stringValue": "Glean-SF-2nd Fl-SF-213 - Mr. Glean Side (5) [VC], Glean-PA-4th Fl-PA-404 - Sixglean Candles (10) [VC]"
+                },
+                "meetUrl": {
+                  "stringValue": "https://meet.google.com/edp-wcng-rok"
+                },
+                "meetingParticipants": {
+                  "stringListValue": [
+                    "c_188d279uf7gr4gqfif8vu64n3m7u6@resource.calendar.google.com",
+                    "c_18804dq8ecbc8ga9mc6tpt3hmlnb0@resource.calendar.google.com",
+                    "Emrecan Dogan",
+                    "Steve Calvert",
+                    "Rohan Vora",
+                    "akash.sagar@glean.com",
+                    "jassim.latif@glean.com",
+                    "Shishir Agrawal",
+                    "Tony Gentilcore",
+                    "Allan Livingston",
+                    "Cynthia Castro",
+                    "James Pratama",
+                    "Thai Tran",
+                    "mayank.malhotra@glean.com",
+                    "Christian Ervin",
+                    "Meera Shah",
+                    "Onder Polat",
+                    "Arpit Agrawal",
+                    "seema.jethani@glean.com",
+                    "Vardhman Singh",
+                    "Vish T R",
+                    "Jen Zagofsky",
+                    "Alice Wang",
+                    "Ben McMahan",
+                    "Cathy Chen",
+                    "chaitanya@glean.com",
+                    "Devansh Dwivedi",
+                    "Kiran Bondalapati",
+                    "Kumar Rangarajan",
+                    "Max Comolli",
+                    "Naveen Vardhi",
+                    "Nilesh Dalvi",
+                    "Pradnya Karbhari",
+                    "Roshan Dheram",
+                    "Sneha Chaudhari",
+                    "Tao Zhou",
+                    "Veraj Paruthi",
+                    "Arjun Landes",
+                    "Abhi Samantapudi"
+                  ]
+                },
+                "organizer": {
+                  "stringListValue": [
+                    "8DB453CB59486720055706DC97E1A1E4"
+                  ]
+                },
+                "participants": {
+                  "stringListValue": [
+                    "036E68EA2481588509A35D5BB80A30E9",
+                    "0E8091AA5555CED306C5DD72C8021556",
+                    "131E114578E20436A13A8A94584BC341",
+                    "1C6D65D6601F40C7D8F378787210E821",
+                    "22BF514F54A49F971EBF5F4A7786B240",
+                    "2A5862FE5C36C6FA62EEE6CE6719E1F2",
+                    "307E12B67CDE05441BB8CA690C5FDED1",
+                    "34359DA304DF814EE238146E9C2B2589",
+                    "36E60AA20CDFB2C33900A27DF9C1AA28",
+                    "3BFE3D6190B9682B1A438729AACC9D51",
+                    "410B15D507B1E77B0EB41EE50A33C166",
+                    "4966E24E2C62B64000F0109EB4FEE5DA",
+                    "4AA84BDDA6E70D0965CE45560DD1CD44",
+                    "4F2A8867F57E2D3DD2575A09AC9832EC",
+                    "582122941BDC99987291C2C075BB5201",
+                    "5C29180F1E54B7CEF2296EC57E8CF1DD",
+                    "5C441E2269720C069DC294814ACCF853",
+                    "71E4BC9473BC36BB7E84E811C964C29A",
+                    "78EF1448F0382566A25C8A5D6C795682",
+                    "7B31A6206C218450C84C7C7E1AEE19D3",
+                    "8DB453CB59486720055706DC97E1A1E4",
+                    "90626173EE5666BB891147D9B1F40378",
+                    "9D3ADD79909166094DB6ABBBDD65E1DE",
+                    "A128BE9D255F61AD6787E3C35CB7CE4B",
+                    "A73EAB1297F1C054549133D2C36C12D1",
+                    "A7AC9B8E756572F9A5541538DE67F626",
+                    "B3166CEF3548AA7E9343EA5F27D29736",
+                    "B5D66443909C32C5925E45FD8B01F581",
+                    "C5461EF5DE63DEE6447F3B507A0E7145",
+                    "DB3969C214D7A3BB6BD544357A452344",
+                    "F6B7F706CA221AE93BB3632F63CF10DC",
+                    "F7090F3C9486EB6E2A2EA2F166F5A4D7"
+                  ]
+                },
+                "recurrenceId": {
+                  "stringValue": "2oqkmhqkdc43ou57nc1kbedlip_R20251121T193000"
+                },
+                "responseStatus": {
+                  "stringValue": "accepted"
+                },
+                "transcriptUrl": {
+                  "stringValue": "https://docs.google.com/document/d/10rxDfHoLdTzNW4Ein0D736hV0IFUNLng-OrEhpZh6fI/edit?usp=meet_tnfm_calendar"
+                }
+              },
+              "datasource": "googlecalendar",
+              "datasourceId": "2A85F4097AB50892B8C2CF1D9AC79CD1",
+              "datasourceInstance": "googlecalendar",
+              "documentCategory": "CALENDAR",
+              "documentId": "GOOGLECALENDAR_Event_2A85F4097AB50892B8C2CF1D9AC79CD1",
+              "interactions": {},
+              "loggingId": "CCBFEC4F1FC75E2370518334592679A4",
+              "mimeType": "event",
+              "objectType": "event",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "updateTime": "2025-12-05T19:30:00Z",
+              "visibility": "SPECIFIC_PEOPLE_AND_GROUPS"
+            },
+            "title": "RND Weekly Projects Check-In",
+            "url": "https://www.google.com/calendar/event?authuser=steve.calvert%40glean.com\u0026eid=Mm9xa21ocWtkYzQzb3U1N25jMWtiZWRsaXBfMjAyNTEyMDVUMTkzMDAwWiA%3D"
+          },
+          "snippets": [
+            {
+              "mimeType": "text/plain",
+              "ranges": [
+                {
+                  "endIndex": 36,
+                  "startIndex": 29,
+                  "type": "BOLD"
+                },
+                {
+                  "endIndex": 52,
+                  "startIndex": 37,
+                  "type": "LINK",
+                  "url": "https://docs.google.com/document/d/1PDizicDihka7s1VguJU1LJptAOzFLAiHSvC6QlycV6A/edit?usp=sharing"
+                }
+              ],
+              "snippet": "",
+              "text": "You are a DRI for one of our Monthly Q4 Top projects:"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 1,
+              "text": "Please review the status update, make proposed changes"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 2,
+              "text": "If your status is green/ontrack to current exit goal, you can skip"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 3,
+              "text": "If your status is yellow/red, come prepare to share what you need to get"
+            }
+          ],
+          "title": "RND Weekly Projects Check-In",
+          "trackingToken": "cECla84C8x3dDFYp,CtMBChBjRUNsYTg0Qzh4M2RERllwEAUaNUdPT0dMRUNBTEVOREFSX0V2ZW50XzJBODVGNDA5N0FCNTA4OTJCOEMyQ0YxRDlBQzc5Q0QxIg5nb29nbGVjYWxlbmRhcioDYWxsMgVldmVudDoIQ0FMRU5EQVJIBVJeGjNHRFJJVkVfMVBEaXppY0RpaGthN3MxVmd1SlUxTEpwdEFPekZMQWlIU3ZDNlFseWNWNkEiBmdkcml2ZSoIRG9jdW1lbnQyFUNPTExBQk9SQVRJVkVfQ09OVEVOVA==",
+          "url": "https://www.google.com/calendar/event?authuser=steve.calvert%40glean.com\u0026eid=Mm9xa21ocWtkYzQzb3U1N25jMWtiZWRsaXBfMjAyNTEyMDVUMTkzMDAwWiA%3D"
+        },
+        {
+          "document": {
+            "datasource": "gdrive",
+            "docType": "Document",
+            "id": "GDRIVE_1-brX_y6m3zZxNROIR_xF9nqQhNxaElR4kfY3gkOoeZg",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "container": "Meet Recordings",
+              "createTime": "2025-11-21T20:03:42Z",
+              "datasource": "gdrive",
+              "datasourceId": "1-brX_y6m3zZxNROIR_xF9nqQhNxaElR4kfY3gkOoeZg",
+              "datasourceInstance": "gdrive",
+              "documentCategory": "COLLABORATIVE_CONTENT",
+              "documentId": "GDRIVE_1-brX_y6m3zZxNROIR_xF9nqQhNxaElR4kfY3gkOoeZg",
+              "interactions": {},
+              "loggingId": "7F19EC39C179E9D6844B21E90E785C5A",
+              "mimeType": "application/vnd.google-apps.document",
+              "objectType": "Document",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "updateTime": "2025-11-21T20:34:12Z",
+              "updatedBy": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "visibility": "SPECIFIC_PEOPLE_AND_GROUPS"
+            },
+            "parentDocument": {
+              "title": "Meet Recordings"
+            },
+            "title": "RND Weekly Projects Check-In - 2025/11/21 13:25 CST - Notes by Gemini",
+            "url": "https://docs.google.com/document/d/1-brX_y6m3zZxNROIR_xF9nqQhNxaElR4kfY3gkOoeZg"
+          },
+          "snippets": [
+            {
+              "mimeType": "text/plain",
+              "ranges": [
+                {
+                  "endIndex": 60,
+                  "startIndex": 53,
+                  "type": "BOLD"
+                },
+                {
+                  "endIndex": 85,
+                  "startIndex": 80,
+                  "type": "BOLD"
+                },
+                {
+                  "endIndex": 117,
+                  "startIndex": 113,
+                  "type": "BOLD"
+                }
+              ],
+              "snippet": "",
+              "snippetTextOrdering": 1,
+              "text": "The beta for Composer to go to Assistant, originally planned for the end of the month, will now likely slip by a week to early December. ",
+              "url": "https://docs.google.com/document/d/1-brX_y6m3zZxNROIR_xF9nqQhNxaElR4kfY3gkOoeZg?tab=t.1otpc38608hx#heading=h.muy5kxxs3vua"
+            },
+            {
+              "mimeType": "text/plain",
+              "ranges": [
+                {
+                  "endIndex": 4,
+                  "startIndex": 0,
+                  "type": "BOLD"
+                }
+              ],
+              "snippet": "",
+              "text": "Plan Someone in 404 | Sixglean Candles (Glean HQ, 4th Fl) provided updates on Chat search unification, noting that",
+              "url": "https://docs.google.com/document/d/1-brX_y6m3zZxNROIR_xF9nqQhNxaElR4kfY3gkOoeZg?tab=t.1otpc38608hx#heading=h.muy5kxxs3vua"
+            }
+          ],
+          "title": "RND Weekly Projects Check-In - 2025/11/21 13:25 CST - Notes by Gemini",
+          "trackingToken": "cECla84C8x3dDFYp,CtkBChBjRUNsYTg0Qzh4M2RERllwEAYaM0dEUklWRV8xLWJyWF95Nm0zelp4TlJPSVJfeEY5bnFRaE54YUVsUjRrZlkzZ2tPb2VaZyIGZ2RyaXZlKgNhbGwyCERvY3VtZW50OhVDT0xMQUJPUkFUSVZFX0NPTlRFTlRIBlJeGjNHRFJJVkVfMVBEaXppY0RpaGthN3MxVmd1SlUxTEpwdEFPekZMQWlIU3ZDNlFseWNWNkEiBmdkcml2ZSoIRG9jdW1lbnQyFUNPTExBQk9SQVRJVkVfQ09OVEVOVA==",
+          "url": "https://docs.google.com/document/d/1-brX_y6m3zZxNROIR_xF9nqQhNxaElR4kfY3gkOoeZg"
+        },
+        {
+          "document": {
+            "datasource": "gdrive",
+            "docType": "Text",
+            "id": "GDRIVE_1NGaojbq9Dx-iQDJVLXv4iChADecSATdt",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "container": "Meet Recordings",
+              "createTime": "2025-11-21T20:28:27Z",
+              "datasource": "gdrive",
+              "datasourceId": "1NGaojbq9Dx-iQDJVLXv4iChADecSATdt",
+              "datasourceInstance": "gdrive",
+              "documentCategory": "COLLABORATIVE_CONTENT",
+              "documentId": "GDRIVE_1NGaojbq9Dx-iQDJVLXv4iChADecSATdt",
+              "interactions": {},
+              "loggingId": "501E4567A68B259E2DD56A0F8B42C567",
+              "mimeType": "text/plain",
+              "objectType": "Text",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "updateTime": "2025-11-21T20:28:28Z",
+              "updatedBy": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "visibility": "SPECIFIC_PEOPLE_AND_GROUPS"
+            },
+            "parentDocument": {
+              "title": "Meet Recordings"
+            },
+            "title": "RND Weekly Projects Check-In - 2025/11/21 13:25 CST - Chat",
+            "url": "https://drive.google.com/file/d/1NGaojbq9Dx-iQDJVLXv4iChADecSATdt"
+          },
+          "snippets": [
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "text": "00:29:20.803,00:29:23.803"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 1,
+              "text": "Christian Ervin: Callout to Steve / any DRIs: if you ever find yourselves blocked by design please reach out to me"
+            }
+          ],
+          "title": "RND Weekly Projects Check-In - 2025/11/21 13:25 CST - Chat",
+          "trackingToken": "cECla84C8x3dDFYp,CsoBChBjRUNsYTg0Qzh4M2RERllwEAcaKEdEUklWRV8xTkdhb2picTlEeC1pUURKVkxYdjRpQ2hBRGVjU0FUZHQiBmdkcml2ZSoDYWxsMgRUZXh0OhVDT0xMQUJPUkFUSVZFX0NPTlRFTlRIB1JeGjNHRFJJVkVfMVBEaXppY0RpaGthN3MxVmd1SlUxTEpwdEFPekZMQWlIU3ZDNlFseWNWNkEiBmdkcml2ZSoIRG9jdW1lbnQyFUNPTExBQk9SQVRJVkVfQ09OVEVOVA==",
+          "url": "https://drive.google.com/file/d/1NGaojbq9Dx-iQDJVLXv4iChADecSATdt"
+        },
+        {
+          "document": {
+            "datasource": "gdrive",
+            "docType": "Video",
+            "id": "GDRIVE_1xLwW_dXMA4x3IPADjyKUXbK63uW1a-54",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "container": "Meet Recordings",
+              "createTime": "2025-11-21T20:28:27Z",
+              "datasource": "gdrive",
+              "datasourceId": "1xLwW_dXMA4x3IPADjyKUXbK63uW1a-54",
+              "datasourceInstance": "gdrive",
+              "documentCategory": "COLLABORATIVE_CONTENT",
+              "documentId": "GDRIVE_1xLwW_dXMA4x3IPADjyKUXbK63uW1a-54",
+              "interactions": {},
+              "loggingId": "5A54E2CF78E0E611AA2CE029D421566A",
+              "mimeType": "video/mp4",
+              "objectType": "Video",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "updateTime": "2025-11-21T20:28:28Z",
+              "updatedBy": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "visibility": "SPECIFIC_PEOPLE_AND_GROUPS"
+            },
+            "parentDocument": {
+              "title": "Meet Recordings"
+            },
+            "title": "RND Weekly Projects Check-In - 2025/11/21 13:25 CST - Recording",
+            "url": "https://drive.google.com/file/d/1xLwW_dXMA4x3IPADjyKUXbK63uW1a-54"
+          },
+          "snippets": [
+            {
+              "snippet": ""
+            }
+          ],
+          "title": "RND Weekly Projects Check-In - 2025/11/21 13:25 CST - Recording",
+          "trackingToken": "cECla84C8x3dDFYp,CssBChBjRUNsYTg0Qzh4M2RERllwEAkaKEdEUklWRV8xeEx3V19kWE1BNHgzSVBBRGp5S1VYYks2M3VXMWEtNTQiBmdkcml2ZSoDYWxsMgVWaWRlbzoVQ09MTEFCT1JBVElWRV9DT05URU5USAlSXhozR0RSSVZFXzFQRGl6aWNEaWhrYTdzMVZndUpVMUxKcHRBT3pGTEFpSFN2QzZRbHljVjZBIgZnZHJpdmUqCERvY3VtZW50MhVDT0xMQUJPUkFUSVZFX0NPTlRFTlQ=",
+          "url": "https://drive.google.com/file/d/1xLwW_dXMA4x3IPADjyKUXbK63uW1a-54"
+        },
+        {
+          "document": {
+            "datasource": "googlecalendar",
+            "docType": "event",
+            "id": "GOOGLECALENDAR_Event_B0FD5DEE91CEEB96A43E4100D5978DBF",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "createTime": "2025-11-21T19:30:00Z",
+              "customData": {
+                "attachmentUrls": {
+                  "stringValue": "https://drive.google.com/file/d/1xLwW_dXMA4x3IPADjyKUXbK63uW1a-54/view?usp=drive_web\nhttps://drive.google.com/file/d/1NGaojbq9Dx-iQDJVLXv4iChADecSATdt/view?usp=drive_web\nhttps://docs.google.com/document/d/1-brX_y6m3zZxNROIR_xF9nqQhNxaElR4kfY3gkOoeZg/edit?usp=meet_tnfm_calendar\nhttps://docs.google.com/document/d/1PDizicDihka7s1VguJU1LJptAOzFLAiHSvC6QlycV6A/edit?usp=sharing"
+                },
+                "attendeeDetails": {
+                  "stringValue": "[{\"name\":\"Emrecan Dogan\",\"responseStatus\":\"accepted\"},{\"name\":\"Steve Calvert\",\"responseStatus\":\"accepted\"},{\"name\":\"Rohan Vora\",\"responseStatus\":\"tentative\"},{\"name\":\"akash.sagar@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"Jassim Latif\",\"responseStatus\":\"needsAction\"},{\"name\":\"Shishir Agrawal\",\"responseStatus\":\"accepted\"},{\"name\":\"Tony Gentilcore\",\"responseStatus\":\"accepted\"},{\"name\":\"Allan Livingston\",\"responseStatus\":\"accepted\"},{\"name\":\"cynthia.castro@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"James Pratama\",\"responseStatus\":\"accepted\"},{\"name\":\"Thai Tran\",\"responseStatus\":\"accepted\"},{\"name\":\"Mayank Malhotra\",\"responseStatus\":\"accepted\"},{\"name\":\"Christian Ervin\",\"responseStatus\":\"needsAction\"},{\"name\":\"Meera Shah\",\"responseStatus\":\"accepted\"},{\"name\":\"Onder Polat\",\"responseStatus\":\"accepted\"},{\"name\":\"Arpit Agrawal\",\"responseStatus\":\"declined\"},{\"name\":\"Seema Jethani\",\"responseStatus\":\"accepted\"},{\"name\":\"Vardhman Singh\",\"responseStatus\":\"needsAction\"},{\"name\":\"Vishwanath T R\",\"responseStatus\":\"accepted\"},{\"name\":\"Jen Zagofsky\",\"responseStatus\":\"accepted\"},{\"name\":\"alice@glean.com\",\"responseStatus\":\"declined\"},{\"name\":\"benjamin.mcmahan@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"cathy.chen@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"chaitanya@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"devansh.dwivedi@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"kiran.bondalapati@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"kumar@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"max.comolli@glean.com\",\"responseStatus\":\"declined\"},{\"name\":\"naveen.vardhi@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"nilesh.dalvi@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"pradnya.karbhari@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"roshan.dheram@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"sneha.chaudhari@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"tao.zhou@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"veraj.paruthi@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"arjun@glean.com\",\"responseStatus\":\"declined\"},{\"name\":\"abhi.samantapudi@glean.com\",\"responseStatus\":\"accepted\"}]"
+                },
+                "conferenceProvider": {
+                  "stringValue": "Google Meet"
+                },
+                "conferenceUri": {
+                  "stringValue": "https://meet.google.com/edp-wcng-rok"
+                },
+                "created": {
+                  "stringValue": "2025-10-17T23:29:53.000Z"
+                },
+                "creatorName": {
+                  "stringValue": "Cynthia Castro"
+                },
+                "eventEndTime": {
+                  "stringValue": "2025-11-21T14:00:00.000-06:00"
+                },
+                "eventStartTime": {
+                  "stringValue": "2025-11-21T13:30:00.000-06:00"
+                },
+                "eventStatus": {
+                  "stringValue": "confirmed"
+                },
+                "eventType": {
+                  "stringValue": "default"
+                },
+                "guestsCanSeeOtherGuests": {
+                  "stringValue": "true"
+                },
+                "location": {
+                  "stringValue": "Glean-SF-2nd Fl-SF-213 - Mr. Glean Side (5) [VC], Glean-PA-4th Fl-PA-404 - Sixglean Candles (10) [VC]"
+                },
+                "meetUrl": {
+                  "stringValue": "https://meet.google.com/edp-wcng-rok"
+                },
+                "meetingParticipants": {
+                  "stringListValue": [
+                    "c_188d279uf7gr4gqfif8vu64n3m7u6@resource.calendar.google.com",
+                    "c_18804dq8ecbc8ga9mc6tpt3hmlnb0@resource.calendar.google.com",
+                    "Emrecan Dogan",
+                    "Steve Calvert",
+                    "Rohan Vora",
+                    "akash.sagar@glean.com",
+                    "jassim.latif@glean.com",
+                    "Shishir Agrawal",
+                    "Tony Gentilcore",
+                    "Allan Livingston",
+                    "Cynthia Castro",
+                    "James Pratama",
+                    "Thai Tran",
+                    "mayank.malhotra@glean.com",
+                    "Christian Ervin",
+                    "Meera Shah",
+                    "Onder Polat",
+                    "Arpit Agrawal",
+                    "seema.jethani@glean.com",
+                    "Vardhman Singh",
+                    "Vish T R",
+                    "Jen Zagofsky",
+                    "Alice Wang",
+                    "Ben McMahan",
+                    "Cathy Chen",
+                    "chaitanya@glean.com",
+                    "Devansh Dwivedi",
+                    "Kiran Bondalapati",
+                    "Kumar Rangarajan",
+                    "Max Comolli",
+                    "Naveen Vardhi",
+                    "Nilesh Dalvi",
+                    "Pradnya Karbhari",
+                    "Roshan Dheram",
+                    "Sneha Chaudhari",
+                    "Tao Zhou",
+                    "Veraj Paruthi",
+                    "Arjun Landes",
+                    "Abhi Samantapudi"
+                  ]
+                },
+                "organizer": {
+                  "stringListValue": [
+                    "8DB453CB59486720055706DC97E1A1E4"
+                  ]
+                },
+                "participants": {
+                  "stringListValue": [
+                    "036E68EA2481588509A35D5BB80A30E9",
+                    "0E8091AA5555CED306C5DD72C8021556",
+                    "131E114578E20436A13A8A94584BC341",
+                    "1C6D65D6601F40C7D8F378787210E821",
+                    "22BF514F54A49F971EBF5F4A7786B240",
+                    "2A5862FE5C36C6FA62EEE6CE6719E1F2",
+                    "307E12B67CDE05441BB8CA690C5FDED1",
+                    "34359DA304DF814EE238146E9C2B2589",
+                    "36E60AA20CDFB2C33900A27DF9C1AA28",
+                    "3BFE3D6190B9682B1A438729AACC9D51",
+                    "410B15D507B1E77B0EB41EE50A33C166",
+                    "4966E24E2C62B64000F0109EB4FEE5DA",
+                    "4AA84BDDA6E70D0965CE45560DD1CD44",
+                    "4F2A8867F57E2D3DD2575A09AC9832EC",
+                    "582122941BDC99987291C2C075BB5201",
+                    "5C29180F1E54B7CEF2296EC57E8CF1DD",
+                    "5C441E2269720C069DC294814ACCF853",
+                    "71E4BC9473BC36BB7E84E811C964C29A",
+                    "78EF1448F0382566A25C8A5D6C795682",
+                    "7B31A6206C218450C84C7C7E1AEE19D3",
+                    "8DB453CB59486720055706DC97E1A1E4",
+                    "90626173EE5666BB891147D9B1F40378",
+                    "9D3ADD79909166094DB6ABBBDD65E1DE",
+                    "A128BE9D255F61AD6787E3C35CB7CE4B",
+                    "A73EAB1297F1C054549133D2C36C12D1",
+                    "A7AC9B8E756572F9A5541538DE67F626",
+                    "B3166CEF3548AA7E9343EA5F27D29736",
+                    "B5D66443909C32C5925E45FD8B01F581",
+                    "C5461EF5DE63DEE6447F3B507A0E7145",
+                    "DB3969C214D7A3BB6BD544357A452344",
+                    "F6B7F706CA221AE93BB3632F63CF10DC",
+                    "F7090F3C9486EB6E2A2EA2F166F5A4D7"
+                  ]
+                },
+                "recurrenceId": {
+                  "stringValue": "2oqkmhqkdc43ou57nc1kbedlip_R20251121T193000"
+                },
+                "responseStatus": {
+                  "stringValue": "accepted"
+                },
+                "transcriptUrl": {
+                  "stringValue": "https://docs.google.com/document/d/1-brX_y6m3zZxNROIR_xF9nqQhNxaElR4kfY3gkOoeZg/edit?usp=meet_tnfm_calendar"
+                }
+              },
+              "datasource": "googlecalendar",
+              "datasourceId": "B0FD5DEE91CEEB96A43E4100D5978DBF",
+              "datasourceInstance": "googlecalendar",
+              "documentCategory": "CALENDAR",
+              "documentId": "GOOGLECALENDAR_Event_B0FD5DEE91CEEB96A43E4100D5978DBF",
+              "interactions": {},
+              "loggingId": "67579102792E6FEE042F8B107AA70BF5",
+              "mimeType": "event",
+              "objectType": "event",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "updateTime": "2025-11-21T19:30:00Z",
+              "visibility": "SPECIFIC_PEOPLE_AND_GROUPS"
+            },
+            "title": "RND Weekly Projects Check-In",
+            "url": "https://www.google.com/calendar/event?authuser=steve.calvert%40glean.com\u0026eid=Mm9xa21ocWtkYzQzb3U1N25jMWtiZWRsaXBfMjAyNTExMjFUMTkzMDAwWiA%3D"
+          },
+          "snippets": [
+            {
+              "mimeType": "text/plain",
+              "ranges": [
+                {
+                  "endIndex": 36,
+                  "startIndex": 29,
+                  "type": "BOLD"
+                },
+                {
+                  "endIndex": 52,
+                  "startIndex": 37,
+                  "type": "LINK",
+                  "url": "https://docs.google.com/document/d/1PDizicDihka7s1VguJU1LJptAOzFLAiHSvC6QlycV6A/edit?usp=sharing"
+                }
+              ],
+              "snippet": "",
+              "text": "You are a DRI for one of our Monthly Q4 Top projects:"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 1,
+              "text": "Please review the status update, make proposed changes"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 2,
+              "text": "If your status is green/ontrack to current exit goal, you can skip"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 3,
+              "text": "If your status is yellow/red, come prepare to share what you need to get"
+            }
+          ],
+          "title": "RND Weekly Projects Check-In",
+          "trackingToken": "cECla84C8x3dDFYp,CtMBChBjRUNsYTg0Qzh4M2RERllwEAoaNUdPT0dMRUNBTEVOREFSX0V2ZW50X0IwRkQ1REVFOTFDRUVCOTZBNDNFNDEwMEQ1OTc4REJGIg5nb29nbGVjYWxlbmRhcioDYWxsMgVldmVudDoIQ0FMRU5EQVJIClJeGjNHRFJJVkVfMVBEaXppY0RpaGthN3MxVmd1SlUxTEpwdEFPekZMQWlIU3ZDNlFseWNWNkEiBmdkcml2ZSoIRG9jdW1lbnQyFUNPTExBQk9SQVRJVkVfQ09OVEVOVA==",
+          "url": "https://www.google.com/calendar/event?authuser=steve.calvert%40glean.com\u0026eid=Mm9xa21ocWtkYzQzb3U1N25jMWtiZWRsaXBfMjAyNTExMjFUMTkzMDAwWiA%3D"
+        },
+        {
+          "document": {
+            "datasource": "gdrive",
+            "docType": "Document",
+            "id": "GDRIVE_1s40FDrRfvWuodJlDnjeSv_LBLHRNqI97I3Tx-HjHmYk",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "container": "Meet Recordings",
+              "createTime": "2025-11-07T20:07:27Z",
+              "datasource": "gdrive",
+              "datasourceId": "1s40FDrRfvWuodJlDnjeSv_LBLHRNqI97I3Tx-HjHmYk",
+              "datasourceInstance": "gdrive",
+              "documentCategory": "COLLABORATIVE_CONTENT",
+              "documentId": "GDRIVE_1s40FDrRfvWuodJlDnjeSv_LBLHRNqI97I3Tx-HjHmYk",
+              "interactions": {},
+              "loggingId": "4909A3DE5A41444639724DCFE87484BC",
+              "mimeType": "application/vnd.google-apps.document",
+              "objectType": "Document",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "updateTime": "2025-11-07T21:08:00Z",
+              "updatedBy": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "visibility": "SPECIFIC_PEOPLE_AND_GROUPS"
+            },
+            "parentDocument": {
+              "title": "Meet Recordings"
+            },
+            "title": "RND Weekly Projects Check-In - 2025/11/07 13:25 CST - Notes by Gemini",
+            "url": "https://docs.google.com/document/d/1s40FDrRfvWuodJlDnjeSv_LBLHRNqI97I3Tx-HjHmYk"
+          },
+          "snippets": [
+            {
+              "mimeType": "text/plain",
+              "ranges": [
+                {
+                  "endIndex": 129,
+                  "startIndex": 125,
+                  "type": "BOLD"
+                }
+              ],
+              "snippet": "",
+              "text": "in 404 | Sixglean Candles (Glean HQ, 4th Fl) inquired about tracking progress, and the team confirmed that while they have a plan to measure it, execution has not started yet, as they need to figure out logging and build data models. ",
+              "url": "https://docs.google.com/document/d/1s40FDrRfvWuodJlDnjeSv_LBLHRNqI97I3Tx-HjHmYk?tab=t.dagzy0ou9kmm#heading=h.s2eokl6rhusj"
+            }
+          ],
+          "title": "RND Weekly Projects Check-In - 2025/11/07 13:25 CST - Notes by Gemini",
+          "trackingToken": "cECla84C8x3dDFYp,CtkBChBjRUNsYTg0Qzh4M2RERllwEAsaM0dEUklWRV8xczQwRkRyUmZ2V3VvZEpsRG5qZVN2X0xCTEhSTnFJOTdJM1R4LUhqSG1ZayIGZ2RyaXZlKgNhbGwyCERvY3VtZW50OhVDT0xMQUJPUkFUSVZFX0NPTlRFTlRIC1JeGjNHRFJJVkVfMVBEaXppY0RpaGthN3MxVmd1SlUxTEpwdEFPekZMQWlIU3ZDNlFseWNWNkEiBmdkcml2ZSoIRG9jdW1lbnQyFUNPTExBQk9SQVRJVkVfQ09OVEVOVA==",
+          "url": "https://docs.google.com/document/d/1s40FDrRfvWuodJlDnjeSv_LBLHRNqI97I3Tx-HjHmYk"
+        },
+        {
+          "document": {
+            "datasource": "gdrive",
+            "docType": "Text",
+            "id": "GDRIVE_16aXx8fKX7NlDeH_2q6qFgriDUl0VTQPs",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "container": "Meet Recordings",
+              "createTime": "2025-11-07T20:56:03Z",
+              "datasource": "gdrive",
+              "datasourceId": "16aXx8fKX7NlDeH_2q6qFgriDUl0VTQPs",
+              "datasourceInstance": "gdrive",
+              "documentCategory": "COLLABORATIVE_CONTENT",
+              "documentId": "GDRIVE_16aXx8fKX7NlDeH_2q6qFgriDUl0VTQPs",
+              "interactions": {},
+              "loggingId": "73E0BAA5801A4C6E77BFEE0692C2D841",
+              "mimeType": "text/plain",
+              "objectType": "Text",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "updateTime": "2025-11-07T20:56:04Z",
+              "updatedBy": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "visibility": "SPECIFIC_PEOPLE_AND_GROUPS"
+            },
+            "parentDocument": {
+              "title": "Meet Recordings"
+            },
+            "title": "RND Weekly Projects Check-In - 2025/11/07 13:25 CST - Chat",
+            "url": "https://drive.google.com/file/d/16aXx8fKX7NlDeH_2q6qFgriDUl0VTQPs"
+          },
+          "snippets": [
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "text": "00:01:14.299,00:01:17.299"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 1,
+              "text": "Jen Zagofsky: https://docs.google.com/document/d/1PDizicDihka7s1VguJU1LJptAOzFLAiHSvC6QlycV6A/edit?tab=t.qbvr5vwrwmad"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 2,
+              "text": "00:03:39.852,00:03:42.852"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 3,
+              "text": "Mayank Malhotra: No pressure Cathy"
+            }
+          ],
+          "title": "RND Weekly Projects Check-In - 2025/11/07 13:25 CST - Chat",
+          "trackingToken": "cECla84C8x3dDFYp,CsoBChBjRUNsYTg0Qzh4M2RERllwEAwaKEdEUklWRV8xNmFYeDhmS1g3TmxEZUhfMnE2cUZncmlEVWwwVlRRUHMiBmdkcml2ZSoDYWxsMgRUZXh0OhVDT0xMQUJPUkFUSVZFX0NPTlRFTlRIDFJeGjNHRFJJVkVfMVBEaXppY0RpaGthN3MxVmd1SlUxTEpwdEFPekZMQWlIU3ZDNlFseWNWNkEiBmdkcml2ZSoIRG9jdW1lbnQyFUNPTExBQk9SQVRJVkVfQ09OVEVOVA==",
+          "url": "https://drive.google.com/file/d/16aXx8fKX7NlDeH_2q6qFgriDUl0VTQPs"
+        },
+        {
+          "document": {
+            "datasource": "gdrive",
+            "docType": "Video",
+            "id": "GDRIVE_1Tm_cMMRcEpd7vBxOqdqcEZSMLfd9ZeD_",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "container": "Meet Recordings",
+              "createTime": "2025-11-07T20:56:03Z",
+              "datasource": "gdrive",
+              "datasourceId": "1Tm_cMMRcEpd7vBxOqdqcEZSMLfd9ZeD_",
+              "datasourceInstance": "gdrive",
+              "documentCategory": "COLLABORATIVE_CONTENT",
+              "documentId": "GDRIVE_1Tm_cMMRcEpd7vBxOqdqcEZSMLfd9ZeD_",
+              "interactions": {},
+              "loggingId": "592609697890ED73AB0189BF3DC16298",
+              "mimeType": "video/mp4",
+              "objectType": "Video",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "updateTime": "2025-11-07T20:56:04Z",
+              "updatedBy": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "visibility": "SPECIFIC_PEOPLE_AND_GROUPS"
+            },
+            "parentDocument": {
+              "title": "Meet Recordings"
+            },
+            "title": "RND Weekly Projects Check-In - 2025/11/07 13:25 CST - Recording",
+            "url": "https://drive.google.com/file/d/1Tm_cMMRcEpd7vBxOqdqcEZSMLfd9ZeD_"
+          },
+          "snippets": [
+            {
+              "snippet": ""
+            }
+          ],
+          "title": "RND Weekly Projects Check-In - 2025/11/07 13:25 CST - Recording",
+          "trackingToken": "cECla84C8x3dDFYp,CssBChBjRUNsYTg0Qzh4M2RERllwEA4aKEdEUklWRV8xVG1fY01NUmNFcGQ3dkJ4T3FkcWNFWlNNTGZkOVplRF8iBmdkcml2ZSoDYWxsMgVWaWRlbzoVQ09MTEFCT1JBVElWRV9DT05URU5USA5SXhozR0RSSVZFXzFQRGl6aWNEaWhrYTdzMVZndUpVMUxKcHRBT3pGTEFpSFN2QzZRbHljVjZBIgZnZHJpdmUqCERvY3VtZW50MhVDT0xMQUJPUkFUSVZFX0NPTlRFTlQ=",
+          "url": "https://drive.google.com/file/d/1Tm_cMMRcEpd7vBxOqdqcEZSMLfd9ZeD_"
+        },
+        {
+          "document": {
+            "datasource": "googlecalendar",
+            "docType": "event",
+            "id": "GOOGLECALENDAR_Event_8D2C7400BBCEE701C10048B1FDC3A9E5",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "createTime": "2025-11-07T19:30:00Z",
+              "customData": {
+                "attachmentUrls": {
+                  "stringValue": "https://drive.google.com/file/d/1Tm_cMMRcEpd7vBxOqdqcEZSMLfd9ZeD_/view?usp=drive_web\nhttps://drive.google.com/file/d/16aXx8fKX7NlDeH_2q6qFgriDUl0VTQPs/view?usp=drive_web\nhttps://docs.google.com/document/d/1s40FDrRfvWuodJlDnjeSv_LBLHRNqI97I3Tx-HjHmYk/edit?usp=meet_tnfm_calendar\nhttps://docs.google.com/document/d/1PDizicDihka7s1VguJU1LJptAOzFLAiHSvC6QlycV6A/edit?usp=sharing"
+                },
+                "attendeeDetails": {
+                  "stringValue": "[{\"name\":\"Emrecan Dogan\",\"responseStatus\":\"accepted\"},{\"name\":\"Steve Calvert\",\"responseStatus\":\"accepted\"},{\"name\":\"Rohan Vora\",\"responseStatus\":\"accepted\"},{\"name\":\"Jassim Latif\",\"responseStatus\":\"declined\"},{\"name\":\"Shishir Agrawal\",\"responseStatus\":\"accepted\"},{\"name\":\"Tony Gentilcore\",\"responseStatus\":\"accepted\"},{\"name\":\"Allan Livingston\",\"responseStatus\":\"accepted\"},{\"name\":\"cynthia.castro@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"James Pratama\",\"responseStatus\":\"accepted\"},{\"name\":\"Thai Tran\",\"responseStatus\":\"accepted\"},{\"name\":\"Mayank Malhotra\",\"responseStatus\":\"accepted\"},{\"name\":\"Christian Ervin\",\"responseStatus\":\"needsAction\"},{\"name\":\"Meera Shah\",\"responseStatus\":\"accepted\"},{\"name\":\"Onder Polat\",\"responseStatus\":\"accepted\"},{\"name\":\"Arpit Agrawal\",\"responseStatus\":\"declined\"},{\"name\":\"Seema Jethani\",\"responseStatus\":\"needsAction\"},{\"name\":\"Vardhman Singh\",\"responseStatus\":\"needsAction\"},{\"name\":\"Vishwanath T R\",\"responseStatus\":\"accepted\"},{\"name\":\"Jen Zagofsky\",\"responseStatus\":\"accepted\"},{\"name\":\"alice@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"benjamin.mcmahan@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"cathy.chen@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"chaitanya@glean.com\",\"responseStatus\":\"declined\"},{\"name\":\"devansh.dwivedi@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"kiran.bondalapati@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"kumar@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"max.comolli@glean.com\",\"responseStatus\":\"accepted\"},{\"name\":\"naveen.vardhi@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"nilesh.dalvi@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"pradnya.karbhari@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"roshan.dheram@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"sneha.chaudhari@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"tao.zhou@glean.com\",\"responseStatus\":\"needsAction\"},{\"name\":\"veraj.paruthi@glean.com\",\"responseStatus\":\"accepted\"}]"
+                },
+                "conferenceProvider": {
+                  "stringValue": "Google Meet"
+                },
+                "conferenceUri": {
+                  "stringValue": "https://meet.google.com/edp-wcng-rok"
+                },
+                "created": {
+                  "stringValue": "2025-10-17T23:29:53.000Z"
+                },
+                "creatorName": {
+                  "stringValue": "Cynthia Castro"
+                },
+                "eventEndTime": {
+                  "stringValue": "2025-11-07T14:00:00.000-06:00"
+                },
+                "eventStartTime": {
+                  "stringValue": "2025-11-07T13:30:00.000-06:00"
+                },
+                "eventStatus": {
+                  "stringValue": "confirmed"
+                },
+                "eventType": {
+                  "stringValue": "default"
+                },
+                "guestsCanSeeOtherGuests": {
+                  "stringValue": "true"
+                },
+                "location": {
+                  "stringValue": "Glean-SF-2nd Fl-SF-213 - Mr. Glean Side (5) [VC], Glean-PA-4th Fl-PA-404 - Sixglean Candles (10) [VC]"
+                },
+                "meetUrl": {
+                  "stringValue": "https://meet.google.com/edp-wcng-rok"
+                },
+                "meetingParticipants": {
+                  "stringListValue": [
+                    "c_188d279uf7gr4gqfif8vu64n3m7u6@resource.calendar.google.com",
+                    "c_18804dq8ecbc8ga9mc6tpt3hmlnb0@resource.calendar.google.com",
+                    "Emrecan Dogan",
+                    "Steve Calvert",
+                    "Rohan Vora",
+                    "jassim.latif@glean.com",
+                    "Shishir Agrawal",
+                    "Tony Gentilcore",
+                    "Allan Livingston",
+                    "Cynthia Castro",
+                    "James Pratama",
+                    "Thai Tran",
+                    "mayank.malhotra@glean.com",
+                    "Christian Ervin",
+                    "Meera Shah",
+                    "Onder Polat",
+                    "Arpit Agrawal",
+                    "seema.jethani@glean.com",
+                    "Vardhman Singh",
+                    "Vish T R",
+                    "Jen Zagofsky",
+                    "Alice Wang",
+                    "Ben McMahan",
+                    "Cathy Chen",
+                    "chaitanya@glean.com",
+                    "Devansh Dwivedi",
+                    "Kiran Bondalapati",
+                    "Kumar Rangarajan",
+                    "Max Comolli",
+                    "Naveen Vardhi",
+                    "Nilesh Dalvi",
+                    "Pradnya Karbhari",
+                    "Roshan Dheram",
+                    "Sneha Chaudhari",
+                    "Tao Zhou",
+                    "Veraj Paruthi"
+                  ]
+                },
+                "organizer": {
+                  "stringListValue": [
+                    "8DB453CB59486720055706DC97E1A1E4"
+                  ]
+                },
+                "participants": {
+                  "stringListValue": [
+                    "036E68EA2481588509A35D5BB80A30E9",
+                    "0E8091AA5555CED306C5DD72C8021556",
+                    "131E114578E20436A13A8A94584BC341",
+                    "1C6D65D6601F40C7D8F378787210E821",
+                    "22BF514F54A49F971EBF5F4A7786B240",
+                    "2A5862FE5C36C6FA62EEE6CE6719E1F2",
+                    "307E12B67CDE05441BB8CA690C5FDED1",
+                    "3BFE3D6190B9682B1A438729AACC9D51",
+                    "410B15D507B1E77B0EB41EE50A33C166",
+                    "4966E24E2C62B64000F0109EB4FEE5DA",
+                    "4AA84BDDA6E70D0965CE45560DD1CD44",
+                    "4F2A8867F57E2D3DD2575A09AC9832EC",
+                    "582122941BDC99987291C2C075BB5201",
+                    "5C29180F1E54B7CEF2296EC57E8CF1DD",
+                    "5C441E2269720C069DC294814ACCF853",
+                    "71E4BC9473BC36BB7E84E811C964C29A",
+                    "78EF1448F0382566A25C8A5D6C795682",
+                    "7B31A6206C218450C84C7C7E1AEE19D3",
+                    "8DB453CB59486720055706DC97E1A1E4",
+                    "90626173EE5666BB891147D9B1F40378",
+                    "9D3ADD79909166094DB6ABBBDD65E1DE",
+                    "A128BE9D255F61AD6787E3C35CB7CE4B",
+                    "A73EAB1297F1C054549133D2C36C12D1",
+                    "A7AC9B8E756572F9A5541538DE67F626",
+                    "B3166CEF3548AA7E9343EA5F27D29736",
+                    "B5D66443909C32C5925E45FD8B01F581",
+                    "C5461EF5DE63DEE6447F3B507A0E7145",
+                    "DB3969C214D7A3BB6BD544357A452344",
+                    "F6B7F706CA221AE93BB3632F63CF10DC",
+                    "F7090F3C9486EB6E2A2EA2F166F5A4D7"
+                  ]
+                },
+                "recurrenceId": {
+                  "stringValue": "2oqkmhqkdc43ou57nc1kbedlip_R20251107T193000"
+                },
+                "responseStatus": {
+                  "stringValue": "accepted"
+                },
+                "transcriptUrl": {
+                  "stringValue": "https://docs.google.com/document/d/1s40FDrRfvWuodJlDnjeSv_LBLHRNqI97I3Tx-HjHmYk/edit?usp=meet_tnfm_calendar"
+                }
+              },
+              "datasource": "googlecalendar",
+              "datasourceId": "8D2C7400BBCEE701C10048B1FDC3A9E5",
+              "datasourceInstance": "googlecalendar",
+              "documentCategory": "CALENDAR",
+              "documentId": "GOOGLECALENDAR_Event_8D2C7400BBCEE701C10048B1FDC3A9E5",
+              "interactions": {},
+              "loggingId": "AEAE83B579C5606CD834FBD5063A291B",
+              "mimeType": "event",
+              "objectType": "event",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8DB453CB59486720055706DC97E1A1E4"
+                },
+                "name": "Cynthia Castro",
+                "obfuscatedId": "8DB453CB59486720055706DC97E1A1E4"
+              },
+              "updateTime": "2025-11-07T19:30:00Z",
+              "visibility": "SPECIFIC_PEOPLE_AND_GROUPS"
+            },
+            "title": "RND Weekly Projects Check-In",
+            "url": "https://www.google.com/calendar/event?authuser=steve.calvert%40glean.com\u0026eid=Mm9xa21ocWtkYzQzb3U1N25jMWtiZWRsaXBfMjAyNTExMDdUMTkzMDAwWiA%3D"
+          },
+          "snippets": [
+            {
+              "mimeType": "text/plain",
+              "ranges": [
+                {
+                  "endIndex": 36,
+                  "startIndex": 29,
+                  "type": "BOLD"
+                },
+                {
+                  "endIndex": 52,
+                  "startIndex": 37,
+                  "type": "LINK",
+                  "url": "https://docs.google.com/document/d/1PDizicDihka7s1VguJU1LJptAOzFLAiHSvC6QlycV6A/edit?usp=sharing"
+                }
+              ],
+              "snippet": "",
+              "text": "You are a DRI for one of our Monthly Q4 Top projects:"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 1,
+              "text": "Please review the status update, make proposed changes"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 2,
+              "text": "If your status is green/ontrack to current exit goal, you can skip"
+            },
+            {
+              "mimeType": "text/plain",
+              "snippet": "",
+              "snippetTextOrdering": 3,
+              "text": "If your status is yellow/red, come prepare to share what you need to get"
+            }
+          ],
+          "title": "RND Weekly Projects Check-In",
+          "trackingToken": "cECla84C8x3dDFYp,CtMBChBjRUNsYTg0Qzh4M2RERllwEA8aNUdPT0dMRUNBTEVOREFSX0V2ZW50XzhEMkM3NDAwQkJDRUU3MDFDMTAwNDhCMUZEQzNBOUU1Ig5nb29nbGVjYWxlbmRhcioDYWxsMgVldmVudDoIQ0FMRU5EQVJID1JeGjNHRFJJVkVfMVBEaXppY0RpaGthN3MxVmd1SlUxTEpwdEFPekZMQWlIU3ZDNlFseWNWNkEiBmdkcml2ZSoIRG9jdW1lbnQyFUNPTExBQk9SQVRJVkVfQ09OVEVOVA==",
+          "url": "https://www.google.com/calendar/event?authuser=steve.calvert%40glean.com\u0026eid=Mm9xa21ocWtkYzQzb3U1N25jMWtiZWRsaXBfMjAyNTExMDdUMTkzMDAwWiA%3D"
+        }
+      ],
+      "clusterType": "SIMILAR",
+      "clusteredResults": [
+        {
+          "document": {
+            "datasource": "gdrive",
+            "docType": "Document",
+            "id": "GDRIVE_1ZAW1bP06itN--4v7DUONZwVNTkMzMlHIOB0x0mvVjLw",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "9D3ADD79909166094DB6ABBBDD65E1DE"
+                },
+                "name": "Emrecan Dogan",
+                "obfuscatedId": "9D3ADD79909166094DB6ABBBDD65E1DE"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "9D3ADD79909166094DB6ABBBDD65E1DE"
+                },
+                "name": "Emrecan Dogan",
+                "obfuscatedId": "9D3ADD79909166094DB6ABBBDD65E1DE"
+              },
+              "createTime": "2025-08-06T00:09:25Z",
+              "datasource": "gdrive",
+              "datasourceId": "1ZAW1bP06itN--4v7DUONZwVNTkMzMlHIOB0x0mvVjLw",
+              "datasourceInstance": "gdrive",
+              "documentCategory": "COLLABORATIVE_CONTENT",
+              "documentId": "GDRIVE_1ZAW1bP06itN--4v7DUONZwVNTkMzMlHIOB0x0mvVjLw",
+              "interactions": {},
+              "loggingId": "30ED6912A34D6822F87F2C9FC84E557C",
+              "mimeType": "application/vnd.google-apps.document",
+              "objectType": "Document",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "9D3ADD79909166094DB6ABBBDD65E1DE"
+                },
+                "name": "Emrecan Dogan",
+                "obfuscatedId": "9D3ADD79909166094DB6ABBBDD65E1DE"
+              },
+              "updateTime": "2025-11-17T02:04:11Z",
+              "updatedBy": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "90626173EE5666BB891147D9B1F40378"
+                },
+                "name": "Onder Polat",
+                "obfuscatedId": "90626173EE5666BB891147D9B1F40378"
+              },
+              "verification": {
+                "state": "UNVERIFIED"
+              },
+              "visibility": "DOMAIN_VISIBLE"
+            },
+            "parentDocument": {
+              "id": "GDRIVE_0ABEA3vq51xS3Uk9PVA"
+            },
+            "title": "R\u0026D Execution Plan for FY26 Q3 (Aug / Sep / Oct)",
+            "url": "https://docs.google.com/document/d/1ZAW1bP06itN--4v7DUONZwVNTkMzMlHIOB0x0mvVjLw"
+          },
+          "title": "R\u0026D Execution Plan for FY26 Q3 (Aug / Sep / Oct)",
+          "trackingToken": "cECla84C8x3dDFYp,CnkKEGNFQ2xhODRDOHgzZERGWXAQARozR0RSSVZFXzFaQVcxYlAwNml0Ti0tNHY3RFVPTlp3Vk5Ua016TWxISU9CMHgwbXZWakx3IgZnZHJpdmUqA2FsbDIIRG9jdW1lbnQ6FUNPTExBQk9SQVRJVkVfQ09OVEVOVEgB",
+          "url": "https://docs.google.com/document/d/1ZAW1bP06itN--4v7DUONZwVNTkMzMlHIOB0x0mvVjLw"
+        }
+      ],
+      "document": {
+        "datasource": "gdrive",
+        "docType": "Document",
+        "id": "GDRIVE_1PDizicDihka7s1VguJU1LJptAOzFLAiHSvC6QlycV6A",
+        "metadata": {
+          "assignedTo": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "582122941BDC99987291C2C075BB5201"
+            },
+            "name": "Jen Zagofsky",
+            "obfuscatedId": "582122941BDC99987291C2C075BB5201"
+          },
+          "author": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "582122941BDC99987291C2C075BB5201"
+            },
+            "name": "Jen Zagofsky",
+            "obfuscatedId": "582122941BDC99987291C2C075BB5201"
+          },
+          "collections": [
+            {
+              "createTime": "2025-11-30T23:38:04Z",
+              "creator": {
+                "metadata": {
+                  "department": "304 Product",
+                  "email": "thai.tran@glean.com",
+                  "firstName": "Thai",
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "lastName": "Tran",
+                  "loggingId": "5C29180F1E54B7CEF2296EC57E8CF1DD",
+                  "photoUrl": "https://avatars.slack-edge.com/2024-01-03/6430470112449_89b00f0679b9c157fbae_192.png",
+                  "title": "Product Manager"
+                },
+                "name": "Thai Tran",
+                "obfuscatedId": "5C29180F1E54B7CEF2296EC57E8CF1DD"
+              },
+              "description": "Docs related to Assistant FY27 Strategy",
+              "icon": "📘",
+              "id": 5135,
+              "itemCount": 5,
+              "name": "Assistant FY27 Strategy",
+              "updateTime": "2025-11-30T23:40:34Z",
+              "updatedBy": {
+                "metadata": {
+                  "department": "304 Product",
+                  "email": "thai.tran@glean.com",
+                  "firstName": "Thai",
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "lastName": "Tran",
+                  "loggingId": "5C29180F1E54B7CEF2296EC57E8CF1DD",
+                  "photoUrl": "https://avatars.slack-edge.com/2024-01-03/6430470112449_89b00f0679b9c157fbae_192.png",
+                  "title": "Product Manager"
+                },
+                "name": "Thai Tran",
+                "obfuscatedId": "5C29180F1E54B7CEF2296EC57E8CF1DD"
+              }
+            },
+            {
+              "createTime": "2025-11-04T01:17:45Z",
+              "creator": {
+                "metadata": {
+                  "department": "304 Product",
+                  "email": "thai.tran@glean.com",
+                  "firstName": "Thai",
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "lastName": "Tran",
+                  "loggingId": "5C29180F1E54B7CEF2296EC57E8CF1DD",
+                  "photoUrl": "https://avatars.slack-edge.com/2024-01-03/6430470112449_89b00f0679b9c157fbae_192.png",
+                  "title": "Product Manager"
+                },
+                "name": "Thai Tran",
+                "obfuscatedId": "5C29180F1E54B7CEF2296EC57E8CF1DD"
+              },
+              "description": "Assistant projects and goals",
+              "icon": "🎯",
+              "id": 4794,
+              "itemCount": 4,
+              "name": "Assistant OKRs",
+              "updateTime": "2025-11-05T06:08:43Z",
+              "updatedBy": {
+                "metadata": {
+                  "department": "304 Product",
+                  "email": "rohan.vora@glean.com",
+                  "firstName": "Rohan",
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "lastName": "Vora",
+                  "loggingId": "0E8091AA5555CED306C5DD72C8021556",
+                  "photoUrl": "https://avatars.slack-edge.com/2023-12-30/6401195733654_e1416757174ef9470a53_192.png",
+                  "title": "Product Manager"
+                },
+                "name": "Rohan Vora",
+                "obfuscatedId": "0E8091AA5555CED306C5DD72C8021556"
+              }
+            },
+            {
+              "createTime": "2025-11-04T18:29:59Z",
+              "creator": {
+                "metadata": {
+                  "department": "304 Product",
+                  "email": "jen.zagofsky@glean.com",
+                  "firstName": "Jen",
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "lastName": "Zagofsky",
+                  "loggingId": "582122941BDC99987291C2C075BB5201",
+                  "photoUrl": "https://avatars.slack-edge.com/2025-12-06/10072454275364_720ca9fed3e0510c11ba_192.png",
+                  "title": "Head of R\u0026D Operations"
+                },
+                "name": "Jen Zagofsky",
+                "obfuscatedId": "582122941BDC99987291C2C075BB5201"
+              },
+              "description": "Collect planning artifacts related to Q4FY26 and the months within",
+              "id": 4800,
+              "itemCount": 29,
+              "name": "R\u0026D Q4FY26 OKRs / Monthly Goals (go/rnd-fy26q4-plans)",
+              "parentId": 4065,
+              "updateTime": "2025-11-19T17:06:31Z",
+              "updatedBy": {
+                "metadata": {
+                  "department": "302 Software Engineering",
+                  "email": "vardhman.singh@glean.com",
+                  "firstName": "Vardhman",
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "lastName": "Singh",
+                  "loggingId": "A73EAB1297F1C054549133D2C36C12D1",
+                  "photoUrl": "https://avatars.slack-edge.com/2022-06-26/3721045967379_5b62d8a8b69c21cab71e_192.jpg",
+                  "title": "Software Engineer"
+                },
+                "name": "Vardhman Singh",
+                "obfuscatedId": "A73EAB1297F1C054549133D2C36C12D1"
+              }
+            },
+            {
+              "createTime": "2025-12-01T05:34:12Z",
+              "creator": {
+                "metadata": {
+                  "department": "305 Design",
+                  "email": "christian.ervin@glean.com",
+                  "firstName": "Christian",
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "lastName": "Ervin",
+                  "loggingId": "7B31A6206C218450C84C7C7E1AEE19D3",
+                  "photoUrl": "https://scio-prod-be.glean.com/api/v1/images?key=eyJ0eXBlIjoiVUdDIiwiaWQiOiIwIiwiZHMiOiJHQUxMRVJZLUlNQUdFLVBJQ0tFUiIsImNpZCI6IjM1OGM1NjBhLTcxYTctNDVkNy04NTZjLTRkNmNlZDgxZWVkZCIsImV4dCI6Ii5qcGVnIn0=",
+                  "title": "Head of Design"
+                },
+                "name": "Christian Ervin",
+                "obfuscatedId": "7B31A6206C218450C84C7C7E1AEE19D3"
+              },
+              "description": "A space to refine our approach to slide generation in Assistant.",
+              "icon": "🖼️",
+              "id": 5136,
+              "itemCount": 12,
+              "name": "Slide Generation",
+              "updateTime": "2025-12-01T05:37:42Z",
+              "updatedBy": {
+                "metadata": {
+                  "department": "305 Design",
+                  "email": "christian.ervin@glean.com",
+                  "firstName": "Christian",
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "lastName": "Ervin",
+                  "loggingId": "7B31A6206C218450C84C7C7E1AEE19D3",
+                  "photoUrl": "https://scio-prod-be.glean.com/api/v1/images?key=eyJ0eXBlIjoiVUdDIiwiaWQiOiIwIiwiZHMiOiJHQUxMRVJZLUlNQUdFLVBJQ0tFUiIsImNpZCI6IjM1OGM1NjBhLTcxYTctNDVkNy04NTZjLTRkNmNlZDgxZWVkZCIsImV4dCI6Ii5qcGVnIn0=",
+                  "title": "Head of Design"
+                },
+                "name": "Christian Ervin",
+                "obfuscatedId": "7B31A6206C218450C84C7C7E1AEE19D3"
+              }
+            },
+            {
+              "createTime": "2026-01-05T23:26:08Z",
+              "creator": {
+                "metadata": {
+                  "department": "305 Design",
+                  "email": "christian.ervin@glean.com",
+                  "firstName": "Christian",
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "lastName": "Ervin",
+                  "loggingId": "7B31A6206C218450C84C7C7E1AEE19D3",
+                  "photoUrl": "https://scio-prod-be.glean.com/api/v1/images?key=eyJ0eXBlIjoiVUdDIiwiaWQiOiIwIiwiZHMiOiJHQUxMRVJZLUlNQUdFLVBJQ0tFUiIsImNpZCI6IjM1OGM1NjBhLTcxYTctNDVkNy04NTZjLTRkNmNlZDgxZWVkZCIsImV4dCI6Ii5qcGVnIn0=",
+                  "title": "Head of Design"
+                },
+                "name": "Christian Ervin",
+                "obfuscatedId": "7B31A6206C218450C84C7C7E1AEE19D3"
+              },
+              "description": "A space on the latest product strategy for spaces (q4 FY26)",
+              "icon": "🌌",
+              "id": 5544,
+              "itemCount": 7,
+              "name": "Spaces Space on Spaces",
+              "updateTime": "2026-01-05T23:26:53Z",
+              "updatedBy": {
+                "metadata": {
+                  "department": "305 Design",
+                  "email": "christian.ervin@glean.com",
+                  "firstName": "Christian",
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "lastName": "Ervin",
+                  "loggingId": "7B31A6206C218450C84C7C7E1AEE19D3",
+                  "photoUrl": "https://scio-prod-be.glean.com/api/v1/images?key=eyJ0eXBlIjoiVUdDIiwiaWQiOiIwIiwiZHMiOiJHQUxMRVJZLUlNQUdFLVBJQ0tFUiIsImNpZCI6IjM1OGM1NjBhLTcxYTctNDVkNy04NTZjLTRkNmNlZDgxZWVkZCIsImV4dCI6Ii5qcGVnIn0=",
+                  "title": "Head of Design"
+                },
+                "name": "Christian Ervin",
+                "obfuscatedId": "7B31A6206C218450C84C7C7E1AEE19D3"
+              }
+            }
+          ],
+          "createTime": "2025-11-03T02:27:32Z",
+          "datasource": "gdrive",
+          "datasourceId": "1PDizicDihka7s1VguJU1LJptAOzFLAiHSvC6QlycV6A",
+          "datasourceInstance": "gdrive",
+          "documentCategory": "COLLABORATIVE_CONTENT",
+          "documentId": "GDRIVE_1PDizicDihka7s1VguJU1LJptAOzFLAiHSvC6QlycV6A",
+          "interactions": {},
+          "loggingId": "467411144563B3321804DCF55DFDA777",
+          "mimeType": "application/vnd.google-apps.document",
+          "objectType": "Document",
+          "owner": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "582122941BDC99987291C2C075BB5201"
+            },
+            "name": "Jen Zagofsky",
+            "obfuscatedId": "582122941BDC99987291C2C075BB5201"
+          },
+          "updateTime": "2026-01-17T00:50:21Z",
+          "updatedBy": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "90626173EE5666BB891147D9B1F40378"
+            },
+            "name": "Onder Polat",
+            "obfuscatedId": "90626173EE5666BB891147D9B1F40378"
+          },
+          "visibility": "DOMAIN_LINK"
+        },
+        "parentDocument": {
+          "id": "GDRIVE_0ACoZEHIGOvEwUk9PVA"
+        },
+        "sections": [
+          {
+            "title": "R\u0026D FY26 Q4: All Gas, No Brakes to make FY26 the biggest yet",
+            "url": "https://docs.google.com/document/d/1PDizicDihka7s1VguJU1LJptAOzFLAiHSvC6QlycV6A?tab=t.0#heading=h.ghancvre6c"
+          },
+          {
+            "title": "[Q4 = Nov/Dec 2025 \u0026 Jan 2026]",
+            "url": "https://docs.google.com/document/d/1PDizicDihka7s1VguJU1LJptAOzFLAiHSvC6QlycV6A?tab=t.0#heading=h.9nj9mz3trrbd"
+          },
+          {
+            "title": "What winning looks like",
+            "url": "https://docs.google.com/document/d/1PDizicDihka7s1VguJU1LJptAOzFLAiHSvC6QlycV6A?tab=t.0#heading=h.dwg6at8grnbp"
+          }
+        ],
+        "title": "R\u0026D Execution Plan for FY26 Q4 (Nov/Dec/Jan)",
+        "url": "https://docs.google.com/document/d/1PDizicDihka7s1VguJU1LJptAOzFLAiHSvC6QlycV6A"
+      },
+      "mustIncludeSuggestions": {},
+      "snippets": [
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 113,
+              "startIndex": 109,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 137,
+              "startIndex": 130,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "text": "Q4 is where we turn bold bets into business results—where we land the users, hit the KPI targets in our FY26 plan. Q4 is also the quarter where we set ourselves up for an even better FY27 to take Glean to the next level. ",
+          "url": "https://docs.google.com/document/d/1PDizicDihka7s1VguJU1LJptAOzFLAiHSvC6QlycV6A?tab=t.0#heading=h.9nj9mz3trrbd"
+        }
+      ],
+      "title": "R\u0026D Execution Plan for FY26 Q4 (Nov/Dec/Jan)",
+      "trackingToken": "cECla84C8x3dDFYp,CnUKEGNFQ2xhODRDOHgzZERGWXAaM0dEUklWRV8xUERpemljRGloa2E3czFWZ3VKVTFMSnB0QU96RkxBaUhTdkM2UWx5Y1Y2QSIGZ2RyaXZlKgNhbGwyCERvY3VtZW50OhVDT0xMQUJPUkFUSVZFX0NPTlRFTlQ=",
+      "url": "https://docs.google.com/document/d/1PDizicDihka7s1VguJU1LJptAOzFLAiHSvC6QlycV6A"
+    },
+    {
+      "document": {
+        "connectorType": "FEDERATED_SEARCH",
+        "datasource": "slack",
+        "docType": "Conversation",
+        "id": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0ADKNJER1N_1775252236.153429",
+        "metadata": {
+          "author": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "AE7935F5BA9A79CA8FD7799359D23E54"
+            },
+            "name": "chris.​freeman",
+            "obfuscatedId": "AE7935F5BA9A79CA8FD7799359D23E54"
+          },
+          "container": "help-mcp-server",
+          "containerId": "SLACK2_IKZLDP4_PublicChannel_TGLEMJFFG_C0ADKNJER1N",
+          "createTime": "2026-04-03T21:37:16Z",
+          "customData": {
+            "parentConversationId": {
+              "stringValue": "SLACK2_IKZLDP4_TGLEMJFFG\\_C0ADKNJER1N_1775252236.153429_1775256491.064289__Conversation"
+            },
+            "showChannelInMetadata": {
+              "booleanValue": true
+            }
+          },
+          "datasource": "slack",
+          "datasourceInstance": "slack2_ikzldp4",
+          "documentCategory": "UNCATEGORIZED",
+          "documentId": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0ADKNJER1N_1775252236.153429",
+          "interactions": {},
+          "loggingId": "7D2326A55D4CC7DF76F8E3B937D9BEBB",
+          "objectType": "Conversation",
+          "updateTime": "1970-01-01T00:00:00Z",
+          "visibility": "DOMAIN_VISIBLE"
+        },
+        "parentDocument": {
+          "id": "SLACK2_IKZLDP4_PublicChannel_TGLEMJFFG_C0ADKNJER1N",
+          "title": "help-mcp-server"
+        },
+        "title": "Thread between Escalations, Wayne, and 2 others",
+        "url": "https://askscio.slack.com/archives/C0ADKNJER1N/p1775252236153429?thread_ts=1775252236.153429\u0026cid=C0ADKNJER1N"
+      },
+      "fullTextList": [
+        "Escalations App (2026-04-03 21:37): \n\nEscalation raised by @Wayne Ping \nDescription: Customer NAES (naes-ai-glean, Azure) is unable to connect Claude to Glean's MCP server via OAuth. The OAuth consent flow completes successfully — user sees \"Authorization Successful\" in Glean — but Claude immediately reports \"Authorization with the MCP server failed\" (ref: ofid_4bc945b601340a05).\n\nMCP server config is correct (mcp.server.enabled = true, Glean OAuth server enabled, Claude redirect URIs in DCR greenlist). This is a server-side bug affecting all Azure deployments attempting MCP OAuth.\nInvestigation details: Traced the full OAuth flow in QE logs for glean-connector-az-naes.\n\nDCR registration (201), authorization (303), consent (303), and token exchange (200) all succeed — Glean issues a valid JWT access token via oauth-server-signing-key in Azure Key Vault.\n\nHowever, when Claude sends that token back to POST /mcp/claude, it gets 401. The QE trace (acd31c1e03051ac2917112c9db61e5c1) shows the exact failure: jwt signature verification failed: failed to get public key for JWT verification: GetPublicKey not implemented for Azure Key Vault.\n\nThe root cause is that GetPublicKey() in go/platform/azure/keyvault/keyvault.go:345 was left as a stub when Azure KeySigning was originally added — Sign() and Verify() work (they delegate to Key Vault remotely), but GetPublicKey() (needed for local JWT verification on the MCP endpoint) was never implemented.\n\nDraft fix PR: https://github.com/askscio/scio/pull/225474 (https://github.com/askscio/scio/pull/225474)\n\n QE trace showing the 401: https://console.cloud.google.com/logs/query;query=trace%3D%22projects%2Fglean-connector-az-naes%2Ftraces%2Facd31c1e03051ac2917112c9db61e5c1%22;startTime=2026-04-03T19:30:00Z;endTime=2026-04-03T19:31:00Z?project=glean-connector-az-naes (https://console.cloud.google.com/logs/query;query=trace%3D%22projects%2Fglean-connector-az-naes%2Ftraces%2Facd31c1e03051ac2917112c9db61e5c1%22;startTime=2026-04-03T19:30:00Z;endTime=2026-04-03T19:31:00Z?project=glean-connector-az-naes)\nCustomer: naes-ai-glean\nPriority:  Medium\nEscalation type: Bug\nZendesk ticket id: https://gleanwork.zendesk.com/agent/tickets/30878 (https://gleanwork.zendesk.com/agent/tickets/30878)\nDRI: pact-oncall\n",
+        "Escalations App (2026-04-03 21:37): View the escalation on portal (https://dev.glean.com/internal/escalations?escalationReporter=wayne.ping\u0026escalationId=17452).",
+        "Escalations App (2026-04-03 21:37): Created a tracking JIRA (https://askscio.atlassian.net/browse/EE-25168)",
+        "Escalations App (2026-04-03 21:37): Resolve (Engineers only) button",
+        "Escalations App (2026-04-03 21:37): Resolve with autofill button",
+        "Escalations App (2026-04-03 21:37): Reporter @Wayne Ping, DRI: pact-oncall\n",
+        "Wayne Ping (2026-04-03 21:38): Here is the PR  https://github.com/askscio/scio/pull/225474",
+        "Wayne Ping (2026-04-03 21:38): @Glean  review the PR  https://github.com/askscio/scio/pull/225474",
+        "Glean (2026-04-03 21:39): via MCP Assistant (https://app.glean.com/chat/agents/28541cf760e1428881023016be3a7ffb) I can't directly review the PR diff/logic beyond the snippet we have here, but based on the PR description + the included diff excerpt, the change is directionally right and matches the failure mode you traced (Azure Key Vault signing works, but JWT verification fails because GetPublicKey() was a stub). Here's what I'd sanity-check before approving/merging. What the PR is fixing (and why it matches the bug) • The production symptom is: OAuth consent + token exchange succeed, but the first MCP call (POST /mcp/claude) returns 401 because JWT signature verification fails with GetPublicKey not implemented for Azure Key Vault. • The PR implements GetPublicKey() for Azure Key Vault by calling azkeys.Client.GetKey() and building an rsa.PublicKey (from N/E) or ecdsa.PublicKey (from X/Y/Crv) from the Key Vault response, plus caching and cache invalidation on Refresh() for rotation support. That's exactly what the MCP endpoint needs to validate a JWT locally, and it addresses the specific error in the trace. Review checklist (things I'd look for / ask reviewers to confirm) • RSA exponent parsing is safe/correct. The code converts E using int(new(big.Int (http://big.Int)).SetBytes(resp.Key.E).Int64()). In practice for RSA this is usually 65537, so it's fine, but reviewers should confirm Key Vault returns E in a format that fits safely in int64 and is interpreted correctly (and consider adding validation that E \u003e 0). • ECDSA curve mapping coverage. The code explicitly maps P-256, P-384, P-521, and errors on anything else, and errors if Crv is missing. That's reasonable; just confirm our Azure deployments don't use other curves. • Caching + Refresh semantics look consistent with other clouds. The PR adds an RWMutex-guarded cache (cachedPubKey) and invalidates it in Refresh() to support key rotation. That aligns with the stated intent to match GCP's caching pattern and ensures rotation can be picked up without a restart. Next steps to close the loop (pragmatic) 1. Run the exact end-to-end validation called out in the PR test plan. Deploy to an Azure customer instance (NAES was the suggested example) and verify Claude MCP OAuth completes and POST /mcp/claude returns 200 instead of 401. 2. Add/verify at least one unit-ish test if feasible. The PR snippet doesn't show tests; if none exist, it may still be acceptable for a hotfix, but having a small test around parsing JWK fields into RSA/EC public keys would help prevent regressions. 3. Track rollout impact. This is described as “a server-side bug affecting all Azure deployments attempting MCP OAuth,” so once merged, it's worth calling out broadly (support/oncall) as a likely unblock for any similar Azure OAuth→MCP 401 reports. If you want, paste the PR “Files changed” section (or the full GetPublicKey() implementation) here and I can do a more detailed line-by-line review for correctness and edge cases. Github Jira 2 sources View sources button Tag or send a DM to @Glean to get answers anywhere., with interactive elements",
+        "Wayne Ping (2026-04-03 21:40): Another log that pinpoint this:  https://console.cloud.google.com/logs/query;query=trace%3D%22projects%2Fglean-connector-a[…]ime=2026-04-03T19:31:00Z?project=glean-connector-az-naes (https://console.cloud.google.com/logs/query;query=trace%3D%22projects%2Fglean-connector-az-naes%2Ftraces%2Facd31c1e03051ac2917112c9db61e5c1%22%0A--%20%22%2Foauth%22%20OR%20%22%2Fmc%22%0A%22GetPublicKey%20not%20implemented%20for%20Azure%20Key%20Vault%22;cursorTimestamp=2026-04-03T19:30:26.468711488Z;startTime=2026-04-03T19:30:00Z;endTime=2026-04-03T19:31:00Z?project=glean-connector-az-naes)",
+        "chris.​freeman (2026-04-03 21:49):  looking into this",
+        "Wayne Ping (2026-04-03 21:50): @chris.​freeman  Thanks, I think it was the fact that we missed  GetPublicKey   in our keyvualt. Let me know!",
+        "chris.​freeman (2026-04-03 22:27): kk, i've got a draft PR up for a fix and will get it reviewed hopefully on Monday and then we can get it merged in",
+        "chris.​freeman (2026-04-03 22:27): oh wait, i just saw you opened a PR?",
+        "chris.​freeman (2026-04-03 22:30): i don't really mind who fixes it, but probably better to go with my PR so if there's something wrong and they run blame on it, I show up and get pinged instead of you ",
+        "chris.​freeman (2026-04-03 22:48): PR open here  https://github.com/askscio/scio/pull/225502 \n\njust waiting for review",
+        "Wayne Ping (2026-04-03 22:49): I don't mind either way",
+        "Wayne Ping (2026-04-03 22:49): we can go with yourr and close mine",
+        "chris.​freeman (2026-04-03 22:50):  sounds good"
+      ],
+      "nativeAppUrl": "slack://channel?id=C0ADKNJER1N\u0026message=1775252236.153429\u0026team=TGLEMJFFG\u0026thread_ts=1775252236.153429",
+      "relatedResults": [
+        {
+          "relation": "CONVERSATION_MESSAGES",
+          "results": [
+            {
+              "document": {
+                "id": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0ADKNJER1N_1775252236.153429",
+                "metadata": {
+                  "author": {
+                    "name": "Escalations App",
+                    "obfuscatedId": ""
+                  },
+                  "container": "help-mcp-server",
+                  "createTime": "2026-04-03T21:37:16Z",
+                  "documentId": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0ADKNJER1N_1775252236.153429",
+                  "owner": {
+                    "name": "Escalations App",
+                    "obfuscatedId": ""
+                  },
+                  "updateTime": "1970-01-01T00:00:00Z"
+                }
+              },
+              "nativeAppUrl": "slack://channel?id=C0ADKNJER1N\u0026message=1775252236.153429\u0026team=TGLEMJFFG\u0026thread_ts=1775252236.153429",
+              "snippets": [
+                {
+                  "mimeType": "text/plain",
+                  "snippet": "",
+                  "text": "\n\nEscalation raised by @Wayne Ping \nDescription: Customer NAES (naes-ai-glean, Azure) is unable to connect Claude to Glean's MCP server via OAuth. The OAuth consent flow completes successfully — user sees \"Authorization Successful\" in Glean — but Claude immediately reports \"Authorization with the MCP server failed\" (ref: ofid_4bc945b601340a05).\n\nMCP server config is correct (mcp.server.enabled = true, Glean OAuth server enabled, Claude redirect URIs in DCR greenlist). This is a server-side bug affecting all Azure deployments attempting MCP OAuth.\nInvestigation details: Traced the full OAuth flow in QE logs for glean-connector-az-naes.\n\nDCR registration (201), authorization (303), consent (303), and token exchange (200) all succeed — Glean issues a valid JWT access token via oauth-server-signing-key in Azure Key Vault.\n\nHowever, when Claude sends that token back to POST /mcp/claude, it gets 401. The QE trace (acd31c1e03051ac2917112c9db61e5c1) shows the exact failure: jwt signature verification failed: failed to get public key for JWT verification: GetPublicKey not implemented for Azure Key Vault.\n\nThe root cause is that GetPublicKey() in go/platform/azure/keyvault/keyvault.go:345 was left as a stub when Azure KeySigning was originally added — Sign() and Verify() work (they delegate to Key Vault remotely), but GetPublicKey() (needed for local JWT verification on the MCP endpoint) was never implemented.\n\nDraft fix PR: https://github.com/askscio/scio/pull/225474 (https://github.com/askscio/scio/pull/225474)\n\n QE trace showing the 401: https://console.cloud.google.com/logs/query;query=trace%3D%22projects%2Fglean-connector-az-naes%2Ftraces%2Facd31c1e03051ac2917112c9db61e5c1%22;startTime=2026-04-03T19:30:00Z;endTime=2026-04-03T19:31:00Z?project=glean-connector-az-naes (https://console.cloud.google.com/logs/query;query=trace%3D%22projects%2Fglean-connector-az-naes%2Ftraces%2Facd31c1e03051ac2917112c9db61e5c1%22;startTime=2026-04-03T19:30:00Z;endTime=2026-04-03T19:31:00Z?project=glean-connector-az-naes)\nCustomer: naes-ai-glean\nPriority:  Medium\nEscalation type: Bug\nZendesk ticket id: https://gleanwork.zendesk.com/agent/tickets/30878 (https://gleanwork.zendesk.com/agent/tickets/30878)\nDRI: pact-oncall\n"
+                }
+              ],
+              "url": "https://askscio.slack.com/archives/C0ADKNJER1N/p1775252236153429?thread_ts=1775252236.153429\u0026cid=C0ADKNJER1N"
+            },
+            {
+              "document": {
+                "id": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0ADKNJER1N_1775252237.522069",
+                "metadata": {
+                  "author": {
+                    "name": "Escalations App",
+                    "obfuscatedId": ""
+                  },
+                  "container": "help-mcp-server",
+                  "createTime": "2026-04-03T21:37:17Z",
+                  "documentId": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0ADKNJER1N_1775252237.522069",
+                  "owner": {
+                    "name": "Escalations App",
+                    "obfuscatedId": ""
+                  },
+                  "updateTime": "1970-01-01T00:00:00Z"
+                }
+              },
+              "nativeAppUrl": "slack://channel?id=C0ADKNJER1N\u0026message=1775252237.522069\u0026team=TGLEMJFFG\u0026thread_ts=1775252236.153429",
+              "snippets": [
+                {
+                  "mimeType": "text/plain",
+                  "snippet": "",
+                  "text": "View the escalation on portal (https://dev.glean.com/internal/escalations?escalationReporter=wayne.ping\u0026escalationId=17452)."
+                }
+              ],
+              "url": "https://askscio.slack.com/archives/C0ADKNJER1N/p1775252237522069?thread_ts=1775252236.153429\u0026cid=C0ADKNJER1N"
+            },
+            {
+              "document": {
+                "id": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0ADKNJER1N_1775252237.664679",
+                "metadata": {
+                  "author": {
+                    "name": "Escalations App",
+                    "obfuscatedId": ""
+                  },
+                  "container": "help-mcp-server",
+                  "createTime": "2026-04-03T21:37:17Z",
+                  "documentId": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0ADKNJER1N_1775252237.664679",
+                  "owner": {
+                    "name": "Escalations App",
+                    "obfuscatedId": ""
+                  },
+                  "updateTime": "1970-01-01T00:00:00Z"
+                }
+              },
+              "nativeAppUrl": "slack://channel?id=C0ADKNJER1N\u0026message=1775252237.664679\u0026team=TGLEMJFFG\u0026thread_ts=1775252236.153429",
+              "snippets": [
+                {
+                  "mimeType": "text/plain",
+                  "snippet": "",
+                  "text": "Created a tracking JIRA (https://askscio.atlassian.net/browse/EE-25168)"
+                }
+              ],
+              "url": "https://askscio.slack.com/archives/C0ADKNJER1N/p1775252237664679?thread_ts=1775252236.153429\u0026cid=C0ADKNJER1N"
+            },
+            {
+              "document": {
+                "id": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0ADKNJER1N_1775252237.816779",
+                "metadata": {
+                  "author": {
+                    "name": "Escalations App",
+                    "obfuscatedId": ""
+                  },
+                  "container": "help-mcp-server",
+                  "createTime": "2026-04-03T21:37:17Z",
+                  "documentId": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0ADKNJER1N_1775252237.816779",
+                  "owner": {
+                    "name": "Escalations App",
+                    "obfuscatedId": ""
+                  },
+                  "updateTime": "1970-01-01T00:00:00Z"
+                }
+              },
+              "nativeAppUrl": "slack://channel?id=C0ADKNJER1N\u0026message=1775252237.816779\u0026team=TGLEMJFFG\u0026thread_ts=1775252236.153429",
+              "snippets": [
+                {
+                  "mimeType": "text/plain",
+                  "snippet": "",
+                  "text": "Resolve (Engineers only) button"
+                }
+              ],
+              "url": "https://askscio.slack.com/archives/C0ADKNJER1N/p1775252237816779?thread_ts=1775252236.153429\u0026cid=C0ADKNJER1N"
+            }
+          ]
+        }
+      ],
+      "title": "Thread between Escalations, Wayne, and 2 others",
+      "trackingToken": "cECla84C8x3dDFYp,CpsBChBjRUNsYTg0Qzh4M2RERllwEAEaV1NMQUNLMl9JS1pMRFA0X1RHTEVNSkZGR1xfQzBBREtOSkVSMU5fMTc3NTI1MjIzNi4xNTM0MjlfMTc3NTI1NjQ5MS4wNjQyODlfX0NvbnZlcnNhdGlvbiIFc2xhY2sqA2FsbDIMQ29udmVyc2F0aW9uQAFaEEZFREVSQVRFRF9TRUFSQ0g=",
+      "url": "https://askscio.slack.com/archives/C0ADKNJER1N/p1775252236153429?thread_ts=1775252236.153429\u0026cid=C0ADKNJER1N"
+    },
+    {
+      "document": {
+        "connectorType": "FEDERATED_SEARCH",
+        "datasource": "slack",
+        "docType": "Conversation",
+        "id": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0A74DX9Q8N_1775081523.150139",
+        "metadata": {
+          "author": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "F446055CDE3C65D7F36B45AFD14F2C5C"
+            },
+            "name": "Sharad Jain",
+            "obfuscatedId": "F446055CDE3C65D7F36B45AFD14F2C5C"
+          },
+          "container": "team-pact",
+          "containerId": "SLACK2_IKZLDP4_PublicChannel_TGLEMJFFG_C0A74DX9Q8N",
+          "createTime": "2026-04-01T22:12:03Z",
+          "customData": {
+            "parentConversationId": {
+              "stringValue": "SLACK2_IKZLDP4_TGLEMJFFG\\_C0A74DX9Q8N_1775081523.150139_1775081523.150139__Conversation"
+            },
+            "showChannelInMetadata": {
+              "booleanValue": true
+            }
+          },
+          "datasource": "slack",
+          "datasourceInstance": "slack2_ikzldp4",
+          "documentCategory": "UNCATEGORIZED",
+          "documentId": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0A74DX9Q8N_1775081523.150139",
+          "interactions": {},
+          "loggingId": "20BFB65E97D55B863B058577F2C54268",
+          "objectType": "Conversation",
+          "updateTime": "1970-01-01T00:00:00Z",
+          "visibility": "DOMAIN_VISIBLE"
+        },
+        "parentDocument": {
+          "id": "SLACK2_IKZLDP4_PublicChannel_TGLEMJFFG_C0A74DX9Q8N",
+          "title": "team-pact"
+        },
+        "title": "Sharad",
+        "url": "https://askscio.slack.com/archives/C0A74DX9Q8N/p1775081523150139?thread_ts=1775081523.150139\u0026cid=C0A74DX9Q8N"
+      },
+      "fullTextList": [
+        "Sharad Jain (2026-04-01 22:12): @pact its time for quarterly onsite and offsite.  For future, we will plan this more in advance so that we are organized better.  Here are suggested dates in the thread , please +1 to share availability. If both dates work, please plus one both.",
+        "Sharad Jain (2026-04-01 22:12): Week of 27th April",
+        "Sharad Jain (2026-04-01 22:12): Week of May4th"
+      ],
+      "nativeAppUrl": "slack://channel?id=C0A74DX9Q8N\u0026message=1775081523.150139\u0026team=TGLEMJFFG\u0026thread_ts=1775081523.150139",
+      "relatedResults": [
+        {
+          "relation": "CONVERSATION_MESSAGES",
+          "results": [
+            {
+              "document": {
+                "id": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0A74DX9Q8N_1775081523.150139",
+                "metadata": {
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "F446055CDE3C65D7F36B45AFD14F2C5C"
+                    },
+                    "name": "Sharad Jain",
+                    "obfuscatedId": "F446055CDE3C65D7F36B45AFD14F2C5C"
+                  },
+                  "container": "team-pact",
+                  "createTime": "2026-04-01T22:12:03Z",
+                  "documentId": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0A74DX9Q8N_1775081523.150139",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "F446055CDE3C65D7F36B45AFD14F2C5C"
+                    },
+                    "name": "Sharad Jain",
+                    "obfuscatedId": "F446055CDE3C65D7F36B45AFD14F2C5C"
+                  },
+                  "updateTime": "1970-01-01T00:00:00Z"
+                }
+              },
+              "nativeAppUrl": "slack://channel?id=C0A74DX9Q8N\u0026message=1775081523.150139\u0026team=TGLEMJFFG\u0026thread_ts=1775081523.150139",
+              "snippets": [
+                {
+                  "mimeType": "text/plain",
+                  "ranges": [
+                    {
+                      "endIndex": 28,
+                      "startIndex": 19,
+                      "type": "BOLD"
+                    }
+                  ],
+                  "snippet": "",
+                  "text": "@pact its time for quarterly onsite and offsite.  For future, we will plan this more in advance so that we are organized better.  Here are suggested dates in the thread , please +1 to share availability. If both dates work, please plus one both."
+                }
+              ],
+              "url": "https://askscio.slack.com/archives/C0A74DX9Q8N/p1775081523150139?thread_ts=1775081523.150139\u0026cid=C0A74DX9Q8N"
+            },
+            {
+              "document": {
+                "id": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0A74DX9Q8N_1775081547.843839",
+                "metadata": {
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "F446055CDE3C65D7F36B45AFD14F2C5C"
+                    },
+                    "name": "Sharad Jain",
+                    "obfuscatedId": "F446055CDE3C65D7F36B45AFD14F2C5C"
+                  },
+                  "container": "team-pact",
+                  "createTime": "2026-04-01T22:12:27Z",
+                  "documentId": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0A74DX9Q8N_1775081547.843839",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "F446055CDE3C65D7F36B45AFD14F2C5C"
+                    },
+                    "name": "Sharad Jain",
+                    "obfuscatedId": "F446055CDE3C65D7F36B45AFD14F2C5C"
+                  },
+                  "updateTime": "1970-01-01T00:00:00Z"
+                }
+              },
+              "nativeAppUrl": "slack://channel?id=C0A74DX9Q8N\u0026message=1775081547.843839\u0026team=TGLEMJFFG\u0026thread_ts=1775081523.150139",
+              "snippets": [
+                {
+                  "mimeType": "text/plain",
+                  "snippet": "",
+                  "text": "Week of 27th April"
+                }
+              ],
+              "url": "https://askscio.slack.com/archives/C0A74DX9Q8N/p1775081547843839?thread_ts=1775081523.150139\u0026cid=C0A74DX9Q8N"
+            },
+            {
+              "document": {
+                "id": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0A74DX9Q8N_1775081553.677059",
+                "metadata": {
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "F446055CDE3C65D7F36B45AFD14F2C5C"
+                    },
+                    "name": "Sharad Jain",
+                    "obfuscatedId": "F446055CDE3C65D7F36B45AFD14F2C5C"
+                  },
+                  "container": "team-pact",
+                  "createTime": "2026-04-01T22:12:33Z",
+                  "documentId": "SLACK2_IKZLDP4_Message_TGLEMJFFG_C0A74DX9Q8N_1775081553.677059",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "F446055CDE3C65D7F36B45AFD14F2C5C"
+                    },
+                    "name": "Sharad Jain",
+                    "obfuscatedId": "F446055CDE3C65D7F36B45AFD14F2C5C"
+                  },
+                  "updateTime": "1970-01-01T00:00:00Z"
+                }
+              },
+              "nativeAppUrl": "slack://channel?id=C0A74DX9Q8N\u0026message=1775081553.677059\u0026team=TGLEMJFFG\u0026thread_ts=1775081523.150139",
+              "snippets": [
+                {
+                  "mimeType": "text/plain",
+                  "snippet": "",
+                  "text": "Week of May4th"
+                }
+              ],
+              "url": "https://askscio.slack.com/archives/C0A74DX9Q8N/p1775081553677059?thread_ts=1775081523.150139\u0026cid=C0A74DX9Q8N"
+            }
+          ]
+        }
+      ],
+      "title": "Sharad",
+      "trackingToken": "cECla84C8x3dDFYp,CpsBChBjRUNsYTg0Qzh4M2RERllwEAIaV1NMQUNLMl9JS1pMRFA0X1RHTEVNSkZGR1xfQzBBNzREWDlROE5fMTc3NTA4MTUyMy4xNTAxMzlfMTc3NTA4MTUyMy4xNTAxMzlfX0NvbnZlcnNhdGlvbiIFc2xhY2sqA2FsbDIMQ29udmVyc2F0aW9uQAJaEEZFREVSQVRFRF9TRUFSQ0g=",
+      "url": "https://askscio.slack.com/archives/C0A74DX9Q8N/p1775081523150139?thread_ts=1775081523.150139\u0026cid=C0A74DX9Q8N"
+    }
+  ],
+  "errorInfo": {},
+  "requestID": "59a6ec2006d88492956ab9c42480d885",
+  "backendTimeMillis": 969,
+  "experimentIds": [
+    221861,
+    221863,
+    1000,
+    1001,
+    223191,
+    223192,
+    196740,
+    196741,
+    169432,
+    169433,
+    71945,
+    71946,
+    223197,
+    223198,
+    220791,
+    220792,
+    222769,
+    222770
+  ],
+  "metadata": {
+    "rewrittenQuery": "quarterly planning",
+    "searchedQuery": "quarterly planning",
+    "searchedQueryWithoutNegation": "",
+    "originalQuery": "quarterly planning",
+    "triggeredExpertDetection": true
+  },
+  "facetResults": [
+    {
+      "sourceName": "last_updated_at",
+      "operatorName": "SelectSingle",
+      "buckets": [
+        {
+          "count": 159479,
+          "value": {
+            "stringValue": "all",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1367,
+          "value": {
+            "stringValue": "past_day",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 17564,
+          "value": {
+            "stringValue": "past_month",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 6877,
+          "value": {
+            "stringValue": "past_week",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 92566,
+          "value": {
+            "stringValue": "past_year",
+            "iconConfig": {}
+          }
+        }
+      ]
+    },
+    {
+      "sourceName": "from",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "A Shriya",
+            "displayLabel": "A Shriya",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 194,
+          "value": {
+            "stringValue": "AJ Tennant",
+            "displayLabel": "AJ Tennant",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 135,
+          "value": {
+            "stringValue": "alla.mezhvinsky@glean.com",
+            "displayLabel": "Alla Mezhvinsky",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-03-24/8652427093123_d0d51c1127d7c327ada0_192.png"
+            }
+          }
+        },
+        {
+          "count": 152,
+          "value": {
+            "stringValue": "anna.chibukhchyan@glean.com",
+            "displayLabel": "Anna Chibukhchyan",
+            "iconConfig": {
+              "url": "https://scio-prod-be.glean.com/api/v1/images?key=eyJ0eXBlIjoiVUdDIiwiaWQiOiIwIiwiZHMiOiJHQUxMRVJZLUlNQUdFLUNST1BQRVIiLCJjaWQiOiJlYzk0MGI0Yy1jMDkxLTQ2MTItOWE3OC0zMzY3Y2VkYzExYzIiLCJleHQiOiIuanBlZyJ9\u0026crop=eyJjcm9wU3R5bGUiOiJzcXVhcmUiLCJoZWlnaHQiOjE3OCwib3JpZ2luYWxVcmwiOiJodHRwczovL3NjaW8tcHJvZC1iZS5nbGVhbi5jb20vYXBpL3YxL2ltYWdlcz9rZXk9ZXlKMGVYQmxJam9pVlVkRElpd2lhV1FpT2lJd0lpd2laSE1pT2lKSFFVeE1SVkpaTFVsTlFVZEZMVkJKUTB0RlVpSXNJbU5wWkNJNklqZ3hOMkkzTldVNExUUXpNMk10TkdReE5TMDRZbVpsTFdNeE1UTXhNMlJpWldOaE9TSXNJbVY0ZENJNklpNXdibWNpZlE9PSIsIndpZHRoIjoxNzgsIngiOjksInkiOjEyfQ=="
+            }
+          }
+        },
+        {
+          "count": 6,
+          "value": {
+            "stringValue": "ben.gillin@glean.com",
+            "displayLabel": "Ben Gillin",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2026-03-02/10610894143286_59c080705181c543cc24_192.png"
+            }
+          }
+        },
+        {
+          "count": 5,
+          "value": {
+            "stringValue": "jaishree.giri@glean.com",
+            "displayLabel": "Jaishree Giri",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-07/9646887500342_00abf4d3cdc12f20d534_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "lee.williams@glean.com",
+            "displayLabel": "Lee Williams",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2026-03-30/10838725765264_d06583e2de5eda5bcce1_192.png"
+            }
+          }
+        },
+        {
+          "count": 54,
+          "value": {
+            "stringValue": "michael.wiradharma@glean.com",
+            "displayLabel": "Michael Wiradharma",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-04-21/8787310892722_549edc8309aa327e1bb3_192.png"
+            }
+          }
+        },
+        {
+          "count": 11,
+          "value": {
+            "stringValue": "osaro.eromosele@glean.com",
+            "displayLabel": "O Eromosele",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2026-02-27/10626367807936_f72f00f0c0eb86f2b556_192.png"
+            }
+          }
+        },
+        {
+          "count": 218,
+          "value": {
+            "stringValue": "praveen.yalagandula@glean.com",
+            "displayLabel": "Praveen Yalagandula",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-11/7414016129780_bf67415213bf98c9b107_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 693,
+          "value": {
+            "stringValue": "stephen.chu@glean.com",
+            "displayLabel": "Stephen Chu",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-01/9607282793623_eddf5ea9e16d05630af6_192.png"
+            }
+          }
+        },
+        {
+          "count": 14,
+          "value": {
+            "stringValue": "takuya.okubo@glean.com",
+            "displayLabel": "Takuya Okubo",
+            "iconConfig": {
+              "url": "https://scio-prod-be.glean.com/api/v1/images?key=eyJ0eXBlIjoiVUdDIiwiaWQiOiIwIiwiZHMiOiJHQUxMRVJZLUlNQUdFLUNST1BQRVIiLCJjaWQiOiI5YTFhNGJiZC1hZjExLTRjYWMtYTgxZi00MTZlZTUzODkxMGIiLCJleHQiOiIuanBlZyJ9\u0026crop=eyJjcm9wU3R5bGUiOiJzcXVhcmUiLCJoZWlnaHQiOjExNzAsIm9yaWdpbmFsVXJsIjoiaHR0cHM6Ly9zY2lvLXByb2QtYmUuZ2xlYW4uY29tL2FwaS92MS9pbWFnZXM/a2V5PWV5SjBlWEJsSWpvaVZVZERJaXdpYVdRaU9pSXdJaXdpWkhNaU9pSkhRVXhNUlZKWkxVbE5RVWRGTFZCSlEwdEZVaUlzSW1OcFpDSTZJamRoWVdabE9USXhMV1l6TWpBdE5HUTFZeTFpTTJKakxXSTVOV1l6WldNeVpUUXlaQ0lzSW1WNGRDSTZJaTVxY0dWbkluMD0iLCJ3aWR0aCI6MTE3MCwieCI6MCwieSI6NTU3fQ=="
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "\"Cardente",
+            "displayLabel": "\"Cardente",
+            "iconConfig": {}
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "type",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 78,
+          "datasource": "gdrive",
+          "value": {
+            "stringValue": "Code",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "datasource": "gdrive",
+          "value": {
+            "stringValue": "Compressed Archive",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "datasource": "gchat",
+          "value": {
+            "stringValue": "Conversation",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 7,
+          "datasource": "microsoftteams",
+          "value": {
+            "stringValue": "Conversation",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 63502,
+          "datasource": "slack",
+          "value": {
+            "stringValue": "Conversation",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 29,
+          "datasource": "developers",
+          "value": {
+            "stringValue": "Document",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 5079,
+          "datasource": "gdrive",
+          "value": {
+            "stringValue": "Document",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 269,
+          "datasource": "gleandocs",
+          "value": {
+            "stringValue": "Document",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 238,
+          "datasource": "gleanwebsite",
+          "value": {
+            "stringValue": "Document",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 6,
+          "datasource": "metabase",
+          "value": {
+            "stringValue": "Document",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "datasource": "opsgenie",
+          "value": {
+            "stringValue": "Document",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1199,
+          "datasource": "slack",
+          "value": {
+            "stringValue": "Document",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "datasource": "testrail",
+          "value": {
+            "stringValue": "Document",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 30,
+          "datasource": "web38ut1szgleanpromptlibrary",
+          "value": {
+            "stringValue": "Document",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 26,
+          "datasource": "weberywsrygleaniverseevents",
+          "value": {
+            "stringValue": "Document",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 91,
+          "datasource": "webxzh7cqngleandocs",
+          "value": {
+            "stringValue": "Document",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 41,
+          "datasource": "gdrive",
+          "value": {
+            "stringValue": "Folder",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 25,
+          "datasource": "gdrive",
+          "value": {
+            "stringValue": "Form",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 41,
+          "datasource": "gdrive",
+          "value": {
+            "stringValue": "Image",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "datasource": "slack",
+          "value": {
+            "stringValue": "Image",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 13,
+          "datasource": "gdrive",
+          "value": {
+            "stringValue": "Other",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "datasource": "slack",
+          "value": {
+            "stringValue": "Other",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1132,
+          "datasource": "gdrive",
+          "value": {
+            "stringValue": "Presentation",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 33,
+          "datasource": "slack",
+          "value": {
+            "stringValue": "Presentation",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1120,
+          "datasource": "gdrive",
+          "value": {
+            "stringValue": "Spreadsheet",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 9,
+          "datasource": "slack",
+          "value": {
+            "stringValue": "Spreadsheet",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 62,
+          "datasource": "gdrive",
+          "value": {
+            "stringValue": "Text",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 318,
+          "datasource": "slack",
+          "value": {
+            "stringValue": "Text",
+            "iconConfig": {}
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "collection",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "\"Workflows\" Demos",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "(Test) Content Design",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "01.14 GBI Impact Evening - Nashville, TN",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "0206 - Warriors v. Lakers Suite - Los Angeles",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "0227 - HMG Innovation Summit - Silicon Valley",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "03.15 - My Outreach Webinar - East",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "03.17 - SF - Carlyle Event",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "0313 - Warriors v Kings Suite - San Francisco",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "0327 - HMG C-Level Technology Leaders Summit - Phoenix",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "0415 - Glean Game Night: Seattle Kraken - Seattle",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "05.15 Lockstep Annual Crawfish Boil - Baton Rouge, Louisiana",
+            "iconConfig": {}
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "suggested",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 603,
+          "value": {
+            "stringValue": "Go Links",
+            "iconConfig": {}
+          }
+        }
+      ]
+    },
+    {
+      "sourceName": "datasource",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 20,
+          "value": {
+            "stringValue": "announcements",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 50,
+          "value": {
+            "stringValue": "answers",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 126,
+          "value": {
+            "stringValue": "collections",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 346,
+          "value": {
+            "stringValue": "confluence",
+            "displayLabel": "Confluence - Cloud",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 10,
+          "value": {
+            "stringValue": "debugendpoints",
+            "displayLabel": "DebugEndpoints",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 29,
+          "value": {
+            "stringValue": "developers",
+            "displayLabel": "Developers",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 3,
+          "value": {
+            "stringValue": "figma",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 11,
+          "value": {
+            "stringValue": "klue",
+            "displayLabel": "Klue",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 49,
+          "value": {
+            "stringValue": "rootly",
+            "displayLabel": "Rootly Integration",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 6,
+          "value": {
+            "stringValue": "spinnaker",
+            "displayLabel": "Spinnaker pipelines",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 28,
+          "value": {
+            "stringValue": "wiz",
+            "displayLabel": "Wiz",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 172,
+          "value": {
+            "stringValue": "customer",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 9,
+          "value": {
+            "stringValue": "people",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "slack",
+            "iconConfig": {}
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "suggested",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "my history",
+            "iconConfig": {}
+          }
+        }
+      ]
+    }
+  ],
+  "resultTabs": [
+    {
+      "count": 861,
+      "id": "all"
+    },
+    {
+      "count": 29,
+      "datasource": "developers",
+      "datasourceInstance": "developers",
+      "id": "developers"
+    },
+    {
+      "count": 346,
+      "datasource": "confluence",
+      "id": "confluence"
+    },
+    {
+      "count": 20,
+      "datasource": "announcements",
+      "datasourceInstance": "announcements",
+      "id": "announcements"
+    },
+    {
+      "count": 50,
+      "datasource": "answers",
+      "datasourceInstance": "answers",
+      "id": "answers"
+    },
+    {
+      "count": 126,
+      "datasource": "collections",
+      "datasourceInstance": "collections",
+      "id": "collections"
+    },
+    {
+      "count": 172,
+      "datasource": "customer",
+      "datasourceInstance": "customer",
+      "id": "customer"
+    },
+    {
+      "count": 10,
+      "datasource": "debugendpoints",
+      "datasourceInstance": "debugendpoints",
+      "id": "debugendpoints"
+    },
+    {
+      "count": 3,
+      "datasource": "figma",
+      "datasourceInstance": "figma",
+      "id": "figma"
+    },
+    {
+      "count": 11,
+      "datasource": "klue",
+      "datasourceInstance": "klue",
+      "id": "klue"
+    },
+    {
+      "count": 9,
+      "datasource": "people",
+      "datasourceInstance": "people",
+      "id": "people"
+    },
+    {
+      "count": 49,
+      "datasource": "rootly",
+      "datasourceInstance": "rootly",
+      "id": "rootly"
+    },
+    {
+      "count": 2,
+      "datasource": "slack",
+      "id": "slack"
+    },
+    {
+      "count": 6,
+      "datasource": "spinnaker",
+      "datasourceInstance": "spinnaker",
+      "id": "spinnaker"
+    },
+    {
+      "count": 28,
+      "datasource": "wiz",
+      "datasourceInstance": "wiz",
+      "id": "wiz"
+    }
+  ],
+  "resultTabIds": [
+    "all"
+  ],
+  "cursor": "eyJSZXN1bHRTdGFydCI6MzEsIlJhbmRvbUNhY2hlS2V5IjoiNTU2MTEyODU3ODkzMjk1NzA5NyIsIlBhZ2VEdXBlTWV0YWRhdGEiOnsiUGFnZUlkIjoxLCJSZXN1bHRUb2tlbnMiOm51bGx9LCJDdXJzb3JDYWNoZUtleSI6ImIxY2QyMzA3LTVmNmQtNDViZC04YTM0LWMxMTI5ZWQ4NDM1YyJ9",
+  "hasMoreResults": true
+}

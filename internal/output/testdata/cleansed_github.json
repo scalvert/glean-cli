@@ -1,0 +1,194 @@
+{
+  "results": [
+    {
+      "title": "CHANGELOG.md",
+      "url": "https://github.com/gleanwork/mcp-config/blob/main/CHANGELOG.md",
+      "snippets": [
+        {
+          "text": "# :bug: Bug Fix",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "# :bug: Bug Fix",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "# :bug: Bug Fix",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "# :bug: Bug Fix",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "# :bug: Bug Fix",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "# :bug: Bug Fix",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "# :bug: Bug Fix",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "# :bug: Bug Fix",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "# :bug: Bug Fix",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "# :bug: Bug Fix",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "# :bug: Bug Fix",
+          "mimeType": "text/plain"
+        }
+      ],
+      "document": {
+        "title": "CHANGELOG.md",
+        "url": "https://github.com/gleanwork/mcp-config/blob/main/CHANGELOG.md",
+        "datasource": "github",
+        "docType": "file",
+        "metadata": {
+          "datasource": "github",
+          "objectType": "file",
+          "author": {
+            "name": "Steve Calvert"
+          },
+          "owner": {
+            "name": "Steve Calvert"
+          },
+          "assignedTo": {
+            "name": "Steve Calvert"
+          },
+          "updatedBy": {
+            "name": "Chris Freeman"
+          },
+          "updateTime": "2026-03-05T18:33:49Z",
+          "createTime": "2025-08-18T16:52:41Z",
+          "container": "/"
+        }
+      }
+    },
+    {
+      "title": "chore(deps): bump docusaurus-plugin-openapi-docs from 4.5.1 to 4.7.1",
+      "url": "https://github.com/gleanwork/glean-developer-site/pull/373",
+      "snippets": [
+        {
+          "text": "# \ud83d\udc1b Bug Fix",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "# \ud83d\udc1b Bug Fix",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "# \ud83d\udc1b Bug Fix",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "fix(theme): use import type for plugin type imports (#1292)",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "fix: render inline enum values in anyOf schemas (#1286)",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "fix: generate correct examples for different request content types (#1284)",
+          "mimeType": "text/plain"
+        }
+      ],
+      "document": {
+        "title": "chore(deps): bump docusaurus-plugin-openapi-docs from 4.5.1 to 4.7.1",
+        "url": "https://github.com/gleanwork/glean-developer-site/pull/373",
+        "datasource": "github",
+        "docType": "pull",
+        "metadata": {
+          "datasource": "github",
+          "objectType": "pull",
+          "author": {
+            "name": "dependabot[bot]"
+          },
+          "owner": {
+            "name": "dependabot[bot]"
+          },
+          "assignedTo": {
+            "name": "dependabot[bot]"
+          },
+          "updateTime": "2026-03-23T16:50:51Z",
+          "createTime": "2026-03-01T05:03:12Z",
+          "status": "merged",
+          "container": "gleanwork/glean-developer-site",
+          "datasourceId": "373"
+        }
+      }
+    },
+    {
+      "title": "chore(deps): bump marked from 16.4.1 to 17.0.1",
+      "url": "https://github.com/gleanwork/glean-developer-site/pull/374",
+      "snippets": [
+        {
+          "text": "# Bug Fixes",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "# Bug Fixes",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "# Bug Fixes",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "fix block elements in task item (#3828) (921ee22)",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "921ee22 fix: fix block elements in task item (#3828)",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "Bumps marked from 16.4.1 to 17.0.1.",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "Release notes",
+          "mimeType": "text/plain"
+        }
+      ],
+      "document": {
+        "title": "chore(deps): bump marked from 16.4.1 to 17.0.1",
+        "url": "https://github.com/gleanwork/glean-developer-site/pull/374",
+        "datasource": "github",
+        "docType": "pull",
+        "metadata": {
+          "datasource": "github",
+          "objectType": "pull",
+          "author": {
+            "name": "dependabot[bot]"
+          },
+          "owner": {
+            "name": "dependabot[bot]"
+          },
+          "assignedTo": {
+            "name": "dependabot[bot]"
+          },
+          "updateTime": "2026-03-22T22:28:35Z",
+          "createTime": "2026-03-01T05:03:41Z",
+          "status": "merged",
+          "container": "gleanwork/glean-developer-site",
+          "datasourceId": "374"
+        }
+      }
+    }
+  ],
+  "cursor": "eyJSZXN1bHRTdGFydCI6MywiUmFuZG9tQ2FjaGVLZXkiOiIxODExNzYyMTI4MzIwNTQ2ODAiLCJQYWdlRHVwZU1ldGFkYXRhIjp7IlBhZ2VJZCI6MSwiUmVzdWx0VG9rZW5zIjpudWxsfX0=",
+  "hasMoreResults": true,
+  "requestID": "07847821980a125b7215e961bbdbb7f9"
+}

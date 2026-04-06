@@ -1,0 +1,2791 @@
+{
+  "trackingToken": "PV4ns4Xu4eKYsC89",
+  "sessionInfo": {
+    "lastQuery": "bug fix",
+    "lastSeen": "2026-04-06T15:33:04.038798669Z",
+    "sessionTrackingToken": "NvNzxhDf07dHxkDk",
+    "tabId": "2DWZpbi8uNDooFxv"
+  },
+  "results": [
+    {
+      "allClusteredResults": [
+        {
+          "clusterType": "TITLE",
+          "clusteredResults": [
+            {
+              "document": {
+                "datasource": "github",
+                "docType": "file",
+                "id": "GITHUB_WHJQFOE_file_9185412113421778106",
+                "metadata": {
+                  "assignedTo": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                    },
+                    "name": "Steve Calvert",
+                    "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+                  },
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                    },
+                    "name": "Steve Calvert",
+                    "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+                  },
+                  "container": "/",
+                  "containerId": "GITHUB_WHJQFOE_file_13744570996844310216",
+                  "createTime": "2025-03-13T19:59:19Z",
+                  "datasource": "github",
+                  "datasourceInstance": "github_whjqfoe",
+                  "documentCategory": "CODE_REPOSITORY",
+                  "documentId": "GITHUB_WHJQFOE_file_9185412113421778106",
+                  "interactions": {},
+                  "loggingId": "E1D59B3B41AEE97ADB164819E20B2300",
+                  "mimeType": "file",
+                  "objectType": "file",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                    },
+                    "name": "Steve Calvert",
+                    "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+                  },
+                  "path": "/",
+                  "updateTime": "2026-03-06T21:29:01Z",
+                  "updatedBy": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "2B5733A8EBED0D376CE1C88878E678CD"
+                    },
+                    "name": "github-actions[bot]",
+                    "obfuscatedId": "2B5733A8EBED0D376CE1C88878E678CD"
+                  },
+                  "verification": {
+                    "state": "UNVERIFIED"
+                  },
+                  "visibility": "PUBLIC_VISIBLE"
+                },
+                "parentDocument": {
+                  "datasource": "github",
+                  "docType": "dir",
+                  "id": "GITHUB_WHJQFOE_file_13744570996844310216",
+                  "title": "gleanwork/mcp-server",
+                  "url": "https://github.com/gleanwork/mcp-server/tree/main/"
+                },
+                "title": "CHANGELOG.md",
+                "url": "https://github.com/gleanwork/mcp-server/blob/main/CHANGELOG.md"
+              },
+              "title": "CHANGELOG.md",
+              "trackingToken": "PV4ns4Xu4eKYsC89,CmYKEFBWNG5zNFh1NGVLWXNDODkQARonR0lUSFVCX1dISlFGT0VfZmlsZV85MTg1NDEyMTEzNDIxNzc4MTA2IgZnaXRodWIqBmdpdGh1YjIEZmlsZToPQ09ERV9SRVBPU0lUT1JZSAE=",
+              "url": "https://github.com/gleanwork/mcp-server/blob/main/CHANGELOG.md"
+            },
+            {
+              "document": {
+                "datasource": "github",
+                "docType": "file",
+                "id": "GITHUB_WHJQFOE_file_15285284456353613836",
+                "metadata": {
+                  "assignedTo": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                    },
+                    "name": "Steve Calvert",
+                    "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+                  },
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                    },
+                    "name": "Steve Calvert",
+                    "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+                  },
+                  "container": "/",
+                  "containerId": "GITHUB_WHJQFOE_file_9005665199494677741",
+                  "createTime": "2025-11-27T03:57:10Z",
+                  "datasource": "github",
+                  "datasourceInstance": "github_whjqfoe",
+                  "documentCategory": "CODE_REPOSITORY",
+                  "documentId": "GITHUB_WHJQFOE_file_15285284456353613836",
+                  "interactions": {},
+                  "loggingId": "86075FC661F5DB507B0C795E4F4F035D",
+                  "mimeType": "file",
+                  "objectType": "file",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                    },
+                    "name": "Steve Calvert",
+                    "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+                  },
+                  "path": "/",
+                  "updateTime": "2026-03-18T04:12:23Z",
+                  "updatedBy": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "25E0E1ADAF85F1FDC81654935A8AA505"
+                    },
+                    "name": "Nathaniel Furniss",
+                    "obfuscatedId": "25E0E1ADAF85F1FDC81654935A8AA505"
+                  },
+                  "verification": {
+                    "state": "UNVERIFIED"
+                  },
+                  "visibility": "PUBLIC_VISIBLE"
+                },
+                "parentDocument": {
+                  "datasource": "github",
+                  "docType": "dir",
+                  "id": "GITHUB_WHJQFOE_file_9005665199494677741",
+                  "title": "gleanwork/mcp-server-tester",
+                  "url": "https://github.com/gleanwork/mcp-server-tester/tree/main/"
+                },
+                "title": "CHANGELOG.md",
+                "url": "https://github.com/gleanwork/mcp-server-tester/blob/main/CHANGELOG.md"
+              },
+              "title": "CHANGELOG.md",
+              "trackingToken": "PV4ns4Xu4eKYsC89,CmcKEFBWNG5zNFh1NGVLWXNDODkQAhooR0lUSFVCX1dISlFGT0VfZmlsZV8xNTI4NTI4NDQ1NjM1MzYxMzgzNiIGZ2l0aHViKgZnaXRodWIyBGZpbGU6D0NPREVfUkVQT1NJVE9SWUgC",
+              "url": "https://github.com/gleanwork/mcp-server-tester/blob/main/CHANGELOG.md"
+            },
+            {
+              "document": {
+                "datasource": "github",
+                "docType": "file",
+                "id": "GITHUB_file_6371341403856976898",
+                "metadata": {
+                  "assignedTo": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                    },
+                    "name": "Steve Calvert",
+                    "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+                  },
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                    },
+                    "name": "Steve Calvert",
+                    "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+                  },
+                  "container": "/",
+                  "containerId": "GITHUB_file_9475819907560579220",
+                  "createTime": "2026-02-06T20:47:40Z",
+                  "datasource": "github",
+                  "datasourceInstance": "github",
+                  "documentCategory": "CODE_REPOSITORY",
+                  "documentId": "GITHUB_file_6371341403856976898",
+                  "interactions": {},
+                  "loggingId": "65DD6467B3B67D9D3BB07E7D36BB203A",
+                  "mimeType": "file",
+                  "objectType": "file",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                    },
+                    "name": "Steve Calvert",
+                    "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+                  },
+                  "path": "/",
+                  "updateTime": "2026-04-02T19:12:31Z",
+                  "updatedBy": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "C737E23B6710C7FAB3A2B6A8FE64F8F9"
+                    },
+                    "name": "github-actions[bot]",
+                    "obfuscatedId": "C737E23B6710C7FAB3A2B6A8FE64F8F9"
+                  },
+                  "verification": {
+                    "state": "UNVERIFIED"
+                  },
+                  "visibility": "SPECIFIC_PEOPLE_AND_GROUPS"
+                },
+                "parentDocument": {
+                  "datasource": "github",
+                  "docType": "dir",
+                  "id": "GITHUB_file_9475819907560579220",
+                  "title": "askscio/claude-plugins-pact",
+                  "url": "https://github.com/askscio/claude-plugins-pact/tree/main/"
+                },
+                "title": "CHANGELOG.md",
+                "url": "https://github.com/askscio/claude-plugins-pact/blob/main/CHANGELOG.md"
+              },
+              "title": "CHANGELOG.md",
+              "trackingToken": "PV4ns4Xu4eKYsC89,Cl4KEFBWNG5zNFh1NGVLWXNDODkQAxofR0lUSFVCX2ZpbGVfNjM3MTM0MTQwMzg1Njk3Njg5OCIGZ2l0aHViKgZnaXRodWIyBGZpbGU6D0NPREVfUkVQT1NJVE9SWUgD",
+              "url": "https://github.com/askscio/claude-plugins-pact/blob/main/CHANGELOG.md"
+            },
+            {
+              "document": {
+                "datasource": "github",
+                "docType": "file",
+                "id": "GITHUB_WHJQFOE_file_17868761158975332940",
+                "metadata": {
+                  "assignedTo": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "0CD189F7687EFCFECD9AAE99A3A5949F"
+                    },
+                    "name": "Travis Hoover",
+                    "obfuscatedId": "0CD189F7687EFCFECD9AAE99A3A5949F"
+                  },
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "0CD189F7687EFCFECD9AAE99A3A5949F"
+                    },
+                    "name": "Travis Hoover",
+                    "obfuscatedId": "0CD189F7687EFCFECD9AAE99A3A5949F"
+                  },
+                  "container": "/",
+                  "containerId": "GITHUB_WHJQFOE_file_17945622628423269026",
+                  "createTime": "2025-12-10T19:43:37Z",
+                  "datasource": "github",
+                  "datasourceInstance": "github_whjqfoe",
+                  "documentCategory": "CODE_REPOSITORY",
+                  "documentId": "GITHUB_WHJQFOE_file_17868761158975332940",
+                  "interactions": {},
+                  "loggingId": "C934A3F21C7AB2AAF363BF948AEA4994",
+                  "mimeType": "file",
+                  "objectType": "file",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "0CD189F7687EFCFECD9AAE99A3A5949F"
+                    },
+                    "name": "Travis Hoover",
+                    "obfuscatedId": "0CD189F7687EFCFECD9AAE99A3A5949F"
+                  },
+                  "path": "/",
+                  "updateTime": "2026-02-23T18:31:05Z",
+                  "updatedBy": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                    },
+                    "name": "Steve Calvert",
+                    "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+                  },
+                  "verification": {
+                    "state": "UNVERIFIED"
+                  },
+                  "visibility": "PUBLIC_VISIBLE"
+                },
+                "parentDocument": {
+                  "datasource": "github",
+                  "docType": "dir",
+                  "id": "GITHUB_WHJQFOE_file_17945622628423269026",
+                  "title": "gleanwork/claude-plugins",
+                  "url": "https://github.com/gleanwork/claude-plugins/tree/main/"
+                },
+                "title": "CHANGELOG.md",
+                "url": "https://github.com/gleanwork/claude-plugins/blob/main/CHANGELOG.md"
+              },
+              "title": "CHANGELOG.md",
+              "trackingToken": "PV4ns4Xu4eKYsC89,CmcKEFBWNG5zNFh1NGVLWXNDODkQBBooR0lUSFVCX1dISlFGT0VfZmlsZV8xNzg2ODc2MTE1ODk3NTMzMjk0MCIGZ2l0aHViKgZnaXRodWIyBGZpbGU6D0NPREVfUkVQT1NJVE9SWUgE",
+              "url": "https://github.com/gleanwork/claude-plugins/blob/main/CHANGELOG.md"
+            }
+          ],
+          "visibleCountHint": 3
+        }
+      ],
+      "clusterType": "SIMILAR",
+      "clusteredResults": [
+        {
+          "document": {
+            "datasource": "github",
+            "docType": "file",
+            "id": "GITHUB_WHJQFOE_file_9185412113421778106",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                },
+                "name": "Steve Calvert",
+                "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                },
+                "name": "Steve Calvert",
+                "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+              },
+              "container": "/",
+              "containerId": "GITHUB_WHJQFOE_file_13744570996844310216",
+              "createTime": "2025-03-13T19:59:19Z",
+              "datasource": "github",
+              "datasourceInstance": "github_whjqfoe",
+              "documentCategory": "CODE_REPOSITORY",
+              "documentId": "GITHUB_WHJQFOE_file_9185412113421778106",
+              "interactions": {},
+              "loggingId": "E1D59B3B41AEE97ADB164819E20B2300",
+              "mimeType": "file",
+              "objectType": "file",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                },
+                "name": "Steve Calvert",
+                "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+              },
+              "path": "/",
+              "updateTime": "2026-03-06T21:29:01Z",
+              "updatedBy": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "2B5733A8EBED0D376CE1C88878E678CD"
+                },
+                "name": "github-actions[bot]",
+                "obfuscatedId": "2B5733A8EBED0D376CE1C88878E678CD"
+              },
+              "verification": {
+                "state": "UNVERIFIED"
+              },
+              "visibility": "PUBLIC_VISIBLE"
+            },
+            "parentDocument": {
+              "datasource": "github",
+              "docType": "dir",
+              "id": "GITHUB_WHJQFOE_file_13744570996844310216",
+              "title": "gleanwork/mcp-server",
+              "url": "https://github.com/gleanwork/mcp-server/tree/main/"
+            },
+            "title": "CHANGELOG.md",
+            "url": "https://github.com/gleanwork/mcp-server/blob/main/CHANGELOG.md"
+          },
+          "title": "CHANGELOG.md",
+          "trackingToken": "PV4ns4Xu4eKYsC89,CmYKEFBWNG5zNFh1NGVLWXNDODkQARonR0lUSFVCX1dISlFGT0VfZmlsZV85MTg1NDEyMTEzNDIxNzc4MTA2IgZnaXRodWIqBmdpdGh1YjIEZmlsZToPQ09ERV9SRVBPU0lUT1JZSAE=",
+          "url": "https://github.com/gleanwork/mcp-server/blob/main/CHANGELOG.md"
+        },
+        {
+          "document": {
+            "datasource": "github",
+            "docType": "file",
+            "id": "GITHUB_WHJQFOE_file_15285284456353613836",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                },
+                "name": "Steve Calvert",
+                "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                },
+                "name": "Steve Calvert",
+                "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+              },
+              "container": "/",
+              "containerId": "GITHUB_WHJQFOE_file_9005665199494677741",
+              "createTime": "2025-11-27T03:57:10Z",
+              "datasource": "github",
+              "datasourceInstance": "github_whjqfoe",
+              "documentCategory": "CODE_REPOSITORY",
+              "documentId": "GITHUB_WHJQFOE_file_15285284456353613836",
+              "interactions": {},
+              "loggingId": "86075FC661F5DB507B0C795E4F4F035D",
+              "mimeType": "file",
+              "objectType": "file",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                },
+                "name": "Steve Calvert",
+                "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+              },
+              "path": "/",
+              "updateTime": "2026-03-18T04:12:23Z",
+              "updatedBy": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "25E0E1ADAF85F1FDC81654935A8AA505"
+                },
+                "name": "Nathaniel Furniss",
+                "obfuscatedId": "25E0E1ADAF85F1FDC81654935A8AA505"
+              },
+              "verification": {
+                "state": "UNVERIFIED"
+              },
+              "visibility": "PUBLIC_VISIBLE"
+            },
+            "parentDocument": {
+              "datasource": "github",
+              "docType": "dir",
+              "id": "GITHUB_WHJQFOE_file_9005665199494677741",
+              "title": "gleanwork/mcp-server-tester",
+              "url": "https://github.com/gleanwork/mcp-server-tester/tree/main/"
+            },
+            "title": "CHANGELOG.md",
+            "url": "https://github.com/gleanwork/mcp-server-tester/blob/main/CHANGELOG.md"
+          },
+          "title": "CHANGELOG.md",
+          "trackingToken": "PV4ns4Xu4eKYsC89,CmcKEFBWNG5zNFh1NGVLWXNDODkQAhooR0lUSFVCX1dISlFGT0VfZmlsZV8xNTI4NTI4NDQ1NjM1MzYxMzgzNiIGZ2l0aHViKgZnaXRodWIyBGZpbGU6D0NPREVfUkVQT1NJVE9SWUgC",
+          "url": "https://github.com/gleanwork/mcp-server-tester/blob/main/CHANGELOG.md"
+        },
+        {
+          "document": {
+            "datasource": "github",
+            "docType": "file",
+            "id": "GITHUB_file_6371341403856976898",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                },
+                "name": "Steve Calvert",
+                "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                },
+                "name": "Steve Calvert",
+                "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+              },
+              "container": "/",
+              "containerId": "GITHUB_file_9475819907560579220",
+              "createTime": "2026-02-06T20:47:40Z",
+              "datasource": "github",
+              "datasourceInstance": "github",
+              "documentCategory": "CODE_REPOSITORY",
+              "documentId": "GITHUB_file_6371341403856976898",
+              "interactions": {},
+              "loggingId": "65DD6467B3B67D9D3BB07E7D36BB203A",
+              "mimeType": "file",
+              "objectType": "file",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                },
+                "name": "Steve Calvert",
+                "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+              },
+              "path": "/",
+              "updateTime": "2026-04-02T19:12:31Z",
+              "updatedBy": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "C737E23B6710C7FAB3A2B6A8FE64F8F9"
+                },
+                "name": "github-actions[bot]",
+                "obfuscatedId": "C737E23B6710C7FAB3A2B6A8FE64F8F9"
+              },
+              "verification": {
+                "state": "UNVERIFIED"
+              },
+              "visibility": "SPECIFIC_PEOPLE_AND_GROUPS"
+            },
+            "parentDocument": {
+              "datasource": "github",
+              "docType": "dir",
+              "id": "GITHUB_file_9475819907560579220",
+              "title": "askscio/claude-plugins-pact",
+              "url": "https://github.com/askscio/claude-plugins-pact/tree/main/"
+            },
+            "title": "CHANGELOG.md",
+            "url": "https://github.com/askscio/claude-plugins-pact/blob/main/CHANGELOG.md"
+          },
+          "title": "CHANGELOG.md",
+          "trackingToken": "PV4ns4Xu4eKYsC89,Cl4KEFBWNG5zNFh1NGVLWXNDODkQAxofR0lUSFVCX2ZpbGVfNjM3MTM0MTQwMzg1Njk3Njg5OCIGZ2l0aHViKgZnaXRodWIyBGZpbGU6D0NPREVfUkVQT1NJVE9SWUgD",
+          "url": "https://github.com/askscio/claude-plugins-pact/blob/main/CHANGELOG.md"
+        },
+        {
+          "document": {
+            "datasource": "github",
+            "docType": "file",
+            "id": "GITHUB_WHJQFOE_file_17868761158975332940",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "0CD189F7687EFCFECD9AAE99A3A5949F"
+                },
+                "name": "Travis Hoover",
+                "obfuscatedId": "0CD189F7687EFCFECD9AAE99A3A5949F"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "0CD189F7687EFCFECD9AAE99A3A5949F"
+                },
+                "name": "Travis Hoover",
+                "obfuscatedId": "0CD189F7687EFCFECD9AAE99A3A5949F"
+              },
+              "container": "/",
+              "containerId": "GITHUB_WHJQFOE_file_17945622628423269026",
+              "createTime": "2025-12-10T19:43:37Z",
+              "datasource": "github",
+              "datasourceInstance": "github_whjqfoe",
+              "documentCategory": "CODE_REPOSITORY",
+              "documentId": "GITHUB_WHJQFOE_file_17868761158975332940",
+              "interactions": {},
+              "loggingId": "C934A3F21C7AB2AAF363BF948AEA4994",
+              "mimeType": "file",
+              "objectType": "file",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "0CD189F7687EFCFECD9AAE99A3A5949F"
+                },
+                "name": "Travis Hoover",
+                "obfuscatedId": "0CD189F7687EFCFECD9AAE99A3A5949F"
+              },
+              "path": "/",
+              "updateTime": "2026-02-23T18:31:05Z",
+              "updatedBy": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+                },
+                "name": "Steve Calvert",
+                "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+              },
+              "verification": {
+                "state": "UNVERIFIED"
+              },
+              "visibility": "PUBLIC_VISIBLE"
+            },
+            "parentDocument": {
+              "datasource": "github",
+              "docType": "dir",
+              "id": "GITHUB_WHJQFOE_file_17945622628423269026",
+              "title": "gleanwork/claude-plugins",
+              "url": "https://github.com/gleanwork/claude-plugins/tree/main/"
+            },
+            "title": "CHANGELOG.md",
+            "url": "https://github.com/gleanwork/claude-plugins/blob/main/CHANGELOG.md"
+          },
+          "title": "CHANGELOG.md",
+          "trackingToken": "PV4ns4Xu4eKYsC89,CmcKEFBWNG5zNFh1NGVLWXNDODkQBBooR0lUSFVCX1dISlFGT0VfZmlsZV8xNzg2ODc2MTE1ODk3NTMzMjk0MCIGZ2l0aHViKgZnaXRodWIyBGZpbGU6D0NPREVfUkVQT1NJVE9SWUgE",
+          "url": "https://github.com/gleanwork/claude-plugins/blob/main/CHANGELOG.md"
+        }
+      ],
+      "document": {
+        "datasource": "github",
+        "docType": "file",
+        "id": "GITHUB_WHJQFOE_file_13251854672845143194",
+        "metadata": {
+          "assignedTo": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+            },
+            "name": "Steve Calvert",
+            "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+          },
+          "author": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+            },
+            "name": "Steve Calvert",
+            "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+          },
+          "container": "/",
+          "containerId": "GITHUB_WHJQFOE_file_17941497905013434290",
+          "createTime": "2025-08-18T16:52:41Z",
+          "datasource": "github",
+          "datasourceInstance": "github_whjqfoe",
+          "documentCategory": "CODE_REPOSITORY",
+          "documentId": "GITHUB_WHJQFOE_file_13251854672845143194",
+          "interactions": {},
+          "loggingId": "443F63E9AE4E27C2F517D1564CD641E8",
+          "mimeType": "file",
+          "objectType": "file",
+          "owner": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "1C6D65D6601F40C7D8F378787210E821"
+            },
+            "name": "Steve Calvert",
+            "obfuscatedId": "1C6D65D6601F40C7D8F378787210E821"
+          },
+          "path": "/",
+          "superContainerId": "GITHUB_WHJQFOE_repo_52043B0DE6B9B63232B5FE1159C0FD25",
+          "updateTime": "2026-03-05T18:33:49Z",
+          "updatedBy": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "AE7935F5BA9A79CA8FD7799359D23E54"
+            },
+            "name": "Chris Freeman",
+            "obfuscatedId": "AE7935F5BA9A79CA8FD7799359D23E54"
+          },
+          "visibility": "PUBLIC_VISIBLE"
+        },
+        "parentDocument": {
+          "datasource": "github",
+          "docType": "dir",
+          "id": "GITHUB_WHJQFOE_file_17941497905013434290",
+          "title": "gleanwork/mcp-config",
+          "url": "https://github.com/gleanwork/mcp-config/tree/main/"
+        },
+        "title": "CHANGELOG.md",
+        "url": "https://github.com/gleanwork/mcp-config/blob/main/CHANGELOG.md"
+      },
+      "mustIncludeSuggestions": {},
+      "snippets": [
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 6,
+              "startIndex": 3,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 15,
+              "startIndex": 8,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "text": "# :bug: Bug Fix",
+          "url": "https://github.com/gleanwork/mcp-config/blob/main/CHANGELOG.md#:~:text=%23%20:bug:%20Bug%20Fix"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 6,
+              "startIndex": 3,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 15,
+              "startIndex": 8,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 1,
+          "text": "# :bug: Bug Fix",
+          "url": "https://github.com/gleanwork/mcp-config/blob/main/CHANGELOG.md#:~:text=%23%20:bug:%20Bug%20Fix"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 6,
+              "startIndex": 3,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 15,
+              "startIndex": 8,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 2,
+          "text": "# :bug: Bug Fix",
+          "url": "https://github.com/gleanwork/mcp-config/blob/main/CHANGELOG.md#:~:text=%23%20:bug:%20Bug%20Fix"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 6,
+              "startIndex": 3,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 15,
+              "startIndex": 8,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 3,
+          "text": "# :bug: Bug Fix",
+          "url": "https://github.com/gleanwork/mcp-config/blob/main/CHANGELOG.md#:~:text=%23%20:bug:%20Bug%20Fix"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 6,
+              "startIndex": 3,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 15,
+              "startIndex": 8,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 4,
+          "text": "# :bug: Bug Fix",
+          "url": "https://github.com/gleanwork/mcp-config/blob/main/CHANGELOG.md#:~:text=%23%20:bug:%20Bug%20Fix"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 6,
+              "startIndex": 3,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 15,
+              "startIndex": 8,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 5,
+          "text": "# :bug: Bug Fix",
+          "url": "https://github.com/gleanwork/mcp-config/blob/main/CHANGELOG.md#:~:text=%23%20:bug:%20Bug%20Fix"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 6,
+              "startIndex": 3,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 15,
+              "startIndex": 8,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 6,
+          "text": "# :bug: Bug Fix",
+          "url": "https://github.com/gleanwork/mcp-config/blob/main/CHANGELOG.md#:~:text=%23%20:bug:%20Bug%20Fix"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 6,
+              "startIndex": 3,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 15,
+              "startIndex": 8,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 7,
+          "text": "# :bug: Bug Fix",
+          "url": "https://github.com/gleanwork/mcp-config/blob/main/CHANGELOG.md#:~:text=%23%20:bug:%20Bug%20Fix"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 6,
+              "startIndex": 3,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 15,
+              "startIndex": 8,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 8,
+          "text": "# :bug: Bug Fix",
+          "url": "https://github.com/gleanwork/mcp-config/blob/main/CHANGELOG.md#:~:text=%23%20:bug:%20Bug%20Fix"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 6,
+              "startIndex": 3,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 15,
+              "startIndex": 8,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 9,
+          "text": "# :bug: Bug Fix",
+          "url": "https://github.com/gleanwork/mcp-config/blob/main/CHANGELOG.md#:~:text=%23%20:bug:%20Bug%20Fix"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 6,
+              "startIndex": 3,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 15,
+              "startIndex": 8,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 10,
+          "text": "# :bug: Bug Fix",
+          "url": "https://github.com/gleanwork/mcp-config/blob/main/CHANGELOG.md#:~:text=%23%20:bug:%20Bug%20Fix"
+        }
+      ],
+      "title": "CHANGELOG.md",
+      "trackingToken": "PV4ns4Xu4eKYsC89,CmMKEFBWNG5zNFh1NGVLWXNDODkaKEdJVEhVQl9XSEpRRk9FX2ZpbGVfMTMyNTE4NTQ2NzI4NDUxNDMxOTQiBmdpdGh1YioGZ2l0aHViMgRmaWxlOg9DT0RFX1JFUE9TSVRPUlk=",
+      "url": "https://github.com/gleanwork/mcp-config/blob/main/CHANGELOG.md"
+    },
+    {
+      "allClusteredResults": [
+        {
+          "clusterType": "AUTHOR_PREFIX",
+          "clusteredResults": [
+            {
+              "document": {
+                "datasource": "github",
+                "docType": "pull",
+                "id": "GITHUB_WHJQFOE_pull_18282062522657379483",
+                "metadata": {
+                  "assignedTo": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "9C1AB9C520EA870C342468759A4AEFCA"
+                    },
+                    "name": "dependabot[bot]",
+                    "obfuscatedId": "9C1AB9C520EA870C342468759A4AEFCA"
+                  },
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "9C1AB9C520EA870C342468759A4AEFCA"
+                    },
+                    "name": "dependabot[bot]",
+                    "obfuscatedId": "9C1AB9C520EA870C342468759A4AEFCA"
+                  },
+                  "container": "gleanwork/glean-developer-site",
+                  "containerId": "GITHUB_WHJQFOE_repo_A0F3044CF5F4A0D428527E74CE0AD641",
+                  "createTime": "2026-04-01T05:12:32Z",
+                  "customData": {
+                    "COMMIT_HASH": {
+                      "stringValue": "a3f35fabbf20d9442d59b13ac9800fef469025dc"
+                    },
+                    "srcBranch": {
+                      "stringValue": "dependabot/npm_and_yarn/docusaurus-plugin-mcp-server-0.11.0"
+                    }
+                  },
+                  "datasource": "github",
+                  "datasourceId": "451",
+                  "datasourceInstance": "github_whjqfoe",
+                  "documentCategory": "CHANGE_MANAGEMENT",
+                  "documentId": "GITHUB_WHJQFOE_pull_18282062522657379483",
+                  "interactions": {},
+                  "loggingId": "2D0963240626D4FBC3A2D72B471B4D46",
+                  "mimeType": "pull",
+                  "objectType": "pull",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "9C1AB9C520EA870C342468759A4AEFCA"
+                    },
+                    "name": "dependabot[bot]",
+                    "obfuscatedId": "9C1AB9C520EA870C342468759A4AEFCA"
+                  },
+                  "status": "open",
+                  "superContainerId": "GITHUB_WHJQFOE_repo_A0F3044CF5F4A0D428527E74CE0AD641",
+                  "updateTime": "2026-04-01T18:27:15Z",
+                  "verification": {
+                    "state": "UNVERIFIED"
+                  },
+                  "visibility": "PUBLIC_VISIBLE"
+                },
+                "parentDocument": {
+                  "datasource": "github",
+                  "docType": "repo",
+                  "id": "GITHUB_WHJQFOE_repo_A0F3044CF5F4A0D428527E74CE0AD641",
+                  "title": "gleanwork/glean-developer-site",
+                  "url": "https://github.com/gleanwork/glean-developer-site"
+                },
+                "title": "chore(deps): bump docusaurus-plugin-mcp-server from 0.10.2 to 0.11.0",
+                "url": "https://github.com/gleanwork/glean-developer-site/pull/451"
+              },
+              "title": "chore(deps): bump docusaurus-plugin-mcp-server from 0.10.2 to 0.11.0",
+              "trackingToken": "PV4ns4Xu4eKYsC89,CmsKEFBWNG5zNFh1NGVLWXNDODkQAhooR0lUSFVCX1dISlFGT0VfcHVsbF8xODI4MjA2MjUyMjY1NzM3OTQ4MyIGZ2l0aHViKgZnaXRodWIyBHB1bGw6EUNIQU5HRV9NQU5BR0VNRU5UQAFIAQ==",
+              "url": "https://github.com/gleanwork/glean-developer-site/pull/451"
+            }
+          ],
+          "visibleCountHint": 3
+        }
+      ],
+      "clusterType": "SIMILAR",
+      "clusteredResults": [
+        {
+          "document": {
+            "datasource": "github",
+            "docType": "pull",
+            "id": "GITHUB_WHJQFOE_pull_18282062522657379483",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "9C1AB9C520EA870C342468759A4AEFCA"
+                },
+                "name": "dependabot[bot]",
+                "obfuscatedId": "9C1AB9C520EA870C342468759A4AEFCA"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "9C1AB9C520EA870C342468759A4AEFCA"
+                },
+                "name": "dependabot[bot]",
+                "obfuscatedId": "9C1AB9C520EA870C342468759A4AEFCA"
+              },
+              "container": "gleanwork/glean-developer-site",
+              "containerId": "GITHUB_WHJQFOE_repo_A0F3044CF5F4A0D428527E74CE0AD641",
+              "createTime": "2026-04-01T05:12:32Z",
+              "customData": {
+                "COMMIT_HASH": {
+                  "stringValue": "a3f35fabbf20d9442d59b13ac9800fef469025dc"
+                },
+                "srcBranch": {
+                  "stringValue": "dependabot/npm_and_yarn/docusaurus-plugin-mcp-server-0.11.0"
+                }
+              },
+              "datasource": "github",
+              "datasourceId": "451",
+              "datasourceInstance": "github_whjqfoe",
+              "documentCategory": "CHANGE_MANAGEMENT",
+              "documentId": "GITHUB_WHJQFOE_pull_18282062522657379483",
+              "interactions": {},
+              "loggingId": "2D0963240626D4FBC3A2D72B471B4D46",
+              "mimeType": "pull",
+              "objectType": "pull",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "9C1AB9C520EA870C342468759A4AEFCA"
+                },
+                "name": "dependabot[bot]",
+                "obfuscatedId": "9C1AB9C520EA870C342468759A4AEFCA"
+              },
+              "status": "open",
+              "superContainerId": "GITHUB_WHJQFOE_repo_A0F3044CF5F4A0D428527E74CE0AD641",
+              "updateTime": "2026-04-01T18:27:15Z",
+              "verification": {
+                "state": "UNVERIFIED"
+              },
+              "visibility": "PUBLIC_VISIBLE"
+            },
+            "parentDocument": {
+              "datasource": "github",
+              "docType": "repo",
+              "id": "GITHUB_WHJQFOE_repo_A0F3044CF5F4A0D428527E74CE0AD641",
+              "title": "gleanwork/glean-developer-site",
+              "url": "https://github.com/gleanwork/glean-developer-site"
+            },
+            "title": "chore(deps): bump docusaurus-plugin-mcp-server from 0.10.2 to 0.11.0",
+            "url": "https://github.com/gleanwork/glean-developer-site/pull/451"
+          },
+          "title": "chore(deps): bump docusaurus-plugin-mcp-server from 0.10.2 to 0.11.0",
+          "trackingToken": "PV4ns4Xu4eKYsC89,CmsKEFBWNG5zNFh1NGVLWXNDODkQAhooR0lUSFVCX1dISlFGT0VfcHVsbF8xODI4MjA2MjUyMjY1NzM3OTQ4MyIGZ2l0aHViKgZnaXRodWIyBHB1bGw6EUNIQU5HRV9NQU5BR0VNRU5UQAFIAQ==",
+          "url": "https://github.com/gleanwork/glean-developer-site/pull/451"
+        }
+      ],
+      "document": {
+        "datasource": "github",
+        "docType": "pull",
+        "id": "GITHUB_WHJQFOE_pull_50095087981686731",
+        "metadata": {
+          "assignedTo": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "9C1AB9C520EA870C342468759A4AEFCA"
+            },
+            "name": "dependabot[bot]",
+            "obfuscatedId": "9C1AB9C520EA870C342468759A4AEFCA"
+          },
+          "author": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "9C1AB9C520EA870C342468759A4AEFCA"
+            },
+            "name": "dependabot[bot]",
+            "obfuscatedId": "9C1AB9C520EA870C342468759A4AEFCA"
+          },
+          "container": "gleanwork/glean-developer-site",
+          "containerId": "GITHUB_WHJQFOE_repo_A0F3044CF5F4A0D428527E74CE0AD641",
+          "createTime": "2026-03-01T05:03:12Z",
+          "customData": {
+            "COMMIT_HASH": {
+              "stringValue": "f9ad2e7b2e6981bedb210e0ea1836f648f8b93f5"
+            },
+            "srcBranch": {
+              "stringValue": "dependabot/npm_and_yarn/docusaurus-plugin-openapi-docs-4.7.1"
+            }
+          },
+          "datasource": "github",
+          "datasourceId": "373",
+          "datasourceInstance": "github_whjqfoe",
+          "documentCategory": "CHANGE_MANAGEMENT",
+          "documentId": "GITHUB_WHJQFOE_pull_50095087981686731",
+          "interactions": {},
+          "loggingId": "9F43906B205B8025C18074F106E81C1B",
+          "mimeType": "pull",
+          "objectType": "pull",
+          "owner": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "9C1AB9C520EA870C342468759A4AEFCA"
+            },
+            "name": "dependabot[bot]",
+            "obfuscatedId": "9C1AB9C520EA870C342468759A4AEFCA"
+          },
+          "status": "merged",
+          "superContainerId": "GITHUB_WHJQFOE_repo_A0F3044CF5F4A0D428527E74CE0AD641",
+          "updateTime": "2026-03-23T16:50:51Z",
+          "visibility": "PUBLIC_VISIBLE"
+        },
+        "parentDocument": {
+          "datasource": "github",
+          "docType": "repo",
+          "id": "GITHUB_WHJQFOE_repo_A0F3044CF5F4A0D428527E74CE0AD641",
+          "title": "gleanwork/glean-developer-site",
+          "url": "https://github.com/gleanwork/glean-developer-site"
+        },
+        "title": "chore(deps): bump docusaurus-plugin-openapi-docs from 4.5.1 to 4.7.1",
+        "url": "https://github.com/gleanwork/glean-developer-site/pull/373"
+      },
+      "mustIncludeSuggestions": {},
+      "snippets": [
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 12,
+              "startIndex": 5,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "text": "# 🐛 Bug Fix",
+          "url": "https://github.com/gleanwork/glean-developer-site/pull/373#:~:text=%23%20%F0%9F%90%9B%20Bug%20Fix"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 12,
+              "startIndex": 5,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 4,
+          "text": "# 🐛 Bug Fix",
+          "url": "https://github.com/gleanwork/glean-developer-site/pull/373#:~:text=%23%20%F0%9F%90%9B%20Bug%20Fix"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 12,
+              "startIndex": 5,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 5,
+          "text": "# 🐛 Bug Fix",
+          "url": "https://github.com/gleanwork/glean-developer-site/pull/373#:~:text=%23%20%F0%9F%90%9B%20Bug%20Fix"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 3,
+              "startIndex": 0,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 58,
+              "startIndex": 53,
+              "type": "LINK",
+              "url": "https://redirect.github.com/PaloAltoNetworks/docusaurus-openapi-docs/pull/1292"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 1,
+          "text": "fix(theme): use import type for plugin type imports (#1292)",
+          "url": "https://github.com/gleanwork/glean-developer-site/pull/373#:~:text=fix%28theme%29:%20use%20import%20type%20for%20plugin%20type%20imports%20%28%231292%29"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 3,
+              "startIndex": 0,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 54,
+              "startIndex": 49,
+              "type": "LINK",
+              "url": "https://redirect.github.com/PaloAltoNetworks/docusaurus-openapi-docs/pull/1286"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 2,
+          "text": "fix: render inline enum values in anyOf schemas (#1286)",
+          "url": "https://github.com/gleanwork/glean-developer-site/pull/373#:~:text=fix:%20render%20inline%20enum%20values%20in%20anyOf%20schemas%20%28%231286%29"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 3,
+              "startIndex": 0,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 73,
+              "startIndex": 68,
+              "type": "LINK",
+              "url": "https://redirect.github.com/PaloAltoNetworks/docusaurus-openapi-docs/pull/1284"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 3,
+          "text": "fix: generate correct examples for different request content types (#1284)",
+          "url": "https://github.com/gleanwork/glean-developer-site/pull/373#:~:text=fix:%20generate%20correct%20examples%20for%20different%20request%20content%20types%20%28%231284%29"
+        }
+      ],
+      "title": "chore(deps): bump docusaurus-plugin-openapi-docs from 4.5.1 to 4.7.1",
+      "trackingToken": "PV4ns4Xu4eKYsC89,CmYKEFBWNG5zNFh1NGVLWXNDODkQARolR0lUSFVCX1dISlFGT0VfcHVsbF81MDA5NTA4Nzk4MTY4NjczMSIGZ2l0aHViKgZnaXRodWIyBHB1bGw6EUNIQU5HRV9NQU5BR0VNRU5UQAE=",
+      "url": "https://github.com/gleanwork/glean-developer-site/pull/373"
+    },
+    {
+      "document": {
+        "datasource": "github",
+        "docType": "pull",
+        "id": "GITHUB_WHJQFOE_pull_4816578243244382755",
+        "metadata": {
+          "assignedTo": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "9C1AB9C520EA870C342468759A4AEFCA"
+            },
+            "name": "dependabot[bot]",
+            "obfuscatedId": "9C1AB9C520EA870C342468759A4AEFCA"
+          },
+          "author": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "9C1AB9C520EA870C342468759A4AEFCA"
+            },
+            "name": "dependabot[bot]",
+            "obfuscatedId": "9C1AB9C520EA870C342468759A4AEFCA"
+          },
+          "container": "gleanwork/glean-developer-site",
+          "containerId": "GITHUB_WHJQFOE_repo_A0F3044CF5F4A0D428527E74CE0AD641",
+          "createTime": "2026-03-01T05:03:41Z",
+          "customData": {
+            "COMMIT_HASH": {
+              "stringValue": "63e299645136130fb8b6d83e43fc67c703de2220"
+            },
+            "srcBranch": {
+              "stringValue": "dependabot/npm_and_yarn/marked-17.0.1"
+            }
+          },
+          "datasource": "github",
+          "datasourceId": "374",
+          "datasourceInstance": "github_whjqfoe",
+          "documentCategory": "CHANGE_MANAGEMENT",
+          "documentId": "GITHUB_WHJQFOE_pull_4816578243244382755",
+          "interactions": {},
+          "loggingId": "30C479CFBC37CAC3DD9240DC756F92A9",
+          "mimeType": "pull",
+          "objectType": "pull",
+          "owner": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "9C1AB9C520EA870C342468759A4AEFCA"
+            },
+            "name": "dependabot[bot]",
+            "obfuscatedId": "9C1AB9C520EA870C342468759A4AEFCA"
+          },
+          "status": "merged",
+          "superContainerId": "GITHUB_WHJQFOE_repo_A0F3044CF5F4A0D428527E74CE0AD641",
+          "updateTime": "2026-03-22T22:28:35Z",
+          "visibility": "PUBLIC_VISIBLE"
+        },
+        "parentDocument": {
+          "datasource": "github",
+          "docType": "repo",
+          "id": "GITHUB_WHJQFOE_repo_A0F3044CF5F4A0D428527E74CE0AD641",
+          "title": "gleanwork/glean-developer-site",
+          "url": "https://github.com/gleanwork/glean-developer-site"
+        },
+        "title": "chore(deps): bump marked from 16.4.1 to 17.0.1",
+        "url": "https://github.com/gleanwork/glean-developer-site/pull/374"
+      },
+      "mustIncludeSuggestions": {},
+      "snippets": [
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 11,
+              "startIndex": 2,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 2,
+          "text": "# Bug Fixes",
+          "url": "https://github.com/gleanwork/glean-developer-site/pull/374#:~:text=%23%20Bug%20Fixes"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 11,
+              "startIndex": 2,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 4,
+          "text": "# Bug Fixes",
+          "url": "https://github.com/gleanwork/glean-developer-site/pull/374#:~:text=%23%20Bug%20Fixes"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 11,
+              "startIndex": 2,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 5,
+          "text": "# Bug Fixes",
+          "url": "https://github.com/gleanwork/glean-developer-site/pull/374#:~:text=%23%20Bug%20Fixes"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 3,
+              "startIndex": 0,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 38,
+              "startIndex": 33,
+              "type": "LINK",
+              "url": "https://redirect.github.com/markedjs/marked/issues/3828"
+            },
+            {
+              "endIndex": 48,
+              "startIndex": 41,
+              "type": "LINK",
+              "url": "https://github.com/markedjs/marked/commit/921ee22102a4aa9c19286afd61610d1952ffca8e"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 3,
+          "text": "fix block elements in task item (#3828) (921ee22)",
+          "url": "https://github.com/gleanwork/glean-developer-site/pull/374#:~:text=fix%20block%20elements%20in%20task%20item%20%28%233828%29%20%28921ee22%29"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 11,
+              "startIndex": 8,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 16,
+              "startIndex": 13,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 7,
+              "startIndex": 0,
+              "type": "LINK",
+              "url": "https://github.com/markedjs/marked/commit/921ee22102a4aa9c19286afd61610d1952ffca8e"
+            },
+            {
+              "endIndex": 51,
+              "startIndex": 46,
+              "type": "LINK",
+              "url": "https://redirect.github.com/markedjs/marked/issues/3828"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 6,
+          "text": "921ee22 fix: fix block elements in task item (#3828)",
+          "url": "https://github.com/gleanwork/glean-developer-site/pull/374#:~:text=921ee22%20fix:%20fix%20block%20elements%20in%20task%20item%20%28%233828%29"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 12,
+              "startIndex": 6,
+              "type": "LINK",
+              "url": "https://github.com/markedjs/marked"
+            }
+          ],
+          "snippet": "",
+          "text": "Bumps marked from 16.4.1 to 17.0.1.",
+          "url": "https://github.com/gleanwork/glean-developer-site/pull/374#:~:text=Bumps%20marked%20from%2016.4.1%20to%2017.0.1."
+        },
+        {
+          "mimeType": "text/plain",
+          "snippet": "",
+          "snippetTextOrdering": 1,
+          "text": "Release notes",
+          "url": "https://github.com/gleanwork/glean-developer-site/pull/374#:~:text=Release%20notes"
+        }
+      ],
+      "title": "chore(deps): bump marked from 16.4.1 to 17.0.1",
+      "trackingToken": "PV4ns4Xu4eKYsC89,CmgKEFBWNG5zNFh1NGVLWXNDODkQAhonR0lUSFVCX1dISlFGT0VfcHVsbF80ODE2NTc4MjQzMjQ0MzgyNzU1IgZnaXRodWIqBmdpdGh1YjIEcHVsbDoRQ0hBTkdFX01BTkFHRU1FTlRAAg==",
+      "url": "https://github.com/gleanwork/glean-developer-site/pull/374"
+    }
+  ],
+  "errorInfo": {},
+  "requestID": "07847821980a125b7215e961bbdbb7f9",
+  "backendTimeMillis": 866,
+  "experimentIds": [
+    222769,
+    222770,
+    196740,
+    196741,
+    169432,
+    169433,
+    223191,
+    223192,
+    223197,
+    223198,
+    221861,
+    221863,
+    1000,
+    1001,
+    71945,
+    71946,
+    220791,
+    220792
+  ],
+  "metadata": {
+    "rewrittenQuery": "bug fix",
+    "searchedQuery": "bug fix",
+    "searchedQueryWithoutNegation": "",
+    "originalQuery": "bug fix"
+  },
+  "facetResults": [
+    {
+      "sourceName": "last_updated_at",
+      "operatorName": "SelectSingle",
+      "buckets": [
+        {
+          "count": 242426,
+          "value": {
+            "stringValue": "all",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 622,
+          "value": {
+            "stringValue": "past_day",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 20054,
+          "value": {
+            "stringValue": "past_month",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 8068,
+          "value": {
+            "stringValue": "past_week",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 120749,
+          "value": {
+            "stringValue": "past_year",
+            "iconConfig": {}
+          }
+        }
+      ]
+    },
+    {
+      "sourceName": "from",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 37,
+          "value": {
+            "stringValue": "A. Stoewer",
+            "displayLabel": "A. Stoewer",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "AB",
+            "displayLabel": "AB",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "AJ Ka",
+            "displayLabel": "AJ Ka",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "allan.livingston@glean.com",
+            "displayLabel": "Allan Livingston",
+            "iconConfig": {
+              "url": "https://scio-prod-be.glean.com/api/v1/images?key=eyJ0eXBlIjoiVUdDIiwiaWQiOiIwIiwiZHMiOiJHQUxMRVJZLUlNQUdFLVBJQ0tFUiIsImNpZCI6ImM0ZmQzNmI3LWQwYjgtNDNlOS1hYTU2LWE1Mjc0ZmI2YjgxOSIsImV4dCI6Ii5wbmcifQ=="
+            }
+          }
+        },
+        {
+          "count": 14,
+          "value": {
+            "stringValue": "barla.dhanush@glean.com",
+            "displayLabel": "Barla Dhanush",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-01-20/8318926798947_b8906ba164709717b66e_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "isaiah.white@glean.com",
+            "displayLabel": "Isaiah White",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-11-10/9912333291584_3ccb886886c3cd05ff32_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "jeremy.patoc@glean.com",
+            "displayLabel": "Jeremy Patoc",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2026-01-05/10230066047267_f1d117b64ee1739e9d36_192.png"
+            }
+          }
+        },
+        {
+          "count": 1054,
+          "value": {
+            "stringValue": "michael.wiradharma@glean.com",
+            "displayLabel": "Michael Wiradharma",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-04-21/8787310892722_549edc8309aa327e1bb3_192.png"
+            }
+          }
+        },
+        {
+          "count": 57,
+          "value": {
+            "stringValue": "prabhav.patil@glean.com",
+            "displayLabel": "Prabhav Sunil Patil",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-17/9709457144339_54d558d23c50aabf0a39_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 1259,
+          "value": {
+            "stringValue": "praveen.yalagandula@glean.com",
+            "displayLabel": "Praveen Yalagandula",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-11/7414016129780_bf67415213bf98c9b107_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 82,
+          "value": {
+            "stringValue": "preeyal.sarawgi@glean.com",
+            "displayLabel": "Preeyal Sarawgi",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-09/7390137859350_ed08f424a2b7939004e5_192.png"
+            }
+          }
+        },
+        {
+          "count": 2568,
+          "value": {
+            "stringValue": "stanley.hong@glean.com",
+            "displayLabel": "Stanley Hong",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-24/9763772431557_eb49d68385e076ba309b_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 2600,
+          "value": {
+            "stringValue": "stephen.chu@glean.com",
+            "displayLabel": "Stephen Chu",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-01/9607282793623_eddf5ea9e16d05630af6_192.png"
+            }
+          }
+        },
+        {
+          "count": 83,
+          "value": {
+            "stringValue": "vidyashree.shetty@glean.com",
+            "displayLabel": "Vidyashree Shetty",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-09-23/9563763991331_13ae695a89db1fa0b578_192.jpg"
+            }
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "type",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 242168,
+          "value": {
+            "stringValue": "code",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 6799,
+          "value": {
+            "stringValue": "code_repository",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 73266,
+          "value": {
+            "stringValue": "commit",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 26,
+          "value": {
+            "stringValue": "dir",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 6773,
+          "value": {
+            "stringValue": "file",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 72,
+          "value": {
+            "stringValue": "issue",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 162129,
+          "value": {
+            "stringValue": "pull",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 160,
+          "value": {
+            "stringValue": "readme",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 72,
+          "value": {
+            "stringValue": "ticket",
+            "iconConfig": {}
+          }
+        }
+      ]
+    },
+    {
+      "sourceName": "collection",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 5,
+          "value": {
+            "stringValue": "3p",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Accelerate \u0026 Adopt – role resources",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Coby Blair Onboarding",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "CollectionA",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Connector briefs",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 11,
+          "value": {
+            "stringValue": "Content based scheduled triggers",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "Easter Eggs",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Eng \u0026 IT Day In The Life",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Github collection",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Intelligence Pipelines Karma",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "JamesKim Test collection",
+            "iconConfig": {}
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "suggested",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 10,
+          "value": {
+            "stringValue": "Go Links",
+            "iconConfig": {}
+          }
+        }
+      ]
+    },
+    {
+      "sourceName": "assignee",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 10,
+          "value": {
+            "stringValue": "Aaryan Srivastava",
+            "displayLabel": "Aaryan Srivastava",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 5,
+          "value": {
+            "stringValue": "abhijith@glean.com",
+            "displayLabel": "Abhijith Shankar",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2021-08-31/2423139596103_02e426d1d855dcf5f374_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "Abhishek Garg",
+            "displayLabel": "Abhishek Garg",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "additya.popli@glean.com",
+            "displayLabel": "Additya Popli",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-03-28/8674291038594_7f4c8af5bbab836a690a_192.png"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "barla.dhanush@glean.com",
+            "displayLabel": "Barla Dhanush",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-01-20/8318926798947_b8906ba164709717b66e_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 14,
+          "value": {
+            "stringValue": "michael.wiradharma@glean.com",
+            "displayLabel": "Michael Wiradharma",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-04-21/8787310892722_549edc8309aa327e1bb3_192.png"
+            }
+          }
+        },
+        {
+          "count": 18,
+          "value": {
+            "stringValue": "praveen.yalagandula@glean.com",
+            "displayLabel": "Praveen Yalagandula",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-11/7414016129780_bf67415213bf98c9b107_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "preeyal.sarawgi@glean.com",
+            "displayLabel": "Preeyal Sarawgi",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-09/7390137859350_ed08f424a2b7939004e5_192.png"
+            }
+          }
+        },
+        {
+          "count": 15,
+          "value": {
+            "stringValue": "sagar.vare@glean.com",
+            "displayLabel": "Sagar Vare",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2022-06-28/3744049286881_800c5099cf74ed6c8cbc_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 9,
+          "value": {
+            "stringValue": "stanley.hong@glean.com",
+            "displayLabel": "Stanley Hong",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-24/9763772431557_eb49d68385e076ba309b_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 35,
+          "value": {
+            "stringValue": "stephen.chu@glean.com",
+            "displayLabel": "Stephen Chu",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-01/9607282793623_eddf5ea9e16d05630af6_192.png"
+            }
+          }
+        },
+        {
+          "count": 3,
+          "value": {
+            "stringValue": "vidyashree.shetty@glean.com",
+            "displayLabel": "Vidyashree Shetty",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-09-23/9563763991331_13ae695a89db1fa0b578_192.jpg"
+            }
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "author",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Aaditya Gururaj",
+            "displayLabel": "Aaditya Gururaj",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 36,
+          "value": {
+            "stringValue": "Aaheli Chattopadhyay",
+            "displayLabel": "Aaheli Chattopadhyay",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1039,
+          "value": {
+            "stringValue": "Aaryan Srivastava",
+            "displayLabel": "Aaryan Srivastava",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 8,
+          "value": {
+            "stringValue": "barla.dhanush@glean.com",
+            "displayLabel": "Barla Dhanush",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-01-20/8318926798947_b8906ba164709717b66e_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "david.ross@glean.com",
+            "displayLabel": "David Ross",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2026-03-30/10812294091586_d1c39fd49a45b985c511_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "isaiah.white@glean.com",
+            "displayLabel": "Isaiah White",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-11-10/9912333291584_3ccb886886c3cd05ff32_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 514,
+          "value": {
+            "stringValue": "michael.wiradharma@glean.com",
+            "displayLabel": "Michael Wiradharma",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-04-21/8787310892722_549edc8309aa327e1bb3_192.png"
+            }
+          }
+        },
+        {
+          "count": 57,
+          "value": {
+            "stringValue": "prabhav.patil@glean.com",
+            "displayLabel": "Prabhav Sunil Patil",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-17/9709457144339_54d558d23c50aabf0a39_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 854,
+          "value": {
+            "stringValue": "praveen.yalagandula@glean.com",
+            "displayLabel": "Praveen Yalagandula",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-11/7414016129780_bf67415213bf98c9b107_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 28,
+          "value": {
+            "stringValue": "preeyal.sarawgi@glean.com",
+            "displayLabel": "Preeyal Sarawgi",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-09/7390137859350_ed08f424a2b7939004e5_192.png"
+            }
+          }
+        },
+        {
+          "count": 1808,
+          "value": {
+            "stringValue": "stanley.hong@glean.com",
+            "displayLabel": "Stanley Hong",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-24/9763772431557_eb49d68385e076ba309b_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 637,
+          "value": {
+            "stringValue": "stephen.chu@glean.com",
+            "displayLabel": "Stephen Chu",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-01/9607282793623_eddf5ea9e16d05630af6_192.png"
+            }
+          }
+        },
+        {
+          "count": 75,
+          "value": {
+            "stringValue": "vidyashree.shetty@glean.com",
+            "displayLabel": "Vidyashree Shetty",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-09-23/9563763991331_13ae695a89db1fa0b578_192.jpg"
+            }
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "commenter",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Aaditya Gururaj",
+            "displayLabel": "Aaditya Gururaj",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 25,
+          "value": {
+            "stringValue": "Aaheli Chattopadhyay",
+            "displayLabel": "Aaheli Chattopadhyay",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1292,
+          "value": {
+            "stringValue": "Aaryan Srivastava",
+            "displayLabel": "Aaryan Srivastava",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "allan.livingston@glean.com",
+            "displayLabel": "Allan Livingston",
+            "iconConfig": {
+              "url": "https://scio-prod-be.glean.com/api/v1/images?key=eyJ0eXBlIjoiVUdDIiwiaWQiOiIwIiwiZHMiOiJHQUxMRVJZLUlNQUdFLVBJQ0tFUiIsImNpZCI6ImM0ZmQzNmI3LWQwYjgtNDNlOS1hYTU2LWE1Mjc0ZmI2YjgxOSIsImV4dCI6Ii5wbmcifQ=="
+            }
+          }
+        },
+        {
+          "count": 10,
+          "value": {
+            "stringValue": "barla.dhanush@glean.com",
+            "displayLabel": "Barla Dhanush",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-01-20/8318926798947_b8906ba164709717b66e_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "david.ross@glean.com",
+            "displayLabel": "David Ross",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2026-03-30/10812294091586_d1c39fd49a45b985c511_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "jeremy.patoc@glean.com",
+            "displayLabel": "Jeremy Patoc",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2026-01-05/10230066047267_f1d117b64ee1739e9d36_192.png"
+            }
+          }
+        },
+        {
+          "count": 782,
+          "value": {
+            "stringValue": "michael.wiradharma@glean.com",
+            "displayLabel": "Michael Wiradharma",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-04-21/8787310892722_549edc8309aa327e1bb3_192.png"
+            }
+          }
+        },
+        {
+          "count": 720,
+          "value": {
+            "stringValue": "praveen.yalagandula@glean.com",
+            "displayLabel": "Praveen Yalagandula",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-11/7414016129780_bf67415213bf98c9b107_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 65,
+          "value": {
+            "stringValue": "preeyal.sarawgi@glean.com",
+            "displayLabel": "Preeyal Sarawgi",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-09/7390137859350_ed08f424a2b7939004e5_192.png"
+            }
+          }
+        },
+        {
+          "count": 1227,
+          "value": {
+            "stringValue": "stanley.hong@glean.com",
+            "displayLabel": "Stanley Hong",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-24/9763772431557_eb49d68385e076ba309b_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 2123,
+          "value": {
+            "stringValue": "stephen.chu@glean.com",
+            "displayLabel": "Stephen Chu",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-01/9607282793623_eddf5ea9e16d05630af6_192.png"
+            }
+          }
+        },
+        {
+          "count": 42,
+          "value": {
+            "stringValue": "vidyashree.shetty@glean.com",
+            "displayLabel": "Vidyashree Shetty",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-09-23/9563763991331_13ae695a89db1fa0b578_192.jpg"
+            }
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "datasource",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "announcements",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 68,
+          "value": {
+            "stringValue": "answers",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 9,
+          "value": {
+            "stringValue": "collections",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 352,
+          "value": {
+            "stringValue": "confluence",
+            "displayLabel": "Confluence - Cloud",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 11,
+          "value": {
+            "stringValue": "debugendpoints",
+            "displayLabel": "DebugEndpoints",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 10,
+          "value": {
+            "stringValue": "developers",
+            "displayLabel": "Developers",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "figma",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "klue",
+            "displayLabel": "Klue",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 20,
+          "value": {
+            "stringValue": "rootly",
+            "displayLabel": "Rootly Integration",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 11,
+          "value": {
+            "stringValue": "spinnaker",
+            "displayLabel": "Spinnaker pipelines",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1603,
+          "value": {
+            "stringValue": "wiz",
+            "displayLabel": "Wiz",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 242426,
+          "value": {
+            "stringValue": "github",
+            "iconConfig": {}
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "label",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "agent-update-from-zendesk",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 6,
+          "value": {
+            "stringValue": "agentic-migration-from-glean-docs",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "agentic-migration-from-glean-docs-old",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 406,
+          "value": {
+            "stringValue": "auto-approved-personal-experimental",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 3,
+          "value": {
+            "stringValue": "AutoFix",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "automated",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2006,
+          "value": {
+            "stringValue": "automated-pr",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 26,
+          "value": {
+            "stringValue": "Brave",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 23,
+          "value": {
+            "stringValue": "Exa Web Crawler",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "MVD-review",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Wiz-remediation",
+            "iconConfig": {}
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "mentions",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 6,
+          "value": {
+            "stringValue": "Aaheli Chattopadhyay",
+            "displayLabel": "Aaheli Chattopadhyay",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 154,
+          "value": {
+            "stringValue": "Aaryan Srivastava",
+            "displayLabel": "Aaryan Srivastava",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 43,
+          "value": {
+            "stringValue": "Aasneh Prasad",
+            "displayLabel": "Aasneh Prasad",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 149,
+          "value": {
+            "stringValue": "abhijith@glean.com",
+            "displayLabel": "Abhijith Shankar",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2021-08-31/2423139596103_02e426d1d855dcf5f374_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "allan.livingston@glean.com",
+            "displayLabel": "Allan Livingston",
+            "iconConfig": {
+              "url": "https://scio-prod-be.glean.com/api/v1/images?key=eyJ0eXBlIjoiVUdDIiwiaWQiOiIwIiwiZHMiOiJHQUxMRVJZLUlNQUdFLVBJQ0tFUiIsImNpZCI6ImM0ZmQzNmI3LWQwYjgtNDNlOS1hYTU2LWE1Mjc0ZmI2YjgxOSIsImV4dCI6Ii5wbmcifQ=="
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "barla.dhanush@glean.com",
+            "displayLabel": "Barla Dhanush",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-01-20/8318926798947_b8906ba164709717b66e_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 66,
+          "value": {
+            "stringValue": "michael.wiradharma@glean.com",
+            "displayLabel": "Michael Wiradharma",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-04-21/8787310892722_549edc8309aa327e1bb3_192.png"
+            }
+          }
+        },
+        {
+          "count": 160,
+          "value": {
+            "stringValue": "praveen.yalagandula@glean.com",
+            "displayLabel": "Praveen Yalagandula",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-11/7414016129780_bf67415213bf98c9b107_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 39,
+          "value": {
+            "stringValue": "preeyal.sarawgi@glean.com",
+            "displayLabel": "Preeyal Sarawgi",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-09/7390137859350_ed08f424a2b7939004e5_192.png"
+            }
+          }
+        },
+        {
+          "count": 239,
+          "value": {
+            "stringValue": "stanley.hong@glean.com",
+            "displayLabel": "Stanley Hong",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-24/9763772431557_eb49d68385e076ba309b_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 84,
+          "value": {
+            "stringValue": "stephen.chu@glean.com",
+            "displayLabel": "Stephen Chu",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-01/9607282793623_eddf5ea9e16d05630af6_192.png"
+            }
+          }
+        },
+        {
+          "count": 3,
+          "value": {
+            "stringValue": "vidyashree.shetty@glean.com",
+            "displayLabel": "Vidyashree Shetty",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-09-23/9563763991331_13ae695a89db1fa0b578_192.jpg"
+            }
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "repository",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "askscio/aadi-SUM-Proxy",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "askscio/actionpackapiserver",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "askscio/adlc",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "askscio/aem-c2",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 9,
+          "value": {
+            "stringValue": "askscio/agents-claude-workspaces",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 93,
+          "value": {
+            "stringValue": "askscio/CSG-Demo-External-Search",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 197,
+          "value": {
+            "stringValue": "askscio/OpenSearch",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 33,
+          "value": {
+            "stringValue": "askscio/QuestionMonitor",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 6,
+          "value": {
+            "stringValue": "askscio/SQL-IDE-extension",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 17,
+          "value": {
+            "stringValue": "askscio/Support_Interview",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "askscio/VideoEditorPro",
+            "iconConfig": {}
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "reviewer",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "Aaditya Gururaj",
+            "displayLabel": "Aaditya Gururaj",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 59,
+          "value": {
+            "stringValue": "Aaheli Chattopadhyay",
+            "displayLabel": "Aaheli Chattopadhyay",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1686,
+          "value": {
+            "stringValue": "Aaryan Srivastava",
+            "displayLabel": "Aaryan Srivastava",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "allan.livingston@glean.com",
+            "displayLabel": "Allan Livingston",
+            "iconConfig": {
+              "url": "https://scio-prod-be.glean.com/api/v1/images?key=eyJ0eXBlIjoiVUdDIiwiaWQiOiIwIiwiZHMiOiJHQUxMRVJZLUlNQUdFLVBJQ0tFUiIsImNpZCI6ImM0ZmQzNmI3LWQwYjgtNDNlOS1hYTU2LWE1Mjc0ZmI2YjgxOSIsImV4dCI6Ii5wbmcifQ=="
+            }
+          }
+        },
+        {
+          "count": 7,
+          "value": {
+            "stringValue": "barla.dhanush@glean.com",
+            "displayLabel": "Barla Dhanush",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-01-20/8318926798947_b8906ba164709717b66e_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "benjamin.sowell@glean.com",
+            "displayLabel": "Benjamin Sowell",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2026-03-02/10614369682678_c8e720013982ac76423c_192.png"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "jeremy.patoc@glean.com",
+            "displayLabel": "Jeremy Patoc",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2026-01-05/10230066047267_f1d117b64ee1739e9d36_192.png"
+            }
+          }
+        },
+        {
+          "count": 1356,
+          "value": {
+            "stringValue": "michael.wiradharma@glean.com",
+            "displayLabel": "Michael Wiradharma",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-04-21/8787310892722_549edc8309aa327e1bb3_192.png"
+            }
+          }
+        },
+        {
+          "count": 863,
+          "value": {
+            "stringValue": "praveen.yalagandula@glean.com",
+            "displayLabel": "Praveen Yalagandula",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-11/7414016129780_bf67415213bf98c9b107_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 25,
+          "value": {
+            "stringValue": "preeyal.sarawgi@glean.com",
+            "displayLabel": "Preeyal Sarawgi",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-09/7390137859350_ed08f424a2b7939004e5_192.png"
+            }
+          }
+        },
+        {
+          "count": 1868,
+          "value": {
+            "stringValue": "stanley.hong@glean.com",
+            "displayLabel": "Stanley Hong",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-24/9763772431557_eb49d68385e076ba309b_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 3167,
+          "value": {
+            "stringValue": "stephen.chu@glean.com",
+            "displayLabel": "Stephen Chu",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-01/9607282793623_eddf5ea9e16d05630af6_192.png"
+            }
+          }
+        },
+        {
+          "count": 10,
+          "value": {
+            "stringValue": "vidyashree.shetty@glean.com",
+            "displayLabel": "Vidyashree Shetty",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-09-23/9563763991331_13ae695a89db1fa0b578_192.jpg"
+            }
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "status",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 20297,
+          "value": {
+            "stringValue": "closed",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1872,
+          "value": {
+            "stringValue": "draft",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 138947,
+          "value": {
+            "stringValue": "merged",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1085,
+          "value": {
+            "stringValue": "open",
+            "iconConfig": {}
+          }
+        }
+      ]
+    },
+    {
+      "sourceName": "suggested",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "my history",
+            "iconConfig": {}
+          }
+        }
+      ]
+    }
+  ],
+  "resultTabs": [
+    {
+      "count": 244513,
+      "id": "all"
+    },
+    {
+      "count": 242426,
+      "datasource": "github",
+      "id": "github"
+    },
+    {
+      "count": 10,
+      "datasource": "developers",
+      "datasourceInstance": "developers",
+      "id": "developers"
+    },
+    {
+      "count": 352,
+      "datasource": "confluence",
+      "id": "confluence"
+    },
+    {
+      "count": 1,
+      "datasource": "announcements",
+      "datasourceInstance": "announcements",
+      "id": "announcements"
+    },
+    {
+      "count": 68,
+      "datasource": "answers",
+      "datasourceInstance": "answers",
+      "id": "answers"
+    },
+    {
+      "count": 9,
+      "datasource": "collections",
+      "datasourceInstance": "collections",
+      "id": "collections"
+    },
+    {
+      "count": 11,
+      "datasource": "debugendpoints",
+      "datasourceInstance": "debugendpoints",
+      "id": "debugendpoints"
+    },
+    {
+      "count": 1,
+      "datasource": "figma",
+      "datasourceInstance": "figma",
+      "id": "figma"
+    },
+    {
+      "count": 1,
+      "datasource": "klue",
+      "datasourceInstance": "klue",
+      "id": "klue"
+    },
+    {
+      "count": 20,
+      "datasource": "rootly",
+      "datasourceInstance": "rootly",
+      "id": "rootly"
+    },
+    {
+      "count": 11,
+      "datasource": "spinnaker",
+      "datasourceInstance": "spinnaker",
+      "id": "spinnaker"
+    },
+    {
+      "count": 1603,
+      "datasource": "wiz",
+      "datasourceInstance": "wiz",
+      "id": "wiz"
+    }
+  ],
+  "resultTabIds": [
+    "github"
+  ],
+  "cursor": "eyJSZXN1bHRTdGFydCI6MywiUmFuZG9tQ2FjaGVLZXkiOiIxODExNzYyMTI4MzIwNTQ2ODAiLCJQYWdlRHVwZU1ldGFkYXRhIjp7IlBhZ2VJZCI6MSwiUmVzdWx0VG9rZW5zIjpudWxsfX0=",
+  "hasMoreResults": true
+}

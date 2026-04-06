@@ -1,0 +1,3945 @@
+{
+  "trackingToken": "P9ogzed2I2wfTDRG",
+  "sessionInfo": {
+    "lastQuery": "incident report",
+    "lastSeen": "2026-04-06T15:33:01.586651682Z",
+    "sessionTrackingToken": "FaTCDcBHidXMCHRZ",
+    "tabId": "NfkCNfcZeJjKqKSC"
+  },
+  "results": [
+    {
+      "backlinkResults": [
+        {
+          "document": {
+            "datasource": "slack",
+            "docType": "message",
+            "id": "SLACK2_Message_TGLEMJFFG_C08R36LS9QT_1764891134.702529",
+            "metadata": {
+              "assignedTo": {
+                "name": "Escalations App",
+                "obfuscatedId": ""
+              },
+              "author": {
+                "name": "Escalations App",
+                "obfuscatedId": ""
+              },
+              "container": "proj-dem-sa-better-together",
+              "createTime": "2025-12-04T23:32:14Z",
+              "customData": {
+                "parentConversationId": {
+                  "stringValue": "SLACK2__TGLEMJFFG\\_C08R36LS9QT_1764891133.569649_0__Conversation"
+                },
+                "showChannelInMetadata": {
+                  "booleanValue": true
+                }
+              },
+              "datasource": "slack",
+              "datasourceInstance": "slack",
+              "documentCategory": "MESSAGING",
+              "documentId": "SLACK2_Message_TGLEMJFFG_C08R36LS9QT_1764891134.702529",
+              "interactions": {},
+              "loggingId": "8B67901A9173D16415F9C46D33D14AAF",
+              "mimeType": "conversation",
+              "objectType": "message",
+              "owner": {
+                "name": "Escalations App",
+                "obfuscatedId": ""
+              },
+              "updateTime": "2025-12-12T18:32:34Z",
+              "visibility": "DOMAIN_VISIBLE"
+            },
+            "parentDocument": {
+              "title": "proj-dem-sa-better-together"
+            },
+            "title": "Conversation",
+            "url": "https://askscio.slack.com/archives/C08R36LS9QT/p1764891134702529?thread_ts=1764891133.569649\u0026cid=C08R36LS9QT"
+          },
+          "fullText": "Escalation raised by  Amy Vu\nDescription :    Can someone help me review Servicenow issues for FB?\nthey are having issues pulling incidents/problems/service requests which are not appearing searchable or providing any metrics. or returning partial data\ndocument verification found:\nhttps://fivebelow.service-now.com/incident?\u0004sys_id=d0c10a79931d32108dfcfda74dba1092\nhttps://fivebelow.service-now.com/incident?\u0004sys_id=c8ba1be9932d3a50cfbbf10b6aba10da\ndocument verification not found:\nhttps://fivebelow.service-now.com/incident?\u0004sys_id=ffad4d1e93e1fe50cfbbf10b6aba10a5\n\"Expecting basic queries like number of incidents reported in a time bound or number of P1/P2 reported in a timebound are important for us as metric query. \u0004May be reporting is also a need for us. \u0004Please look into this asap and help us further.\"\nthey likely will want to hop on a call on this.\nInvestigation details : when i use docfinder, im unable to see any of the links be indexed?\nasking them to downvote some searches for us to investigate further.\nCustomer\n",
+          "nativeAppUrl": "slack://channel?id=C08R36LS9QT\u0026message=1764891133.569649\u0026team=TGLEMJFFG\u0026thread_ts=1764891133.569649",
+          "snippets": [
+            {
+              "mimeType": "text/plain",
+              "ranges": [
+                {
+                  "document": {
+                    "id": "JIRA_EE-19304",
+                    "url": "https://askscio.atlassian.net/browse/EE-19304"
+                  },
+                  "endIndex": 24,
+                  "startIndex": 20,
+                  "type": "LINK"
+                }
+              ],
+              "snippet": "",
+              "text": "Created a tracking  JIRA"
+            }
+          ],
+          "title": "Conversation",
+          "trackingToken": "P9ogzed2I2wfTDRG,CsgBChBQOW9nemVkMkkyd2ZURFJHEAEaNlNMQUNLMl9NZXNzYWdlX1RHTEVNSkZGR19DMDhSMzZMUzlRVF8xNzY0ODkxMTM0LjcwMjUyOSIFc2xhY2sqBGppcmEyDENvbnZlcnNhdGlvbjoJTUVTU0FHSU5HSAFSUjozU0xBQ0syX19UR0xFTUpGRkdcX0MwOFIzNkxTOVFUXzE3NjQ4OTExMzMuNTY5NjQ5XzBfEhsKEkpJUkFfcHJvamVjdF8xMDA1MBDIiNbdrjM=",
+          "url": "https://askscio.slack.com/archives/C08R36LS9QT/p1764891134702529?thread_ts=1764891133.569649\u0026cid=C08R36LS9QT"
+        }
+      ],
+      "document": {
+        "datasource": "jira",
+        "docType": "Escalation",
+        "id": "JIRA_EE-19304",
+        "metadata": {
+          "assignedTo": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "0CD4E7E7AC0309B4189C400D7C18B602"
+            },
+            "name": "Iliana Portugal",
+            "obfuscatedId": "0CD4E7E7AC0309B4189C400D7C18B602"
+          },
+          "author": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "8834EC29D2A12F4B32248069787F3E39"
+            },
+            "name": "OnCall Scio",
+            "obfuscatedId": "8834EC29D2A12F4B32248069787F3E39"
+          },
+          "container": "Eng Escalations",
+          "containerId": "JIRA_project_10050",
+          "createTime": "2025-12-04T23:32:13Z",
+          "customData": {
+            "customField_10045:Interested Customers": {
+              "stringValue": "[\"fivebelow\"]"
+            },
+            "customField_10148:URL": {
+              "stringValue": "https://askscio.slack.com/archives/C08R36LS9QT/p1764891133569649"
+            },
+            "customField_10149:Root Cause Summary": {
+              "stringValue": "customer having issue using agent to retrieve servicenow results even though they are indexed"
+            },
+            "issueTypeId": {
+              "stringValue": "10102"
+            },
+            "linkedIssues": {
+              "stringValue": "[]"
+            },
+            "priorityId": {
+              "stringValue": "3"
+            },
+            "projectId": {
+              "stringValue": "10050"
+            },
+            "projectName": {
+              "stringValue": "Eng Escalations"
+            }
+          },
+          "datasource": "jira",
+          "datasourceId": "EE-19304",
+          "datasourceInstance": "jira",
+          "documentCategory": "TICKETS",
+          "documentId": "JIRA_EE-19304",
+          "interactions": {},
+          "loggingId": "5C606357A679C1B7A626A9D4B83674F1",
+          "mimeType": "escalation",
+          "objectType": "Escalation",
+          "owner": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "0CD4E7E7AC0309B4189C400D7C18B602"
+            },
+            "name": "Iliana Portugal",
+            "obfuscatedId": "0CD4E7E7AC0309B4189C400D7C18B602"
+          },
+          "priority": "Medium",
+          "status": "Done",
+          "statusCategory": "Done",
+          "superContainerId": "JIRA_project_10050",
+          "updateTime": "2026-02-11T21:03:11Z",
+          "visibility": "DOMAIN_VISIBLE"
+        },
+        "parentDocument": {
+          "datasource": "jira",
+          "docType": "project",
+          "id": "JIRA_project_10050",
+          "title": "Eng Escalations",
+          "url": "https://askscio.atlassian.net/jira/software/c/projects/EE/issues"
+        },
+        "title": " Can someone help me review Servicenow issues for FB?  they are having issues pulling incidents/problems/service requests which are not appearing searchable or providing any metrics. or returning part...",
+        "url": "https://askscio.atlassian.net/browse/EE-19304"
+      },
+      "mustIncludeSuggestions": {},
+      "snippets": [
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 58,
+              "startIndex": 40,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 102,
+              "startIndex": 94,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 1,
+          "text": "\"Expecting basic queries like number of incidents reported in a time bound or number of P1/P2 reported in a timebound are important for us as metric query. ",
+          "url": "https://askscio.atlassian.net/browse/EE-19304#:~:text=%22Expecting%20basic%20queries%20like%20number%20of%20incidents%20reported%20in%20a%20time%20bound%20or%20number%20of%20P1%2FP2%20reported%20in%20a%20timebound%20are%20important%20for%20us%20as%20metric%20query.%20"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 16,
+              "startIndex": 7,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "snippetTextOrdering": 2,
+          "text": "May be reporting is also a need for us. ",
+          "url": "https://askscio.atlassian.net/browse/EE-19304#:~:text=May%20be%20reporting%20is%20also%20a%20need%20for%20us.%20"
+        },
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 25,
+              "startIndex": 17,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "text": ".service-now.com/incident?",
+          "url": "https://askscio.atlassian.net/browse/EE-19304#:~:text=.service%2Dnow.com%2Fincident%3F"
+        }
+      ],
+      "title": " Can someone help me review Servicenow issues for FB?  they are having issues pulling incidents/problems/service requests which are not appearing searchable or providing any metrics. or returning part...",
+      "trackingToken": "P9ogzed2I2wfTDRG,CkIKEFA5b2d6ZWQySTJ3ZlREUkcaDUpJUkFfRUUtMTkzMDQiBGppcmEqBGppcmEyCmVzY2FsYXRpb246B1RJQ0tFVFM=",
+      "url": "https://askscio.atlassian.net/browse/EE-19304"
+    },
+    {
+      "backlinkResults": [
+        {
+          "document": {
+            "datasource": "zendesk",
+            "docType": "ticket",
+            "id": "ZENDESK_Ticket_3674",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "5B82A2EE3A7EC2450FAB6FB709C81527"
+                },
+                "name": "Isha Mehta",
+                "obfuscatedId": "5B82A2EE3A7EC2450FAB6FB709C81527"
+              },
+              "author": {
+                "name": "Customer",
+                "obfuscatedId": ""
+              },
+              "container": "SentinelOne",
+              "createTime": "2024-09-30T02:32:39Z",
+              "datasource": "zendesk",
+              "datasourceId": "#3674",
+              "datasourceInstance": "zendesk",
+              "documentCategory": "TICKETS",
+              "documentId": "ZENDESK_Ticket_3674",
+              "interactions": {
+                "numComments": 15
+              },
+              "loggingId": "AAF9584BD1FB7AE637ACB4FFD2D83435",
+              "mimeType": "ticket",
+              "objectType": "ticket",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "5B82A2EE3A7EC2450FAB6FB709C81527"
+                },
+                "name": "Isha Mehta",
+                "obfuscatedId": "5B82A2EE3A7EC2450FAB6FB709C81527"
+              },
+              "priority": "normal",
+              "status": "closed",
+              "updateTime": "2024-11-22T02:02:00Z",
+              "visibility": "SPECIFIC_PEOPLE_AND_GROUPS"
+            },
+            "parentDocument": {
+              "title": "SentinelOne"
+            },
+            "title": "Gleans' response errors out when there are too many questions",
+            "url": "https://gleanwork.zendesk.com/agent/tickets/3674"
+          },
+          "snippets": [
+            {
+              "mimeType": "text/plain",
+              "ranges": [
+                {
+                  "document": {
+                    "id": "JIRA_EN-305579",
+                    "url": "https://askscio.atlassian.net/browse/EN-305579"
+                  },
+                  "endIndex": 46,
+                  "startIndex": 0,
+                  "type": "LINK"
+                }
+              ],
+              "snippet": "",
+              "text": "https://askscio.atlassian.net/browse/EN-305579"
+            }
+          ],
+          "title": "Gleans' response errors out when there are too many questions",
+          "trackingToken": "P9ogzed2I2wfTDRG,Ck0KEFA5b2d6ZWQySTJ3ZlREUkcQAhoTWkVOREVTS19UaWNrZXRfMzY3NCIHemVuZGVzayoEamlyYTIGdGlja2V0OgdUSUNLRVRTQAFIAQ==",
+          "url": "https://gleanwork.zendesk.com/agent/tickets/3674"
+        },
+        {
+          "document": {
+            "datasource": "jira",
+            "docType": "Task",
+            "id": "JIRA_EN-312236",
+            "metadata": {
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "57B4A60E8ED7814E496F06D7E8947B8B"
+                },
+                "name": "Eddie Zhou",
+                "obfuscatedId": "57B4A60E8ED7814E496F06D7E8947B8B"
+              },
+              "components": [
+                "GleanChat Help"
+              ],
+              "container": "Engineering",
+              "createTime": "2024-11-04T10:56:28Z",
+              "customData": {
+                "issueTypeId": {
+                  "stringValue": "10002"
+                },
+                "linkedIssues": {
+                  "stringValue": "[]"
+                },
+                "priorityId": {
+                  "stringValue": "3"
+                },
+                "projectId": {
+                  "stringValue": "10000"
+                },
+                "projectName": {
+                  "stringValue": "Engineering"
+                }
+              },
+              "datasource": "jira",
+              "datasourceId": "EN-312236",
+              "datasourceInstance": "jira",
+              "documentCategory": "TICKETS",
+              "documentId": "JIRA_EN-312236",
+              "interactions": {
+                "numComments": 1
+              },
+              "loggingId": "3C71F7C4C3E8311981378DA465DAB428",
+              "mimeType": "task",
+              "objectType": "Task",
+              "priority": "Medium",
+              "status": "Closed",
+              "statusCategory": "Done",
+              "updateTime": "2024-11-04T17:16:16Z",
+              "visibility": "DOMAIN_VISIBLE"
+            },
+            "parentDocument": {
+              "title": "Engineering"
+            },
+            "title": "When asking questions using an spreadsheet with so...",
+            "url": "https://askscio.atlassian.net/browse/EN-312236"
+          },
+          "snippets": [
+            {
+              "mimeType": "text/plain",
+              "ranges": [
+                {
+                  "document": {
+                    "id": "JIRA_EN-305579",
+                    "url": "https://askscio.atlassian.net/browse/EN-305579"
+                  },
+                  "endIndex": 63,
+                  "startIndex": 51,
+                  "type": "LINK"
+                }
+              ],
+              "snippet": "",
+              "text": "i left a comment about this issue at the bottom of this comment. we don’t support Q\u0026A over hundreds of questions in one prompt very well today. i would not recommend the user does or"
+            }
+          ],
+          "title": "When asking questions using an spreadsheet with so...",
+          "trackingToken": "P9ogzed2I2wfTDRG,CkMKEFA5b2d6ZWQySTJ3ZlREUkcQAxoOSklSQV9FTi0zMTIyMzYiBGppcmEqBGppcmEyBHRhc2s6B1RJQ0tFVFNAAUgC",
+          "url": "https://askscio.atlassian.net/browse/EN-312236"
+        }
+      ],
+      "document": {
+        "datasource": "jira",
+        "docType": "Task",
+        "id": "JIRA_EN-305579",
+        "metadata": {
+          "author": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "57B4A60E8ED7814E496F06D7E8947B8B"
+            },
+            "name": "Eddie Zhou",
+            "obfuscatedId": "57B4A60E8ED7814E496F06D7E8947B8B"
+          },
+          "components": [
+            "GleanChat Quality Help"
+          ],
+          "container": "Engineering",
+          "containerId": "JIRA_project_10000",
+          "createTime": "2024-10-22T09:16:20Z",
+          "customData": {
+            "customField_10045:Interested Customers": {
+              "stringValue": "[\"SentinelOne\"]"
+            },
+            "issueTypeId": {
+              "stringValue": "10002"
+            },
+            "labels": {
+              "stringListValue": [
+                "jira_escalated"
+              ]
+            },
+            "linkedIssues": {
+              "stringValue": "[]"
+            },
+            "priorityId": {
+              "stringValue": "3"
+            },
+            "projectId": {
+              "stringValue": "10000"
+            },
+            "projectName": {
+              "stringValue": "Engineering"
+            }
+          },
+          "datasource": "jira",
+          "datasourceId": "EN-305579",
+          "datasourceInstance": "jira",
+          "documentCategory": "TICKETS",
+          "documentId": "JIRA_EN-305579",
+          "interactions": {
+            "numComments": 14
+          },
+          "loggingId": "6D378E6308907C24D595964E98C47629",
+          "mimeType": "task",
+          "objectType": "Task",
+          "priority": "Medium",
+          "status": "Debugged",
+          "statusCategory": "In Progress",
+          "superContainerId": "JIRA_project_10000",
+          "updateTime": "2024-11-04T17:00:38Z",
+          "visibility": "DOMAIN_VISIBLE"
+        },
+        "parentDocument": {
+          "datasource": "jira",
+          "docType": "project",
+          "id": "JIRA_project_10000",
+          "title": "Engineering",
+          "url": "https://askscio.atlassian.net/jira/software/c/projects/EN/issues"
+        },
+        "title": " Hi Team, `Linkedin` has reported that for specifi...",
+        "url": "https://askscio.atlassian.net/browse/EN-305579"
+      },
+      "mustIncludeSuggestions": {},
+      "snippets": [
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 25,
+              "startIndex": 10,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 71,
+              "startIndex": 63,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 147,
+              "startIndex": 139,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 171,
+              "startIndex": 163,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 247,
+              "startIndex": 239,
+              "type": "BOLD"
+            },
+            {
+              "endIndex": 177,
+              "startIndex": 162,
+              "type": "LINK",
+              "url": "https://askscio.atlassian.net/%22incident-1816%22"
+            }
+          ],
+          "snippet": "",
+          "text": "\"title\": \"Incident Report\", \"type\": \"object\", \"properties\": { \"incident_id\": { \"type\": \"string\", \"description\": \"Unique identifier for the incident\", \"examples\": \"incident-1816\" }, \"title\": { \"type\": \"string\", \"description\": \"Title of the incident\"",
+          "url": "https://askscio.atlassian.net/browse/EN-305579#:~:text=%22title%22:%20%22Incident%20Report%22%2C%20%22type%22:%20%22object%22%2C%20%22properties%22:%20%7B%20%22incident_id%22:%20%7B%20%22type%22:%20%22string%22%2C%20%22description%22:%20%22Unique%20identifier%20for%20the%20incident%22%2C%20%22examples%22:%20%22incident%2D1816%22%20%7D%2C%20%22title%22:%20%7B%20%22type%22:%20%22string%22%2C%20%22description%22:%20%22Title%20of%20the%20incident%22"
+        }
+      ],
+      "title": " Hi Team, `Linkedin` has reported that for specifi...",
+      "trackingToken": "P9ogzed2I2wfTDRG,CkEKEFA5b2d6ZWQySTJ3ZlREUkcQARoOSklSQV9FTi0zMDU1NzkiBGppcmEqBGppcmEyBHRhc2s6B1RJQ0tFVFNAAQ==",
+      "url": "https://askscio.atlassian.net/browse/EN-305579"
+    },
+    {
+      "allClusteredResults": [
+        {
+          "clusterType": "AUTHOR_PREFIX",
+          "clusteredResults": [
+            {
+              "document": {
+                "datasource": "jira",
+                "docType": "Bug",
+                "id": "JIRA_EN-1479983",
+                "metadata": {
+                  "assignedTo": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "B9A5D4B06032F2B2D025122251793D33"
+                    },
+                    "name": "Chinmay Goyal",
+                    "obfuscatedId": "B9A5D4B06032F2B2D025122251793D33"
+                  },
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "8834EC29D2A12F4B32248069787F3E39"
+                    },
+                    "name": "OnCall Scio",
+                    "obfuscatedId": "8834EC29D2A12F4B32248069787F3E39"
+                  },
+                  "components": [
+                    "GleanChat Alerts"
+                  ],
+                  "container": "Engineering",
+                  "containerId": "JIRA_project_10000",
+                  "createTime": "2026-02-25T14:59:47Z",
+                  "customData": {
+                    "customField_10045:Interested Customers": {
+                      "stringValue": "[\"glean-general-motors\"]"
+                    },
+                    "issueTypeId": {
+                      "stringValue": "10004"
+                    },
+                    "labels": {
+                      "stringListValue": [
+                        "502.0",
+                        "ProductionIssue",
+                        "automated-ticket",
+                        "tier-1"
+                      ]
+                    },
+                    "linkedIssues": {
+                      "stringValue": "[]"
+                    },
+                    "priorityId": {
+                      "stringValue": "4"
+                    },
+                    "projectId": {
+                      "stringValue": "10000"
+                    },
+                    "projectName": {
+                      "stringValue": "Engineering"
+                    }
+                  },
+                  "datasource": "jira",
+                  "datasourceId": "EN-1479983",
+                  "datasourceInstance": "jira",
+                  "documentCategory": "TICKETS",
+                  "documentId": "JIRA_EN-1479983",
+                  "interactions": {
+                    "numComments": 3
+                  },
+                  "loggingId": "5FB7CB60310FD7916D8EC039388DF064",
+                  "mimeType": "bug",
+                  "objectType": "Bug",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "B9A5D4B06032F2B2D025122251793D33"
+                    },
+                    "name": "Chinmay Goyal",
+                    "obfuscatedId": "B9A5D4B06032F2B2D025122251793D33"
+                  },
+                  "priority": "Low",
+                  "status": "Done",
+                  "statusCategory": "Done",
+                  "superContainerId": "JIRA_project_10000",
+                  "updateTime": "2026-03-04T02:19:33Z",
+                  "verification": {
+                    "state": "UNVERIFIED"
+                  },
+                  "visibility": "DOMAIN_VISIBLE"
+                },
+                "parentDocument": {
+                  "datasource": "jira",
+                  "docType": "project",
+                  "id": "JIRA_project_10000",
+                  "title": "Engineering",
+                  "url": "https://askscio.atlassian.net/jira/software/c/projects/EN/issues"
+                },
+                "title": "GleanChatError [project_id: glean-general-motors, type: pyagents_RemoteProtocolError] ",
+                "url": "https://askscio.atlassian.net/browse/EN-1479983"
+              },
+              "title": "GleanChatError [project_id: glean-general-motors, type: pyagents_RemoteProtocolError] ",
+              "trackingToken": "P9ogzed2I2wfTDRG,CkMKEFA5b2d6ZWQySTJ3ZlREUkcQAxoPSklSQV9FTi0xNDc5OTgzIgRqaXJhKgRqaXJhMgNidWc6B1RJQ0tFVFNAAkgB",
+              "url": "https://askscio.atlassian.net/browse/EN-1479983"
+            },
+            {
+              "document": {
+                "datasource": "jira",
+                "docType": "Bug",
+                "id": "JIRA_EN-1600178",
+                "metadata": {
+                  "assignedTo": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "7EEC9E567635484884EAB07E3482B3A1"
+                    },
+                    "name": "Omar Khan",
+                    "obfuscatedId": "7EEC9E567635484884EAB07E3482B3A1"
+                  },
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "8834EC29D2A12F4B32248069787F3E39"
+                    },
+                    "name": "OnCall Scio",
+                    "obfuscatedId": "8834EC29D2A12F4B32248069787F3E39"
+                  },
+                  "components": [
+                    "GleanChat Alerts"
+                  ],
+                  "container": "Engineering",
+                  "containerId": "JIRA_project_10000",
+                  "createTime": "2026-03-30T18:03:41Z",
+                  "customData": {
+                    "customField_10045:Interested Customers": {
+                      "stringValue": "[\"unifiedhome-scio-databricks\"]"
+                    },
+                    "issueTypeId": {
+                      "stringValue": "10004"
+                    },
+                    "labels": {
+                      "stringListValue": [
+                        "ProductionIssue",
+                        "automated-ticket",
+                        "tier-1"
+                      ]
+                    },
+                    "linkedIssues": {
+                      "stringValue": "[]"
+                    },
+                    "priorityId": {
+                      "stringValue": "4"
+                    },
+                    "projectId": {
+                      "stringValue": "10000"
+                    },
+                    "projectName": {
+                      "stringValue": "Engineering"
+                    }
+                  },
+                  "datasource": "jira",
+                  "datasourceId": "EN-1600178",
+                  "datasourceInstance": "jira",
+                  "documentCategory": "TICKETS",
+                  "documentId": "JIRA_EN-1600178",
+                  "interactions": {
+                    "numComments": 6
+                  },
+                  "loggingId": "75CA7CCBD36E1413446F81DF4651BE00",
+                  "mimeType": "bug",
+                  "objectType": "Bug",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "7EEC9E567635484884EAB07E3482B3A1"
+                    },
+                    "name": "Omar Khan",
+                    "obfuscatedId": "7EEC9E567635484884EAB07E3482B3A1"
+                  },
+                  "priority": "Low",
+                  "status": "Closed",
+                  "statusCategory": "Done",
+                  "superContainerId": "JIRA_project_10000",
+                  "updateTime": "2026-03-30T21:41:33Z",
+                  "verification": {
+                    "state": "UNVERIFIED"
+                  },
+                  "visibility": "DOMAIN_VISIBLE"
+                },
+                "parentDocument": {
+                  "datasource": "jira",
+                  "docType": "project",
+                  "id": "JIRA_project_10000",
+                  "title": "Engineering",
+                  "url": "https://askscio.atlassian.net/jira/software/c/projects/EN/issues"
+                },
+                "title": "GleanChatError [project_id: unifiedhome-scio-databricks, type: pyagent_request_error] ",
+                "url": "https://askscio.atlassian.net/browse/EN-1600178"
+              },
+              "title": "GleanChatError [project_id: unifiedhome-scio-databricks, type: pyagent_request_error] ",
+              "trackingToken": "P9ogzed2I2wfTDRG,CkMKEFA5b2d6ZWQySTJ3ZlREUkcQBBoPSklSQV9FTi0xNjAwMTc4IgRqaXJhKgRqaXJhMgNidWc6B1RJQ0tFVFNAAkgC",
+              "url": "https://askscio.atlassian.net/browse/EN-1600178"
+            },
+            {
+              "document": {
+                "datasource": "jira",
+                "docType": "Bug",
+                "id": "JIRA_EN-1602288",
+                "metadata": {
+                  "assignedTo": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "7EEC9E567635484884EAB07E3482B3A1"
+                    },
+                    "name": "Omar Khan",
+                    "obfuscatedId": "7EEC9E567635484884EAB07E3482B3A1"
+                  },
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "8834EC29D2A12F4B32248069787F3E39"
+                    },
+                    "name": "OnCall Scio",
+                    "obfuscatedId": "8834EC29D2A12F4B32248069787F3E39"
+                  },
+                  "components": [
+                    "GleanChat Alerts"
+                  ],
+                  "container": "Engineering",
+                  "containerId": "JIRA_project_10000",
+                  "createTime": "2026-03-31T06:27:29Z",
+                  "customData": {
+                    "customField_10045:Interested Customers": {
+                      "stringValue": "[\"glean-connector-seek\"]"
+                    },
+                    "issueTypeId": {
+                      "stringValue": "10004"
+                    },
+                    "labels": {
+                      "stringListValue": [
+                        "ProductionIssue",
+                        "automated-ticket",
+                        "tier-1"
+                      ]
+                    },
+                    "linkedIssues": {
+                      "stringValue": "[]"
+                    },
+                    "priorityId": {
+                      "stringValue": "4"
+                    },
+                    "projectId": {
+                      "stringValue": "10000"
+                    },
+                    "projectName": {
+                      "stringValue": "Engineering"
+                    }
+                  },
+                  "datasource": "jira",
+                  "datasourceId": "EN-1602288",
+                  "datasourceInstance": "jira",
+                  "documentCategory": "TICKETS",
+                  "documentId": "JIRA_EN-1602288",
+                  "interactions": {
+                    "numComments": 5
+                  },
+                  "loggingId": "8701AF048DD65C46F211032100701F81",
+                  "mimeType": "bug",
+                  "objectType": "Bug",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "7EEC9E567635484884EAB07E3482B3A1"
+                    },
+                    "name": "Omar Khan",
+                    "obfuscatedId": "7EEC9E567635484884EAB07E3482B3A1"
+                  },
+                  "priority": "Low",
+                  "status": "Closed As Noise",
+                  "statusCategory": "Done",
+                  "superContainerId": "JIRA_project_10000",
+                  "updateTime": "2026-03-31T06:33:55Z",
+                  "verification": {
+                    "state": "UNVERIFIED"
+                  },
+                  "visibility": "DOMAIN_VISIBLE"
+                },
+                "parentDocument": {
+                  "datasource": "jira",
+                  "docType": "project",
+                  "id": "JIRA_project_10000",
+                  "title": "Engineering",
+                  "url": "https://askscio.atlassian.net/jira/software/c/projects/EN/issues"
+                },
+                "title": "GleanChatError [project_id: glean-connector-seek, type: sql_error_status_code_mysql_1045] ",
+                "url": "https://askscio.atlassian.net/browse/EN-1602288"
+              },
+              "title": "GleanChatError [project_id: glean-connector-seek, type: sql_error_status_code_mysql_1045] ",
+              "trackingToken": "P9ogzed2I2wfTDRG,CkMKEFA5b2d6ZWQySTJ3ZlREUkcQBRoPSklSQV9FTi0xNjAyMjg4IgRqaXJhKgRqaXJhMgNidWc6B1RJQ0tFVFNAAkgD",
+              "url": "https://askscio.atlassian.net/browse/EN-1602288"
+            },
+            {
+              "document": {
+                "datasource": "jira",
+                "docType": "Bug",
+                "id": "JIRA_EN-1491009",
+                "metadata": {
+                  "assignedTo": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "B9A5D4B06032F2B2D025122251793D33"
+                    },
+                    "name": "Chinmay Goyal",
+                    "obfuscatedId": "B9A5D4B06032F2B2D025122251793D33"
+                  },
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "8834EC29D2A12F4B32248069787F3E39"
+                    },
+                    "name": "OnCall Scio",
+                    "obfuscatedId": "8834EC29D2A12F4B32248069787F3E39"
+                  },
+                  "components": [
+                    "GleanChat Alerts"
+                  ],
+                  "container": "Engineering",
+                  "containerId": "JIRA_project_10000",
+                  "createTime": "2026-03-01T10:22:11Z",
+                  "customData": {
+                    "customField_10045:Interested Customers": {
+                      "stringValue": "[\"glean-connector-rivianvwtech\"]"
+                    },
+                    "issueTypeId": {
+                      "stringValue": "10004"
+                    },
+                    "labels": {
+                      "stringListValue": [
+                        "ProductionIssue",
+                        "automated-ticket",
+                        "tier-1"
+                      ]
+                    },
+                    "linkedIssues": {
+                      "stringValue": "[]"
+                    },
+                    "priorityId": {
+                      "stringValue": "4"
+                    },
+                    "projectId": {
+                      "stringValue": "10000"
+                    },
+                    "projectName": {
+                      "stringValue": "Engineering"
+                    }
+                  },
+                  "datasource": "jira",
+                  "datasourceId": "EN-1491009",
+                  "datasourceInstance": "jira",
+                  "documentCategory": "TICKETS",
+                  "documentId": "JIRA_EN-1491009",
+                  "interactions": {
+                    "numComments": 3
+                  },
+                  "loggingId": "7B07C01D3FEAD7AE849190DB35DC0A79",
+                  "mimeType": "bug",
+                  "objectType": "Bug",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "B9A5D4B06032F2B2D025122251793D33"
+                    },
+                    "name": "Chinmay Goyal",
+                    "obfuscatedId": "B9A5D4B06032F2B2D025122251793D33"
+                  },
+                  "priority": "Low",
+                  "status": "Closed As Noise",
+                  "statusCategory": "Done",
+                  "superContainerId": "JIRA_project_10000",
+                  "updateTime": "2026-03-25T21:09:05Z",
+                  "verification": {
+                    "state": "UNVERIFIED"
+                  },
+                  "visibility": "DOMAIN_VISIBLE"
+                },
+                "parentDocument": {
+                  "datasource": "jira",
+                  "docType": "project",
+                  "id": "JIRA_project_10000",
+                  "title": "Engineering",
+                  "url": "https://askscio.atlassian.net/jira/software/c/projects/EN/issues"
+                },
+                "title": "GleanChatError [project_id: glean-connector-rivianvwtech, type: pyagents_StreamingConnectionError] ",
+                "url": "https://askscio.atlassian.net/browse/EN-1491009"
+              },
+              "title": "GleanChatError [project_id: glean-connector-rivianvwtech, type: pyagents_StreamingConnectionError] ",
+              "trackingToken": "P9ogzed2I2wfTDRG,CkMKEFA5b2d6ZWQySTJ3ZlREUkcQBhoPSklSQV9FTi0xNDkxMDA5IgRqaXJhKgRqaXJhMgNidWc6B1RJQ0tFVFNAAkgE",
+              "url": "https://askscio.atlassian.net/browse/EN-1491009"
+            },
+            {
+              "document": {
+                "datasource": "jira",
+                "docType": "Bug",
+                "id": "JIRA_EN-1495466",
+                "metadata": {
+                  "assignedTo": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "B56A4AE772FD640204935178093C8B5F"
+                    },
+                    "name": "Nick Wang",
+                    "obfuscatedId": "B56A4AE772FD640204935178093C8B5F"
+                  },
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "8834EC29D2A12F4B32248069787F3E39"
+                    },
+                    "name": "OnCall Scio",
+                    "obfuscatedId": "8834EC29D2A12F4B32248069787F3E39"
+                  },
+                  "components": [
+                    "GleanChat Alerts"
+                  ],
+                  "container": "Engineering",
+                  "containerId": "JIRA_project_10000",
+                  "createTime": "2026-03-03T01:30:30Z",
+                  "customData": {
+                    "customField_10045:Interested Customers": {
+                      "stringValue": "[\"scio-prod\"]"
+                    },
+                    "issueTypeId": {
+                      "stringValue": "10004"
+                    },
+                    "labels": {
+                      "stringListValue": [
+                        "ProductionIssue",
+                        "automated-ticket",
+                        "tier-3"
+                      ]
+                    },
+                    "linkedIssues": {
+                      "stringValue": "[]"
+                    },
+                    "priorityId": {
+                      "stringValue": "4"
+                    },
+                    "projectId": {
+                      "stringValue": "10000"
+                    },
+                    "projectName": {
+                      "stringValue": "Engineering"
+                    }
+                  },
+                  "datasource": "jira",
+                  "datasourceId": "EN-1495466",
+                  "datasourceInstance": "jira",
+                  "documentCategory": "TICKETS",
+                  "documentId": "JIRA_EN-1495466",
+                  "interactions": {
+                    "numComments": 3
+                  },
+                  "loggingId": "8B1254FC7B26121AD6D7921821B4F57B",
+                  "mimeType": "bug",
+                  "objectType": "Bug",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "B56A4AE772FD640204935178093C8B5F"
+                    },
+                    "name": "Nick Wang",
+                    "obfuscatedId": "B56A4AE772FD640204935178093C8B5F"
+                  },
+                  "priority": "Low",
+                  "status": "Closed",
+                  "statusCategory": "Done",
+                  "superContainerId": "JIRA_project_10000",
+                  "updateTime": "2026-03-04T01:59:30Z",
+                  "verification": {
+                    "state": "UNVERIFIED"
+                  },
+                  "visibility": "DOMAIN_VISIBLE"
+                },
+                "parentDocument": {
+                  "datasource": "jira",
+                  "docType": "project",
+                  "id": "JIRA_project_10000",
+                  "title": "Engineering",
+                  "url": "https://askscio.atlassian.net/jira/software/c/projects/EN/issues"
+                },
+                "title": "GleanChatError [project_id: scio-prod, type: pyagents_StreamingConnectionError] ",
+                "url": "https://askscio.atlassian.net/browse/EN-1495466"
+              },
+              "title": "GleanChatError [project_id: scio-prod, type: pyagents_StreamingConnectionError] ",
+              "trackingToken": "P9ogzed2I2wfTDRG,CkMKEFA5b2d6ZWQySTJ3ZlREUkcQBxoPSklSQV9FTi0xNDk1NDY2IgRqaXJhKgRqaXJhMgNidWc6B1RJQ0tFVFNAAkgF",
+              "url": "https://askscio.atlassian.net/browse/EN-1495466"
+            },
+            {
+              "document": {
+                "datasource": "jira",
+                "docType": "Bug",
+                "id": "JIRA_EN-1598339",
+                "metadata": {
+                  "assignedTo": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "7EEC9E567635484884EAB07E3482B3A1"
+                    },
+                    "name": "Omar Khan",
+                    "obfuscatedId": "7EEC9E567635484884EAB07E3482B3A1"
+                  },
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "8834EC29D2A12F4B32248069787F3E39"
+                    },
+                    "name": "OnCall Scio",
+                    "obfuscatedId": "8834EC29D2A12F4B32248069787F3E39"
+                  },
+                  "components": [
+                    "GleanChat Alerts"
+                  ],
+                  "container": "Engineering",
+                  "containerId": "JIRA_project_10000",
+                  "createTime": "2026-03-30T10:15:55Z",
+                  "customData": {
+                    "customField_10045:Interested Customers": {
+                      "stringValue": "[\"glean-dell-aws-poc-2\"]"
+                    },
+                    "issueTypeId": {
+                      "stringValue": "10004"
+                    },
+                    "labels": {
+                      "stringListValue": [
+                        "ProductionIssue",
+                        "automated-ticket",
+                        "tier-1"
+                      ]
+                    },
+                    "linkedIssues": {
+                      "stringValue": "[]"
+                    },
+                    "priorityId": {
+                      "stringValue": "4"
+                    },
+                    "projectId": {
+                      "stringValue": "10000"
+                    },
+                    "projectName": {
+                      "stringValue": "Engineering"
+                    }
+                  },
+                  "datasource": "jira",
+                  "datasourceId": "EN-1598339",
+                  "datasourceInstance": "jira",
+                  "documentCategory": "TICKETS",
+                  "documentId": "JIRA_EN-1598339",
+                  "interactions": {
+                    "numComments": 4
+                  },
+                  "loggingId": "A0C7C8BA960A0E0DABD48F162B96E047",
+                  "mimeType": "bug",
+                  "objectType": "Bug",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "7EEC9E567635484884EAB07E3482B3A1"
+                    },
+                    "name": "Omar Khan",
+                    "obfuscatedId": "7EEC9E567635484884EAB07E3482B3A1"
+                  },
+                  "priority": "Low",
+                  "status": "Needs Triage",
+                  "statusCategory": "To Do",
+                  "superContainerId": "JIRA_project_10000",
+                  "updateTime": "2026-03-31T09:20:18Z",
+                  "verification": {
+                    "state": "UNVERIFIED"
+                  },
+                  "visibility": "DOMAIN_VISIBLE"
+                },
+                "parentDocument": {
+                  "datasource": "jira",
+                  "docType": "project",
+                  "id": "JIRA_project_10000",
+                  "title": "Engineering",
+                  "url": "https://askscio.atlassian.net/jira/software/c/projects/EN/issues"
+                },
+                "title": "GleanChatError [project_id: glean-dell-aws-poc-2, type: pyagents_StreamingConnectionError] ",
+                "url": "https://askscio.atlassian.net/browse/EN-1598339"
+              },
+              "title": "GleanChatError [project_id: glean-dell-aws-poc-2, type: pyagents_StreamingConnectionError] ",
+              "trackingToken": "P9ogzed2I2wfTDRG,CkMKEFA5b2d6ZWQySTJ3ZlREUkcQCBoPSklSQV9FTi0xNTk4MzM5IgRqaXJhKgRqaXJhMgNidWc6B1RJQ0tFVFNAAkgG",
+              "url": "https://askscio.atlassian.net/browse/EN-1598339"
+            },
+            {
+              "document": {
+                "datasource": "jira",
+                "docType": "Bug",
+                "id": "JIRA_EN-1590959",
+                "metadata": {
+                  "assignedTo": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "AC287634DDED5DBADEE657BA02D4736D"
+                    },
+                    "name": "Shree Mohan",
+                    "obfuscatedId": "AC287634DDED5DBADEE657BA02D4736D"
+                  },
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "8834EC29D2A12F4B32248069787F3E39"
+                    },
+                    "name": "OnCall Scio",
+                    "obfuscatedId": "8834EC29D2A12F4B32248069787F3E39"
+                  },
+                  "components": [
+                    "GleanChat Alerts"
+                  ],
+                  "container": "Engineering",
+                  "containerId": "JIRA_project_10000",
+                  "createTime": "2026-03-28T15:12:47Z",
+                  "customData": {
+                    "customField_10045:Interested Customers": {
+                      "stringValue": "[\"glean-pinterest\"]"
+                    },
+                    "issueTypeId": {
+                      "stringValue": "10004"
+                    },
+                    "labels": {
+                      "stringListValue": [
+                        "ProductionIssue",
+                        "automated-ticket",
+                        "tier-1"
+                      ]
+                    },
+                    "linkedIssues": {
+                      "stringValue": "[]"
+                    },
+                    "priorityId": {
+                      "stringValue": "4"
+                    },
+                    "projectId": {
+                      "stringValue": "10000"
+                    },
+                    "projectName": {
+                      "stringValue": "Engineering"
+                    }
+                  },
+                  "datasource": "jira",
+                  "datasourceId": "EN-1590959",
+                  "datasourceInstance": "jira",
+                  "documentCategory": "TICKETS",
+                  "documentId": "JIRA_EN-1590959",
+                  "interactions": {
+                    "numComments": 5
+                  },
+                  "loggingId": "2FD8F9A93AE1E7AC31267C122FC1A2CB",
+                  "mimeType": "bug",
+                  "objectType": "Bug",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "AC287634DDED5DBADEE657BA02D4736D"
+                    },
+                    "name": "Shree Mohan",
+                    "obfuscatedId": "AC287634DDED5DBADEE657BA02D4736D"
+                  },
+                  "priority": "Low",
+                  "status": "Closed As Noise",
+                  "statusCategory": "Done",
+                  "superContainerId": "JIRA_project_10000",
+                  "updateTime": "2026-03-30T20:49:23Z",
+                  "verification": {
+                    "state": "UNVERIFIED"
+                  },
+                  "visibility": "DOMAIN_VISIBLE"
+                },
+                "parentDocument": {
+                  "datasource": "jira",
+                  "docType": "project",
+                  "id": "JIRA_project_10000",
+                  "title": "Engineering",
+                  "url": "https://askscio.atlassian.net/jira/software/c/projects/EN/issues"
+                },
+                "title": "GleanChatError [project_id: glean-pinterest, type: pyagent_calling_streaming_response_error] ",
+                "url": "https://askscio.atlassian.net/browse/EN-1590959"
+              },
+              "title": "GleanChatError [project_id: glean-pinterest, type: pyagent_calling_streaming_response_error] ",
+              "trackingToken": "P9ogzed2I2wfTDRG,CkMKEFA5b2d6ZWQySTJ3ZlREUkcQCRoPSklSQV9FTi0xNTkwOTU5IgRqaXJhKgRqaXJhMgNidWc6B1RJQ0tFVFNAAkgH",
+              "url": "https://askscio.atlassian.net/browse/EN-1590959"
+            },
+            {
+              "document": {
+                "datasource": "jira",
+                "docType": "Bug",
+                "id": "JIRA_EN-1540446",
+                "metadata": {
+                  "assignedTo": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "1EC3CB9D5CC69687DDA110B796C058F4"
+                    },
+                    "name": "Vikram Agrawal",
+                    "obfuscatedId": "1EC3CB9D5CC69687DDA110B796C058F4"
+                  },
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "8834EC29D2A12F4B32248069787F3E39"
+                    },
+                    "name": "OnCall Scio",
+                    "obfuscatedId": "8834EC29D2A12F4B32248069787F3E39"
+                  },
+                  "components": [
+                    "GleanChat Alerts"
+                  ],
+                  "container": "Engineering",
+                  "containerId": "JIRA_project_10000",
+                  "createTime": "2026-03-16T10:08:26Z",
+                  "customData": {
+                    "customField_10045:Interested Customers": {
+                      "stringValue": "[\"itp-ent-askscio\"]"
+                    },
+                    "issueTypeId": {
+                      "stringValue": "10004"
+                    },
+                    "labels": {
+                      "stringListValue": [
+                        "ProductionIssue",
+                        "automated-ticket",
+                        "tier-2"
+                      ]
+                    },
+                    "linkedIssues": {
+                      "stringValue": "[]"
+                    },
+                    "priorityId": {
+                      "stringValue": "4"
+                    },
+                    "projectId": {
+                      "stringValue": "10000"
+                    },
+                    "projectName": {
+                      "stringValue": "Engineering"
+                    }
+                  },
+                  "datasource": "jira",
+                  "datasourceId": "EN-1540446",
+                  "datasourceInstance": "jira",
+                  "documentCategory": "TICKETS",
+                  "documentId": "JIRA_EN-1540446",
+                  "interactions": {
+                    "numComments": 4
+                  },
+                  "loggingId": "70C8C738C37E22490D37CA8CD1107E41",
+                  "mimeType": "bug",
+                  "objectType": "Bug",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "1EC3CB9D5CC69687DDA110B796C058F4"
+                    },
+                    "name": "Vikram Agrawal",
+                    "obfuscatedId": "1EC3CB9D5CC69687DDA110B796C058F4"
+                  },
+                  "priority": "Low",
+                  "status": "Needs Triage",
+                  "statusCategory": "To Do",
+                  "superContainerId": "JIRA_project_10000",
+                  "updateTime": "2026-03-25T21:06:48Z",
+                  "verification": {
+                    "state": "UNVERIFIED"
+                  },
+                  "visibility": "DOMAIN_VISIBLE"
+                },
+                "parentDocument": {
+                  "datasource": "jira",
+                  "docType": "project",
+                  "id": "JIRA_project_10000",
+                  "title": "Engineering",
+                  "url": "https://askscio.atlassian.net/jira/software/c/projects/EN/issues"
+                },
+                "title": "GleanChatError [project_id: itp-ent-askscio, type: pyagents_ReadTimeout] ",
+                "url": "https://askscio.atlassian.net/browse/EN-1540446"
+              },
+              "title": "GleanChatError [project_id: itp-ent-askscio, type: pyagents_ReadTimeout] ",
+              "trackingToken": "P9ogzed2I2wfTDRG,CkMKEFA5b2d6ZWQySTJ3ZlREUkcQChoPSklSQV9FTi0xNTQwNDQ2IgRqaXJhKgRqaXJhMgNidWc6B1RJQ0tFVFNAAkgI",
+              "url": "https://askscio.atlassian.net/browse/EN-1540446"
+            },
+            {
+              "document": {
+                "datasource": "jira",
+                "docType": "Bug",
+                "id": "JIRA_EN-1491015",
+                "metadata": {
+                  "assignedTo": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "B9A5D4B06032F2B2D025122251793D33"
+                    },
+                    "name": "Chinmay Goyal",
+                    "obfuscatedId": "B9A5D4B06032F2B2D025122251793D33"
+                  },
+                  "author": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "8834EC29D2A12F4B32248069787F3E39"
+                    },
+                    "name": "OnCall Scio",
+                    "obfuscatedId": "8834EC29D2A12F4B32248069787F3E39"
+                  },
+                  "components": [
+                    "GleanChat Alerts"
+                  ],
+                  "container": "Engineering",
+                  "containerId": "JIRA_project_10000",
+                  "createTime": "2026-03-01T10:26:53Z",
+                  "customData": {
+                    "customField_10045:Interested Customers": {
+                      "stringValue": "[\"glean-purestorage\"]"
+                    },
+                    "issueTypeId": {
+                      "stringValue": "10004"
+                    },
+                    "labels": {
+                      "stringListValue": [
+                        "ProductionIssue",
+                        "automated-ticket",
+                        "tier-1"
+                      ]
+                    },
+                    "linkedIssues": {
+                      "stringValue": "[]"
+                    },
+                    "priorityId": {
+                      "stringValue": "4"
+                    },
+                    "projectId": {
+                      "stringValue": "10000"
+                    },
+                    "projectName": {
+                      "stringValue": "Engineering"
+                    }
+                  },
+                  "datasource": "jira",
+                  "datasourceId": "EN-1491015",
+                  "datasourceInstance": "jira",
+                  "documentCategory": "TICKETS",
+                  "documentId": "JIRA_EN-1491015",
+                  "interactions": {
+                    "numComments": 4
+                  },
+                  "loggingId": "40B864396F859A8F41C0D03C48560382",
+                  "mimeType": "bug",
+                  "objectType": "Bug",
+                  "owner": {
+                    "metadata": {
+                      "lastExtensionUse": "0001-01-01T00:00:00Z",
+                      "loggingId": "B9A5D4B06032F2B2D025122251793D33"
+                    },
+                    "name": "Chinmay Goyal",
+                    "obfuscatedId": "B9A5D4B06032F2B2D025122251793D33"
+                  },
+                  "priority": "Low",
+                  "status": "Closed As Noise",
+                  "statusCategory": "Done",
+                  "superContainerId": "JIRA_project_10000",
+                  "updateTime": "2026-03-25T21:09:31Z",
+                  "verification": {
+                    "state": "UNVERIFIED"
+                  },
+                  "visibility": "DOMAIN_VISIBLE"
+                },
+                "parentDocument": {
+                  "datasource": "jira",
+                  "docType": "project",
+                  "id": "JIRA_project_10000",
+                  "title": "Engineering",
+                  "url": "https://askscio.atlassian.net/jira/software/c/projects/EN/issues"
+                },
+                "title": "GleanChatError [project_id: glean-purestorage, type: pyagents_StreamingConnectionError] ",
+                "url": "https://askscio.atlassian.net/browse/EN-1491015"
+              },
+              "title": "GleanChatError [project_id: glean-purestorage, type: pyagents_StreamingConnectionError] ",
+              "trackingToken": "P9ogzed2I2wfTDRG,CkMKEFA5b2d6ZWQySTJ3ZlREUkcQCxoPSklSQV9FTi0xNDkxMDE1IgRqaXJhKgRqaXJhMgNidWc6B1RJQ0tFVFNAAkgJ",
+              "url": "https://askscio.atlassian.net/browse/EN-1491015"
+            }
+          ],
+          "visibleCountHint": 3
+        }
+      ],
+      "clusterType": "SIMILAR",
+      "clusteredResults": [
+        {
+          "document": {
+            "datasource": "jira",
+            "docType": "Bug",
+            "id": "JIRA_EN-1479983",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "B9A5D4B06032F2B2D025122251793D33"
+                },
+                "name": "Chinmay Goyal",
+                "obfuscatedId": "B9A5D4B06032F2B2D025122251793D33"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8834EC29D2A12F4B32248069787F3E39"
+                },
+                "name": "OnCall Scio",
+                "obfuscatedId": "8834EC29D2A12F4B32248069787F3E39"
+              },
+              "components": [
+                "GleanChat Alerts"
+              ],
+              "container": "Engineering",
+              "containerId": "JIRA_project_10000",
+              "createTime": "2026-02-25T14:59:47Z",
+              "customData": {
+                "customField_10045:Interested Customers": {
+                  "stringValue": "[\"glean-general-motors\"]"
+                },
+                "issueTypeId": {
+                  "stringValue": "10004"
+                },
+                "labels": {
+                  "stringListValue": [
+                    "502.0",
+                    "ProductionIssue",
+                    "automated-ticket",
+                    "tier-1"
+                  ]
+                },
+                "linkedIssues": {
+                  "stringValue": "[]"
+                },
+                "priorityId": {
+                  "stringValue": "4"
+                },
+                "projectId": {
+                  "stringValue": "10000"
+                },
+                "projectName": {
+                  "stringValue": "Engineering"
+                }
+              },
+              "datasource": "jira",
+              "datasourceId": "EN-1479983",
+              "datasourceInstance": "jira",
+              "documentCategory": "TICKETS",
+              "documentId": "JIRA_EN-1479983",
+              "interactions": {
+                "numComments": 3
+              },
+              "loggingId": "5FB7CB60310FD7916D8EC039388DF064",
+              "mimeType": "bug",
+              "objectType": "Bug",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "B9A5D4B06032F2B2D025122251793D33"
+                },
+                "name": "Chinmay Goyal",
+                "obfuscatedId": "B9A5D4B06032F2B2D025122251793D33"
+              },
+              "priority": "Low",
+              "status": "Done",
+              "statusCategory": "Done",
+              "superContainerId": "JIRA_project_10000",
+              "updateTime": "2026-03-04T02:19:33Z",
+              "verification": {
+                "state": "UNVERIFIED"
+              },
+              "visibility": "DOMAIN_VISIBLE"
+            },
+            "parentDocument": {
+              "datasource": "jira",
+              "docType": "project",
+              "id": "JIRA_project_10000",
+              "title": "Engineering",
+              "url": "https://askscio.atlassian.net/jira/software/c/projects/EN/issues"
+            },
+            "title": "GleanChatError [project_id: glean-general-motors, type: pyagents_RemoteProtocolError] ",
+            "url": "https://askscio.atlassian.net/browse/EN-1479983"
+          },
+          "title": "GleanChatError [project_id: glean-general-motors, type: pyagents_RemoteProtocolError] ",
+          "trackingToken": "P9ogzed2I2wfTDRG,CkMKEFA5b2d6ZWQySTJ3ZlREUkcQAxoPSklSQV9FTi0xNDc5OTgzIgRqaXJhKgRqaXJhMgNidWc6B1RJQ0tFVFNAAkgB",
+          "url": "https://askscio.atlassian.net/browse/EN-1479983"
+        },
+        {
+          "document": {
+            "datasource": "jira",
+            "docType": "Bug",
+            "id": "JIRA_EN-1600178",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "7EEC9E567635484884EAB07E3482B3A1"
+                },
+                "name": "Omar Khan",
+                "obfuscatedId": "7EEC9E567635484884EAB07E3482B3A1"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8834EC29D2A12F4B32248069787F3E39"
+                },
+                "name": "OnCall Scio",
+                "obfuscatedId": "8834EC29D2A12F4B32248069787F3E39"
+              },
+              "components": [
+                "GleanChat Alerts"
+              ],
+              "container": "Engineering",
+              "containerId": "JIRA_project_10000",
+              "createTime": "2026-03-30T18:03:41Z",
+              "customData": {
+                "customField_10045:Interested Customers": {
+                  "stringValue": "[\"unifiedhome-scio-databricks\"]"
+                },
+                "issueTypeId": {
+                  "stringValue": "10004"
+                },
+                "labels": {
+                  "stringListValue": [
+                    "ProductionIssue",
+                    "automated-ticket",
+                    "tier-1"
+                  ]
+                },
+                "linkedIssues": {
+                  "stringValue": "[]"
+                },
+                "priorityId": {
+                  "stringValue": "4"
+                },
+                "projectId": {
+                  "stringValue": "10000"
+                },
+                "projectName": {
+                  "stringValue": "Engineering"
+                }
+              },
+              "datasource": "jira",
+              "datasourceId": "EN-1600178",
+              "datasourceInstance": "jira",
+              "documentCategory": "TICKETS",
+              "documentId": "JIRA_EN-1600178",
+              "interactions": {
+                "numComments": 6
+              },
+              "loggingId": "75CA7CCBD36E1413446F81DF4651BE00",
+              "mimeType": "bug",
+              "objectType": "Bug",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "7EEC9E567635484884EAB07E3482B3A1"
+                },
+                "name": "Omar Khan",
+                "obfuscatedId": "7EEC9E567635484884EAB07E3482B3A1"
+              },
+              "priority": "Low",
+              "status": "Closed",
+              "statusCategory": "Done",
+              "superContainerId": "JIRA_project_10000",
+              "updateTime": "2026-03-30T21:41:33Z",
+              "verification": {
+                "state": "UNVERIFIED"
+              },
+              "visibility": "DOMAIN_VISIBLE"
+            },
+            "parentDocument": {
+              "datasource": "jira",
+              "docType": "project",
+              "id": "JIRA_project_10000",
+              "title": "Engineering",
+              "url": "https://askscio.atlassian.net/jira/software/c/projects/EN/issues"
+            },
+            "title": "GleanChatError [project_id: unifiedhome-scio-databricks, type: pyagent_request_error] ",
+            "url": "https://askscio.atlassian.net/browse/EN-1600178"
+          },
+          "title": "GleanChatError [project_id: unifiedhome-scio-databricks, type: pyagent_request_error] ",
+          "trackingToken": "P9ogzed2I2wfTDRG,CkMKEFA5b2d6ZWQySTJ3ZlREUkcQBBoPSklSQV9FTi0xNjAwMTc4IgRqaXJhKgRqaXJhMgNidWc6B1RJQ0tFVFNAAkgC",
+          "url": "https://askscio.atlassian.net/browse/EN-1600178"
+        },
+        {
+          "document": {
+            "datasource": "jira",
+            "docType": "Bug",
+            "id": "JIRA_EN-1602288",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "7EEC9E567635484884EAB07E3482B3A1"
+                },
+                "name": "Omar Khan",
+                "obfuscatedId": "7EEC9E567635484884EAB07E3482B3A1"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8834EC29D2A12F4B32248069787F3E39"
+                },
+                "name": "OnCall Scio",
+                "obfuscatedId": "8834EC29D2A12F4B32248069787F3E39"
+              },
+              "components": [
+                "GleanChat Alerts"
+              ],
+              "container": "Engineering",
+              "containerId": "JIRA_project_10000",
+              "createTime": "2026-03-31T06:27:29Z",
+              "customData": {
+                "customField_10045:Interested Customers": {
+                  "stringValue": "[\"glean-connector-seek\"]"
+                },
+                "issueTypeId": {
+                  "stringValue": "10004"
+                },
+                "labels": {
+                  "stringListValue": [
+                    "ProductionIssue",
+                    "automated-ticket",
+                    "tier-1"
+                  ]
+                },
+                "linkedIssues": {
+                  "stringValue": "[]"
+                },
+                "priorityId": {
+                  "stringValue": "4"
+                },
+                "projectId": {
+                  "stringValue": "10000"
+                },
+                "projectName": {
+                  "stringValue": "Engineering"
+                }
+              },
+              "datasource": "jira",
+              "datasourceId": "EN-1602288",
+              "datasourceInstance": "jira",
+              "documentCategory": "TICKETS",
+              "documentId": "JIRA_EN-1602288",
+              "interactions": {
+                "numComments": 5
+              },
+              "loggingId": "8701AF048DD65C46F211032100701F81",
+              "mimeType": "bug",
+              "objectType": "Bug",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "7EEC9E567635484884EAB07E3482B3A1"
+                },
+                "name": "Omar Khan",
+                "obfuscatedId": "7EEC9E567635484884EAB07E3482B3A1"
+              },
+              "priority": "Low",
+              "status": "Closed As Noise",
+              "statusCategory": "Done",
+              "superContainerId": "JIRA_project_10000",
+              "updateTime": "2026-03-31T06:33:55Z",
+              "verification": {
+                "state": "UNVERIFIED"
+              },
+              "visibility": "DOMAIN_VISIBLE"
+            },
+            "parentDocument": {
+              "datasource": "jira",
+              "docType": "project",
+              "id": "JIRA_project_10000",
+              "title": "Engineering",
+              "url": "https://askscio.atlassian.net/jira/software/c/projects/EN/issues"
+            },
+            "title": "GleanChatError [project_id: glean-connector-seek, type: sql_error_status_code_mysql_1045] ",
+            "url": "https://askscio.atlassian.net/browse/EN-1602288"
+          },
+          "title": "GleanChatError [project_id: glean-connector-seek, type: sql_error_status_code_mysql_1045] ",
+          "trackingToken": "P9ogzed2I2wfTDRG,CkMKEFA5b2d6ZWQySTJ3ZlREUkcQBRoPSklSQV9FTi0xNjAyMjg4IgRqaXJhKgRqaXJhMgNidWc6B1RJQ0tFVFNAAkgD",
+          "url": "https://askscio.atlassian.net/browse/EN-1602288"
+        },
+        {
+          "document": {
+            "datasource": "jira",
+            "docType": "Bug",
+            "id": "JIRA_EN-1491009",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "B9A5D4B06032F2B2D025122251793D33"
+                },
+                "name": "Chinmay Goyal",
+                "obfuscatedId": "B9A5D4B06032F2B2D025122251793D33"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8834EC29D2A12F4B32248069787F3E39"
+                },
+                "name": "OnCall Scio",
+                "obfuscatedId": "8834EC29D2A12F4B32248069787F3E39"
+              },
+              "components": [
+                "GleanChat Alerts"
+              ],
+              "container": "Engineering",
+              "containerId": "JIRA_project_10000",
+              "createTime": "2026-03-01T10:22:11Z",
+              "customData": {
+                "customField_10045:Interested Customers": {
+                  "stringValue": "[\"glean-connector-rivianvwtech\"]"
+                },
+                "issueTypeId": {
+                  "stringValue": "10004"
+                },
+                "labels": {
+                  "stringListValue": [
+                    "ProductionIssue",
+                    "automated-ticket",
+                    "tier-1"
+                  ]
+                },
+                "linkedIssues": {
+                  "stringValue": "[]"
+                },
+                "priorityId": {
+                  "stringValue": "4"
+                },
+                "projectId": {
+                  "stringValue": "10000"
+                },
+                "projectName": {
+                  "stringValue": "Engineering"
+                }
+              },
+              "datasource": "jira",
+              "datasourceId": "EN-1491009",
+              "datasourceInstance": "jira",
+              "documentCategory": "TICKETS",
+              "documentId": "JIRA_EN-1491009",
+              "interactions": {
+                "numComments": 3
+              },
+              "loggingId": "7B07C01D3FEAD7AE849190DB35DC0A79",
+              "mimeType": "bug",
+              "objectType": "Bug",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "B9A5D4B06032F2B2D025122251793D33"
+                },
+                "name": "Chinmay Goyal",
+                "obfuscatedId": "B9A5D4B06032F2B2D025122251793D33"
+              },
+              "priority": "Low",
+              "status": "Closed As Noise",
+              "statusCategory": "Done",
+              "superContainerId": "JIRA_project_10000",
+              "updateTime": "2026-03-25T21:09:05Z",
+              "verification": {
+                "state": "UNVERIFIED"
+              },
+              "visibility": "DOMAIN_VISIBLE"
+            },
+            "parentDocument": {
+              "datasource": "jira",
+              "docType": "project",
+              "id": "JIRA_project_10000",
+              "title": "Engineering",
+              "url": "https://askscio.atlassian.net/jira/software/c/projects/EN/issues"
+            },
+            "title": "GleanChatError [project_id: glean-connector-rivianvwtech, type: pyagents_StreamingConnectionError] ",
+            "url": "https://askscio.atlassian.net/browse/EN-1491009"
+          },
+          "title": "GleanChatError [project_id: glean-connector-rivianvwtech, type: pyagents_StreamingConnectionError] ",
+          "trackingToken": "P9ogzed2I2wfTDRG,CkMKEFA5b2d6ZWQySTJ3ZlREUkcQBhoPSklSQV9FTi0xNDkxMDA5IgRqaXJhKgRqaXJhMgNidWc6B1RJQ0tFVFNAAkgE",
+          "url": "https://askscio.atlassian.net/browse/EN-1491009"
+        },
+        {
+          "document": {
+            "datasource": "jira",
+            "docType": "Bug",
+            "id": "JIRA_EN-1495466",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "B56A4AE772FD640204935178093C8B5F"
+                },
+                "name": "Nick Wang",
+                "obfuscatedId": "B56A4AE772FD640204935178093C8B5F"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8834EC29D2A12F4B32248069787F3E39"
+                },
+                "name": "OnCall Scio",
+                "obfuscatedId": "8834EC29D2A12F4B32248069787F3E39"
+              },
+              "components": [
+                "GleanChat Alerts"
+              ],
+              "container": "Engineering",
+              "containerId": "JIRA_project_10000",
+              "createTime": "2026-03-03T01:30:30Z",
+              "customData": {
+                "customField_10045:Interested Customers": {
+                  "stringValue": "[\"scio-prod\"]"
+                },
+                "issueTypeId": {
+                  "stringValue": "10004"
+                },
+                "labels": {
+                  "stringListValue": [
+                    "ProductionIssue",
+                    "automated-ticket",
+                    "tier-3"
+                  ]
+                },
+                "linkedIssues": {
+                  "stringValue": "[]"
+                },
+                "priorityId": {
+                  "stringValue": "4"
+                },
+                "projectId": {
+                  "stringValue": "10000"
+                },
+                "projectName": {
+                  "stringValue": "Engineering"
+                }
+              },
+              "datasource": "jira",
+              "datasourceId": "EN-1495466",
+              "datasourceInstance": "jira",
+              "documentCategory": "TICKETS",
+              "documentId": "JIRA_EN-1495466",
+              "interactions": {
+                "numComments": 3
+              },
+              "loggingId": "8B1254FC7B26121AD6D7921821B4F57B",
+              "mimeType": "bug",
+              "objectType": "Bug",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "B56A4AE772FD640204935178093C8B5F"
+                },
+                "name": "Nick Wang",
+                "obfuscatedId": "B56A4AE772FD640204935178093C8B5F"
+              },
+              "priority": "Low",
+              "status": "Closed",
+              "statusCategory": "Done",
+              "superContainerId": "JIRA_project_10000",
+              "updateTime": "2026-03-04T01:59:30Z",
+              "verification": {
+                "state": "UNVERIFIED"
+              },
+              "visibility": "DOMAIN_VISIBLE"
+            },
+            "parentDocument": {
+              "datasource": "jira",
+              "docType": "project",
+              "id": "JIRA_project_10000",
+              "title": "Engineering",
+              "url": "https://askscio.atlassian.net/jira/software/c/projects/EN/issues"
+            },
+            "title": "GleanChatError [project_id: scio-prod, type: pyagents_StreamingConnectionError] ",
+            "url": "https://askscio.atlassian.net/browse/EN-1495466"
+          },
+          "title": "GleanChatError [project_id: scio-prod, type: pyagents_StreamingConnectionError] ",
+          "trackingToken": "P9ogzed2I2wfTDRG,CkMKEFA5b2d6ZWQySTJ3ZlREUkcQBxoPSklSQV9FTi0xNDk1NDY2IgRqaXJhKgRqaXJhMgNidWc6B1RJQ0tFVFNAAkgF",
+          "url": "https://askscio.atlassian.net/browse/EN-1495466"
+        },
+        {
+          "document": {
+            "datasource": "jira",
+            "docType": "Bug",
+            "id": "JIRA_EN-1598339",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "7EEC9E567635484884EAB07E3482B3A1"
+                },
+                "name": "Omar Khan",
+                "obfuscatedId": "7EEC9E567635484884EAB07E3482B3A1"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8834EC29D2A12F4B32248069787F3E39"
+                },
+                "name": "OnCall Scio",
+                "obfuscatedId": "8834EC29D2A12F4B32248069787F3E39"
+              },
+              "components": [
+                "GleanChat Alerts"
+              ],
+              "container": "Engineering",
+              "containerId": "JIRA_project_10000",
+              "createTime": "2026-03-30T10:15:55Z",
+              "customData": {
+                "customField_10045:Interested Customers": {
+                  "stringValue": "[\"glean-dell-aws-poc-2\"]"
+                },
+                "issueTypeId": {
+                  "stringValue": "10004"
+                },
+                "labels": {
+                  "stringListValue": [
+                    "ProductionIssue",
+                    "automated-ticket",
+                    "tier-1"
+                  ]
+                },
+                "linkedIssues": {
+                  "stringValue": "[]"
+                },
+                "priorityId": {
+                  "stringValue": "4"
+                },
+                "projectId": {
+                  "stringValue": "10000"
+                },
+                "projectName": {
+                  "stringValue": "Engineering"
+                }
+              },
+              "datasource": "jira",
+              "datasourceId": "EN-1598339",
+              "datasourceInstance": "jira",
+              "documentCategory": "TICKETS",
+              "documentId": "JIRA_EN-1598339",
+              "interactions": {
+                "numComments": 4
+              },
+              "loggingId": "A0C7C8BA960A0E0DABD48F162B96E047",
+              "mimeType": "bug",
+              "objectType": "Bug",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "7EEC9E567635484884EAB07E3482B3A1"
+                },
+                "name": "Omar Khan",
+                "obfuscatedId": "7EEC9E567635484884EAB07E3482B3A1"
+              },
+              "priority": "Low",
+              "status": "Needs Triage",
+              "statusCategory": "To Do",
+              "superContainerId": "JIRA_project_10000",
+              "updateTime": "2026-03-31T09:20:18Z",
+              "verification": {
+                "state": "UNVERIFIED"
+              },
+              "visibility": "DOMAIN_VISIBLE"
+            },
+            "parentDocument": {
+              "datasource": "jira",
+              "docType": "project",
+              "id": "JIRA_project_10000",
+              "title": "Engineering",
+              "url": "https://askscio.atlassian.net/jira/software/c/projects/EN/issues"
+            },
+            "title": "GleanChatError [project_id: glean-dell-aws-poc-2, type: pyagents_StreamingConnectionError] ",
+            "url": "https://askscio.atlassian.net/browse/EN-1598339"
+          },
+          "title": "GleanChatError [project_id: glean-dell-aws-poc-2, type: pyagents_StreamingConnectionError] ",
+          "trackingToken": "P9ogzed2I2wfTDRG,CkMKEFA5b2d6ZWQySTJ3ZlREUkcQCBoPSklSQV9FTi0xNTk4MzM5IgRqaXJhKgRqaXJhMgNidWc6B1RJQ0tFVFNAAkgG",
+          "url": "https://askscio.atlassian.net/browse/EN-1598339"
+        },
+        {
+          "document": {
+            "datasource": "jira",
+            "docType": "Bug",
+            "id": "JIRA_EN-1590959",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "AC287634DDED5DBADEE657BA02D4736D"
+                },
+                "name": "Shree Mohan",
+                "obfuscatedId": "AC287634DDED5DBADEE657BA02D4736D"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8834EC29D2A12F4B32248069787F3E39"
+                },
+                "name": "OnCall Scio",
+                "obfuscatedId": "8834EC29D2A12F4B32248069787F3E39"
+              },
+              "components": [
+                "GleanChat Alerts"
+              ],
+              "container": "Engineering",
+              "containerId": "JIRA_project_10000",
+              "createTime": "2026-03-28T15:12:47Z",
+              "customData": {
+                "customField_10045:Interested Customers": {
+                  "stringValue": "[\"glean-pinterest\"]"
+                },
+                "issueTypeId": {
+                  "stringValue": "10004"
+                },
+                "labels": {
+                  "stringListValue": [
+                    "ProductionIssue",
+                    "automated-ticket",
+                    "tier-1"
+                  ]
+                },
+                "linkedIssues": {
+                  "stringValue": "[]"
+                },
+                "priorityId": {
+                  "stringValue": "4"
+                },
+                "projectId": {
+                  "stringValue": "10000"
+                },
+                "projectName": {
+                  "stringValue": "Engineering"
+                }
+              },
+              "datasource": "jira",
+              "datasourceId": "EN-1590959",
+              "datasourceInstance": "jira",
+              "documentCategory": "TICKETS",
+              "documentId": "JIRA_EN-1590959",
+              "interactions": {
+                "numComments": 5
+              },
+              "loggingId": "2FD8F9A93AE1E7AC31267C122FC1A2CB",
+              "mimeType": "bug",
+              "objectType": "Bug",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "AC287634DDED5DBADEE657BA02D4736D"
+                },
+                "name": "Shree Mohan",
+                "obfuscatedId": "AC287634DDED5DBADEE657BA02D4736D"
+              },
+              "priority": "Low",
+              "status": "Closed As Noise",
+              "statusCategory": "Done",
+              "superContainerId": "JIRA_project_10000",
+              "updateTime": "2026-03-30T20:49:23Z",
+              "verification": {
+                "state": "UNVERIFIED"
+              },
+              "visibility": "DOMAIN_VISIBLE"
+            },
+            "parentDocument": {
+              "datasource": "jira",
+              "docType": "project",
+              "id": "JIRA_project_10000",
+              "title": "Engineering",
+              "url": "https://askscio.atlassian.net/jira/software/c/projects/EN/issues"
+            },
+            "title": "GleanChatError [project_id: glean-pinterest, type: pyagent_calling_streaming_response_error] ",
+            "url": "https://askscio.atlassian.net/browse/EN-1590959"
+          },
+          "title": "GleanChatError [project_id: glean-pinterest, type: pyagent_calling_streaming_response_error] ",
+          "trackingToken": "P9ogzed2I2wfTDRG,CkMKEFA5b2d6ZWQySTJ3ZlREUkcQCRoPSklSQV9FTi0xNTkwOTU5IgRqaXJhKgRqaXJhMgNidWc6B1RJQ0tFVFNAAkgH",
+          "url": "https://askscio.atlassian.net/browse/EN-1590959"
+        },
+        {
+          "document": {
+            "datasource": "jira",
+            "docType": "Bug",
+            "id": "JIRA_EN-1540446",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "1EC3CB9D5CC69687DDA110B796C058F4"
+                },
+                "name": "Vikram Agrawal",
+                "obfuscatedId": "1EC3CB9D5CC69687DDA110B796C058F4"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8834EC29D2A12F4B32248069787F3E39"
+                },
+                "name": "OnCall Scio",
+                "obfuscatedId": "8834EC29D2A12F4B32248069787F3E39"
+              },
+              "components": [
+                "GleanChat Alerts"
+              ],
+              "container": "Engineering",
+              "containerId": "JIRA_project_10000",
+              "createTime": "2026-03-16T10:08:26Z",
+              "customData": {
+                "customField_10045:Interested Customers": {
+                  "stringValue": "[\"itp-ent-askscio\"]"
+                },
+                "issueTypeId": {
+                  "stringValue": "10004"
+                },
+                "labels": {
+                  "stringListValue": [
+                    "ProductionIssue",
+                    "automated-ticket",
+                    "tier-2"
+                  ]
+                },
+                "linkedIssues": {
+                  "stringValue": "[]"
+                },
+                "priorityId": {
+                  "stringValue": "4"
+                },
+                "projectId": {
+                  "stringValue": "10000"
+                },
+                "projectName": {
+                  "stringValue": "Engineering"
+                }
+              },
+              "datasource": "jira",
+              "datasourceId": "EN-1540446",
+              "datasourceInstance": "jira",
+              "documentCategory": "TICKETS",
+              "documentId": "JIRA_EN-1540446",
+              "interactions": {
+                "numComments": 4
+              },
+              "loggingId": "70C8C738C37E22490D37CA8CD1107E41",
+              "mimeType": "bug",
+              "objectType": "Bug",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "1EC3CB9D5CC69687DDA110B796C058F4"
+                },
+                "name": "Vikram Agrawal",
+                "obfuscatedId": "1EC3CB9D5CC69687DDA110B796C058F4"
+              },
+              "priority": "Low",
+              "status": "Needs Triage",
+              "statusCategory": "To Do",
+              "superContainerId": "JIRA_project_10000",
+              "updateTime": "2026-03-25T21:06:48Z",
+              "verification": {
+                "state": "UNVERIFIED"
+              },
+              "visibility": "DOMAIN_VISIBLE"
+            },
+            "parentDocument": {
+              "datasource": "jira",
+              "docType": "project",
+              "id": "JIRA_project_10000",
+              "title": "Engineering",
+              "url": "https://askscio.atlassian.net/jira/software/c/projects/EN/issues"
+            },
+            "title": "GleanChatError [project_id: itp-ent-askscio, type: pyagents_ReadTimeout] ",
+            "url": "https://askscio.atlassian.net/browse/EN-1540446"
+          },
+          "title": "GleanChatError [project_id: itp-ent-askscio, type: pyagents_ReadTimeout] ",
+          "trackingToken": "P9ogzed2I2wfTDRG,CkMKEFA5b2d6ZWQySTJ3ZlREUkcQChoPSklSQV9FTi0xNTQwNDQ2IgRqaXJhKgRqaXJhMgNidWc6B1RJQ0tFVFNAAkgI",
+          "url": "https://askscio.atlassian.net/browse/EN-1540446"
+        },
+        {
+          "document": {
+            "datasource": "jira",
+            "docType": "Bug",
+            "id": "JIRA_EN-1491015",
+            "metadata": {
+              "assignedTo": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "B9A5D4B06032F2B2D025122251793D33"
+                },
+                "name": "Chinmay Goyal",
+                "obfuscatedId": "B9A5D4B06032F2B2D025122251793D33"
+              },
+              "author": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "8834EC29D2A12F4B32248069787F3E39"
+                },
+                "name": "OnCall Scio",
+                "obfuscatedId": "8834EC29D2A12F4B32248069787F3E39"
+              },
+              "components": [
+                "GleanChat Alerts"
+              ],
+              "container": "Engineering",
+              "containerId": "JIRA_project_10000",
+              "createTime": "2026-03-01T10:26:53Z",
+              "customData": {
+                "customField_10045:Interested Customers": {
+                  "stringValue": "[\"glean-purestorage\"]"
+                },
+                "issueTypeId": {
+                  "stringValue": "10004"
+                },
+                "labels": {
+                  "stringListValue": [
+                    "ProductionIssue",
+                    "automated-ticket",
+                    "tier-1"
+                  ]
+                },
+                "linkedIssues": {
+                  "stringValue": "[]"
+                },
+                "priorityId": {
+                  "stringValue": "4"
+                },
+                "projectId": {
+                  "stringValue": "10000"
+                },
+                "projectName": {
+                  "stringValue": "Engineering"
+                }
+              },
+              "datasource": "jira",
+              "datasourceId": "EN-1491015",
+              "datasourceInstance": "jira",
+              "documentCategory": "TICKETS",
+              "documentId": "JIRA_EN-1491015",
+              "interactions": {
+                "numComments": 4
+              },
+              "loggingId": "40B864396F859A8F41C0D03C48560382",
+              "mimeType": "bug",
+              "objectType": "Bug",
+              "owner": {
+                "metadata": {
+                  "lastExtensionUse": "0001-01-01T00:00:00Z",
+                  "loggingId": "B9A5D4B06032F2B2D025122251793D33"
+                },
+                "name": "Chinmay Goyal",
+                "obfuscatedId": "B9A5D4B06032F2B2D025122251793D33"
+              },
+              "priority": "Low",
+              "status": "Closed As Noise",
+              "statusCategory": "Done",
+              "superContainerId": "JIRA_project_10000",
+              "updateTime": "2026-03-25T21:09:31Z",
+              "verification": {
+                "state": "UNVERIFIED"
+              },
+              "visibility": "DOMAIN_VISIBLE"
+            },
+            "parentDocument": {
+              "datasource": "jira",
+              "docType": "project",
+              "id": "JIRA_project_10000",
+              "title": "Engineering",
+              "url": "https://askscio.atlassian.net/jira/software/c/projects/EN/issues"
+            },
+            "title": "GleanChatError [project_id: glean-purestorage, type: pyagents_StreamingConnectionError] ",
+            "url": "https://askscio.atlassian.net/browse/EN-1491015"
+          },
+          "title": "GleanChatError [project_id: glean-purestorage, type: pyagents_StreamingConnectionError] ",
+          "trackingToken": "P9ogzed2I2wfTDRG,CkMKEFA5b2d6ZWQySTJ3ZlREUkcQCxoPSklSQV9FTi0xNDkxMDE1IgRqaXJhKgRqaXJhMgNidWc6B1RJQ0tFVFNAAkgJ",
+          "url": "https://askscio.atlassian.net/browse/EN-1491015"
+        }
+      ],
+      "document": {
+        "datasource": "jira",
+        "docType": "Bug",
+        "id": "JIRA_EN-1495473",
+        "metadata": {
+          "assignedTo": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "B56A4AE772FD640204935178093C8B5F"
+            },
+            "name": "Nick Wang",
+            "obfuscatedId": "B56A4AE772FD640204935178093C8B5F"
+          },
+          "author": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "8834EC29D2A12F4B32248069787F3E39"
+            },
+            "name": "OnCall Scio",
+            "obfuscatedId": "8834EC29D2A12F4B32248069787F3E39"
+          },
+          "components": [
+            "GleanChat Alerts"
+          ],
+          "container": "Engineering",
+          "containerId": "JIRA_project_10000",
+          "createTime": "2026-03-03T01:31:05Z",
+          "customData": {
+            "customField_10045:Interested Customers": {
+              "stringValue": "[\"glean-snowflake\"]"
+            },
+            "issueTypeId": {
+              "stringValue": "10004"
+            },
+            "labels": {
+              "stringListValue": [
+                "ProductionIssue",
+                "automated-ticket",
+                "tier-1"
+              ]
+            },
+            "linkedIssues": {
+              "stringValue": "[]"
+            },
+            "priorityId": {
+              "stringValue": "4"
+            },
+            "projectId": {
+              "stringValue": "10000"
+            },
+            "projectName": {
+              "stringValue": "Engineering"
+            }
+          },
+          "datasource": "jira",
+          "datasourceId": "EN-1495473",
+          "datasourceInstance": "jira",
+          "documentCategory": "TICKETS",
+          "documentId": "JIRA_EN-1495473",
+          "interactions": {
+            "numComments": 2
+          },
+          "loggingId": "B3DA24EDF7273E640C61674DAEBA7F7B",
+          "mimeType": "bug",
+          "objectType": "Bug",
+          "owner": {
+            "metadata": {
+              "lastExtensionUse": "0001-01-01T00:00:00Z",
+              "loggingId": "B56A4AE772FD640204935178093C8B5F"
+            },
+            "name": "Nick Wang",
+            "obfuscatedId": "B56A4AE772FD640204935178093C8B5F"
+          },
+          "priority": "Low",
+          "status": "Closed",
+          "statusCategory": "Done",
+          "superContainerId": "JIRA_project_10000",
+          "updateTime": "2026-03-04T03:33:45Z",
+          "visibility": "DOMAIN_VISIBLE"
+        },
+        "parentDocument": {
+          "datasource": "jira",
+          "docType": "project",
+          "id": "JIRA_project_10000",
+          "title": "Engineering",
+          "url": "https://askscio.atlassian.net/jira/software/c/projects/EN/issues"
+        },
+        "title": "GleanChatError [project_id: glean-snowflake, type: pyagents_StreamingConnectionError] ",
+        "url": "https://askscio.atlassian.net/browse/EN-1495473"
+      },
+      "mustIncludeSuggestions": {},
+      "snippets": [
+        {
+          "mimeType": "text/plain",
+          "ranges": [
+            {
+              "endIndex": 231,
+              "startIndex": 214,
+              "type": "BOLD"
+            }
+          ],
+          "snippet": "",
+          "text": "Investigated the GleanChatError (pyagents_StreamingConnectionError) alert for project `glean-snowflake` around 2026-03-03 01:31Z; the alert shows ~11 chat errors just above the 10-error threshold, with no separate incident reported for this tenant.",
+          "url": "https://askscio.atlassian.net/browse/EN-1495473#:~:text=Investigated%20the%20GleanChatError%20%28pyagents_StreamingConnectionError%29%20alert%20for%20project%20%60glean%2Dsnowflake%60%20around%202026%2D03%2D03%2001:31Z%3B%20the%20alert%20shows%20~11%20chat%20errors%20just%20above%20the%2010%2Derror%20threshold%2C%20with%20no%20separate%20incident%20reported%20for%20this%20tenant."
+        }
+      ],
+      "title": "GleanChatError [project_id: glean-snowflake, type: pyagents_StreamingConnectionError] ",
+      "trackingToken": "P9ogzed2I2wfTDRG,CkEKEFA5b2d6ZWQySTJ3ZlREUkcQAhoPSklSQV9FTi0xNDk1NDczIgRqaXJhKgRqaXJhMgNidWc6B1RJQ0tFVFNAAg==",
+      "url": "https://askscio.atlassian.net/browse/EN-1495473"
+    }
+  ],
+  "errorInfo": {},
+  "requestID": "95eb7a9ab21eb00bfd512c62f0b55357",
+  "backendTimeMillis": 606,
+  "experimentIds": [
+    196740,
+    196741,
+    1000,
+    1001,
+    222769,
+    222770,
+    223197,
+    223198,
+    221861,
+    221863,
+    169432,
+    169433,
+    71945,
+    71946,
+    220791,
+    220792,
+    223191,
+    223192
+  ],
+  "metadata": {
+    "rewrittenQuery": "incident report",
+    "searchedQuery": "incident report",
+    "searchedQueryWithoutNegation": "",
+    "originalQuery": "incident report"
+  },
+  "facetResults": [
+    {
+      "sourceName": "last_updated_at",
+      "operatorName": "SelectSingle",
+      "buckets": [
+        {
+          "count": 38362,
+          "value": {
+            "stringValue": "all",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 53,
+          "value": {
+            "stringValue": "past_day",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1098,
+          "value": {
+            "stringValue": "past_month",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 330,
+          "value": {
+            "stringValue": "past_week",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 7730,
+          "value": {
+            "stringValue": "past_year",
+            "iconConfig": {}
+          }
+        }
+      ]
+    },
+    {
+      "sourceName": "from",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Aaditya Gururaj",
+            "displayLabel": "Aaditya Gururaj",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Aaheli Chattopadhyay",
+            "displayLabel": "Aaheli Chattopadhyay",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "Aaron Fawzy",
+            "displayLabel": "Aaron Fawzy",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 64,
+          "value": {
+            "stringValue": "allan.livingston@glean.com",
+            "displayLabel": "Allan Livingston",
+            "iconConfig": {
+              "url": "https://scio-prod-be.glean.com/api/v1/images?key=eyJ0eXBlIjoiVUdDIiwiaWQiOiIwIiwiZHMiOiJHQUxMRVJZLUlNQUdFLVBJQ0tFUiIsImNpZCI6ImM0ZmQzNmI3LWQwYjgtNDNlOS1hYTU2LWE1Mjc0ZmI2YjgxOSIsImV4dCI6Ii5wbmcifQ=="
+            }
+          }
+        },
+        {
+          "count": 20,
+          "value": {
+            "stringValue": "barla.dhanush@glean.com",
+            "displayLabel": "Barla Dhanush",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-01-20/8318926798947_b8906ba164709717b66e_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "dan@glean.com",
+            "displayLabel": "Dan Fergusson",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2023-11-01/6126955309330_bf4d92b5b3c679812105_192.png"
+            }
+          }
+        },
+        {
+          "count": 5,
+          "value": {
+            "stringValue": "isaiah.white@glean.com",
+            "displayLabel": "Isaiah White",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-11-10/9912333291584_3ccb886886c3cd05ff32_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 16,
+          "value": {
+            "stringValue": "prabhav.patil@glean.com",
+            "displayLabel": "Prabhav Sunil Patil",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-17/9709457144339_54d558d23c50aabf0a39_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 55,
+          "value": {
+            "stringValue": "praveen.yalagandula@glean.com",
+            "displayLabel": "Praveen Yalagandula",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-11/7414016129780_bf67415213bf98c9b107_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 46,
+          "value": {
+            "stringValue": "preeyal.sarawgi@glean.com",
+            "displayLabel": "Preeyal Sarawgi",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-09/7390137859350_ed08f424a2b7939004e5_192.png"
+            }
+          }
+        },
+        {
+          "count": 45,
+          "value": {
+            "stringValue": "stanley.hong@glean.com",
+            "displayLabel": "Stanley Hong",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-24/9763772431557_eb49d68385e076ba309b_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 1836,
+          "value": {
+            "stringValue": "stephen.chu@glean.com",
+            "displayLabel": "Stephen Chu",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-01/9607282793623_eddf5ea9e16d05630af6_192.png"
+            }
+          }
+        },
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "vidyashree.shetty@glean.com",
+            "displayLabel": "Vidyashree Shetty",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-09-23/9563763991331_13ae695a89db1fa0b578_192.jpg"
+            }
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "type",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 30508,
+          "value": {
+            "stringValue": "bug",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 3,
+          "value": {
+            "stringValue": "component",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "connector escalation",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "customer implementation",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "dashboard",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "deployments",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 5,
+          "value": {
+            "stringValue": "doc bug",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 428,
+          "value": {
+            "stringValue": "epic",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2424,
+          "value": {
+            "stringValue": "escalation",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 29,
+          "value": {
+            "stringValue": "filter",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "headlines",
+            "iconConfig": {}
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "collection",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "2024 Pentest",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Alix Onboarding",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "FY27 Planning",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "General Mills - Cornerstone",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "Insights Magazine",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Moloco",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Org Chart",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 3,
+          "value": {
+            "stringValue": "Personalization",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Planning for Pilots 2024",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "Prism",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Prompt Permissions",
+            "iconConfig": {}
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "suggested",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "Go Links",
+            "iconConfig": {}
+          }
+        }
+      ]
+    },
+    {
+      "sourceName": "assignee",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 215,
+          "value": {
+            "stringValue": "Aaryan Srivastava",
+            "displayLabel": "Aaryan Srivastava",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Aasneh Prasad",
+            "displayLabel": "Aasneh Prasad",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 30,
+          "value": {
+            "stringValue": "Abhi Samantapudi",
+            "displayLabel": "Abhi Samantapudi",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 21,
+          "value": {
+            "stringValue": "allan.livingston@glean.com",
+            "displayLabel": "Allan Livingston",
+            "iconConfig": {
+              "url": "https://scio-prod-be.glean.com/api/v1/images?key=eyJ0eXBlIjoiVUdDIiwiaWQiOiIwIiwiZHMiOiJHQUxMRVJZLUlNQUdFLVBJQ0tFUiIsImNpZCI6ImM0ZmQzNmI3LWQwYjgtNDNlOS1hYTU2LWE1Mjc0ZmI2YjgxOSIsImV4dCI6Ii5wbmcifQ=="
+            }
+          }
+        },
+        {
+          "count": 6,
+          "value": {
+            "stringValue": "barla.dhanush@glean.com",
+            "displayLabel": "Barla Dhanush",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-01-20/8318926798947_b8906ba164709717b66e_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 3,
+          "value": {
+            "stringValue": "dan@glean.com",
+            "displayLabel": "Dan Fergusson",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2023-11-01/6126955309330_bf4d92b5b3c679812105_192.png"
+            }
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "jeremy.patoc@glean.com",
+            "displayLabel": "Jeremy Patoc",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2026-01-05/10230066047267_f1d117b64ee1739e9d36_192.png"
+            }
+          }
+        },
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "prabhav.patil@glean.com",
+            "displayLabel": "Prabhav Sunil Patil",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-17/9709457144339_54d558d23c50aabf0a39_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 44,
+          "value": {
+            "stringValue": "praveen.yalagandula@glean.com",
+            "displayLabel": "Praveen Yalagandula",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-11/7414016129780_bf67415213bf98c9b107_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 23,
+          "value": {
+            "stringValue": "preeyal.sarawgi@glean.com",
+            "displayLabel": "Preeyal Sarawgi",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-09/7390137859350_ed08f424a2b7939004e5_192.png"
+            }
+          }
+        },
+        {
+          "count": 33,
+          "value": {
+            "stringValue": "stanley.hong@glean.com",
+            "displayLabel": "Stanley Hong",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-24/9763772431557_eb49d68385e076ba309b_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 1794,
+          "value": {
+            "stringValue": "stephen.chu@glean.com",
+            "displayLabel": "Stephen Chu",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-01/9607282793623_eddf5ea9e16d05630af6_192.png"
+            }
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "vidyashree.shetty@glean.com",
+            "displayLabel": "Vidyashree Shetty",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-09-23/9563763991331_13ae695a89db1fa0b578_192.jpg"
+            }
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "commenter",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "Aaron Fawzy",
+            "displayLabel": "Aaron Fawzy",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "Aaron Groh",
+            "displayLabel": "Aaron Groh",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 86,
+          "value": {
+            "stringValue": "Aaryan Srivastava",
+            "displayLabel": "Aaryan Srivastava",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 27,
+          "value": {
+            "stringValue": "allan.livingston@glean.com",
+            "displayLabel": "Allan Livingston",
+            "iconConfig": {
+              "url": "https://scio-prod-be.glean.com/api/v1/images?key=eyJ0eXBlIjoiVUdDIiwiaWQiOiIwIiwiZHMiOiJHQUxMRVJZLUlNQUdFLVBJQ0tFUiIsImNpZCI6ImM0ZmQzNmI3LWQwYjgtNDNlOS1hYTU2LWE1Mjc0ZmI2YjgxOSIsImV4dCI6Ii5wbmcifQ=="
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "barla.dhanush@glean.com",
+            "displayLabel": "Barla Dhanush",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-01-20/8318926798947_b8906ba164709717b66e_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "dan@glean.com",
+            "displayLabel": "Dan Fergusson",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2023-11-01/6126955309330_bf4d92b5b3c679812105_192.png"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "isaiah.white@glean.com",
+            "displayLabel": "Isaiah White",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-11-10/9912333291584_3ccb886886c3cd05ff32_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "prabhav.patil@glean.com",
+            "displayLabel": "Prabhav Sunil Patil",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-17/9709457144339_54d558d23c50aabf0a39_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 9,
+          "value": {
+            "stringValue": "praveen.yalagandula@glean.com",
+            "displayLabel": "Praveen Yalagandula",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-11/7414016129780_bf67415213bf98c9b107_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 9,
+          "value": {
+            "stringValue": "preeyal.sarawgi@glean.com",
+            "displayLabel": "Preeyal Sarawgi",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-09/7390137859350_ed08f424a2b7939004e5_192.png"
+            }
+          }
+        },
+        {
+          "count": 25,
+          "value": {
+            "stringValue": "stanley.hong@glean.com",
+            "displayLabel": "Stanley Hong",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-24/9763772431557_eb49d68385e076ba309b_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 216,
+          "value": {
+            "stringValue": "stephen.chu@glean.com",
+            "displayLabel": "Stephen Chu",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-01/9607282793623_eddf5ea9e16d05630af6_192.png"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "vidyashree.shetty@glean.com",
+            "displayLabel": "Vidyashree Shetty",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-09-23/9563763991331_13ae695a89db1fa0b578_192.jpg"
+            }
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "component",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 12,
+          "value": {
+            "stringValue": "Accessibility",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 44,
+          "value": {
+            "stringValue": "Actions",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Activity",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 136,
+          "value": {
+            "stringValue": "AI Answers Bad Queries",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 11,
+          "value": {
+            "stringValue": "AI App builder",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "AI App Help",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 14,
+          "value": {
+            "stringValue": "AI Chat",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 6,
+          "value": {
+            "stringValue": "AI Platform",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 11,
+          "value": {
+            "stringValue": "AI Tools ",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "AIActions",
+            "iconConfig": {}
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "datasource",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "announcements",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 128,
+          "value": {
+            "stringValue": "answers",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 164,
+          "value": {
+            "stringValue": "collections",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 473,
+          "value": {
+            "stringValue": "confluence",
+            "displayLabel": "Confluence - Cloud",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 16,
+          "value": {
+            "stringValue": "debugendpoints",
+            "displayLabel": "DebugEndpoints",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 198,
+          "value": {
+            "stringValue": "developers",
+            "displayLabel": "Developers",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "gcp",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 8,
+          "value": {
+            "stringValue": "klue",
+            "displayLabel": "Klue",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 53,
+          "value": {
+            "stringValue": "rootly",
+            "displayLabel": "Rootly Integration",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "spinnaker",
+            "displayLabel": "Spinnaker pipelines",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 23432,
+          "value": {
+            "stringValue": "wiz",
+            "displayLabel": "Wiz",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 38362,
+          "value": {
+            "stringValue": "jira",
+            "displayLabel": "Jira (Cloud)",
+            "iconConfig": {}
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "label",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "\"bed-demand\"",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "\"bed-demand-analysis\"",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "\"bed_demand\"",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "\"bug\"]",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "\"certificate-of-need\"",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "\"ChristianaCare\"]",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "\"IoC-forecasts\"",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "\"Sg2\"",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "\"Siemens\"",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "\"SOW\"",
+            "iconConfig": {}
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "mentions",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Aaditya Gururaj",
+            "displayLabel": "Aaditya Gururaj",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 3,
+          "value": {
+            "stringValue": "Aaron Fawzy",
+            "displayLabel": "Aaron Fawzy",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 6,
+          "value": {
+            "stringValue": "Aaron Groh",
+            "displayLabel": "Aaron Groh",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 37,
+          "value": {
+            "stringValue": "allan.livingston@glean.com",
+            "displayLabel": "Allan Livingston",
+            "iconConfig": {
+              "url": "https://scio-prod-be.glean.com/api/v1/images?key=eyJ0eXBlIjoiVUdDIiwiaWQiOiIwIiwiZHMiOiJHQUxMRVJZLUlNQUdFLVBJQ0tFUiIsImNpZCI6ImM0ZmQzNmI3LWQwYjgtNDNlOS1hYTU2LWE1Mjc0ZmI2YjgxOSIsImV4dCI6Ii5wbmcifQ=="
+            }
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "barla.dhanush@glean.com",
+            "displayLabel": "Barla Dhanush",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-01-20/8318926798947_b8906ba164709717b66e_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "dan@glean.com",
+            "displayLabel": "Dan Fergusson",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2023-11-01/6126955309330_bf4d92b5b3c679812105_192.png"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "isaiah.white@glean.com",
+            "displayLabel": "Isaiah White",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-11-10/9912333291584_3ccb886886c3cd05ff32_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "prabhav.patil@glean.com",
+            "displayLabel": "Prabhav Sunil Patil",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-17/9709457144339_54d558d23c50aabf0a39_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "praveen.yalagandula@glean.com",
+            "displayLabel": "Praveen Yalagandula",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-11/7414016129780_bf67415213bf98c9b107_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 18,
+          "value": {
+            "stringValue": "preeyal.sarawgi@glean.com",
+            "displayLabel": "Preeyal Sarawgi",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-09/7390137859350_ed08f424a2b7939004e5_192.png"
+            }
+          }
+        },
+        {
+          "count": 32,
+          "value": {
+            "stringValue": "stanley.hong@glean.com",
+            "displayLabel": "Stanley Hong",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-24/9763772431557_eb49d68385e076ba309b_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 67,
+          "value": {
+            "stringValue": "stephen.chu@glean.com",
+            "displayLabel": "Stephen Chu",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-01/9607282793623_eddf5ea9e16d05630af6_192.png"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "vidyashree.shetty@glean.com",
+            "displayLabel": "Vidyashree Shetty",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-09-23/9563763991331_13ae695a89db1fa0b578_192.jpg"
+            }
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "priority",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 8331,
+          "value": {
+            "stringValue": "High",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 672,
+          "value": {
+            "stringValue": "Highest",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2557,
+          "value": {
+            "stringValue": "Low",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 35,
+          "value": {
+            "stringValue": "Lowest",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 26717,
+          "value": {
+            "stringValue": "Medium",
+            "iconConfig": {}
+          }
+        }
+      ]
+    },
+    {
+      "sourceName": "project",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "AWS Intake",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 3,
+          "value": {
+            "stringValue": "Customer Success",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 36,
+          "value": {
+            "stringValue": "Data ",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "Deployments",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 17,
+          "value": {
+            "stringValue": "Developer Platform",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2425,
+          "value": {
+            "stringValue": "Eng Escalations",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 32567,
+          "value": {
+            "stringValue": "Engineering",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 3,
+          "value": {
+            "stringValue": "Engineering - Consulting Services (Solution Arch)",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 364,
+          "value": {
+            "stringValue": "Field Feature Requests",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 26,
+          "value": {
+            "stringValue": "Glean Documentation",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "GTM-Enablement",
+            "iconConfig": {}
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "reporter",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Aaheli Chattopadhyay",
+            "displayLabel": "Aaheli Chattopadhyay",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Aaron Fawzy",
+            "displayLabel": "Aaron Fawzy",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "Aaron Trockman",
+            "displayLabel": "Aaron Trockman",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 10,
+          "value": {
+            "stringValue": "abhijith@glean.com",
+            "displayLabel": "Abhijith Shankar",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2021-08-31/2423139596103_02e426d1d855dcf5f374_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 6,
+          "value": {
+            "stringValue": "allan.livingston@glean.com",
+            "displayLabel": "Allan Livingston",
+            "iconConfig": {
+              "url": "https://scio-prod-be.glean.com/api/v1/images?key=eyJ0eXBlIjoiVUdDIiwiaWQiOiIwIiwiZHMiOiJHQUxMRVJZLUlNQUdFLVBJQ0tFUiIsImNpZCI6ImM0ZmQzNmI3LWQwYjgtNDNlOS1hYTU2LWE1Mjc0ZmI2YjgxOSIsImV4dCI6Ii5wbmcifQ=="
+            }
+          }
+        },
+        {
+          "count": 13,
+          "value": {
+            "stringValue": "barla.dhanush@glean.com",
+            "displayLabel": "Barla Dhanush",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-01-20/8318926798947_b8906ba164709717b66e_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 8,
+          "value": {
+            "stringValue": "jeremy.patoc@glean.com",
+            "displayLabel": "Jeremy Patoc",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2026-01-05/10230066047267_f1d117b64ee1739e9d36_192.png"
+            }
+          }
+        },
+        {
+          "count": 10,
+          "value": {
+            "stringValue": "prabhav.patil@glean.com",
+            "displayLabel": "Prabhav Sunil Patil",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-17/9709457144339_54d558d23c50aabf0a39_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "praveen.yalagandula@glean.com",
+            "displayLabel": "Praveen Yalagandula",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-11/7414016129780_bf67415213bf98c9b107_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 22,
+          "value": {
+            "stringValue": "preeyal.sarawgi@glean.com",
+            "displayLabel": "Preeyal Sarawgi",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2024-07-09/7390137859350_ed08f424a2b7939004e5_192.png"
+            }
+          }
+        },
+        {
+          "count": 5,
+          "value": {
+            "stringValue": "stanley.hong@glean.com",
+            "displayLabel": "Stanley Hong",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-24/9763772431557_eb49d68385e076ba309b_192.jpg"
+            }
+          }
+        },
+        {
+          "count": 4,
+          "value": {
+            "stringValue": "stephen.chu@glean.com",
+            "displayLabel": "Stephen Chu",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-10-01/9607282793623_eddf5ea9e16d05630af6_192.png"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "vidyashree.shetty@glean.com",
+            "displayLabel": "Vidyashree Shetty",
+            "iconConfig": {
+              "url": "https://avatars.slack-edge.com/2025-09-23/9563763991331_13ae695a89db1fa0b578_192.jpg"
+            }
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "sprint",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 13,
+          "value": {
+            "stringValue": "2024 Q2 M1 Sprint 2",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "2024 Q2 M1 Sprint 3",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "2024 Q2 M2 Sprint 1",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 3,
+          "value": {
+            "stringValue": "2024 Q2 M2 Sprint 4",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "2024 Q3 M1 Sprint 3",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "2024 Q3 M2 Sprint 1",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "2024 Q4 M1 Sprint 2",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "2024 Q4 M2 Sprint 3",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "2025 Q1 M1 Sprint 3",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "2025 Q1 M2 Sprint 1",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "2025 Q2 M1 Sprint 3",
+            "iconConfig": {}
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "status",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 20,
+          "value": {
+            "stringValue": "Abonded",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 8,
+          "value": {
+            "stringValue": "ACCEPTED via linked ROADmap \u0026 Release item",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 21,
+          "value": {
+            "stringValue": "Approved",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1,
+          "value": {
+            "stringValue": "Awaiting approval",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 180,
+          "value": {
+            "stringValue": "Backlog",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 2,
+          "value": {
+            "stringValue": "Backlogs",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 5,
+          "value": {
+            "stringValue": "Beta",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 41,
+          "value": {
+            "stringValue": "BLOCKED",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 5,
+          "value": {
+            "stringValue": "Blocked on Eng",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 33,
+          "value": {
+            "stringValue": "Canceled",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 10902,
+          "value": {
+            "stringValue": "Closed",
+            "iconConfig": {}
+          }
+        }
+      ],
+      "hasMoreBuckets": true
+    },
+    {
+      "sourceName": "statuscategory",
+      "operatorName": "SelectMultiple",
+      "buckets": [
+        {
+          "count": 32989,
+          "value": {
+            "stringValue": "Done",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 1080,
+          "value": {
+            "stringValue": "In Progress",
+            "iconConfig": {}
+          }
+        },
+        {
+          "count": 4259,
+          "value": {
+            "stringValue": "To Do",
+            "iconConfig": {}
+          }
+        }
+      ]
+    }
+  ],
+  "resultTabs": [
+    {
+      "count": 62841,
+      "id": "all"
+    },
+    {
+      "count": 198,
+      "datasource": "developers",
+      "datasourceInstance": "developers",
+      "id": "developers"
+    },
+    {
+      "count": 38362,
+      "datasource": "jira",
+      "datasourceInstance": "jira",
+      "id": "jira"
+    },
+    {
+      "count": 473,
+      "datasource": "confluence",
+      "id": "confluence"
+    },
+    {
+      "count": 4,
+      "datasource": "announcements",
+      "datasourceInstance": "announcements",
+      "id": "announcements"
+    },
+    {
+      "count": 128,
+      "datasource": "answers",
+      "datasourceInstance": "answers",
+      "id": "answers"
+    },
+    {
+      "count": 164,
+      "datasource": "collections",
+      "datasourceInstance": "collections",
+      "id": "collections"
+    },
+    {
+      "count": 16,
+      "datasource": "debugendpoints",
+      "datasourceInstance": "debugendpoints",
+      "id": "debugendpoints"
+    },
+    {
+      "count": 1,
+      "datasource": "gcp",
+      "datasourceInstance": "gcp",
+      "id": "gcp"
+    },
+    {
+      "count": 8,
+      "datasource": "klue",
+      "datasourceInstance": "klue",
+      "id": "klue"
+    },
+    {
+      "count": 53,
+      "datasource": "rootly",
+      "datasourceInstance": "rootly",
+      "id": "rootly"
+    },
+    {
+      "count": 2,
+      "datasource": "spinnaker",
+      "datasourceInstance": "spinnaker",
+      "id": "spinnaker"
+    },
+    {
+      "count": 23432,
+      "datasource": "wiz",
+      "datasourceInstance": "wiz",
+      "id": "wiz"
+    }
+  ],
+  "resultTabIds": [
+    "jira"
+  ],
+  "cursor": "eyJSZXN1bHRTdGFydCI6MywiUmFuZG9tQ2FjaGVLZXkiOiI0MTMwODM5MzUyNDM5MTQ5NzU4IiwiUGFnZUR1cGVNZXRhZGF0YSI6eyJQYWdlSWQiOjEsIlJlc3VsdFRva2VucyI6bnVsbH0sIkN1cnNvckNhY2hlS2V5IjoiNTY4MmUxZmYtNTdiMi00ZDBiLWE1OTEtYjhkZGU3YjY0NzhiIn0=",
+  "hasMoreResults": true
+}

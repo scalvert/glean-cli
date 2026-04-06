@@ -1,0 +1,114 @@
+{
+  "results": [
+    {
+      "title": " Can someone help me review Servicenow issues for FB?  they are having issues pulling incidents/problems/service requests which are not appearing searchable or providing any metrics. or returning part...",
+      "url": "https://askscio.atlassian.net/browse/EE-19304",
+      "snippets": [
+        {
+          "text": "\"Expecting basic queries like number of incidents reported in a time bound or number of P1/P2 reported in a timebound are important for us as metric query. ",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": "May be reporting is also a need for us. ",
+          "mimeType": "text/plain"
+        },
+        {
+          "text": ".service-now.com/incident?",
+          "mimeType": "text/plain"
+        }
+      ],
+      "document": {
+        "title": " Can someone help me review Servicenow issues for FB?  they are having issues pulling incidents/problems/service requests which are not appearing searchable or providing any metrics. or returning part...",
+        "url": "https://askscio.atlassian.net/browse/EE-19304",
+        "datasource": "jira",
+        "docType": "Escalation",
+        "metadata": {
+          "datasource": "jira",
+          "objectType": "Escalation",
+          "author": {
+            "name": "OnCall Scio"
+          },
+          "owner": {
+            "name": "Iliana Portugal"
+          },
+          "assignedTo": {
+            "name": "Iliana Portugal"
+          },
+          "updateTime": "2026-02-11T21:03:11Z",
+          "createTime": "2025-12-04T23:32:13Z",
+          "status": "Done",
+          "priority": "Medium",
+          "container": "Eng Escalations",
+          "datasourceId": "EE-19304"
+        }
+      }
+    },
+    {
+      "title": " Hi Team, `Linkedin` has reported that for specifi...",
+      "url": "https://askscio.atlassian.net/browse/EN-305579",
+      "snippets": [
+        {
+          "text": "\"title\": \"Incident Report\", \"type\": \"object\", \"properties\": { \"incident_id\": { \"type\": \"string\", \"description\": \"Unique identifier for the incident\", \"examples\": \"incident-1816\" }, \"title\": { \"type\": \"string\", \"description\": \"Title of the incident\"",
+          "mimeType": "text/plain"
+        }
+      ],
+      "document": {
+        "title": " Hi Team, `Linkedin` has reported that for specifi...",
+        "url": "https://askscio.atlassian.net/browse/EN-305579",
+        "datasource": "jira",
+        "docType": "Task",
+        "metadata": {
+          "datasource": "jira",
+          "objectType": "Task",
+          "author": {
+            "name": "Eddie Zhou"
+          },
+          "updateTime": "2024-11-04T17:00:38Z",
+          "createTime": "2024-10-22T09:16:20Z",
+          "status": "Debugged",
+          "priority": "Medium",
+          "container": "Engineering",
+          "datasourceId": "EN-305579"
+        }
+      }
+    },
+    {
+      "title": "GleanChatError [project_id: glean-snowflake, type: pyagents_StreamingConnectionError] ",
+      "url": "https://askscio.atlassian.net/browse/EN-1495473",
+      "snippets": [
+        {
+          "text": "Investigated the GleanChatError (pyagents_StreamingConnectionError) alert for project `glean-snowflake` around 2026-03-03 01:31Z; the alert shows ~11 chat errors just above the 10-error threshold, with no separate incident reported for this tenant.",
+          "mimeType": "text/plain"
+        }
+      ],
+      "document": {
+        "title": "GleanChatError [project_id: glean-snowflake, type: pyagents_StreamingConnectionError] ",
+        "url": "https://askscio.atlassian.net/browse/EN-1495473",
+        "datasource": "jira",
+        "docType": "Bug",
+        "metadata": {
+          "datasource": "jira",
+          "objectType": "Bug",
+          "author": {
+            "name": "OnCall Scio"
+          },
+          "owner": {
+            "name": "Nick Wang"
+          },
+          "assignedTo": {
+            "name": "Nick Wang"
+          },
+          "updateTime": "2026-03-04T03:33:45Z",
+          "createTime": "2026-03-03T01:31:05Z",
+          "status": "Closed",
+          "priority": "Low",
+          "container": "Engineering",
+          "datasourceId": "EN-1495473"
+        }
+      }
+    }
+  ],
+  "cursor": "eyJSZXN1bHRTdGFydCI6MywiUmFuZG9tQ2FjaGVLZXkiOiI0MTMwODM5MzUyNDM5MTQ5NzU4IiwiUGFnZUR1cGVNZXRhZGF0YSI6eyJQYWdlSWQiOjEsIlJlc3VsdFRva2VucyI6bnVsbH0sIkN1cnNvckNhY2hlS2V5IjoiNTY4MmUxZmYtNTdiMi00ZDBiLWE1OTEtYjhkZGU3YjY0NzhiIn0=",
+  "hasMoreResults": true,
+  "requestID": "95eb7a9ab21eb00bfd512c62f0b55357"
+}
