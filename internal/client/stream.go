@@ -11,12 +11,13 @@ import (
 
 	"github.com/gleanwork/api-client-go/models/components"
 	"github.com/gleanwork/glean-cli/internal/config"
+	"github.com/gleanwork/glean-cli/internal/httputil"
 )
 
-// streamHTTPClient has a generous timeout for long-running AUTO/ADVANCED agent
+// streamTimeout is a generous timeout for long-running AUTO/ADVANCED agent
 // responses. Context cancellation (ctrl+c in the TUI) handles user-initiated
 // cancellation; this timeout is only a backstop for genuine network hangs.
-var streamHTTPClient = &http.Client{Timeout: 10 * time.Minute}
+const streamTimeout = 10 * time.Minute
 
 // StreamChat makes a streaming chat request to the Glean API, bypassing the
 // SDK's buffered CreateStream which reads the entire response before returning.
@@ -65,12 +66,11 @@ func StreamChat(ctx context.Context, cfg *config.Config, req components.ChatRequ
 	httpReq.Header.Set("Content-Type", "application/json")
 	httpReq.Header.Set("Accept", "text/event-stream")
 	httpReq.Header.Set("Authorization", "Bearer "+token)
-	httpReq.Header.Set("User-Agent", "glean-cli/"+cliVersion)
 	if authType != "" {
 		httpReq.Header.Set("X-Glean-Auth-Type", authType)
 	}
 
-	resp, err := streamHTTPClient.Do(httpReq)
+	resp, err := httputil.NewHTTPClient(streamTimeout).Do(httpReq)
 	if err != nil {
 		return nil, fmt.Errorf("chat request failed: %w", err)
 	}

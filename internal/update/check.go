@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gleanwork/glean-cli/internal/httputil"
 	"golang.org/x/mod/semver"
 )
 
@@ -75,7 +76,7 @@ func check(currentVersion string) string {
 }
 
 func fetchLatestTag() (string, error) {
-	client := &http.Client{Timeout: 5 * time.Second}
+	client := httputil.NewHTTPClient(5 * time.Second)
 	resp, err := client.Get(releaseAPIURL)
 	if err != nil {
 		return "", err

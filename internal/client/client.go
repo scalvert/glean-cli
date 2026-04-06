@@ -11,10 +11,8 @@ import (
 	glean "github.com/gleanwork/api-client-go"
 	"github.com/gleanwork/glean-cli/internal/auth"
 	"github.com/gleanwork/glean-cli/internal/config"
+	"github.com/gleanwork/glean-cli/internal/httputil"
 )
-
-// cliVersion is set at startup via SetVersion. Defaults to "dev" for local builds.
-var cliVersion = "dev"
 
 // authTypeOAuth is the X-Glean-Auth-Type header value required for External IdP OAuth tokens.
 const authTypeOAuth = "OAUTH"
@@ -31,28 +29,6 @@ func ResolveToken(cfg *config.Config) (token, authType string) {
 		return tok, authTypeOAuth
 	}
 	return "", ""
-}
-
-// SetVersion records the build-time version for use in the User-Agent header.
-func SetVersion(v string) { cliVersion = v }
-
-// Version returns the current CLI version string.
-func Version() string { return cliVersion }
-
-// cliTransport wraps an http.RoundTripper, sets the CLI User-Agent header,
-// and injects X-Glean-Auth-Type when the token originates from OAuth.
-type cliTransport struct {
-	base     http.RoundTripper
-	authType string // "OAUTH" or "" (empty = API token, no header set)
-}
-
-func (t *cliTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	req = req.Clone(req.Context())
-	req.Header.Set("User-Agent", "glean-cli/"+cliVersion)
-	if t.authType != "" {
-		req.Header.Set("X-Glean-Auth-Type", t.authType)
-	}
-	return t.base.RoundTrip(req)
 }
 
 // New creates an authenticated Glean SDK client from the loaded configuration.
@@ -81,7 +57,9 @@ func New(cfg *config.Config) (*glean.Glean, error) {
 		glean.WithInstance(instance),
 		glean.WithSecurity(token),
 		glean.WithClient(&http.Client{
-			Transport: &cliTransport{base: http.DefaultTransport, authType: authType},
+			Transport: httputil.NewTransport(http.DefaultTransport,
+				httputil.WithHeader("X-Glean-Auth-Type", authType),
+			),
 		}),
 	}
 

@@ -8,11 +8,11 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/gleanwork/glean-cli/internal/httputil"
 )
 
 const gleanConfigSearchURL = "https://app.glean.com/config/search"
-
-var domainLookupHTTPClient = &http.Client{Timeout: 10 * time.Second}
 
 // LookupBackendURL resolves a work email to a Glean backend base URL
 // using Glean's domain discovery API.
@@ -43,7 +43,7 @@ func lookupBackendURL(ctx context.Context, email, endpoint string) (string, erro
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
 
-	resp, err := domainLookupHTTPClient.Do(req)
+	resp, err := httputil.NewHTTPClient(10 * time.Second).Do(req)
 	if err != nil {
 		return "", fmt.Errorf("domain lookup request failed: %w", err)
 	}

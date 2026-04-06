@@ -16,6 +16,7 @@ import (
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/gleanwork/glean-cli/internal/config"
+	"github.com/gleanwork/glean-cli/internal/httputil"
 	"github.com/int128/oauth2cli"
 	"github.com/pkg/browser"
 	"golang.org/x/oauth2"
@@ -447,7 +448,7 @@ func fetchAuthServerMetadata(ctx context.Context, issuer string) (*authServerMet
 		return nil, err
 	}
 	req.Header.Set("Accept", "application/json")
-	resp, err := discoveryHTTPClient.Do(req)
+	resp, err := httputil.NewHTTPClient(10 * time.Second).Do(req)
 	if err != nil {
 		return nil, err
 	}

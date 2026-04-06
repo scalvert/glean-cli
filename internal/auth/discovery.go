@@ -8,9 +8,9 @@ import (
 	"net/http"
 	"strings"
 	"time"
-)
 
-var discoveryHTTPClient = &http.Client{Timeout: 10 * time.Second}
+	"github.com/gleanwork/glean-cli/internal/httputil"
+)
 
 // ErrOAuthNotSupported is returned when the protected resource endpoint returns 404.
 type ErrOAuthNotSupported struct {
@@ -36,7 +36,7 @@ func fetchProtectedResource(ctx context.Context, baseURL string) (*protectedReso
 	}
 	req.Header.Set("Accept", "application/json")
 
-	resp, err := discoveryHTTPClient.Do(req)
+	resp, err := httputil.NewHTTPClient(10 * time.Second).Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("fetching protected resource metadata: %w", err)
 	}
@@ -81,7 +81,7 @@ func registerClient(ctx context.Context, registrationEndpoint, redirectURI strin
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
 
-	resp, err := discoveryHTTPClient.Do(req)
+	resp, err := httputil.NewHTTPClient(10 * time.Second).Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("DCR request failed: %w", err)
 	}

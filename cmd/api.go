@@ -15,6 +15,7 @@ import (
 	"github.com/briandowns/spinner"
 	gleanClient "github.com/gleanwork/glean-cli/internal/client"
 	"github.com/gleanwork/glean-cli/internal/config"
+	"github.com/gleanwork/glean-cli/internal/httputil"
 	"github.com/gleanwork/glean-cli/internal/output"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
@@ -193,7 +194,7 @@ func rawAPIRequest(ctx context.Context, cfg *config.Config, method, endpoint str
 		req.Header.Set("X-Glean-Auth-Type", authType)
 	}
 
-	httpClient := &http.Client{Timeout: 30 * time.Second}
+	httpClient := httputil.NewHTTPClient(30 * time.Second)
 	httpResp, err := httpClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("error making request: %w", err)
