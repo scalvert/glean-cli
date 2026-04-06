@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"testing"
 
+	"github.com/gleanwork/glean-cli/internal/auth/authtest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -31,28 +32,25 @@ func TestAuthCmd_HasSubcommands(t *testing.T) {
 }
 
 func TestAuthStatusCmd_NoConfig(t *testing.T) {
-	// With no config set, auth status should not panic.
-	// It prints to stdout directly (not cmd.OutOrStdout), so we just
-	// verify it doesn't return an error.
+	authtest.IsolateAuthState(t)
+
 	root := NewCmdRoot()
 	buf := &bytes.Buffer{}
 	root.SetOut(buf)
 	root.SetErr(buf)
 	root.SetArgs([]string{"auth", "status"})
 
-	// Should not crash — returns nil (prints "Not configured.") or a wrapped error.
 	_ = root.Execute()
 }
 
 func TestAuthLogoutCmd_NoPanic(t *testing.T) {
-	// Verify logout doesn't panic regardless of system auth state.
+	authtest.IsolateAuthState(t)
+
 	root := NewCmdRoot()
 	buf := &bytes.Buffer{}
 	root.SetOut(buf)
 	root.SetErr(buf)
 	root.SetArgs([]string{"auth", "logout"})
 
-	// May succeed or fail depending on whether credentials exist on
-	// this machine — either outcome is fine, we just verify no panic.
 	_ = root.Execute()
 }

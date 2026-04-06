@@ -2,34 +2,16 @@ package auth_test
 
 import (
 	"context"
-	"path/filepath"
 	"testing"
 	"time"
 
 	"github.com/gleanwork/glean-cli/internal/auth"
+	"github.com/gleanwork/glean-cli/internal/auth/authtest"
 	gleanClient "github.com/gleanwork/glean-cli/internal/client"
 	"github.com/gleanwork/glean-cli/internal/config"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/zalando/go-keyring"
 )
-
-func isolateAuthState(t *testing.T) {
-	t.Helper()
-
-	home := t.TempDir()
-	t.Setenv("HOME", home)
-
-	oldConfigPath := config.ConfigPath
-	config.ConfigPath = filepath.Join(home, ".glean", "config.json")
-	t.Cleanup(func() { config.ConfigPath = oldConfigPath })
-
-	oldServiceName := config.ServiceName
-	config.ServiceName = "glean-cli-test-auth-persistence"
-	t.Cleanup(func() { config.ServiceName = oldServiceName })
-
-	keyring.MockInit()
-}
 
 func oauthToken() *auth.StoredTokens {
 	return &auth.StoredTokens{
@@ -43,7 +25,7 @@ func oauthToken() *auth.StoredTokens {
 }
 
 func TestOAuthLoginStateRequiresPersistedHostAfterEnvHostIsRemoved(t *testing.T) {
-	isolateAuthState(t)
+	authtest.IsolateAuthState(t)
 
 	const host = "acme-be.glean.com"
 	require.NoError(t, auth.SaveTokens(host, oauthToken()))
@@ -68,7 +50,7 @@ func TestOAuthLoginStateRequiresPersistedHostAfterEnvHostIsRemoved(t *testing.T)
 }
 
 func TestOAuthTokenResolvesWhenHostIsPersisted(t *testing.T) {
-	isolateAuthState(t)
+	authtest.IsolateAuthState(t)
 
 	const host = "acme-be.glean.com"
 	require.NoError(t, config.SaveHostToFile(host))
@@ -84,7 +66,7 @@ func TestOAuthTokenResolvesWhenHostIsPersisted(t *testing.T) {
 }
 
 func TestShortFormHostNormalizesConsistently(t *testing.T) {
-	isolateAuthState(t)
+	authtest.IsolateAuthState(t)
 
 	const shortHost = "acme"
 	const normalizedHost = "acme-be.glean.com"
@@ -107,7 +89,7 @@ func TestShortFormHostNormalizesConsistently(t *testing.T) {
 }
 
 func TestLogoutClearsPersistedHostAndOAuthTokens(t *testing.T) {
-	isolateAuthState(t)
+	authtest.IsolateAuthState(t)
 
 	const host = "acme-be.glean.com"
 	require.NoError(t, config.SaveHostToFile(host))
