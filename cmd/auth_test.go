@@ -2,10 +2,13 @@ package cmd
 
 import (
 	"bytes"
+	"path/filepath"
 	"testing"
 
+	"github.com/gleanwork/glean-cli/internal/config"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/zalando/go-keyring"
 )
 
 func TestAuthCmd_Help(t *testing.T) {
@@ -30,29 +33,43 @@ func TestAuthCmd_HasSubcommands(t *testing.T) {
 	assert.Contains(t, subNames, "status")
 }
 
+func isolateAuthState(t *testing.T) {
+	t.Helper()
+
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+
+	oldPath := config.ConfigPath
+	config.ConfigPath = filepath.Join(home, ".glean", "config.json")
+	t.Cleanup(func() { config.ConfigPath = oldPath })
+
+	oldService := config.ServiceName
+	config.ServiceName = "glean-cli-test-cmd-auth"
+	t.Cleanup(func() { config.ServiceName = oldService })
+
+	keyring.MockInit()
+}
+
 func TestAuthStatusCmd_NoConfig(t *testing.T) {
-	// With no config set, auth status should not panic.
-	// It prints to stdout directly (not cmd.OutOrStdout), so we just
-	// verify it doesn't return an error.
+	isolateAuthState(t)
+
 	root := NewCmdRoot()
 	buf := &bytes.Buffer{}
 	root.SetOut(buf)
 	root.SetErr(buf)
 	root.SetArgs([]string{"auth", "status"})
 
-	// Should not crash — returns nil (prints "Not configured.") or a wrapped error.
 	_ = root.Execute()
 }
 
 func TestAuthLogoutCmd_NoPanic(t *testing.T) {
-	// Verify logout doesn't panic regardless of system auth state.
+	isolateAuthState(t)
+
 	root := NewCmdRoot()
 	buf := &bytes.Buffer{}
 	root.SetOut(buf)
 	root.SetErr(buf)
 	root.SetArgs([]string{"auth", "logout"})
 
-	// May succeed or fail depending on whether credentials exist on
-	// this machine — either outcome is fine, we just verify no panic.
 	_ = root.Execute()
 }
