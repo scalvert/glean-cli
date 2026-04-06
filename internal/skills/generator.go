@@ -14,9 +14,12 @@ import (
 	"github.com/gleanwork/glean-cli/internal/schema"
 )
 
+// rootSkillName is the directory and frontmatter name for the root discovery skill.
+const rootSkillName = "glean-cli"
+
 // skillPrefix is prepended to command names to form skill directory and
 // frontmatter names (e.g. "glean-cli-search").
-const skillPrefix = "glean-cli-"
+const skillPrefix = rootSkillName + "-"
 
 // subcommandMap provides human-friendly descriptions for subcommands that
 // the schema registry doesn't capture (schemas are per-namespace, not per-sub).
@@ -101,6 +104,7 @@ type FlagInfo struct {
 // SkillData holds all data needed to render a SKILL.md template.
 type SkillData struct {
 	Prefix      string
+	RootSkill   string
 	Name        string
 	Description string
 	Command     string
@@ -124,7 +128,7 @@ description: "{{ .Description }}"
 
 # glean {{ .Command }}
 
-> **PREREQUISITE:** Read ` + "`../glean-cli/SKILL.md`" + ` for auth, global flags, and security rules.
+> **PREREQUISITE:** Read ` + "`../{{ .RootSkill }}/SKILL.md`" + ` for auth, global flags, and security rules.
 
 {{ .SchemaDesc }}
 
@@ -164,7 +168,7 @@ glean schema | jq '.commands'
 `))
 
 var rootTmpl = template.Must(template.New("root").Parse(`---
-name: glean-cli
+name: {{ .RootSkill }}
 description: "Glean CLI: access company knowledge, search documents, chat with Glean Assistant, look up people, and manage enterprise content. Use when the user asks about internal docs, company information, people, policies, or enterprise data."
 compatibility: Requires the glean binary on $PATH. Install via brew install gleanwork/tap/glean-cli
 ---
@@ -279,7 +283,7 @@ func Generate(outputDir string) error {
 	if err := writeRootSkill(outputDir, entries); err != nil {
 		return fmt.Errorf("writing root skill: %w", err)
 	}
-	fmt.Fprintf(os.Stderr, "  wrote glean-cli/SKILL.md\n")
+	fmt.Fprintf(os.Stderr, "  wrote %s/SKILL.md\n", rootSkillName)
 
 	// Generate per-command skills
 	for _, name := range commands {
@@ -301,7 +305,7 @@ func Generate(outputDir string) error {
 }
 
 func writeRootSkill(outputDir string, commands []CommandEntry) error {
-	dir := filepath.Join(outputDir, "glean-cli")
+	dir := filepath.Join(outputDir, rootSkillName)
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return err
 	}
@@ -312,9 +316,10 @@ func writeRootSkill(outputDir string, commands []CommandEntry) error {
 	defer f.Close()
 
 	data := struct {
-		Prefix   string
-		Commands []CommandEntry
-	}{Prefix: skillPrefix, Commands: commands}
+		Prefix    string
+		RootSkill string
+		Commands  []CommandEntry
+	}{Prefix: skillPrefix, RootSkill: rootSkillName, Commands: commands}
 	return rootTmpl.Execute(f, data)
 }
 
@@ -384,6 +389,7 @@ func buildSkillData(name string, s schema.CommandSchema) SkillData {
 
 	return SkillData{
 		Prefix:      skillPrefix,
+		RootSkill:   rootSkillName,
 		Name:        skillPrefix + name,
 		Description: desc,
 		Command:     name,
