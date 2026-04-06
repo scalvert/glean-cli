@@ -5,7 +5,7 @@ description: "Manage curated document collections in Glean. Use when creating, u
 
 # glean collections
 
-> **PREREQUISITE:** Read `../glean-cli-shared/SKILL.md` for auth, global flags, and security rules.
+> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Manage Glean collections. Subcommands: create, delete, update, add-items, delete-item.
 

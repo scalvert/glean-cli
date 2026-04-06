@@ -5,7 +5,7 @@ description: "Retrieve search and usage analytics from Glean. Use when analyzing
 
 # glean insights
 
-> **PREREQUISITE:** Read `../glean-cli-shared/SKILL.md` for auth, global flags, and security rules.
+> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Retrieve Glean usage insights. Subcommands: get.
 

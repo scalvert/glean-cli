@@ -15,7 +15,7 @@ import (
 )
 
 // skillPrefix is prepended to command names to form skill directory and
-// frontmatter names (e.g. "glean-cli-search", "glean-cli-shared").
+// frontmatter names (e.g. "glean-cli-search").
 const skillPrefix = "glean-cli-"
 
 // subcommandMap provides human-friendly descriptions for subcommands that
@@ -124,7 +124,7 @@ description: "{{ .Description }}"
 
 # glean {{ .Command }}
 
-> **PREREQUISITE:** Read ` + "`../{{ .Prefix }}shared/SKILL.md`" + ` for auth, global flags, and security rules.
+> **PREREQUISITE:** Read ` + "`../glean-cli/SKILL.md`" + ` for auth, global flags, and security rules.
 
 {{ .SchemaDesc }}
 
@@ -163,15 +163,25 @@ glean schema | jq '.commands'
 ` + "```" + `
 `))
 
-var sharedTmpl = template.Must(template.New("shared").Parse(`---
-name: {{ .Prefix }}shared
-description: "Glean CLI: Shared patterns for authentication, global flags, output formatting, and security rules."
+var rootTmpl = template.Must(template.New("root").Parse(`---
+name: glean-cli
+description: "Glean CLI: access company knowledge, search documents, chat with Glean Assistant, look up people, and manage enterprise content. Use when the user asks about internal docs, company information, people, policies, or enterprise data."
 compatibility: Requires the glean binary on $PATH. Install via brew install gleanwork/tap/glean-cli
 ---
 
-# glean — Shared Reference
+# Glean CLI
 
-> **Read this first.** All other glean skills assume familiarity with auth, flags, and output formats described here.
+The ` + "`glean`" + ` command-line tool provides authenticated access to your company's Glean instance. It can search documents, chat with Glean Assistant, look up people and teams, manage collections, and more.
+
+## When to Use
+
+Use the Glean CLI when the user:
+
+- Asks about internal documents, policies, wikis, or company knowledge
+- Wants to find people, teams, or org structure
+- Needs to search across enterprise data sources (Confluence, Jira, Google Drive, Slack, etc.)
+- Asks questions that require company-specific context
+- Wants to manage Glean resources (collections, shortcuts, pins, announcements)
 
 ## Installation
 
@@ -212,7 +222,7 @@ glean <command> [subcommand] [flags]
 
 ## Schema Introspection
 
-Always call glean schema <command> before invoking a command you haven't used before.
+Always call ` + "`glean schema <command>`" + ` before invoking a command you haven't used before.
 
 ` + "```bash" + `
 glean schema | jq '.commands'          # list all commands
@@ -266,10 +276,10 @@ func Generate(outputDir string) error {
 		entries = append(entries, CommandEntry{Name: name, Description: s.Description})
 	}
 
-	if err := writeSharedSkill(outputDir, entries); err != nil {
-		return fmt.Errorf("writing shared skill: %w", err)
+	if err := writeRootSkill(outputDir, entries); err != nil {
+		return fmt.Errorf("writing root skill: %w", err)
 	}
-	fmt.Fprintf(os.Stderr, "  wrote %sshared/SKILL.md\n", skillPrefix)
+	fmt.Fprintf(os.Stderr, "  wrote glean-cli/SKILL.md\n")
 
 	// Generate per-command skills
 	for _, name := range commands {
@@ -290,8 +300,8 @@ func Generate(outputDir string) error {
 	return nil
 }
 
-func writeSharedSkill(outputDir string, commands []CommandEntry) error {
-	dir := filepath.Join(outputDir, skillPrefix+"shared")
+func writeRootSkill(outputDir string, commands []CommandEntry) error {
+	dir := filepath.Join(outputDir, "glean-cli")
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return err
 	}
@@ -305,7 +315,7 @@ func writeSharedSkill(outputDir string, commands []CommandEntry) error {
 		Prefix   string
 		Commands []CommandEntry
 	}{Prefix: skillPrefix, Commands: commands}
-	return sharedTmpl.Execute(f, data)
+	return rootTmpl.Execute(f, data)
 }
 
 func writeCommandSkill(outputDir, name string, s schema.CommandSchema) error {

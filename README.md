@@ -354,7 +354,7 @@ npx skills add https://github.com/gleanwork/glean-cli/tree/main/skills/glean-cli
 
 | Skill                     | Description                                            |
 | ------------------------- | ------------------------------------------------------ |
-| `glean-cli-shared`        | Shared patterns: auth, global flags, output formatting |
+| `glean-cli`               | Root skill: discovery, auth, global flags, output formatting |
 | `glean-cli-search`        | Search across company knowledge                        |
 | `glean-cli-chat`          | Chat with Glean Assistant                              |
 | `glean-cli-schema`        | Runtime JSON schema introspection                      |

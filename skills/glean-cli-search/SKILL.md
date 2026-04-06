@@ -5,7 +5,7 @@ description: "Search across company knowledge with the Glean CLI. Use when findi
 
 # glean search
 
-> **PREREQUISITE:** Read `../glean-cli-shared/SKILL.md` for auth, global flags, and security rules.
+> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Search for content in your Glean instance. Results are JSON.
 

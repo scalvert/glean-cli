@@ -5,7 +5,7 @@ description: "List and run Glean platform tools. Use when discovering available 
 
 # glean tools
 
-> **PREREQUISITE:** Read `../glean-cli-shared/SKILL.md` for auth, global flags, and security rules.
+> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 List and run Glean tools. Subcommands: list, run.
 

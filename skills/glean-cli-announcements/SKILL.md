@@ -5,7 +5,7 @@ description: "Manage time-bounded company announcements in Glean. Use when creat
 
 # glean announcements
 
-> **PREREQUISITE:** Read `../glean-cli-shared/SKILL.md` for auth, global flags, and security rules.
+> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Manage Glean announcements. Subcommands: create, update, delete.
 

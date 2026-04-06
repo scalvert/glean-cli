@@ -1,12 +1,22 @@
 ---
-name: glean-cli-shared
-description: "Glean CLI: Shared patterns for authentication, global flags, output formatting, and security rules."
+name: glean-cli
+description: "Glean CLI: access company knowledge, search documents, chat with Glean Assistant, look up people, and manage enterprise content. Use when the user asks about internal docs, company information, people, policies, or enterprise data."
 compatibility: Requires the glean binary on $PATH. Install via brew install gleanwork/tap/glean-cli
 ---
 
-# glean — Shared Reference
+# Glean CLI
 
-> **Read this first.** All other glean skills assume familiarity with auth, flags, and output formats described here.
+The `glean` command-line tool provides authenticated access to your company's Glean instance. It can search documents, chat with Glean Assistant, look up people and teams, manage collections, and more.
+
+## When to Use
+
+Use the Glean CLI when the user:
+
+- Asks about internal documents, policies, wikis, or company knowledge
+- Wants to find people, teams, or org structure
+- Needs to search across enterprise data sources (Confluence, Jira, Google Drive, Slack, etc.)
+- Asks questions that require company-specific context
+- Wants to manage Glean resources (collections, shortcuts, pins, announcements)
 
 ## Installation
 
@@ -47,7 +57,7 @@ glean <command> [subcommand] [flags]
 
 ## Schema Introspection
 
-Always call glean schema <command> before invoking a command you haven't used before.
+Always call `glean schema <command>` before invoking a command you haven't used before.
 
 ```bash
 glean schema | jq '.commands'          # list all commands

@@ -5,7 +5,7 @@ description: "Make raw authenticated HTTP requests to any Glean REST API endpoin
 
 # glean api
 
-> **PREREQUISITE:** Read `../glean-cli-shared/SKILL.md` for auth, global flags, and security rules.
+> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Make a raw authenticated HTTP request to any Glean REST API endpoint.
 

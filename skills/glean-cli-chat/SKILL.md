@@ -5,7 +5,7 @@ description: "Chat with Glean Assistant from the command line. Use when asking q
 
 # glean chat
 
-> **PREREQUISITE:** Read `../glean-cli-shared/SKILL.md` for auth, global flags, and security rules.
+> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Have a conversation with Glean AI. Streams response to stdout.
 

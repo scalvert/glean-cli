@@ -5,7 +5,7 @@ description: "List, inspect, and run Glean AI agents. Use when discovering avail
 
 # glean agents
 
-> **PREREQUISITE:** Read `../glean-cli-shared/SKILL.md` for auth, global flags, and security rules.
+> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Manage and run Glean agents. Subcommands: list, get, schemas, run.
 
