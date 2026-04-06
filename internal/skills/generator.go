@@ -14,6 +14,10 @@ import (
 	"github.com/gleanwork/glean-cli/internal/schema"
 )
 
+// skillPrefix is prepended to command names to form skill directory and
+// frontmatter names (e.g. "glean-cli-search", "glean-cli-shared").
+const skillPrefix = "glean-cli-"
+
 // subcommandMap provides human-friendly descriptions for subcommands that
 // the schema registry doesn't capture (schemas are per-namespace, not per-sub).
 // Keys are "namespace.subcommand".
@@ -113,13 +117,13 @@ type SubcommandInfo struct {
 }
 
 var skillTmpl = template.Must(template.New("skill").Parse(`---
-name: glean-{{ .Command }}
+name: glean-cli-{{ .Command }}
 description: "{{ .Description }}"
 ---
 
 # glean {{ .Command }}
 
-> **PREREQUISITE:** Read ` + "`../glean-shared/SKILL.md`" + ` for auth, global flags, and security rules.
+> **PREREQUISITE:** Read ` + "`../glean-cli-shared/SKILL.md`" + ` for auth, global flags, and security rules.
 
 {{ .SchemaDesc }}
 
@@ -159,7 +163,7 @@ glean schema | jq '.commands'
 `))
 
 var sharedTmpl = template.Must(template.New("shared").Parse(`---
-name: glean-shared
+name: glean-cli-shared
 description: "Glean CLI: Shared patterns for authentication, global flags, output formatting, and security rules."
 compatibility: Requires the glean binary on $PATH. Install via brew install gleanwork/tap/glean-cli
 ---
@@ -230,7 +234,7 @@ Exit code 0 = success, non-zero = error.
 | Command | Description |
 |---------|-------------|
 {{ range .Commands -}}
-| [glean {{ .Name }}](../glean-{{ .Name }}/SKILL.md) | {{ .Description }} |
+| [glean {{ .Name }}](../glean-cli-{{ .Name }}/SKILL.md) | {{ .Description }} |
 {{ end }}
 `))
 
@@ -264,7 +268,7 @@ func Generate(outputDir string) error {
 	if err := writeSharedSkill(outputDir, entries); err != nil {
 		return fmt.Errorf("writing shared skill: %w", err)
 	}
-	fmt.Fprintf(os.Stderr, "  wrote glean-shared/SKILL.md\n")
+	fmt.Fprintf(os.Stderr, "  wrote %sshared/SKILL.md\n", skillPrefix)
 
 	// Generate per-command skills
 	for _, name := range commands {
@@ -278,7 +282,7 @@ func Generate(outputDir string) error {
 		if err := writeCommandSkill(outputDir, name, s); err != nil {
 			return fmt.Errorf("writing skill for %s: %w", name, err)
 		}
-		fmt.Fprintf(os.Stderr, "  wrote glean-%s/SKILL.md\n", name)
+		fmt.Fprintf(os.Stderr, "  wrote %s%s/SKILL.md\n", skillPrefix, name)
 	}
 
 	fmt.Fprintf(os.Stderr, "\nDone. Skills written to %s/\n", outputDir)
@@ -286,7 +290,7 @@ func Generate(outputDir string) error {
 }
 
 func writeSharedSkill(outputDir string, commands []CommandEntry) error {
-	dir := filepath.Join(outputDir, "glean-shared")
+	dir := filepath.Join(outputDir, skillPrefix+"shared")
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return err
 	}
@@ -303,7 +307,7 @@ func writeSharedSkill(outputDir string, commands []CommandEntry) error {
 }
 
 func writeCommandSkill(outputDir, name string, s schema.CommandSchema) error {
-	dir := filepath.Join(outputDir, "glean-"+name)
+	dir := filepath.Join(outputDir, skillPrefix+name)
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return err
 	}
@@ -367,7 +371,7 @@ func buildSkillData(name string, s schema.CommandSchema) SkillData {
 	}
 
 	return SkillData{
-		Name:        "glean-" + name,
+		Name:        skillPrefix + name,
 		Description: desc,
 		Command:     name,
 		SchemaDesc:  s.Description,
