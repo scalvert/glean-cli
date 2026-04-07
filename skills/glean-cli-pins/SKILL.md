@@ -5,7 +5,7 @@ description: "Manage promoted search results (pins) in Glean. Use when pinning s
 
 # glean pins
 
-> **PREREQUISITE:** Read `../glean-cli-shared/SKILL.md` for auth, global flags, and security rules.
+> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Manage Glean pins. Subcommands: list, get, create, update, remove.
 

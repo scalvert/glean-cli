@@ -5,7 +5,7 @@ description: "Manage document verification and review workflows in Glean. Use wh
 
 # glean verification
 
-> **PREREQUISITE:** Read `../glean-cli-shared/SKILL.md` for auth, global flags, and security rules.
+> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Manage document verification. Subcommands: list, verify, remind.
 

@@ -5,7 +5,7 @@ description: "Look up people, teams, and custom entities in Glean. Use when find
 
 # glean entities
 
-> **PREREQUISITE:** Read `../glean-cli-shared/SKILL.md` for auth, global flags, and security rules.
+> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 List and read Glean entities and people. Subcommands: list, read-people.
 

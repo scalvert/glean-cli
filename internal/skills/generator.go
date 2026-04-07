@@ -14,9 +14,12 @@ import (
 	"github.com/gleanwork/glean-cli/internal/schema"
 )
 
+// rootSkillName is the directory and frontmatter name for the root discovery skill.
+const rootSkillName = "glean-cli"
+
 // skillPrefix is prepended to command names to form skill directory and
-// frontmatter names (e.g. "glean-cli-search", "glean-cli-shared").
-const skillPrefix = "glean-cli-"
+// frontmatter names (e.g. "glean-cli-search").
+const skillPrefix = rootSkillName + "-"
 
 // subcommandMap provides human-friendly descriptions for subcommands that
 // the schema registry doesn't capture (schemas are per-namespace, not per-sub).
@@ -101,6 +104,7 @@ type FlagInfo struct {
 // SkillData holds all data needed to render a SKILL.md template.
 type SkillData struct {
 	Prefix      string
+	RootSkill   string
 	Name        string
 	Description string
 	Command     string
@@ -124,7 +128,7 @@ description: "{{ .Description }}"
 
 # glean {{ .Command }}
 
-> **PREREQUISITE:** Read ` + "`../{{ .Prefix }}shared/SKILL.md`" + ` for auth, global flags, and security rules.
+> **PREREQUISITE:** Read ` + "`../{{ .RootSkill }}/SKILL.md`" + ` for auth, global flags, and security rules.
 
 {{ .SchemaDesc }}
 
@@ -163,15 +167,25 @@ glean schema | jq '.commands'
 ` + "```" + `
 `))
 
-var sharedTmpl = template.Must(template.New("shared").Parse(`---
-name: {{ .Prefix }}shared
-description: "Glean CLI: Shared patterns for authentication, global flags, output formatting, and security rules."
+var rootTmpl = template.Must(template.New("root").Parse(`---
+name: {{ .RootSkill }}
+description: "Glean CLI: access company knowledge, search documents, chat with Glean Assistant, look up people, and manage enterprise content. Use when the user asks about internal docs, company information, people, policies, or enterprise data."
 compatibility: Requires the glean binary on $PATH. Install via brew install gleanwork/tap/glean-cli
 ---
 
-# glean — Shared Reference
+# Glean CLI
 
-> **Read this first.** All other glean skills assume familiarity with auth, flags, and output formats described here.
+The ` + "`glean`" + ` command-line tool provides authenticated access to your company's Glean instance. It can search documents, chat with Glean Assistant, look up people and teams, manage collections, and more.
+
+## When to Use
+
+Use the Glean CLI when the user:
+
+- Asks about internal documents, policies, wikis, or company knowledge
+- Wants to find people, teams, or org structure
+- Needs to search across enterprise data sources (Confluence, Jira, Google Drive, Slack, etc.)
+- Asks questions that require company-specific context
+- Wants to manage Glean resources (collections, shortcuts, pins, announcements)
 
 ## Installation
 
@@ -212,7 +226,7 @@ glean <command> [subcommand] [flags]
 
 ## Schema Introspection
 
-Always call glean schema <command> before invoking a command you haven't used before.
+Always call ` + "`glean schema <command>`" + ` before invoking a command you haven't used before.
 
 ` + "```bash" + `
 glean schema | jq '.commands'          # list all commands
@@ -266,10 +280,10 @@ func Generate(outputDir string) error {
 		entries = append(entries, CommandEntry{Name: name, Description: s.Description})
 	}
 
-	if err := writeSharedSkill(outputDir, entries); err != nil {
-		return fmt.Errorf("writing shared skill: %w", err)
+	if err := writeRootSkill(outputDir, entries); err != nil {
+		return fmt.Errorf("writing root skill: %w", err)
 	}
-	fmt.Fprintf(os.Stderr, "  wrote %sshared/SKILL.md\n", skillPrefix)
+	fmt.Fprintf(os.Stderr, "  wrote %s/SKILL.md\n", rootSkillName)
 
 	// Generate per-command skills
 	for _, name := range commands {
@@ -290,8 +304,8 @@ func Generate(outputDir string) error {
 	return nil
 }
 
-func writeSharedSkill(outputDir string, commands []CommandEntry) error {
-	dir := filepath.Join(outputDir, skillPrefix+"shared")
+func writeRootSkill(outputDir string, commands []CommandEntry) error {
+	dir := filepath.Join(outputDir, rootSkillName)
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return err
 	}
@@ -302,10 +316,11 @@ func writeSharedSkill(outputDir string, commands []CommandEntry) error {
 	defer f.Close()
 
 	data := struct {
-		Prefix   string
-		Commands []CommandEntry
-	}{Prefix: skillPrefix, Commands: commands}
-	return sharedTmpl.Execute(f, data)
+		Prefix    string
+		RootSkill string
+		Commands  []CommandEntry
+	}{Prefix: skillPrefix, RootSkill: rootSkillName, Commands: commands}
+	return rootTmpl.Execute(f, data)
 }
 
 func writeCommandSkill(outputDir, name string, s schema.CommandSchema) error {
@@ -374,6 +389,7 @@ func buildSkillData(name string, s schema.CommandSchema) SkillData {
 
 	return SkillData{
 		Prefix:      skillPrefix,
+		RootSkill:   rootSkillName,
 		Name:        skillPrefix + name,
 		Description: desc,
 		Command:     name,

@@ -5,7 +5,7 @@ description: "Manage Glean go-links (shortcuts). Use when creating, listing, upd
 
 # glean shortcuts
 
-> **PREREQUISITE:** Read `../glean-cli-shared/SKILL.md` for auth, global flags, and security rules.
+> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Manage Glean shortcuts (go-links). Subcommands: list, get, create, update, delete.
 

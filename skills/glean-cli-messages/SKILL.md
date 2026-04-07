@@ -5,7 +5,7 @@ description: "Retrieve indexed messages from Slack, Teams, and other messaging p
 
 # glean messages
 
-> **PREREQUISITE:** Read `../glean-cli-shared/SKILL.md` for auth, global flags, and security rules.
+> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Retrieve Glean messages. Subcommands: get.
 

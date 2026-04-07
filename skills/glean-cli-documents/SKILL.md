@@ -5,7 +5,7 @@ description: "Retrieve, summarize, and inspect documents indexed by Glean. Use w
 
 # glean documents
 
-> **PREREQUISITE:** Read `../glean-cli-shared/SKILL.md` for auth, global flags, and security rules.
+> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Retrieve and summarize Glean documents. Subcommands: get, get-by-facets, get-permissions, summarize.
 
