@@ -190,6 +190,29 @@ func SaveHostToFile(host string) error {
 	return saveToFile(cfg)
 }
 
+// ClearTokenFromStorage removes only the API token from keyring and config file,
+// leaving the host and other settings intact. This is used during OAuth login to
+// prevent a stale API token from shadowing newly obtained OAuth credentials.
+func ClearTokenFromStorage() error {
+	// Remove token from keyring (ignore not-found).
+	if err := keyringImpl.Delete(ServiceName, tokenKey); err != nil && err != keyring.ErrNotFound {
+		return fmt.Errorf("error clearing token from keyring: %w", err)
+	}
+
+	// Remove token from config file while preserving other fields.
+	cfg, err := loadFromFile()
+	if err != nil {
+		return nil // no file to update
+	}
+	if cfg.GleanToken != "" {
+		cfg.GleanToken = ""
+		if err := saveToFile(cfg); err != nil {
+			return fmt.Errorf("error clearing token from config file: %w", err)
+		}
+	}
+	return nil
+}
+
 // ClearConfig removes all stored configuration from both keyring and file storage.
 func ClearConfig() error {
 	var keyringErr error

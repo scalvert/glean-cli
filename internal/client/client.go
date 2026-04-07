@@ -4,9 +4,11 @@
 package client
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	glean "github.com/gleanwork/api-client-go"
 	"github.com/gleanwork/glean-cli/internal/auth"
@@ -35,6 +37,40 @@ func ResolveToken(cfg *config.Config) (token, authType string) {
 	}
 	resolveLog.Log("no credentials found")
 	return "", ""
+}
+
+// ValidateToken makes a lightweight API call (GET /rest/api/v1/users/me) to
+// verify that the resolved token is accepted by the Glean backend. Returns nil
+// if the token is valid, or an error describing the failure.
+func ValidateToken(ctx context.Context, cfg *config.Config) error {
+	token, authType := ResolveToken(cfg)
+	if token == "" {
+		return fmt.Errorf("no token available")
+	}
+
+	url := "https://" + cfg.GleanHost + "/rest/api/v1/users/me"
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return fmt.Errorf("creating request: %w", err)
+	}
+	req.Header.Set("Authorization", "Bearer "+token)
+	if authType != "" {
+		req.Header.Set("X-Glean-Auth-Type", authType)
+	}
+
+	resp, err := httputil.NewHTTPClient(10 * time.Second).Do(req)
+	if err != nil {
+		return fmt.Errorf("validating token: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusUnauthorized || resp.StatusCode == http.StatusForbidden {
+		return fmt.Errorf("token rejected by server (HTTP %d)", resp.StatusCode)
+	}
+	if resp.StatusCode >= 400 {
+		return fmt.Errorf("unexpected status validating token (HTTP %d)", resp.StatusCode)
+	}
+	return nil
 }
 
 // New creates an authenticated Glean SDK client from the loaded configuration.

@@ -257,6 +257,42 @@ func TestConfigOperations(t *testing.T) {
 	})
 }
 
+func TestClearTokenFromStorage(t *testing.T) {
+	_, cleanupKeyring := setupTestKeyring(t)
+	_, cleanupConfig := setupTestConfig(t)
+	defer cleanupKeyring()
+	defer cleanupConfig()
+
+	t.Run("clears token but preserves host", func(t *testing.T) {
+		require.NoError(t, SaveConfig("linkedin", "stale-api-token"))
+
+		cfg, err := LoadConfig()
+		require.NoError(t, err)
+		assert.Equal(t, "stale-api-token", cfg.GleanToken)
+
+		require.NoError(t, ClearTokenFromStorage())
+
+		cfg, err = LoadConfig()
+		require.NoError(t, err)
+		assert.Empty(t, cfg.GleanToken, "token should be cleared")
+		assert.Equal(t, "linkedin-be.glean.com", cfg.GleanHost, "host should be preserved")
+	})
+
+	t.Run("no-op when no token exists", func(t *testing.T) {
+		// Clear state from previous subtest.
+		_ = ClearConfig()
+
+		require.NoError(t, SaveHostToFile("acme"))
+
+		require.NoError(t, ClearTokenFromStorage())
+
+		cfg, err := LoadConfig()
+		require.NoError(t, err)
+		assert.Empty(t, cfg.GleanToken)
+		assert.Equal(t, "acme-be.glean.com", cfg.GleanHost)
+	})
+}
+
 func TestLoadConfigEnvPriority(t *testing.T) {
 	_, cleanupKeyring := setupTestKeyring(t)
 	_, cleanupConfig := setupTestConfig(t)

@@ -179,7 +179,14 @@ func saveAndPrintToken(ctx context.Context, host string, disc *discoveryResult, 
 // persistLoginState stores the resolved host in config and persists OAuth tokens.
 // Saving the host here ensures a successful `glean auth login` remains usable
 // even when the host originally came from an environment variable.
+//
+// It also clears any existing API token from storage so that the new OAuth
+// credentials take effect immediately — a stale API token in config would
+// otherwise shadow the fresh OAuth token (ResolveToken prefers API tokens).
 func persistLoginState(host string, tok *StoredTokens) error {
+	if err := config.ClearTokenFromStorage(); err != nil {
+		return fmt.Errorf("clearing stale API token: %w", err)
+	}
 	if err := config.SaveHostToFile(host); err != nil {
 		return fmt.Errorf("saving host: %w", err)
 	}
@@ -220,6 +227,11 @@ func Status(ctx context.Context) error {
 
 	if cfg.GleanToken != "" {
 		masked := config.MaskToken(cfg.GleanToken)
+		if err := validateAPIToken(ctx, cfg.GleanHost, cfg.GleanToken); err != nil {
+			fmt.Printf("✗ API token is invalid or expired\n  Host:  %s\n  Token: %s\n  Error: %v\n", cfg.GleanHost, masked, err)
+			fmt.Println("Run 'glean auth login' to re-authenticate.")
+			return nil
+		}
 		fmt.Printf("✓ Authenticated via API token\n  Host:  %s\n  Token: %s\n", cfg.GleanHost, masked)
 		return nil
 	}
@@ -651,6 +663,31 @@ func EmailFromJWT(raw string) string {
 		return ""
 	}
 	return claims.Email
+}
+
+// validateAPIToken makes a lightweight GET /rest/api/v1/users/me request to
+// verify that the given API token is accepted by the Glean backend.
+func validateAPIToken(ctx context.Context, host, token string) error {
+	u := "https://" + host + "/rest/api/v1/users/me"
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
+	if err != nil {
+		return fmt.Errorf("creating request: %w", err)
+	}
+	req.Header.Set("Authorization", "Bearer "+token)
+
+	resp, err := httputil.NewHTTPClient(10 * time.Second).Do(req)
+	if err != nil {
+		return fmt.Errorf("validating token: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusUnauthorized || resp.StatusCode == http.StatusForbidden {
+		return fmt.Errorf("token rejected by server (HTTP %d)", resp.StatusCode)
+	}
+	if resp.StatusCode >= 400 {
+		return fmt.Errorf("unexpected status validating token (HTTP %d)", resp.StatusCode)
+	}
+	return nil
 }
 
 // promptForAPIToken handles instances that don't support OAuth.
