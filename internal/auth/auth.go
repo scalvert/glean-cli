@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"net/url"
@@ -665,15 +666,20 @@ func EmailFromJWT(raw string) string {
 	return claims.Email
 }
 
-// validateAPIToken makes a lightweight GET /rest/api/v1/users/me request to
+// validateAPIToken makes a lightweight POST /rest/api/v1/search request to
 // verify that the given API token is accepted by the Glean backend.
+// Search is used because it is the most universally available authenticated
+// endpoint across Glean instances. For invalid tokens the server rejects at
+// the auth layer before performing any search work.
 func validateAPIToken(ctx context.Context, host, token string) error {
-	u := "https://" + host + "/rest/api/v1/users/me"
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
+	u := "https://" + host + "/rest/api/v1/search"
+	body := strings.NewReader(`{"query":"","pageSize":1}`)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, u, body)
 	if err != nil {
 		return fmt.Errorf("creating request: %w", err)
 	}
 	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := httputil.NewHTTPClient(10 * time.Second).Do(req)
 	if err != nil {
@@ -682,6 +688,12 @@ func validateAPIToken(ctx context.Context, host, token string) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusUnauthorized || resp.StatusCode == http.StatusForbidden {
+		// Try to surface the server's error message (e.g. "Token has expired").
+		respBody, _ := io.ReadAll(resp.Body)
+		msg := strings.TrimSpace(string(respBody))
+		if msg != "" {
+			return fmt.Errorf("%s (HTTP %d)", msg, resp.StatusCode)
+		}
 		return fmt.Errorf("token rejected by server (HTTP %d)", resp.StatusCode)
 	}
 	if resp.StatusCode >= 400 {

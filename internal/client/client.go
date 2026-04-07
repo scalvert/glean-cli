@@ -39,7 +39,7 @@ func ResolveToken(cfg *config.Config) (token, authType string) {
 	return "", ""
 }
 
-// ValidateToken makes a lightweight API call (GET /rest/api/v1/users/me) to
+// ValidateToken makes a lightweight POST /rest/api/v1/search request to
 // verify that the resolved token is accepted by the Glean backend. Returns nil
 // if the token is valid, or an error describing the failure.
 func ValidateToken(ctx context.Context, cfg *config.Config) error {
@@ -48,12 +48,14 @@ func ValidateToken(ctx context.Context, cfg *config.Config) error {
 		return fmt.Errorf("no token available")
 	}
 
-	url := "https://" + cfg.GleanHost + "/rest/api/v1/users/me"
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	url := "https://" + cfg.GleanHost + "/rest/api/v1/search"
+	body := strings.NewReader(`{"query":"","pageSize":1}`)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, body)
 	if err != nil {
 		return fmt.Errorf("creating request: %w", err)
 	}
 	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", "application/json")
 	if authType != "" {
 		req.Header.Set("X-Glean-Auth-Type", authType)
 	}
