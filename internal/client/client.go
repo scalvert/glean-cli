@@ -6,6 +6,7 @@ package client
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -67,6 +68,11 @@ func ValidateToken(ctx context.Context, cfg *config.Config) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusUnauthorized || resp.StatusCode == http.StatusForbidden {
+		// Try to surface the server's error message (e.g. "Token has expired").
+		respBody, _ := io.ReadAll(resp.Body)
+		if msg := strings.TrimSpace(string(respBody)); msg != "" {
+			return fmt.Errorf("%s (HTTP %d)", msg, resp.StatusCode)
+		}
 		return fmt.Errorf("token rejected by server (HTTP %d)", resp.StatusCode)
 	}
 	if resp.StatusCode >= 400 {

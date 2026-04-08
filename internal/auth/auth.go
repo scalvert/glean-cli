@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net"
 	"net/http"
 	"net/url"
@@ -217,8 +216,13 @@ func Logout(ctx context.Context) error {
 	return nil
 }
 
+// TokenValidator validates credentials in a config against the Glean backend.
+// It returns nil when the token is accepted, or an error describing the failure.
+type TokenValidator func(ctx context.Context, cfg *config.Config) error
+
 // Status prints the current authentication state.
-func Status(ctx context.Context) error {
+// validateToken is used to verify API tokens against the backend (typically client.ValidateToken).
+func Status(ctx context.Context, validateToken TokenValidator) error {
 	cfg, _ := config.LoadConfig()
 	if cfg == nil || cfg.GleanHost == "" {
 		fmt.Println("Not configured.")
@@ -228,7 +232,7 @@ func Status(ctx context.Context) error {
 
 	if cfg.GleanToken != "" {
 		masked := config.MaskToken(cfg.GleanToken)
-		if err := validateAPIToken(ctx, cfg.GleanHost, cfg.GleanToken); err != nil {
+		if err := validateToken(ctx, cfg); err != nil {
 			fmt.Printf("✗ API token is invalid or expired\n  Host:  %s\n  Token: %s\n  Error: %v\n", cfg.GleanHost, masked, err)
 			fmt.Println("Run 'glean auth login' to re-authenticate.")
 			return nil
@@ -664,42 +668,6 @@ func EmailFromJWT(raw string) string {
 		return ""
 	}
 	return claims.Email
-}
-
-// validateAPIToken makes a lightweight POST /rest/api/v1/search request to
-// verify that the given API token is accepted by the Glean backend.
-// Search is used because it is the most universally available authenticated
-// endpoint across Glean instances. For invalid tokens the server rejects at
-// the auth layer before performing any search work.
-func validateAPIToken(ctx context.Context, host, token string) error {
-	u := "https://" + host + "/rest/api/v1/search"
-	body := strings.NewReader(`{"query":"","pageSize":1}`)
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, u, body)
-	if err != nil {
-		return fmt.Errorf("creating request: %w", err)
-	}
-	req.Header.Set("Authorization", "Bearer "+token)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := httputil.NewHTTPClient(10 * time.Second).Do(req)
-	if err != nil {
-		return fmt.Errorf("validating token: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode == http.StatusUnauthorized || resp.StatusCode == http.StatusForbidden {
-		// Try to surface the server's error message (e.g. "Token has expired").
-		respBody, _ := io.ReadAll(resp.Body)
-		msg := strings.TrimSpace(string(respBody))
-		if msg != "" {
-			return fmt.Errorf("%s (HTTP %d)", msg, resp.StatusCode)
-		}
-		return fmt.Errorf("token rejected by server (HTTP %d)", resp.StatusCode)
-	}
-	if resp.StatusCode >= 400 {
-		return fmt.Errorf("unexpected status validating token (HTTP %d)", resp.StatusCode)
-	}
-	return nil
 }
 
 // promptForAPIToken handles instances that don't support OAuth.

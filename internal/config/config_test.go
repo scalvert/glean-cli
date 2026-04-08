@@ -112,6 +112,27 @@ func setupTestConfig(t *testing.T) (string, func()) {
 	}
 }
 
+// isolateAuthState redirects config path, service name, and keyring to
+// temporary locations so tests never touch real credentials.
+// This mirrors authtest.IsolateAuthState but lives in the config package
+// to avoid a circular import (authtest imports config).
+func isolateAuthState(t *testing.T) {
+	t.Helper()
+
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+
+	oldConfigPath := ConfigPath
+	ConfigPath = filepath.Join(home, ".glean", "config.json")
+	t.Cleanup(func() { ConfigPath = oldConfigPath })
+
+	oldServiceName := ServiceName
+	ServiceName = "glean-cli-test-isolated"
+	t.Cleanup(func() { ServiceName = oldServiceName })
+
+	keyring.MockInit()
+}
+
 func TestValidateAndTransformHost(t *testing.T) {
 	tests := []struct {
 		name        string
@@ -258,10 +279,7 @@ func TestConfigOperations(t *testing.T) {
 }
 
 func TestClearTokenFromStorage(t *testing.T) {
-	_, cleanupKeyring := setupTestKeyring(t)
-	_, cleanupConfig := setupTestConfig(t)
-	defer cleanupKeyring()
-	defer cleanupConfig()
+	isolateAuthState(t)
 
 	t.Run("clears token but preserves host", func(t *testing.T) {
 		require.NoError(t, SaveConfig("linkedin", "stale-api-token"))
@@ -294,10 +312,7 @@ func TestClearTokenFromStorage(t *testing.T) {
 }
 
 func TestLoadConfigEnvPriority(t *testing.T) {
-	_, cleanupKeyring := setupTestKeyring(t)
-	_, cleanupConfig := setupTestConfig(t)
-	defer cleanupKeyring()
-	defer cleanupConfig()
+	isolateAuthState(t)
 
 	t.Run("GLEAN_API_TOKEN overrides keyring", func(t *testing.T) {
 		t.Setenv("GLEAN_API_TOKEN", "env-token")
@@ -319,10 +334,7 @@ func TestLoadConfigEnvPriority(t *testing.T) {
 }
 
 func TestLoadConfig_EnvTokenWithKeyringHost(t *testing.T) {
-	_, cleanupKeyring := setupTestKeyring(t)
-	_, cleanupConfig := setupTestConfig(t)
-	defer cleanupKeyring()
-	defer cleanupConfig()
+	isolateAuthState(t)
 
 	err := SaveConfig("myhost.glean.com", "")
 	require.NoError(t, err)
@@ -335,10 +347,7 @@ func TestLoadConfig_EnvTokenWithKeyringHost(t *testing.T) {
 }
 
 func TestLoadConfig_EnvHostWithFileToken(t *testing.T) {
-	_, cleanupKeyring := setupTestKeyring(t)
-	_, cleanupConfig := setupTestConfig(t)
-	defer cleanupKeyring()
-	defer cleanupConfig()
+	isolateAuthState(t)
 
 	err := saveToFile(&Config{GleanToken: "file-token"})
 	require.NoError(t, err)
