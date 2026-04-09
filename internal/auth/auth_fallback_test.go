@@ -32,9 +32,6 @@ func TestDcrOrStaticClient_DCRFails_NoStaticClient(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	restore := overrideDiscoveryHTTPClient(srv.Client())
-	defer restore()
-
 	_, _, err := dcrOrStaticClient(context.Background(), "test-host", srv.URL, "http://127.0.0.1:9999/callback")
 	require.Error(t, err)
 	assert.True(t, errors.Is(err, errNoOAuthClient),
@@ -59,9 +56,6 @@ func TestDcrOrStaticClient_DCRFails_StaticClientFallback(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	restore := overrideDiscoveryHTTPClient(srv.Client())
-	defer restore()
-
 	clientID, clientSecret, err := dcrOrStaticClient(context.Background(), "test-host", srv.URL, "http://127.0.0.1:9999/callback")
 	require.NoError(t, err)
 	assert.Equal(t, "static-id", clientID)
@@ -81,9 +75,6 @@ func TestDcrOrStaticClient_DCRSucceeds(t *testing.T) {
 		})
 	}))
 	defer srv.Close()
-
-	restore := overrideDiscoveryHTTPClient(srv.Client())
-	defer restore()
 
 	clientID, clientSecret, err := dcrOrStaticClient(context.Background(), "test-host", srv.URL, "http://127.0.0.1:9999/callback")
 	require.NoError(t, err)

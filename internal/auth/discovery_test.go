@@ -22,9 +22,6 @@ func TestFetchProtectedResource_Success(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	restore := overrideDiscoveryHTTPClient(srv.Client())
-	defer restore()
-
 	result, err := fetchProtectedResource(context.Background(), srv.URL)
 	require.NoError(t, err)
 	assert.Equal(t, []string{"https://auth.example.com"}, result.AuthorizationServers)
@@ -40,9 +37,6 @@ func TestFetchProtectedResource_DeviceFlowClientID(t *testing.T) {
 		})
 	}))
 	defer srv.Close()
-
-	restore := overrideDiscoveryHTTPClient(srv.Client())
-	defer restore()
 
 	result, err := fetchProtectedResource(context.Background(), srv.URL)
 	require.NoError(t, err)

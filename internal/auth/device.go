@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gleanwork/glean-cli/internal/httputil"
 	"github.com/pkg/browser"
 	"golang.org/x/oauth2"
 )
@@ -90,7 +91,7 @@ func requestDeviceCode(ctx context.Context, endpoint, clientID string, scopes []
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("Accept", "application/json")
 
-	resp, err := discoveryHTTPClient.Do(req)
+	resp, err := httputil.NewHTTPClient(10 * time.Second).Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("device authorization HTTP request: %w", err)
 	}
@@ -195,7 +196,7 @@ func exchangeDeviceCode(ctx context.Context, tokenURL, clientID, deviceCode stri
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("Accept", "application/json")
 
-	resp, err := discoveryHTTPClient.Do(req)
+	resp, err := httputil.NewHTTPClient(10 * time.Second).Do(req)
 	if err != nil {
 		return nil, pollDone, fmt.Errorf("token exchange HTTP request: %w", err)
 	}

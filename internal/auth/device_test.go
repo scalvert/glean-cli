@@ -29,9 +29,6 @@ func TestRequestDeviceCode_Success(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	restore := overrideDiscoveryHTTPClient(srv.Client())
-	defer restore()
-
 	resp, err := requestDeviceCode(context.Background(), srv.URL, "client-id", []string{"openid", "profile"})
 	require.NoError(t, err)
 	assert.Equal(t, "dev-code", resp.DeviceCode)
@@ -49,9 +46,6 @@ func TestRequestDeviceCode_UnauthorizedClient(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	restore := overrideDiscoveryHTTPClient(srv.Client())
-	defer restore()
-
 	_, err := requestDeviceCode(context.Background(), srv.URL, "my-client", []string{"openid"})
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "client cannot use this grant")
@@ -68,9 +62,6 @@ func TestRequestDeviceCode_MissingDeviceCode(t *testing.T) {
 		})
 	}))
 	defer srv.Close()
-
-	restore := overrideDiscoveryHTTPClient(srv.Client())
-	defer restore()
 
 	_, err := requestDeviceCode(context.Background(), srv.URL, "cid", []string{"s"})
 	require.Error(t, err)
@@ -106,9 +97,6 @@ func TestRequestDeviceCode_IntervalAndExpiresIn(t *testing.T) {
 			}))
 			defer srv.Close()
 
-			restore := overrideDiscoveryHTTPClient(srv.Client())
-			defer restore()
-
 			resp, err := requestDeviceCode(context.Background(), srv.URL, "cid", []string{"s"})
 			require.NoError(t, err)
 			assert.Equal(t, tc.wantInterval, resp.Interval)
@@ -125,9 +113,6 @@ func TestRequestDeviceCode_MissingVerificationURI(t *testing.T) {
 		})
 	}))
 	defer srv.Close()
-
-	restore := overrideDiscoveryHTTPClient(srv.Client())
-	defer restore()
 
 	_, err := requestDeviceCode(context.Background(), srv.URL, "cid", []string{"s"})
 	require.Error(t, err)
@@ -150,9 +135,6 @@ func TestExchangeDeviceCode_Success(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	restore := overrideDiscoveryHTTPClient(srv.Client())
-	defer restore()
-
 	tok, status, err := exchangeDeviceCode(context.Background(), srv.URL, "cid", "dev")
 	require.NoError(t, err)
 	assert.Equal(t, pollDone, status)
@@ -168,9 +150,6 @@ func TestExchangeDeviceCode_AuthorizationPending(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	restore := overrideDiscoveryHTTPClient(srv.Client())
-	defer restore()
-
 	tok, status, err := exchangeDeviceCode(context.Background(), srv.URL, "cid", "dev")
 	require.NoError(t, err)
 	assert.Nil(t, tok)
@@ -184,9 +163,6 @@ func TestExchangeDeviceCode_SlowDown(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	restore := overrideDiscoveryHTTPClient(srv.Client())
-	defer restore()
-
 	tok, status, err := exchangeDeviceCode(context.Background(), srv.URL, "cid", "dev")
 	require.NoError(t, err)
 	assert.Nil(t, tok)
@@ -199,9 +175,6 @@ func TestExchangeDeviceCode_AccessDenied(t *testing.T) {
 		_ = json.NewEncoder(w).Encode(map[string]string{"error": "access_denied"})
 	}))
 	defer srv.Close()
-
-	restore := overrideDiscoveryHTTPClient(srv.Client())
-	defer restore()
 
 	tok, status, err := exchangeDeviceCode(context.Background(), srv.URL, "cid", "dev")
 	require.Error(t, err)
@@ -219,9 +192,6 @@ func TestExchangeDeviceCode_EmptyAccessToken(t *testing.T) {
 		})
 	}))
 	defer srv.Close()
-
-	restore := overrideDiscoveryHTTPClient(srv.Client())
-	defer restore()
 
 	_, status, err := exchangeDeviceCode(context.Background(), srv.URL, "cid", "dev")
 	require.Error(t, err)
@@ -245,9 +215,6 @@ func TestPollForToken_PendingThenSuccess(t *testing.T) {
 		})
 	}))
 	defer srv.Close()
-
-	restore := overrideDiscoveryHTTPClient(srv.Client())
-	defer restore()
 
 	auth := &deviceAuthResponse{
 		DeviceCode:      "dc",
@@ -288,9 +255,6 @@ func TestPollForToken_SlowDownIncreasesInterval(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	restore := overrideDiscoveryHTTPClient(srv.Client())
-	defer restore()
-
 	auth := &deviceAuthResponse{
 		DeviceCode:      "dc",
 		Interval:        0,
@@ -327,12 +291,4 @@ func TestPollForToken_ContextCancel(t *testing.T) {
 	_, err := pollForToken(ctx, "http://unused.example/token", "cid", auth)
 	require.Error(t, err)
 	assert.ErrorIs(t, err, context.Canceled)
-}
-
-// overrideDiscoveryHTTPClient swaps the package-level client used by device/discovery helpers.
-// The returned function restores the previous client (call in defer).
-func overrideDiscoveryHTTPClient(cl *http.Client) func() {
-	prev := discoveryHTTPClient
-	discoveryHTTPClient = cl
-	return func() { discoveryHTTPClient = prev }
 }
