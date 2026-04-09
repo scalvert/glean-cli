@@ -47,7 +47,7 @@ func Login(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("finding callback port: %w", err)
 	}
-	redirectURI := fmt.Sprintf("http://127.0.0.1:%d/callback", port)
+	redirectURI := fmt.Sprintf("http://127.0.0.1:%d/glean-cli-callback", port)
 
 	// Always do fresh DCR per login — the redirect URI (port) changes each time.
 	clientID, clientSecret, err := dcrOrStaticClient(ctx, host, registrationEndpoint, redirectURI)
@@ -94,7 +94,7 @@ func Login(ctx context.Context) error {
 		// LocalServerBindAddress and LocalServerCallbackPath must match the
 		// redirect_uri registered via DCR exactly. oauth2cli constructs the
 		// redirect URL from LocalServerBindAddress (127.0.0.1:{port}) + path.
-		LocalServerCallbackPath: "/callback",
+		LocalServerCallbackPath: "/glean-cli-callback",
 		LocalServerBindAddress:  []string{fmt.Sprintf("127.0.0.1:%d", port)},
 		LocalServerReadyChan:    readyChan,
 		AuthCodeOptions:         []oauth2.AuthCodeOption{oauth2.S256ChallengeOption(verifier)},
