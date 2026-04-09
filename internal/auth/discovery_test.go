@@ -114,7 +114,7 @@ func TestRegisterClient_Success(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	cl, err := registerClient(context.Background(), srv.URL, "http://127.0.0.1:9999/callback")
+	cl, err := registerClient(context.Background(), srv.URL, "http://127.0.0.1:9999/glean-cli-callback")
 	require.NoError(t, err)
 	assert.Equal(t, "dyn-client-id", cl.ClientID)
 }
@@ -129,7 +129,7 @@ func TestRegisterClient_WithSecret(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	cl, err := registerClient(context.Background(), srv.URL, "http://127.0.0.1:9999/callback")
+	cl, err := registerClient(context.Background(), srv.URL, "http://127.0.0.1:9999/glean-cli-callback")
 	require.NoError(t, err)
 	assert.Equal(t, "cs", cl.ClientSecret)
 }
