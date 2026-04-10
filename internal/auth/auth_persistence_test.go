@@ -88,6 +88,37 @@ func TestShortFormHostNormalizesConsistently(t *testing.T) {
 	assert.Equal(t, "OAUTH", authType)
 }
 
+func TestStaleAPITokenClearedOnOAuthLogin(t *testing.T) {
+	authtest.IsolateAuthState(t)
+
+	const host = "acme-be.glean.com"
+
+	// Simulate a stale API token in config.
+	require.NoError(t, config.SaveConfig(host, "stale-api-token"))
+
+	cfg, err := config.LoadConfig()
+	require.NoError(t, err)
+	assert.Equal(t, "stale-api-token", cfg.GleanToken, "precondition: stale token exists")
+
+	// Simulate what persistLoginState does (called during OAuth login).
+	// We can't call Login() directly since it requires a browser, but
+	// persistLoginState is the function that should clear stale tokens.
+	require.NoError(t, config.ClearTokenFromStorage())
+	require.NoError(t, config.SaveHostToFile(host))
+	require.NoError(t, auth.SaveTokens(host, oauthToken()))
+
+	// After OAuth login, the stale API token should be gone.
+	cfg, err = config.LoadConfig()
+	require.NoError(t, err)
+	assert.Empty(t, cfg.GleanToken, "stale API token should be cleared after OAuth login")
+	assert.Equal(t, host, cfg.GleanHost, "host should remain")
+
+	// OAuth token should now be resolvable.
+	token, authType := gleanClient.ResolveToken(cfg)
+	assert.Equal(t, "oauth-access-token", token)
+	assert.Equal(t, "OAUTH", authType)
+}
+
 func TestLogoutClearsPersistedHostAndOAuthTokens(t *testing.T) {
 	authtest.IsolateAuthState(t)
 

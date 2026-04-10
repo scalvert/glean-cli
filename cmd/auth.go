@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/MakeNowJust/heredoc"
 	"github.com/gleanwork/glean-cli/internal/auth"
+	"github.com/gleanwork/glean-cli/internal/client"
 	"github.com/spf13/cobra"
 )
 
@@ -64,7 +65,7 @@ func newAuthStatusCmd() *cobra.Command {
 		Use:   "status",
 		Short: "Show current authentication status",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return auth.Status(cmd.Context())
+			return auth.Status(cmd.Context(), client.ValidateToken)
 		},
 		SilenceUsage: true,
 	}

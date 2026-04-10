@@ -179,7 +179,14 @@ func saveAndPrintToken(ctx context.Context, host string, disc *discoveryResult, 
 // persistLoginState stores the resolved host in config and persists OAuth tokens.
 // Saving the host here ensures a successful `glean auth login` remains usable
 // even when the host originally came from an environment variable.
+//
+// It also clears any existing API token from storage so that the new OAuth
+// credentials take effect immediately — a stale API token in config would
+// otherwise shadow the fresh OAuth token (ResolveToken prefers API tokens).
 func persistLoginState(host string, tok *StoredTokens) error {
+	if err := config.ClearTokenFromStorage(); err != nil {
+		return fmt.Errorf("clearing stale API token: %w", err)
+	}
 	if err := config.SaveHostToFile(host); err != nil {
 		return fmt.Errorf("saving host: %w", err)
 	}
@@ -209,8 +216,13 @@ func Logout(ctx context.Context) error {
 	return nil
 }
 
+// TokenValidator validates credentials in a config against the Glean backend.
+// It returns nil when the token is accepted, or an error describing the failure.
+type TokenValidator func(ctx context.Context, cfg *config.Config) error
+
 // Status prints the current authentication state.
-func Status(ctx context.Context) error {
+// validateToken is used to verify API tokens against the backend (typically client.ValidateToken).
+func Status(ctx context.Context, validateToken TokenValidator) error {
 	cfg, _ := config.LoadConfig()
 	if cfg == nil || cfg.GleanHost == "" {
 		fmt.Println("Not configured.")
@@ -220,6 +232,11 @@ func Status(ctx context.Context) error {
 
 	if cfg.GleanToken != "" {
 		masked := config.MaskToken(cfg.GleanToken)
+		if err := validateToken(ctx, cfg); err != nil {
+			fmt.Printf("✗ API token is invalid or expired\n  Host:  %s\n  Token: %s\n  Error: %v\n", cfg.GleanHost, masked, err)
+			fmt.Println("Run 'glean auth login' to re-authenticate.")
+			return nil
+		}
 		fmt.Printf("✓ Authenticated via API token\n  Host:  %s\n  Token: %s\n", cfg.GleanHost, masked)
 		return nil
 	}

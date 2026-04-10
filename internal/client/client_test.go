@@ -1,6 +1,7 @@
 package client
 
 import (
+	"context"
 	"io"
 	"net/http"
 	"strings"
@@ -90,6 +91,20 @@ func TestExtractInstance(t *testing.T) {
 			assert.Equal(t, tt.expected, got)
 		})
 	}
+}
+
+func TestValidateToken_NoToken(t *testing.T) {
+	cfg := &config.Config{GleanHost: "test-be.glean.com", GleanToken: ""}
+	err := ValidateToken(context.Background(), cfg)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "no token available")
+}
+
+func TestValidateToken_Unreachable(t *testing.T) {
+	cfg := &config.Config{GleanHost: "localhost:1", GleanToken: "some-token"}
+	err := ValidateToken(context.Background(), cfg)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "validating token")
 }
 
 func TestNew_EmptyHost(t *testing.T) {
