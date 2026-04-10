@@ -194,6 +194,7 @@ func SaveHostToFile(host string) error {
 // leaving the host and other settings intact. This is used during OAuth login to
 // prevent a stale API token from shadowing newly obtained OAuth credentials.
 func ClearTokenFromStorage() error {
+	cfgLog.Log("clearing stale API token from storage")
 	// Remove token from keyring (ignore not-found).
 	if err := keyringImpl.Delete(ServiceName, tokenKey); err != nil && err != keyring.ErrNotFound {
 		return fmt.Errorf("error clearing token from keyring: %w", err)

@@ -49,6 +49,7 @@ func ValidateToken(ctx context.Context, cfg *config.Config) error {
 		return fmt.Errorf("no token available")
 	}
 
+	resolveLog.Log("validating token against %s", cfg.GleanHost)
 	url := "https://" + cfg.GleanHost + "/rest/api/v1/search"
 	body := strings.NewReader(`{"query":"","pageSize":1}`)
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, body)
@@ -71,13 +72,17 @@ func ValidateToken(ctx context.Context, cfg *config.Config) error {
 		// Try to surface the server's error message (e.g. "Token has expired").
 		respBody, _ := io.ReadAll(resp.Body)
 		if msg := strings.TrimSpace(string(respBody)); msg != "" {
+			resolveLog.Log("token rejected: %s (HTTP %d)", msg, resp.StatusCode)
 			return fmt.Errorf("%s (HTTP %d)", msg, resp.StatusCode)
 		}
+		resolveLog.Log("token rejected (HTTP %d)", resp.StatusCode)
 		return fmt.Errorf("token rejected by server (HTTP %d)", resp.StatusCode)
 	}
 	if resp.StatusCode >= 400 {
+		resolveLog.Log("unexpected validation status: HTTP %d", resp.StatusCode)
 		return fmt.Errorf("unexpected status validating token (HTTP %d)", resp.StatusCode)
 	}
+	resolveLog.Log("token valid")
 	return nil
 }
 
