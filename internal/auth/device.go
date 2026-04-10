@@ -40,11 +40,13 @@ type deviceTokenError struct {
 // deviceFlowLogin performs the OAuth 2.0 Device Authorization Grant (RFC 8628).
 func deviceFlowLogin(ctx context.Context, host string, disc *discoveryResult) error {
 	scopes := resolveScopes(disc.Provider)
+	deviceLog.Log("requesting device code from %s (client_id=%s)", disc.DeviceAuthEndpoint, disc.DeviceFlowClientID)
 
 	authResp, err := requestDeviceCode(ctx, disc.DeviceAuthEndpoint, disc.DeviceFlowClientID, scopes)
 	if err != nil {
 		return fmt.Errorf("device authorization request failed: %w", err)
 	}
+	deviceLog.Log("device code received: user_code=%s verification_uri=%s expires_in=%d", authResp.UserCode, authResp.VerificationURI, authResp.ExpiresIn)
 
 	verificationURL := authResp.VerificationURIComplete
 	if verificationURL == "" {
@@ -69,10 +71,13 @@ func deviceFlowLogin(ctx context.Context, host string, disc *discoveryResult) er
 
 	_ = browser.OpenURL(verificationURL)
 
+	deviceLog.Log("polling token endpoint %s (interval=%ds)", disc.Endpoint.TokenURL, authResp.Interval)
 	token, err := pollForToken(ctx, disc.Endpoint.TokenURL, disc.DeviceFlowClientID, authResp)
 	if err != nil {
+		deviceLog.Log("device flow failed: %v", err)
 		return fmt.Errorf("device flow login failed: %w", err)
 	}
+	deviceLog.Log("device flow token received")
 
 	return saveAndPrintToken(ctx, host, disc, disc.DeviceFlowClientID, token)
 }
@@ -105,6 +110,7 @@ func requestDeviceCode(ctx context.Context, endpoint, clientID string, scopes []
 			desc = errResp.Error
 		}
 		if errResp.Error == "unauthorized_client" {
+			deviceLog.Log("IdP rejected device code grant for client %s: %s", clientID, desc)
 			return nil, fmt.Errorf("%s\n\nAsk your IdP administrator to add the device_code grant type\nto OAuth app %s", desc, clientID)
 		}
 		if desc != "" {

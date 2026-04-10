@@ -31,6 +31,7 @@ var (
 	dcrLog       = debug.New("auth:dcr")
 	tokenLog     = debug.New("auth:token")
 	emailLog     = debug.New("auth:email")
+	deviceLog    = debug.New("auth:device")
 )
 
 //go:embed success.html
@@ -66,10 +67,12 @@ func Login(ctx context.Context) error {
 	loginLog.Log("OAuth discovery succeeded: auth=%s token=%s registration=%s", disc.Endpoint.AuthURL, disc.Endpoint.TokenURL, disc.RegistrationEndpoint)
 
 	// Try DCR / static client first (standard authorization code flow).
+	loginLog.Log("attempting authorization code + PKCE flow")
 	authCodeErr := tryAuthCodeLogin(ctx, host, disc)
 	if authCodeErr == nil {
 		return nil
 	}
+	loginLog.Log("auth code flow failed: %v", authCodeErr)
 
 	// Only fall back to device flow when the auth code flow failed because no
 	// OAuth client could be obtained (DCR unsupported + no static client).
@@ -77,7 +80,8 @@ func Login(ctx context.Context) error {
 	// not silently switch to a different grant type.
 	canDeviceFlow := disc.DeviceFlowClientID != "" && disc.DeviceAuthEndpoint != ""
 	if errors.Is(authCodeErr, errNoOAuthClient) && canDeviceFlow {
-		fmt.Fprintf(os.Stderr, "Note: no OAuth client available, trying device flow…\n")
+		loginLog.Log("falling back to device authorization grant (client_id=%s)", disc.DeviceFlowClientID)
+		fmt.Fprintf(os.Stderr, "\nYour SSO provider requires device-based login.\n")
 		return deviceFlowLogin(ctx, host, disc)
 	}
 
