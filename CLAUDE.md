@@ -20,14 +20,19 @@ Unit tests pass ≠ feature works. The TUI has UI state that tests cannot cover.
 
 ## Mandatory Pre-Push Requirement
 
-**Before any `git push`, run tests and linters locally. They MUST pass.**
+**Before any `git push`, run ALL of the following locally. They MUST pass.**
 
 ```bash
 go test ./...           # all tests must pass
-golangci-lint run       # linter must be clean
+golangci-lint run       # linter must be clean (matches CI config in .golangci.yml)
+mise run build          # binary must build
 ```
 
 Equivalently: `mise run test:all` (runs lint + test + build).
+
+CI runs `golangci-lint` v2 with `gocritic`, `gosec`, `errcheck`, and other strict
+linters configured in `.golangci.yml`. If your local `golangci-lint` version is older,
+it may miss issues that CI catches. Always verify lint passes before pushing.
 
 Pushing code that breaks CI is unacceptable. No exceptions.
 
