@@ -25,6 +25,7 @@ func lookupBackendURL(ctx context.Context, email, endpoint string) (string, erro
 	if domain == "" {
 		return "", fmt.Errorf("invalid email address: %q", email)
 	}
+	hostLog.Log("domain lookup: domain=%s endpoint=%s", domain, endpoint)
 
 	body := map[string]any{
 		"email":       email,
@@ -65,7 +66,9 @@ func lookupBackendURL(ctx context.Context, email, endpoint string) (string, erro
 		return "", fmt.Errorf("no Glean instance found for domain %q", domain)
 	}
 
-	return strings.TrimRight(result.SearchConfig.QueryURL, "/"), nil
+	backendURL := strings.TrimRight(result.SearchConfig.QueryURL, "/")
+	hostLog.Log("domain lookup resolved: %s", backendURL)
+	return backendURL, nil
 }
 
 func extractDomain(email string) string {

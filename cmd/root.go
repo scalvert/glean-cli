@@ -12,10 +12,13 @@ import (
 	"github.com/gleanwork/glean-cli/internal/auth"
 	gleanClient "github.com/gleanwork/glean-cli/internal/client"
 	"github.com/gleanwork/glean-cli/internal/config"
+	"github.com/gleanwork/glean-cli/internal/debug"
 	"github.com/gleanwork/glean-cli/internal/tui"
 	"github.com/gleanwork/glean-cli/internal/update"
 	"github.com/spf13/cobra"
 )
+
+var authErrLog = debug.New("auth:login")
 
 // cliVersion is set at startup via SetVersion from the ldflags-injected build version.
 var cliVersion = "dev"
@@ -49,7 +52,9 @@ func NewCmdRoot() *cobra.Command {
 			Run 'glean --help' for other available commands.
 		`),
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			_ = verbosity // reserved for future debug logging
+			if verbosity > 0 {
+				debug.Enable()
+			}
 		},
 		PersistentPostRun: func(cmd *cobra.Command, args []string) {
 			// Skip update notice when the user is already running `glean update`.
@@ -183,7 +188,10 @@ func authError(err error) error {
 	fmt.Fprintf(os.Stderr, "Or set environment variables:\n")
 	fmt.Fprintf(os.Stderr, "  export GLEAN_HOST=your-company-be.glean.com\n")
 	fmt.Fprintf(os.Stderr, "  export GLEAN_API_TOKEN=your-token\n\n")
-	_ = err // underlying error logged above; don't expose internal message
+	authErrLog.Log("underlying auth error: %v", err)
+	if !authErrLog.Enabled() {
+		fmt.Fprintf(os.Stderr, "  Tip: re-run with -v or GLEAN_DEBUG=auth:* for details\n\n")
+	}
 	return errSilent
 }
 

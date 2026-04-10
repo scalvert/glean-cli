@@ -16,10 +16,20 @@ import (
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/gleanwork/glean-cli/internal/config"
+	"github.com/gleanwork/glean-cli/internal/debug"
 	"github.com/gleanwork/glean-cli/internal/httputil"
 	"github.com/int128/oauth2cli"
 	"github.com/pkg/browser"
 	"golang.org/x/oauth2"
+)
+
+var (
+	loginLog     = debug.New("auth:login")
+	hostLog      = debug.New("auth:resolve-host")
+	discoveryLog = debug.New("auth:discovery")
+	dcrLog       = debug.New("auth:dcr")
+	tokenLog     = debug.New("auth:token")
+	emailLog     = debug.New("auth:email")
 )
 
 //go:embed success.html
@@ -29,16 +39,21 @@ var successHTML string
 // If the host is not configured, prompts for a work email and auto-discovers it.
 // If the instance doesn't support OAuth, falls back to an inline API token prompt.
 func Login(ctx context.Context) error {
+	loginLog.Log("starting login flow")
+
 	host, err := resolveHost(ctx)
 	if err != nil {
 		return err
 	}
+	loginLog.Log("host resolved: %s", host)
 
 	provider, endpoint, registrationEndpoint, err := discover(ctx, host)
 	if err != nil {
+		loginLog.Log("OAuth discovery failed, falling back to API token: %v", err)
 		fmt.Fprintf(os.Stderr, "\nOAuth discovery failed: %v\n", err)
 		return promptForAPIToken(host)
 	}
+	loginLog.Log("OAuth discovery succeeded: auth=%s token=%s registration=%s", endpoint.AuthURL, endpoint.TokenURL, registrationEndpoint)
 
 	// Find a free port for the local callback server.
 	// This must happen before DCR so we register the exact redirect URI
@@ -57,6 +72,7 @@ func Login(ctx context.Context) error {
 
 	verifier := oauth2.GenerateVerifier()
 	scopes := resolveScopes(provider)
+	loginLog.Log("requesting scopes: %v", scopes)
 
 	oauthCfg := oauth2.Config{
 		ClientID:     clientID,
@@ -223,19 +239,32 @@ func EnsureAuth(ctx context.Context) error {
 // a silent refresh and persists the new tokens before returning.
 func LoadOAuthToken(host string) string {
 	tok, err := LoadTokens(host)
-	if err != nil || tok == nil {
+	if err != nil {
+		tokenLog.Log("load failed for %s: %v", host, err)
+		return ""
+	}
+	if tok == nil {
+		tokenLog.Log("no stored tokens for %s", host)
 		return ""
 	}
 	if !tok.IsExpired() {
+		tokenLog.Log("token valid (expires %s)", tok.Expiry.Format("15:04:05"))
 		return tok.AccessToken
 	}
+
 	// Token expired — attempt silent refresh.
-	if tok.RefreshToken != "" && tok.TokenEndpoint != "" {
-		if refreshed, err := refreshOAuthToken(host, tok); err == nil {
-			return refreshed.AccessToken
-		}
+	if tok.RefreshToken == "" || tok.TokenEndpoint == "" {
+		tokenLog.Log("token expired, cannot refresh (refresh_token=%t endpoint=%t)", tok.RefreshToken != "", tok.TokenEndpoint != "")
+		return ""
 	}
-	return ""
+	tokenLog.Log("token expired, refreshing via %s", tok.TokenEndpoint)
+	refreshed, err := refreshOAuthToken(host, tok)
+	if err != nil {
+		tokenLog.Log("refresh failed: %v", err)
+		return ""
+	}
+	tokenLog.Log("refreshed (new expiry=%s)", refreshed.Expiry.Format("15:04:05"))
+	return refreshed.AccessToken
 }
 
 // refreshOAuthToken exchanges a stored refresh_token for a new access token.
@@ -243,8 +272,10 @@ func LoadOAuthToken(host string) string {
 func refreshOAuthToken(host string, tok *StoredTokens) (*StoredTokens, error) {
 	cl, err := LoadClient(host)
 	if err != nil || cl == nil {
+		tokenLog.Log("no stored OAuth client for %s (err=%v)", host, err)
 		return nil, fmt.Errorf("no stored OAuth client for %s — re-run 'glean auth login'", host)
 	}
+	tokenLog.Log("using stored client_id=%s for refresh", cl.ClientID)
 
 	oauthCfg := oauth2.Config{
 		ClientID:     cl.ClientID,
@@ -279,7 +310,9 @@ func refreshOAuthToken(host string, tok *StoredTokens) (*StoredTokens, error) {
 		TokenType:     newTok.TokenType,
 		TokenEndpoint: tok.TokenEndpoint,
 	}
-	_ = SaveTokens(host, stored)
+	if err := SaveTokens(host, stored); err != nil {
+		tokenLog.Log("persisting refreshed tokens failed: %v", err)
+	}
 	return stored, nil
 }
 
@@ -289,8 +322,11 @@ func refreshOAuthToken(host string, tok *StoredTokens) (*StoredTokens, error) {
 func resolveHost(ctx context.Context) (string, error) {
 	cfg, _ := config.LoadConfig()
 	if cfg != nil && cfg.GleanHost != "" {
-		return config.NormalizeHost(cfg.GleanHost), nil
+		host := config.NormalizeHost(cfg.GleanHost)
+		hostLog.Log("using configured host: %s", host)
+		return host, nil
 	}
+	hostLog.Log("no host configured, prompting for email")
 
 	fmt.Print("Enter your work email: ")
 	reader := bufio.NewReader(os.Stdin)
@@ -301,6 +337,7 @@ func resolveHost(ctx context.Context) (string, error) {
 	email = strings.TrimSpace(email)
 
 	fmt.Print("Looking up your Glean instance…")
+	hostLog.Log("looking up backend for email domain")
 	backendURL, err := LookupBackendURL(ctx, email)
 	if err != nil {
 		fmt.Println()
@@ -311,8 +348,11 @@ func resolveHost(ctx context.Context) (string, error) {
 	host := strings.TrimPrefix(backendURL, "https://")
 	host = strings.TrimPrefix(host, "http://")
 	host = strings.SplitN(host, "/", 2)[0]
+	hostLog.Log("discovered host: %s", host)
 
-	_ = config.SaveHostToFile(host)
+	if err := config.SaveHostToFile(host); err != nil {
+		hostLog.Log("best-effort host save failed: %v", err)
+	}
 	return host, nil
 }
 
@@ -328,16 +368,21 @@ func resolveHost(ctx context.Context) (string, error) {
 // provider is nil when only RFC 8414 discovery succeeded.
 func discover(ctx context.Context, host string) (*oidc.Provider, oauth2.Endpoint, string, error) {
 	baseURL := "https://" + host
+	discoveryLog.Log("fetching protected resource metadata: %s", baseURL)
 	meta, err := fetchProtectedResource(ctx, baseURL)
 	if err != nil {
+		discoveryLog.Log("protected resource metadata failed: %v", err)
 		return nil, oauth2.Endpoint{}, "", err
 	}
 
 	issuer := meta.AuthorizationServers[0]
+	discoveryLog.Log("authorization server: %s", issuer)
 
 	// Try full OIDC discovery first (supports ID token, UserInfo).
+	discoveryLog.Log("trying OIDC discovery at %s", issuer)
 	provider, err := oidc.NewProvider(ctx, issuer)
 	if err == nil {
+		discoveryLog.Log("OIDC discovery succeeded")
 		// Still need registration_endpoint, which oidc.Provider doesn't expose.
 		authMeta, _ := fetchAuthServerMetadata(ctx, issuer)
 		regEndpoint := ""
@@ -346,6 +391,7 @@ func discover(ctx context.Context, host string) (*oidc.Provider, oauth2.Endpoint
 		}
 		return provider, provider.Endpoint(), regEndpoint, nil
 	}
+	discoveryLog.Log("OIDC discovery failed: %v, falling back to RFC 8414", err)
 
 	// Fall back to RFC 8414 auth server metadata.
 	authMeta, err := fetchAuthServerMetadata(ctx, issuer)
@@ -353,8 +399,10 @@ func discover(ctx context.Context, host string) (*oidc.Provider, oauth2.Endpoint
 		return nil, oauth2.Endpoint{}, "", fmt.Errorf("OAuth discovery failed for %s: %w", issuer, err)
 	}
 	if authMeta.AuthorizationEndpoint == "" || authMeta.TokenEndpoint == "" {
+		discoveryLog.Log("RFC 8414 metadata incomplete: auth=%q token=%q", authMeta.AuthorizationEndpoint, authMeta.TokenEndpoint)
 		return nil, oauth2.Endpoint{}, "", fmt.Errorf("OAuth metadata missing required endpoints for %s", issuer)
 	}
+	discoveryLog.Log("RFC 8414 discovery succeeded: auth=%s token=%s", authMeta.AuthorizationEndpoint, authMeta.TokenEndpoint)
 
 	return nil, oauth2.Endpoint{
 		AuthURL:  authMeta.AuthorizationEndpoint,
@@ -369,18 +417,25 @@ func discover(ctx context.Context, host string) (*oidc.Provider, oauth2.Endpoint
 // Falls back to a static client configured via glean config --oauth-client-id.
 func dcrOrStaticClient(ctx context.Context, host, registrationEndpoint, redirectURI string) (string, string, error) {
 	if registrationEndpoint != "" {
+		dcrLog.Log("registering client at %s with redirect %s", registrationEndpoint, redirectURI)
 		cl, err := registerClient(ctx, registrationEndpoint, redirectURI)
 		if err == nil {
-			// Persist so future token refresh can use the same client credentials.
-			_ = SaveClient(host, cl)
+			dcrLog.Log("registered client_id=%s", cl.ClientID)
+			if err := SaveClient(host, cl); err != nil {
+				dcrLog.Log("persisting client registration failed: %v", err)
+			}
 			return cl.ClientID, cl.ClientSecret, nil
 		}
 		// DCR failed — log and fall through to static client
+		dcrLog.Log("DCR failed: %v, trying static client", err)
 		fmt.Printf("Note: dynamic client registration failed (%v), trying static client\n", err)
+	} else {
+		dcrLog.Log("no registration endpoint, trying static client")
 	}
 
 	cfg, _ := config.LoadConfig()
 	if cfg != nil && cfg.OAuthClientID != "" {
+		dcrLog.Log("using static client_id=%s", cfg.OAuthClientID)
 		return cfg.OAuthClientID, cfg.OAuthClientSecret, nil
 	}
 
@@ -443,6 +498,7 @@ func fetchAuthServerMetadata(ctx context.Context, issuer string) (*authServerMet
 	}
 	// RFC 8414 path-aware: origin + /.well-known/oauth-authorization-server + path
 	u := parsed.Scheme + "://" + parsed.Host + "/.well-known/oauth-authorization-server" + parsed.Path
+	discoveryLog.Log("fetching RFC 8414 metadata: %s", u)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return nil, err
@@ -481,6 +537,7 @@ func extractEmailFromToken(ctx context.Context, provider *oidc.Provider, clientI
 					Email string `json:"email"`
 				}
 				if err := idToken.Claims(&claims); err == nil && claims.Email != "" {
+					emailLog.Log("email from OIDC ID token: %s", claims.Email)
 					return claims.Email
 				}
 			}
@@ -491,6 +548,7 @@ func extractEmailFromToken(ctx context.Context, provider *oidc.Provider, clientI
 				Email string `json:"email"`
 			}
 			if err := ui.Claims(&claims); err == nil && claims.Email != "" {
+				emailLog.Log("email from UserInfo endpoint: %s", claims.Email)
 				return claims.Email
 			}
 		}
@@ -498,7 +556,13 @@ func extractEmailFromToken(ctx context.Context, provider *oidc.Provider, clientI
 
 	// 2. Decode the access token as a JWT (no signature verification).
 	// Glean issues JWT access tokens that contain the user's email claim.
-	return EmailFromJWT(token.AccessToken)
+	email := EmailFromJWT(token.AccessToken)
+	if email != "" {
+		emailLog.Log("email from JWT access token: %s", email)
+	} else {
+		emailLog.Log("could not extract email from token")
+	}
+	return email
 }
 
 // EmailFromJWT decodes a JWT payload (without verification) and returns the

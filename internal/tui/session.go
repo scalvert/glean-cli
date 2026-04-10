@@ -6,7 +6,11 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/gleanwork/glean-cli/internal/debug"
 )
+
+var sessionLog = debug.New("session:persist")
 
 // Turn holds one exchange in the conversation history.
 type Turn struct {
@@ -41,17 +45,21 @@ func sessionsDir() (string, error) {
 func LoadLatest() *Session {
 	dir, err := sessionsDir()
 	if err != nil {
+		sessionLog.Log("load: sessions dir error: %v", err)
 		return &Session{}
 	}
 	path := filepath.Join(dir, "latest.json")
 	data, err := os.ReadFile(path)
 	if err != nil {
+		sessionLog.Log("load: %v", err)
 		return &Session{}
 	}
 	var s Session
 	if err := json.Unmarshal(data, &s); err != nil {
+		sessionLog.Log("load: parse error: %v", err)
 		return &Session{}
 	}
+	sessionLog.Log("loaded %d turns from %s", len(s.Turns), path)
 	return &s
 }
 
@@ -80,5 +88,7 @@ func (s *Session) AddTurn(role, content string, sources []Source) {
 // to the session and saves immediately.
 func (s *Session) AppendTurn(turn Turn) {
 	s.Turns = append(s.Turns, turn)
-	_ = s.Save() // best-effort
+	if err := s.Save(); err != nil {
+		sessionLog.Log("save failed: %v", err)
+	}
 }

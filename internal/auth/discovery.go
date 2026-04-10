@@ -30,6 +30,7 @@ type protectedResourceMetadata struct {
 // baseURL is the Glean backend root (e.g. "https://myco-be.glean.com").
 func fetchProtectedResource(ctx context.Context, baseURL string) (*protectedResourceMetadata, error) {
 	u := strings.TrimRight(baseURL, "/") + "/.well-known/oauth-protected-resource"
+	discoveryLog.Log("fetching protected resource: %s", u)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return nil, fmt.Errorf("building protected-resource request: %w", err)
@@ -45,6 +46,7 @@ func fetchProtectedResource(ctx context.Context, baseURL string) (*protectedReso
 	switch resp.StatusCode {
 	case http.StatusOK:
 	case http.StatusNotFound:
+		discoveryLog.Log("protected resource returned 404 — OAuth not supported")
 		return nil, &ErrOAuthNotSupported{URL: u}
 	default:
 		return nil, fmt.Errorf("protected resource metadata returned HTTP %d", resp.StatusCode)
@@ -57,6 +59,7 @@ func fetchProtectedResource(ctx context.Context, baseURL string) (*protectedReso
 	if len(meta.AuthorizationServers) == 0 {
 		return nil, fmt.Errorf("server returned OK but OAuth metadata is incomplete (no authorization_servers)")
 	}
+	discoveryLog.Log("found %d authorization server(s): %v", len(meta.AuthorizationServers), meta.AuthorizationServers)
 	return &meta, nil
 }
 
@@ -88,6 +91,7 @@ func registerClient(ctx context.Context, registrationEndpoint, redirectURI strin
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusOK {
+		dcrLog.Log("DCR returned HTTP %d", resp.StatusCode)
 		return nil, fmt.Errorf("DCR returned HTTP %d", resp.StatusCode)
 	}
 
@@ -101,5 +105,6 @@ func registerClient(ctx context.Context, registrationEndpoint, redirectURI strin
 	if result.ClientID == "" {
 		return nil, fmt.Errorf("DCR response missing client_id")
 	}
+	dcrLog.Log("DCR succeeded: client_id=%s", result.ClientID)
 	return &StoredClient{ClientID: result.ClientID, ClientSecret: result.ClientSecret}, nil
 }
