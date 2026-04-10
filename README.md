@@ -19,8 +19,8 @@ Search across your company's knowledge, chat with Glean Assistant, manage the fu
   - [Quick Start](#quick-start)
   - [Why Glean CLI?](#why-glean-cli)
   - [Authentication](#authentication)
-    - [OAuth (recommended)](#oauth-recommended)
     - [API Token (CI/CD)](#api-token-cicd)
+    - [Credential resolution order](#credential-resolution-order)
   - [Interactive TUI](#interactive-tui)
     - [Keyboard Shortcuts](#keyboard-shortcuts)
     - [Slash Commands](#slash-commands)
@@ -95,27 +95,35 @@ glean search "engineering docs" --output ndjson | jq .title
 
 ## Authentication
 
-### OAuth (recommended)
-
 ```bash snippet=readme/snippet-04.sh
-glean auth login    # opens browser, completes PKCE flow
+glean auth login    # interactive login (detects the best method automatically)
 glean auth status   # verify credentials, host, and token expiry
 glean auth logout   # remove all stored credentials
 ```
 
-OAuth uses PKCE with Dynamic Client Registration — no client ID required. Tokens are stored securely in the system keyring and refreshed automatically.
+`glean auth login` detects the right authentication method for your environment automatically:
 
-For instances that don't support OAuth, `auth login` falls back to prompting for an API token.
+| Method | When it's used | What happens |
+| --- | --- | --- |
+| **Browser login** | Default for most Glean instances | Opens your browser, you approve, done |
+| **Device code login** | Organizations using an external IdP (e.g. Okta) | Prints a URL and code — open the URL, enter the code |
+| **API token** | Instances without OAuth support | Prompts you to paste a token from Glean Admin |
+
+You don't need to choose — `auth login` tries each method in order and uses the first one that works. Tokens are stored securely in the system keyring and refreshed automatically.
 
 ### API Token (CI/CD)
 
-Set credentials via environment variables — no interactive login needed:
+For non-interactive environments, set credentials via environment variables:
 
 ```bash snippet=readme/snippet-05.sh
 export GLEAN_API_TOKEN=your-token
 export GLEAN_HOST=your-company-be.glean.com
 glean search "test"
 ```
+
+API tokens are scoped to an individual user account. Generate one from **Glean Admin → Settings → API Tokens**.
+
+### Credential resolution order
 
 Credentials are resolved in this order: environment variables → system keyring → `~/.glean/config.json`.
 
