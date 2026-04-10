@@ -59,13 +59,14 @@ func init() {
 			pat.negate = true
 			p = p[1:]
 		}
-		if p == "*" {
+		switch {
+		case p == "*":
 			pat.glob = true
 			pat.prefix = ""
-		} else if strings.HasSuffix(p, "*") {
+		case strings.HasSuffix(p, "*"):
 			pat.glob = true
 			pat.prefix = p[:len(p)-1]
-		} else {
+		default:
 			pat.prefix = p
 		}
 		patterns = append(patterns, pat)
