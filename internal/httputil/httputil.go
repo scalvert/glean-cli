@@ -3,6 +3,8 @@ package httputil
 import (
 	"net/http"
 	"time"
+
+	"github.com/gleanwork/glean-cli/internal/debug"
 )
 
 // cliVersion is set at startup via SetVersion. Defaults to "dev" for local builds.
@@ -34,13 +36,29 @@ type cliTransport struct {
 	extraHeaders map[string]string
 }
 
+var (
+	reqLog = debug.New("http:request")
+	resLog = debug.New("http:response")
+)
+
 func (t *cliTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	req = req.Clone(req.Context())
 	req.Header.Set("User-Agent", "glean-cli/"+cliVersion)
 	for k, v := range t.extraHeaders {
 		req.Header.Set(k, v)
 	}
-	return t.base.RoundTrip(req)
+
+	reqLog.Log("%s %s", req.Method, req.URL.String())
+
+	start := time.Now()
+	resp, err := t.base.RoundTrip(req)
+	if err != nil {
+		resLog.Log("%s %s error: %v (%s)", req.Method, req.URL.String(), err, time.Since(start).Round(time.Millisecond))
+		return nil, err
+	}
+
+	resLog.Log("%d %s (%s)", resp.StatusCode, http.StatusText(resp.StatusCode), time.Since(start).Round(time.Millisecond))
+	return resp, nil
 }
 
 // NewTransport returns an http.RoundTripper that injects the CLI User-Agent

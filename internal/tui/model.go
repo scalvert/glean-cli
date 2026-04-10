@@ -21,6 +21,12 @@ import (
 	"github.com/gleanwork/api-client-go/models/components"
 	"github.com/gleanwork/glean-cli/internal/client"
 	"github.com/gleanwork/glean-cli/internal/config"
+	"github.com/gleanwork/glean-cli/internal/debug"
+)
+
+var (
+	tuiLog   = debug.New("tui:init")
+	parseLog = debug.New("stream:parse")
 )
 
 const (
@@ -131,7 +137,10 @@ func New(cfg *config.Config, session *Session, identity, version string, ctx con
 
 	renderer, err := newGlamourRenderer(100)
 	if err != nil {
+		tuiLog.Log("glamour renderer failed: %v (markdown rendering disabled)", err)
 		renderer = nil
+	} else {
+		tuiLog.Log("glamour renderer initialized")
 	}
 
 	m := &Model{
@@ -151,6 +160,7 @@ func New(cfg *config.Config, session *Session, identity, version string, ctx con
 		mouseEnabled: true,
 	}
 
+	tuiLog.Log("session: %d prior turns", len(session.Turns))
 	for _, turn := range session.Turns {
 		m.addTurnToConversation(turn)
 	}
@@ -583,13 +593,20 @@ func (m *Model) callAPI() tea.Cmd {
 		seen := map[string]bool{}
 
 		scanner := bufio.NewScanner(body)
+		lineNum := 0
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
+			lineNum++
 			if line == "" || line == "[DONE]" {
 				continue
 			}
 			var resp components.ChatResponse
 			if err := json.Unmarshal([]byte(line), &resp); err != nil {
+				preview := line
+				if len(preview) > 100 {
+					preview = preview[:100] + "…"
+				}
+				parseLog.Log("skipped malformed line %d: %v (%.100s)", lineNum, err, preview)
 				continue
 			}
 			if resp.ChatID != nil && returnedChatID == nil {
@@ -641,9 +658,11 @@ func (m *Model) callAPI() tea.Cmd {
 			}
 		}
 		if err := scanner.Err(); err != nil {
+			parseLog.Log("scanner error after %d lines: %v", lineNum, err)
 			ch <- streamCompleteMsg{err: err}
 			return
 		}
+		parseLog.Log("stream complete: %d lines processed", lineNum)
 
 		elapsed := time.Since(start).Round(time.Second)
 		elapsedStr := fmt.Sprintf("%ds", int(elapsed.Seconds()))

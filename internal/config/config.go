@@ -9,7 +9,13 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/gleanwork/glean-cli/internal/debug"
 	"github.com/zalando/go-keyring"
+)
+
+var (
+	cfgLog     = debug.New("config:load")
+	keyringLog = debug.New("config:keyring")
 )
 
 // keyringProvider defines operations for secure credential storage.
@@ -68,6 +74,7 @@ func ValidateAndTransformHost(host string) (string, error) {
 //  3. ~/.glean/config.json
 func LoadConfig() (*Config, error) {
 	cfg := loadFromEnv()
+	cfgLog.Log("env: host=%t token=%t", cfg.GleanHost != "", cfg.GleanToken != "")
 
 	if cfg.GleanHost == "" || cfg.GleanToken == "" {
 		keyringCfg := loadFromKeyring()
@@ -77,11 +84,13 @@ func LoadConfig() (*Config, error) {
 		if cfg.GleanToken == "" {
 			cfg.GleanToken = keyringCfg.GleanToken
 		}
+		cfgLog.Log("after keyring: host=%t token=%t", cfg.GleanHost != "", cfg.GleanToken != "")
 	}
 
 	if cfg.GleanHost == "" || cfg.GleanToken == "" {
 		fileCfg, err := loadFromFile()
 		if err != nil {
+			cfgLog.Log("config file error: %v", err)
 			return nil, err
 		}
 		if cfg.GleanHost == "" {
@@ -96,8 +105,10 @@ func LoadConfig() (*Config, error) {
 		if cfg.OAuthClientSecret == "" {
 			cfg.OAuthClientSecret = fileCfg.OAuthClientSecret
 		}
+		cfgLog.Log("after file: host=%t token=%t", cfg.GleanHost != "", cfg.GleanToken != "")
 	}
 
+	cfgLog.Log("resolved host=%s token=%t", cfg.GleanHost, cfg.GleanToken != "")
 	return cfg, nil
 }
 
@@ -235,10 +246,14 @@ func loadFromKeyring() *Config {
 
 	if host, err := keyringImpl.Get(ServiceName, hostKey); err == nil {
 		cfg.GleanHost = host
+	} else {
+		keyringLog.Log("get %s: %v", hostKey, err)
 	}
 
 	if token, err := keyringImpl.Get(ServiceName, tokenKey); err == nil {
 		cfg.GleanToken = token
+	} else {
+		keyringLog.Log("get %s: %v", tokenKey, err)
 	}
 
 	return cfg
@@ -252,10 +267,12 @@ func loadFromFile() (*Config, error) {
 	data, err := os.ReadFile(ConfigPath)
 	if err != nil {
 		if os.IsNotExist(err) {
+			cfgLog.Log("config file not found: %s", ConfigPath)
 			return &Config{}, nil
 		}
 		return nil, fmt.Errorf("error reading config file: %w", err)
 	}
+	cfgLog.Log("loaded config file: %s (%d bytes)", ConfigPath, len(data))
 
 	var cfg Config
 	if err := json.Unmarshal(data, &cfg); err != nil {

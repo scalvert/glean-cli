@@ -11,8 +11,11 @@ import (
 
 	"github.com/gleanwork/api-client-go/models/components"
 	"github.com/gleanwork/glean-cli/internal/config"
+	"github.com/gleanwork/glean-cli/internal/debug"
 	"github.com/gleanwork/glean-cli/internal/httputil"
 )
+
+var streamLog = debug.New("stream:connect")
 
 // streamTimeout is a generous timeout for long-running AUTO/ADVANCED agent
 // responses. Context cancellation (ctrl+c in the TUI) handles user-initiated
@@ -59,6 +62,7 @@ func StreamChat(ctx context.Context, cfg *config.Config, req components.ChatRequ
 	}
 
 	url := fmt.Sprintf("https://%s/rest/api/v1/chat", host)
+	streamLog.Log("POST %s (%d bytes)", url, len(payload))
 	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(payload))
 	if err != nil {
 		return nil, fmt.Errorf("building request: %w", err)
@@ -75,9 +79,11 @@ func StreamChat(ctx context.Context, cfg *config.Config, req components.ChatRequ
 		return nil, fmt.Errorf("chat request failed: %w", err)
 	}
 	if resp.StatusCode != http.StatusOK {
+		streamLog.Log("chat request failed: HTTP %d (body discarded)", resp.StatusCode)
 		resp.Body.Close()
 		return nil, fmt.Errorf("chat request returned HTTP %d", resp.StatusCode)
 	}
+	streamLog.Log("stream connected: HTTP %d", resp.StatusCode)
 
 	return resp.Body, nil
 }

@@ -11,8 +11,11 @@ import (
 	glean "github.com/gleanwork/api-client-go"
 	"github.com/gleanwork/glean-cli/internal/auth"
 	"github.com/gleanwork/glean-cli/internal/config"
+	"github.com/gleanwork/glean-cli/internal/debug"
 	"github.com/gleanwork/glean-cli/internal/httputil"
 )
+
+var resolveLog = debug.New("client:resolve")
 
 // authTypeOAuth is the X-Glean-Auth-Type header value required for External IdP OAuth tokens.
 const authTypeOAuth = "OAUTH"
@@ -22,12 +25,15 @@ const authTypeOAuth = "OAUTH"
 // sourced from local storage return authTypeOAuth.
 func ResolveToken(cfg *config.Config) (token, authType string) {
 	if cfg.GleanToken != "" {
+		resolveLog.Log("using API token from env/config")
 		return cfg.GleanToken, ""
 	}
 	tok := auth.LoadOAuthToken(cfg.GleanHost)
 	if tok != "" {
+		resolveLog.Log("using OAuth token for %s", cfg.GleanHost)
 		return tok, authTypeOAuth
 	}
+	resolveLog.Log("no credentials found")
 	return "", ""
 }
 
@@ -52,6 +58,7 @@ func New(cfg *config.Config) (*glean.Glean, error) {
 	}
 
 	instance := extractInstance(cfg.GleanHost)
+	resolveLog.Log("instance=%s authType=%s", instance, authType)
 
 	opts := []glean.SDKOption{
 		glean.WithInstance(instance),
