@@ -374,6 +374,41 @@ func TestSaveHostToFile_DoesNotTouchKeyring(t *testing.T) {
 	assert.Empty(t, cfg.GleanToken)
 }
 
+func TestValidateConfigKeys(t *testing.T) {
+	t.Run("unknown key produces warning", func(t *testing.T) {
+		data := []byte(`{"host":"x.glean.com","toke":"bad"}`)
+		warnings := validateConfigKeys(data)
+		require.Len(t, warnings, 1)
+		assert.Contains(t, warnings[0], `unknown key "toke"`)
+	})
+
+	t.Run("all known keys produce no warnings", func(t *testing.T) {
+		data := []byte(`{"host":"x","token":"t","oauth_client_id":"id","oauth_client_secret":"s"}`)
+		warnings := validateConfigKeys(data)
+		assert.Empty(t, warnings)
+	})
+
+	t.Run("unknown keys do not prevent loading", func(t *testing.T) {
+		isolateAuthState(t)
+
+		cfgData := []byte(`{"host":"test-be.glean.com","token":"tok","extra_field":"val"}`)
+		err := os.MkdirAll(filepath.Dir(ConfigPath), 0700)
+		require.NoError(t, err)
+		err = os.WriteFile(ConfigPath, cfgData, 0600)
+		require.NoError(t, err)
+
+		cfg, err := loadFromFile()
+		require.NoError(t, err)
+		assert.Equal(t, "test-be.glean.com", cfg.GleanHost)
+		assert.Equal(t, "tok", cfg.GleanToken)
+	})
+
+	t.Run("invalid JSON returns no warnings", func(t *testing.T) {
+		warnings := validateConfigKeys([]byte(`not json`))
+		assert.Nil(t, warnings)
+	})
+}
+
 func TestLoadFromFile(t *testing.T) {
 	_, cleanup := setupTestConfig(t)
 	defer cleanup()

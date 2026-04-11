@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/gleanwork/glean-cli/internal/debug"
@@ -284,6 +285,28 @@ func loadFromKeyring() *Config {
 	return cfg
 }
 
+var knownConfigKeys = map[string]bool{
+	"host":                true,
+	"token":               true,
+	"oauth_client_id":     true,
+	"oauth_client_secret": true,
+}
+
+func validateConfigKeys(data []byte) []string {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return nil
+	}
+	var warnings []string
+	for key := range raw {
+		if !knownConfigKeys[key] {
+			warnings = append(warnings, fmt.Sprintf("unknown key %q in config.json (typo?)", key))
+		}
+	}
+	sort.Strings(warnings)
+	return warnings
+}
+
 func loadFromFile() (*Config, error) {
 	if ConfigPath == "" {
 		return nil, fmt.Errorf("config path not set")
@@ -298,6 +321,10 @@ func loadFromFile() (*Config, error) {
 		return nil, fmt.Errorf("error reading config file: %w", err)
 	}
 	cfgLog.Log("loaded config file: %s (%d bytes)", ConfigPath, len(data))
+
+	for _, w := range validateConfigKeys(data) {
+		cfgLog.Log("%s", w)
+	}
 
 	var cfg Config
 	if err := json.Unmarshal(data, &cfg); err != nil {
