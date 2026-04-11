@@ -410,7 +410,9 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			// Display turn uses original question for clean viewport rendering.
-			m.session.AddTurn(roleUser, question, nil)
+			if err := m.session.AddTurn(roleUser, question, nil); err != nil {
+				sessionLog.Log("save failed: %v", err)
+			}
 
 			// API message carries file context when present.
 			apiText := apiContent
@@ -489,7 +491,9 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				Elapsed: msg.elapsed,
 			}
 			m.addTurnToConversation(turn)
-			m.session.AppendTurn(turn) // preserves Elapsed for renderConversation
+			if err := m.session.AppendTurn(turn); err != nil {
+				sessionLog.Log("save failed: %v", err)
+			}
 		}
 		m.viewport.SetContent(m.renderConversation())
 		m.viewport.GotoBottom()

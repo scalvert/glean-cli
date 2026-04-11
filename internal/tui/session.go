@@ -81,15 +81,17 @@ func (s *Session) Save() error {
 }
 
 // AddTurn appends a turn to the session and saves immediately.
-func (s *Session) AddTurn(role, content string, sources []Source) {
-	s.AppendTurn(Turn{Role: role, Content: content, Sources: sources})
+func (s *Session) AddTurn(role, content string, sources []Source) error {
+	return s.AppendTurn(Turn{Role: role, Content: content, Sources: sources})
 }
 
 // AppendTurn appends a complete Turn (including Elapsed and any other fields)
 // to the session and saves immediately.
-func (s *Session) AppendTurn(turn Turn) {
+func (s *Session) AppendTurn(turn Turn) error {
 	s.Turns = append(s.Turns, turn)
 	if err := s.Save(); err != nil {
 		sessionLog.Log("save failed: %v", err)
+		return err
 	}
+	return nil
 }
