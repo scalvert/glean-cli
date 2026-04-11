@@ -19,8 +19,9 @@ import (
 // contentOnly extracts the user-visible text from a chat NDJSON stream.
 // It skips UPDATE/CONTROL/DEBUG messages (internal reasoning/progress)
 // and only collects CONTENT message fragments, stripping stage preamble lines.
-func contentOnly(ndjson string) string {
+func contentOnly(ndjson string) (string, error) {
 	var sb strings.Builder
+	var parseErrors int
 	for _, line := range strings.Split(ndjson, "\n") {
 		line = strings.TrimSpace(line)
 		if line == "" {
@@ -28,6 +29,7 @@ func contentOnly(ndjson string) string {
 		}
 		var resp components.ChatResponse
 		if err := json.Unmarshal([]byte(line), &resp); err != nil {
+			parseErrors++
 			continue
 		}
 		for _, msg := range resp.Messages {
@@ -42,7 +44,11 @@ func contentOnly(ndjson string) string {
 			}
 		}
 	}
-	return sb.String()
+	result := sb.String()
+	if result == "" && parseErrors > 0 {
+		return "", fmt.Errorf("failed to parse %d response lines", parseErrors)
+	}
+	return result, nil
 }
 
 // NewCmdChat creates and returns the chat command.
@@ -192,7 +198,10 @@ func executeChat(cmd *cobra.Command, chatReq components.ChatRequest, showSpinner
 		return nil
 	}
 
-	text := contentOnly(*resp.ChatRequestStream)
+	text, err := contentOnly(*resp.ChatRequestStream)
+	if err != nil {
+		return err
+	}
 	if text == "" {
 		return nil
 	}
