@@ -1,7 +1,10 @@
 package httputil
 
 import (
+	"bytes"
+	"io"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gleanwork/glean-cli/internal/debug"
@@ -37,9 +40,19 @@ type cliTransport struct {
 }
 
 var (
-	reqLog = debug.New("http:request")
-	resLog = debug.New("http:response")
+	reqLog  = debug.New("http:request")
+	resLog  = debug.New("http:response")
+	bodyLog = debug.New("http:body")
 )
+
+const maxBodyLog = 2000
+
+func truncate(s string, max int) string {
+	if len(s) <= max {
+		return s
+	}
+	return s[:max] + "... (truncated)"
+}
 
 func (t *cliTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	req = req.Clone(req.Context())
@@ -50,6 +63,14 @@ func (t *cliTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 
 	reqLog.Log("%s %s", req.Method, req.URL.String())
 
+	if bodyLog.Enabled() && req.Body != nil {
+		data, err := io.ReadAll(req.Body)
+		if err == nil {
+			req.Body = io.NopCloser(bytes.NewReader(data))
+			bodyLog.Log("-> %s", truncate(string(data), maxBodyLog))
+		}
+	}
+
 	start := time.Now()
 	resp, err := t.base.RoundTrip(req)
 	if err != nil {
@@ -58,6 +79,15 @@ func (t *cliTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	}
 
 	resLog.Log("%d %s (%s)", resp.StatusCode, http.StatusText(resp.StatusCode), time.Since(start).Round(time.Millisecond))
+
+	if bodyLog.Enabled() && resp.Body != nil && !strings.HasPrefix(resp.Header.Get("Content-Type"), "text/event-stream") {
+		data, err := io.ReadAll(resp.Body)
+		if err == nil {
+			resp.Body = io.NopCloser(bytes.NewReader(data))
+			bodyLog.Log("<- %s", truncate(string(data), maxBodyLog))
+		}
+	}
+
 	return resp, nil
 }
 
