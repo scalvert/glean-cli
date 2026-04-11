@@ -611,3 +611,43 @@ func TestStatusBarNoMouseIndicatorWhenEnabled(t *testing.T) {
 	status := m.statusLine()
 	assert.NotContains(t, status, "🖱️ off", "status bar should not show indicator when mouse is enabled")
 }
+
+func TestStreamContentMsgAccumulates(t *testing.T) {
+	m := newTestModel(t)
+	m.conversationActive = true
+	m.isStreaming = true
+	m.streamCh = make(chan tea.Msg, 8)
+
+	updated, _ := m.Update(streamContentMsg{content: "Hello "})
+	r := updated.(*Model)
+	assert.Equal(t, "Hello ", r.streamedContent)
+
+	updated2, _ := r.Update(streamContentMsg{content: "world!"})
+	r2 := updated2.(*Model)
+	assert.Equal(t, "Hello world!", r2.streamedContent)
+
+	rendered := r2.renderConversation()
+	assert.Contains(t, rendered, "Hello world", "partial content must appear in rendered conversation")
+}
+
+func TestStreamedContentResetOnComplete(t *testing.T) {
+	m := newTestModel(t)
+	m.conversationActive = true
+	m.isStreaming = true
+	m.streamedContent = "partial content"
+
+	updated, _ := m.Update(streamCompleteMsg{text: "full response", elapsed: "2s"})
+	r := updated.(*Model)
+	assert.Equal(t, "", r.streamedContent, "streamedContent must be cleared on completion")
+}
+
+func TestStreamedContentResetOnNewMessage(t *testing.T) {
+	m := newTestModel(t)
+	m.conversationActive = true
+	m.streamedContent = "leftover"
+	m.textarea.SetValue("new question")
+
+	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	r := updated.(*Model)
+	assert.Equal(t, "", r.streamedContent, "streamedContent must be cleared when starting new message")
+}

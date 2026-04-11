@@ -52,6 +52,12 @@ type streamStageMsg struct {
 	detail string // optional detail text, e.g. "3 documents"
 }
 
+// streamContentMsg is sent from the API goroutine each time a CONTENT fragment
+// arrives, allowing the TUI to display response text incrementally.
+type streamContentMsg struct {
+	content string
+}
+
 // streamCompleteMsg carries the complete collected response from a single API call.
 type streamCompleteMsg struct {
 	text    string   // all CONTENT message text concatenated
@@ -101,10 +107,11 @@ type Model struct {
 	slashPickerIdx  int
 	slashCandidates []slashCmd
 
-	agentMode     components.AgentEnum // agent used for API calls; changed by /mode command
-	currentStage  string               // Glean thinking stage shown while streaming: "Searching", "Reading", etc.
-	currentDetail string               // optional detail for the current stage
-	streamCh      chan tea.Msg         // channel from the API goroutine; nil when not streaming
+	agentMode       components.AgentEnum // agent used for API calls; changed by /mode command
+	currentStage    string               // Glean thinking stage shown while streaming: "Searching", "Reading", etc.
+	currentDetail   string               // optional detail for the current stage
+	streamCh        chan tea.Msg         // channel from the API goroutine; nil when not streaming
+	streamedContent string               // partial content accumulated from streamContentMsg during streaming
 
 	// Mouse state
 	mouseEnabled  bool // when true, mouse scrolling works but text selection requires Shift+drag
@@ -386,6 +393,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			m.isStreaming = true
+			m.streamedContent = ""
 			// Transition to active state: fix viewport at max height.
 			// This only runs once per session — after this the viewport never resizes.
 			if !m.conversationActive {
@@ -437,6 +445,12 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.stopwatch, spCmd = m.stopwatch.Update(msg)
 		return m, spCmd
 
+	case streamContentMsg:
+		m.streamedContent += msg.content
+		m.viewport.SetContent(m.renderConversation())
+		m.viewport.GotoBottom()
+		return m, listenStreamCh(m.streamCh)
+
 	case streamStageMsg:
 		m.currentStage = msg.stage
 		m.currentDetail = msg.detail
@@ -456,6 +470,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.isStreaming = false
 		m.currentStage = ""
 		m.currentDetail = ""
+		m.streamedContent = ""
 		m.streamCh = nil
 		_ = m.stopwatch.Stop()
 		if msg.chatID != nil {
@@ -627,10 +642,10 @@ func (m *Model) callAPI() tea.Cmd {
 						}
 					}
 				case components.MessageTypeContent:
-					// Collect content — displayed only once the full response is in.
 					for _, frag := range apiMsg.Fragments {
 						if frag.Text != nil && *frag.Text != "" {
 							textBuf.WriteString(*frag.Text)
+							ch <- streamContentMsg{content: *frag.Text}
 						}
 						for _, sr := range frag.StructuredResults {
 							if sr.Document == nil {
@@ -879,6 +894,10 @@ func (m *Model) renderConversation() string {
 		sb.WriteString("\n")
 		sb.WriteString(m.spinner.View() + "  " + label)
 		sb.WriteString("\n\n")
+
+		if m.streamedContent != "" {
+			sb.WriteString(m.renderMarkdown(m.streamedContent))
+		}
 	}
 
 	if m.lastErr != nil {
