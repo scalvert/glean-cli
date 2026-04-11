@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/gleanwork/glean-cli/internal/debug"
+	"github.com/gleanwork/glean-cli/internal/fileutil"
 	"github.com/zalando/go-keyring"
 )
 
@@ -320,7 +321,7 @@ func saveToFile(cfg *Config) error {
 		return fmt.Errorf("error marshaling config: %w", err)
 	}
 
-	if err := os.WriteFile(ConfigPath, data, 0600); err != nil {
+	if err := fileutil.WriteFileAtomic(ConfigPath, data, 0600); err != nil {
 		return fmt.Errorf("error writing config file: %w", err)
 	}
 

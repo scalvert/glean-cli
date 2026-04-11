@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/gleanwork/glean-cli/internal/debug"
+	"github.com/gleanwork/glean-cli/internal/fileutil"
 )
 
 var sessionLog = debug.New("session:persist")
@@ -76,7 +77,7 @@ func (s *Session) Save() error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(filepath.Join(dir, "latest.json"), data, 0600)
+	return fileutil.WriteFileAtomic(filepath.Join(dir, "latest.json"), data, 0600)
 }
 
 // AddTurn appends a turn to the session and saves immediately.
