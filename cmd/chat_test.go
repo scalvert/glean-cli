@@ -11,6 +11,39 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestContentOnly(t *testing.T) {
+	t.Run("valid NDJSON with CONTENT messages", func(t *testing.T) {
+		ndjson := `{"messages":[{"author":"GLEAN_AI","messageType":"CONTENT","fragments":[{"text":"Hello"}]}]}
+{"messages":[{"author":"GLEAN_AI","messageType":"CONTENT","fragments":[{"text":" world"}]}]}`
+		result, err := contentOnly(ndjson)
+		require.NoError(t, err)
+		assert.Equal(t, "Hello world", result)
+	})
+
+	t.Run("all corrupt lines returns error", func(t *testing.T) {
+		ndjson := "{not json}\n{also bad}"
+		result, err := contentOnly(ndjson)
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "failed to parse 2 response lines")
+		assert.Empty(t, result)
+	})
+
+	t.Run("mixed valid and corrupt lines returns content", func(t *testing.T) {
+		ndjson := `{not json}
+{"messages":[{"author":"GLEAN_AI","messageType":"CONTENT","fragments":[{"text":"valid"}]}]}
+{also bad}`
+		result, err := contentOnly(ndjson)
+		require.NoError(t, err)
+		assert.Equal(t, "valid", result)
+	})
+
+	t.Run("empty input returns empty string no error", func(t *testing.T) {
+		result, err := contentOnly("")
+		require.NoError(t, err)
+		assert.Empty(t, result)
+	})
+}
+
 func TestChatJSONPayloadSetsStreamTrue(t *testing.T) {
 	fixtures := testutils.NewFixtures(t, "basic_chat_response.json")
 	response := fixtures.LoadAsStream("basic_chat_response")
@@ -126,8 +159,6 @@ How can I help?
 	})
 
 	t.Run("chat with error response", func(t *testing.T) {
-		// Fully invalid NDJSON is silently skipped — agent-first design means
-		// we don't fail the command for malformed lines; we just produce no output.
 		response := fixtures.LoadAsStream("error_response")
 		_, cleanup := testutils.SetupTestWithResponse(t, response)
 		defer cleanup()
@@ -136,10 +167,11 @@ How can I help?
 		cmd := NewCmdChat()
 		cmd.SetOut(b)
 		cmd.SetArgs([]string{"Test error"})
+		cmd.SilenceUsage = true
 
 		err := cmd.Execute()
-		require.NoError(t, err)
-		assert.Empty(t, b.String())
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "failed to parse")
 	})
 
 	t.Run("chat with invalid JSON response", func(t *testing.T) {
