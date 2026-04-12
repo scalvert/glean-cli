@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/gleanwork/glean-cli/internal/fileutil"
 )
 
 // StoredTokens holds persisted OAuth tokens for a Glean host.
@@ -53,18 +55,11 @@ func ensureDir(host string) error {
 }
 
 func writeJSON(path string, v any) error {
-	tmp := path + ".tmp"
 	data, err := json.MarshalIndent(v, "", "  ")
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(tmp, data, 0600); err != nil {
-		return err
-	}
-	if err := os.Rename(tmp, path); err != nil {
-		return err
-	}
-	return os.Chmod(path, 0600)
+	return fileutil.WriteFileAtomic(path, data, 0600)
 }
 
 func readJSON(path string, v any) error {
