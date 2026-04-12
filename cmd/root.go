@@ -4,6 +4,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -13,6 +14,7 @@ import (
 	gleanClient "github.com/gleanwork/glean-cli/internal/client"
 	"github.com/gleanwork/glean-cli/internal/config"
 	"github.com/gleanwork/glean-cli/internal/debug"
+	clierrors "github.com/gleanwork/glean-cli/internal/errors"
 	"github.com/gleanwork/glean-cli/internal/tui"
 	"github.com/gleanwork/glean-cli/internal/update"
 	"github.com/spf13/cobra"
@@ -176,30 +178,31 @@ func NewCmdRoot() *cobra.Command {
 	return cmd
 }
 
-// errSilent is returned when we've already printed a user-friendly error
-// and don't want Cobra to print anything additional.
-var errSilent = fmt.Errorf("")
-
-// authError formats an authentication failure as a user-friendly message
-// written to stderr, then returns errSilent so Cobra prints nothing further.
 func authError(err error) error {
-	fmt.Fprintf(os.Stderr, "\nYou're not signed in to Glean.\n\n")
-	fmt.Fprintf(os.Stderr, "  Run:  glean auth login\n\n")
-	fmt.Fprintf(os.Stderr, "Or set environment variables:\n")
-	fmt.Fprintf(os.Stderr, "  export GLEAN_HOST=your-company-be.glean.com\n")
-	fmt.Fprintf(os.Stderr, "  export GLEAN_API_TOKEN=your-token\n\n")
 	authErrLog.Log("underlying auth error: %v", err)
+
+	suggestion := "Run:  glean auth login\n\n" +
+		"Or set environment variables:\n" +
+		"  export GLEAN_HOST=your-company-be.glean.com\n" +
+		"  export GLEAN_API_TOKEN=your-token"
 	if !authErrLog.Enabled() {
-		fmt.Fprintf(os.Stderr, "  Tip: re-run with -v or GLEAN_DEBUG=auth:* for details\n\n")
+		suggestion += "\n\n  Tip: re-run with -v or GLEAN_DEBUG=auth:* for details"
 	}
-	return errSilent
+
+	return &clierrors.CLIError{
+		UserMessage: "You're not signed in to Glean.",
+		Suggestion:  suggestion,
+		ExitCode:    clierrors.ExitAuthError,
+		Cause:       err,
+	}
 }
 
-// Execute runs the root command and handles any errors.
-// It's the main entry point for the CLI application.
 func Execute() error {
 	if err := rootCmd.Execute(); err != nil {
-		if err != errSilent {
+		var cliErr *clierrors.CLIError
+		if errors.As(err, &cliErr) {
+			fmt.Fprintf(os.Stderr, "\n%s\n", cliErr.Error())
+		} else {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		}
 		return err
