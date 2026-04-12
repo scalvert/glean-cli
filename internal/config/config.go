@@ -128,7 +128,6 @@ func loadFromEnv() *Config {
 }
 
 // SaveConfig stores host and token in both the system keyring and file storage.
-// It returns an error only if both storage methods fail.
 func SaveConfig(host, token string) error {
 	if host != "" {
 		validHost, err := ValidateAndTransformHost(host)
@@ -163,11 +162,20 @@ func SaveConfig(host, token string) error {
 		cfg.GleanToken = token
 	}
 
-	if err := saveToFile(cfg); err != nil && keyringErr != nil {
-		return fmt.Errorf("failed to save config: keyring error: %v, file error: %v", keyringErr, err)
-	}
+	fileErr := saveToFile(cfg)
 
-	return nil
+	switch {
+	case keyringErr != nil && fileErr != nil:
+		return fmt.Errorf("failed to save config: keyring: %v, file: %v", keyringErr, fileErr)
+	case fileErr != nil:
+		cfgLog.Log("warning: config file write failed (keyring OK): %v", fileErr)
+		return nil
+	case keyringErr != nil:
+		cfgLog.Log("keyring unavailable, config saved to file only: %v", keyringErr)
+		return nil
+	default:
+		return nil
+	}
 }
 
 // SaveHostToFile persists only the host in ~/.glean/config.json without touching

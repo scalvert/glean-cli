@@ -118,7 +118,9 @@ func (m *Model) handleSlashCommand(input string) (tea.Model, tea.Cmd) {
 // System turns are rendered in the viewport but never sent to the Glean API.
 func (m *Model) addSystemMessage(text string) {
 	turn := Turn{Role: roleSystem, Content: text}
-	m.session.AppendTurn(turn)
+	if err := m.session.AppendTurn(turn); err != nil {
+		sessionLog.Log("save failed: %v", err)
+	}
 	if !m.conversationActive {
 		m.conversationActive = true
 		m.viewport.Height = m.maxViewportHeight()

@@ -270,8 +270,8 @@ func TestConfigOperations(t *testing.T) {
 		err = SaveConfig("linkedin", "test-token")
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "failed to save config")
-		assert.Contains(t, err.Error(), "keyring error")
-		assert.Contains(t, err.Error(), "file error")
+		assert.Contains(t, err.Error(), "keyring:")
+		assert.Contains(t, err.Error(), "file:")
 
 		// Reset mock error for other tests
 		mock.err = nil
