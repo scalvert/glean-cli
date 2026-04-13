@@ -3,10 +3,12 @@ package tui
 
 import (
 	"bufio"
+	"crypto/rand"
 	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/gleanwork/glean-cli/internal/debug"
 )
@@ -32,6 +34,20 @@ type Source struct {
 type Session struct {
 	Turns []Turn `json:"turns"`
 	path  string // resolved path to the session file
+	id    string // session identifier (UUID)
+}
+
+// ID returns the session's unique identifier.
+func (s *Session) ID() string { return s.id }
+
+func newSessionID() string {
+	var b [16]byte
+	if _, err := rand.Read(b[:]); err != nil {
+		panic("crypto/rand failed: " + err.Error())
+	}
+	b[6] = (b[6] & 0x0f) | 0x40 // version 4
+	b[8] = (b[8] & 0x3f) | 0x80 // variant 1
+	return fmt.Sprintf("%08x-%04x-%04x-%04x-%012x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:16])
 }
 
 // sessionsDir returns ~/.glean/sessions/.
@@ -43,8 +59,8 @@ func sessionsDir() (string, error) {
 	return filepath.Join(home, ".glean", "sessions"), nil
 }
 
-// LoadLatest loads the last saved session, or returns an empty session if none exists.
-// It reads JSONL format first, falling back to legacy JSON if no JSONL file exists.
+// LoadLatest loads the most recently modified session, or returns an empty
+// session if none exists. Session files are identified by mtime.
 func LoadLatest() *Session {
 	dir, err := sessionsDir()
 	if err != nil {
@@ -52,17 +68,64 @@ func LoadLatest() *Session {
 		return &Session{}
 	}
 
-	jsonlPath := filepath.Join(dir, "latest.jsonl")
-	if s, ok := loadJSONL(jsonlPath); ok {
-		return s
+	path, id := findLatestSession(dir)
+	if path == "" {
+		return &Session{}
 	}
 
-	jsonPath := filepath.Join(dir, "latest.json")
-	if s, ok := migrateFromJSON(jsonPath, jsonlPath); ok {
-		return s
+	s, ok := loadJSONL(path)
+	if !ok {
+		return &Session{}
+	}
+	s.id = id
+	return s
+}
+
+func findLatestSession(dir string) (path, id string) {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		sessionLog.Log("load: %v", err)
+		return "", ""
 	}
 
-	return &Session{}
+	var latestPath string
+	var latestID string
+	var latestMtime int64
+
+	for _, e := range entries {
+		if e.IsDir() || !strings.HasSuffix(e.Name(), ".jsonl") {
+			continue
+		}
+		info, err := e.Info()
+		if err != nil {
+			continue
+		}
+		if mtime := info.ModTime().UnixNano(); mtime > latestMtime {
+			latestMtime = mtime
+			latestPath = filepath.Join(dir, e.Name())
+			latestID = strings.TrimSuffix(e.Name(), ".jsonl")
+		}
+	}
+
+	if latestPath == "" {
+		// Fallback: check for legacy latest.json and migrate
+		jsonPath := filepath.Join(dir, "latest.json")
+		jsonlPath := filepath.Join(dir, "latest.jsonl")
+		if s, ok := migrateFromJSON(jsonPath, jsonlPath); ok {
+			// Re-save as a proper UUID-named file
+			newID := newSessionID()
+			newPath := filepath.Join(dir, newID+".jsonl")
+			if err := os.Rename(jsonlPath, newPath); err == nil {
+				s.path = newPath
+				s.id = newID
+				sessionLog.Log("migrated legacy session to %s", newPath)
+				return newPath, newID
+			}
+			return jsonlPath, "latest"
+		}
+	}
+
+	return latestPath, latestID
 }
 
 func loadJSONL(path string) (*Session, bool) {
@@ -138,7 +201,10 @@ func (s *Session) ensurePath() (string, error) {
 	if err := os.MkdirAll(dir, 0700); err != nil {
 		return "", fmt.Errorf("could not create sessions dir: %w", err)
 	}
-	s.path = filepath.Join(dir, "latest.jsonl")
+	if s.id == "" {
+		s.id = newSessionID()
+	}
+	s.path = filepath.Join(dir, s.id+".jsonl")
 	return s.path, nil
 }
 
