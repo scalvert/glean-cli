@@ -18,12 +18,13 @@ require (
 	github.com/coreos/go-oidc/v3 v3.17.0
 	github.com/fatih/color v1.19.0
 	github.com/gkampitakis/go-snaps v0.5.21
-	github.com/gleanwork/api-client-go v0.11.38
+	github.com/gleanwork/api-client-go v0.11.40
 	github.com/int128/oauth2cli v1.18.0
 	github.com/minio/selfupdate v0.6.0
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	github.com/stretchr/testify v1.11.1
 	github.com/zalando/go-keyring v0.2.8
+	golang.org/x/mod v0.34.0
 	golang.org/x/oauth2 v0.36.0
 	golang.org/x/term v0.41.0
 )
@@ -78,7 +79,6 @@ require (
 	github.com/yuin/goldmark v1.7.13 // indirect
 	github.com/yuin/goldmark-emoji v1.0.6 // indirect
 	golang.org/x/crypto v0.45.0 // indirect
-	golang.org/x/mod v0.34.0 // indirect
 	golang.org/x/net v0.47.0 // indirect
 	golang.org/x/sync v0.18.0 // indirect
 	golang.org/x/sys v0.42.0 // indirect
