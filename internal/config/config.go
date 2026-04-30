@@ -65,6 +65,33 @@ func NormalizeHost(host string) string {
 	return host
 }
 
+// NormalizeServerURL canonicalizes a Glean server URL value.
+// It trims surrounding whitespace, strips trailing slashes, and ensures a
+// scheme is present (defaulting to https). Existing schemes are preserved,
+// so "http://localhost:8080" stays on http.
+//
+// The function is idempotent — applying it twice yields the same result as
+// applying it once.
+//
+// Examples:
+//
+//	NormalizeServerURL("acme-be.glean.com")          → "https://acme-be.glean.com"
+//	NormalizeServerURL("https://acme-be.glean.com")  → "https://acme-be.glean.com"
+//	NormalizeServerURL("https://acme-be.glean.com/") → "https://acme-be.glean.com"
+//	NormalizeServerURL("http://localhost:8080")      → "http://localhost:8080"
+//	NormalizeServerURL("")                           → ""
+func NormalizeServerURL(s string) string {
+	s = strings.TrimSpace(s)
+	if s == "" {
+		return ""
+	}
+	s = strings.TrimRight(s, "/")
+	if !strings.HasPrefix(s, "http://") && !strings.HasPrefix(s, "https://") {
+		s = "https://" + s
+	}
+	return s
+}
+
 // ValidateAndTransformHost is a compatibility wrapper around NormalizeHost.
 func ValidateAndTransformHost(host string) (string, error) {
 	return NormalizeHost(host), nil

@@ -169,6 +169,104 @@ func TestValidateAndTransformHost(t *testing.T) {
 	}
 }
 
+func TestNormalizeServerURL(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{
+			name:  "empty string returns empty",
+			input: "",
+			want:  "",
+		},
+		{
+			name:  "whitespace returns empty",
+			input: "   ",
+			want:  "",
+		},
+		{
+			name:  "no scheme prepends https",
+			input: "acme-be.glean.com",
+			want:  "https://acme-be.glean.com",
+		},
+		{
+			name:  "https preserved",
+			input: "https://acme-be.glean.com",
+			want:  "https://acme-be.glean.com",
+		},
+		{
+			name:  "http preserved for localhost",
+			input: "http://localhost:8080",
+			want:  "http://localhost:8080",
+		},
+		{
+			name:  "http preserved for non-localhost",
+			input: "http://acme-be.glean.com",
+			want:  "http://acme-be.glean.com",
+		},
+		{
+			name:  "trailing slash stripped",
+			input: "https://acme-be.glean.com/",
+			want:  "https://acme-be.glean.com",
+		},
+		{
+			name:  "multiple trailing slashes stripped",
+			input: "https://acme-be.glean.com///",
+			want:  "https://acme-be.glean.com",
+		},
+		{
+			name:  "vanity URL preserved",
+			input: "acmecorp-pl.glean.com",
+			want:  "https://acmecorp-pl.glean.com",
+		},
+		{
+			name:  "obfuscated URL preserved",
+			input: "a7c3d91b-be.glean.com",
+			want:  "https://a7c3d91b-be.glean.com",
+		},
+		{
+			name:  "surrounding whitespace trimmed",
+			input: "  https://acme-be.glean.com  ",
+			want:  "https://acme-be.glean.com",
+		},
+		{
+			name:  "localhost without port",
+			input: "localhost",
+			want:  "https://localhost",
+		},
+		{
+			name:  "localhost with port no scheme",
+			input: "localhost:8080",
+			want:  "https://localhost:8080",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := NormalizeServerURL(tt.input)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func TestNormalizeServerURL_Idempotent(t *testing.T) {
+	inputs := []string{
+		"acme-be.glean.com",
+		"https://acme-be.glean.com",
+		"https://acme-be.glean.com/",
+		"http://localhost:8080",
+		"acmecorp-pl.glean.com",
+	}
+	for _, in := range inputs {
+		t.Run(in, func(t *testing.T) {
+			once := NormalizeServerURL(in)
+			twice := NormalizeServerURL(once)
+			assert.Equal(t, once, twice, "normalizer must be idempotent")
+		})
+	}
+}
+
 func TestConfigPath(t *testing.T) {
 	t.Run("default config path", func(t *testing.T) {
 		homeDir, err := os.UserHomeDir()
