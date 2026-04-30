@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/gleanwork/glean-cli/internal/fileutil"
@@ -35,9 +36,31 @@ type StoredClient struct {
 	ClientSecret string `json:"client_secret,omitempty"`
 }
 
+// canonicalHostKey reduces a server URL or bare hostname to the canonical
+// form used for keying per-host state directories (OAuth tokens, clients).
+//
+// Accepts any of:
+//
+//	"acme-be.glean.com"
+//	"https://acme-be.glean.com"
+//	"https://acme-be.glean.com/"
+//	"HTTPS://Acme-Be.Glean.Com"
+//
+// All collapse to "acme-be.glean.com", so state saved under any one input is
+// discoverable from any of the others. This preserves existing OAuth tokens
+// across the GLEAN_HOST → GLEAN_SERVER_URL migration.
+func canonicalHostKey(s string) string {
+	s = strings.TrimSpace(s)
+	s = strings.ToLower(s)
+	s = strings.TrimPrefix(s, "https://")
+	s = strings.TrimPrefix(s, "http://")
+	s = strings.TrimRight(s, "/")
+	return s
+}
+
 // stateDir returns ~/.local/state/glean-cli/<hash>/ for the given host.
 func stateDir(host string) string {
-	h := sha256.Sum256([]byte(host))
+	h := sha256.Sum256([]byte(canonicalHostKey(host)))
 	key := fmt.Sprintf("%x", h[:8])
 	home, _ := os.UserHomeDir()
 	return filepath.Join(home, ".local", "state", "glean-cli", key)
