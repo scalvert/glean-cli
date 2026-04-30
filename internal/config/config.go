@@ -127,7 +127,7 @@ func loadFromEnv() *Config {
 		cfg.GleanToken = v
 	}
 	if v := os.Getenv("GLEAN_HOST"); v != "" {
-		cfg.GleanHost = v
+		cfg.GleanHost = NormalizeHost(v)
 	}
 	return cfg
 }

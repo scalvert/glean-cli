@@ -399,6 +399,16 @@ func TestLoadConfig_EnvHostWithFileToken(t *testing.T) {
 	assert.Equal(t, "file-token", result.GleanToken, "token from file must be used even when host comes from env")
 }
 
+func TestLoadConfig_EnvHostNormalized(t *testing.T) {
+	isolateAuthState(t)
+
+	t.Setenv("GLEAN_HOST", "linkedin")
+
+	cfg, err := LoadConfig()
+	require.NoError(t, err)
+	assert.Equal(t, "linkedin-be.glean.com", cfg.GleanHost, "short name from env should be expanded")
+}
+
 func TestSaveHostToFile_DoesNotTouchKeyring(t *testing.T) {
 	mock, cleanupKeyring := setupTestKeyring(t)
 	_, cleanupConfig := setupTestConfig(t)
