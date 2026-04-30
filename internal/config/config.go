@@ -55,11 +55,16 @@ func MaskToken(token string) string {
 	return token[:4] + strings.Repeat("*", len(token)-8) + token[len(token)-4:]
 }
 
-// NormalizeHost ensures the Glean host is in the correct format,
-// transforming short names (e.g., "linkedin") to full hostnames (e.g., "linkedin-be.glean.com").
-// Full hostnames (containing a ".") are returned unchanged.
+// NormalizeHost ensures the Glean host is in the correct format.
+// It strips any scheme (https:// or http://) and trailing slashes, then
+// transforms short names (e.g., "linkedin") to full hostnames (e.g., "linkedin-be.glean.com").
+// Full hostnames (containing a ".") and localhost are returned unchanged.
 func NormalizeHost(host string) string {
-	if !strings.Contains(host, ".") {
+	host = strings.TrimPrefix(host, "https://")
+	host = strings.TrimPrefix(host, "http://")
+	host = strings.TrimRight(host, "/")
+
+	if !strings.Contains(host, ".") && !strings.HasPrefix(host, "localhost") {
 		return host + "-be.glean.com"
 	}
 	return host

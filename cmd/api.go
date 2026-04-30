@@ -152,12 +152,7 @@ func NewCmdAPI() *cobra.Command {
 
 // apiBaseURL builds the base API URL from config.
 func apiBaseURL(cfg *config.Config) string {
-	host := cfg.GleanHost
-	// Expand short names (e.g., "linkedin" → "linkedin-be.glean.com")
-	if host != "" && !strings.Contains(host, ".") {
-		host += "-be.glean.com"
-	}
-	return fmt.Sprintf("https://%s", host)
+	return "https://" + config.NormalizeHost(cfg.GleanHost)
 }
 
 // apiFullURL returns the full REST API URL for an endpoint path.

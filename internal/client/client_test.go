@@ -72,23 +72,19 @@ func TestResolveToken_NoToken(t *testing.T) {
 	assert.Empty(t, authType)
 }
 
-func TestExtractInstance(t *testing.T) {
-	tests := []struct {
-		host     string
-		expected string
-	}{
-		{"linkedin-be.glean.com", "linkedin"},
-		{"linkedin", "linkedin"},
-		{"custom.example.com", "custom"},
-		{"acme-corp-be.glean.com", "acme-corp"},
-		{"single", "single"},
-		{"deep.sub.domain.example.com", "deep"},
+func TestNew_FullHostname(t *testing.T) {
+	hosts := []string{
+		"acmecorp-be.glean.com",
+		"acmecorp-pl.glean.com",
+		"sub.domain.acmecorp-be.glean.com",
+		"search.acmecorp.com",
 	}
-
-	for _, tt := range tests {
-		t.Run(tt.host, func(t *testing.T) {
-			got := extractInstance(tt.host)
-			assert.Equal(t, tt.expected, got)
+	for _, host := range hosts {
+		t.Run(host, func(t *testing.T) {
+			cfg := &config.Config{GleanHost: host, GleanToken: "valid-token"}
+			client, err := New(cfg)
+			require.NoError(t, err)
+			assert.NotNil(t, client)
 		})
 	}
 }

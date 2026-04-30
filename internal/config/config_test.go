@@ -151,6 +151,46 @@ func TestValidateAndTransformHost(t *testing.T) {
 			input: "linkedin-be.glean.com",
 			want:  "linkedin-be.glean.com",
 		},
+		{
+			name:  "custom full hostname",
+			input: "acmecorp-pl.glean.com",
+			want:  "acmecorp-pl.glean.com",
+		},
+		{
+			name:  "strips https scheme",
+			input: "https://acmecorp-be.glean.com",
+			want:  "acmecorp-be.glean.com",
+		},
+		{
+			name:  "strips http scheme",
+			input: "http://acmecorp-be.glean.com",
+			want:  "acmecorp-be.glean.com",
+		},
+		{
+			name:  "strips trailing slash",
+			input: "acmecorp-be.glean.com/",
+			want:  "acmecorp-be.glean.com",
+		},
+		{
+			name:  "strips scheme and trailing slash",
+			input: "https://acmecorp-be.glean.com/",
+			want:  "acmecorp-be.glean.com",
+		},
+		{
+			name:  "strips scheme from short name and expands",
+			input: "https://acmecorp",
+			want:  "acmecorp-be.glean.com",
+		},
+		{
+			name:  "localhost unchanged",
+			input: "localhost",
+			want:  "localhost",
+		},
+		{
+			name:  "localhost with port unchanged",
+			input: "localhost:8080",
+			want:  "localhost:8080",
+		},
 	}
 
 	for _, tt := range tests {
