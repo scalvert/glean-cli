@@ -57,7 +57,7 @@ body:
 
         Or with curl:
         ```bash
-        curl -s -X POST "https://$GLEAN_HOST/rest/api/v1/search" \
+        curl -s -X POST "$GLEAN_SERVER_URL/rest/api/v1/search" \
           -H "Authorization: Bearer $GLEAN_API_TOKEN" \
           -H "Content-Type: application/json" \
           -d '{"query":"test","pageSize":3}'
@@ -77,7 +77,7 @@ body:
       label: Authentication method
       options:
         - OAuth (`glean auth login`)
-        - Environment variables (`GLEAN_API_TOKEN` + `GLEAN_HOST`)
+        - Environment variables (`GLEAN_API_TOKEN` + `GLEAN_SERVER_URL`)
         - Config file (`~/.glean/config.json`)
     validations:
       required: true

@@ -96,3 +96,67 @@ func TestStateDir_FilePermissions(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, os.FileMode(0600), fi.Mode().Perm())
 }
+
+func TestCanonicalHostKey(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{"bare hostname", "acme-be.glean.com", "acme-be.glean.com"},
+		{"https scheme", "https://acme-be.glean.com", "acme-be.glean.com"},
+		{"http scheme", "http://acme-be.glean.com", "acme-be.glean.com"},
+		{"trailing slash", "https://acme-be.glean.com/", "acme-be.glean.com"},
+		{"multiple trailing slashes", "https://acme-be.glean.com///", "acme-be.glean.com"},
+		{"mixed case", "HTTPS://Acme-Be.Glean.Com", "acme-be.glean.com"},
+		{"surrounding whitespace", "  https://acme-be.glean.com  ", "acme-be.glean.com"},
+		{"localhost with port", "http://localhost:8080", "localhost:8080"},
+		{"vanity URL", "https://acmecorp-pl.glean.com", "acmecorp-pl.glean.com"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, canonicalHostKey(tt.input))
+		})
+	}
+}
+
+// TestStateDir_SameForLegacyAndNew ensures the GLEAN_HOST → GLEAN_SERVER_URL
+// migration does not invalidate existing OAuth tokens: a bare hostname, the
+// same hostname with an https scheme, and the same URL with a trailing slash
+// must all hash to the same state directory.
+func TestStateDir_SameForLegacyAndNew(t *testing.T) {
+	withTempHome(t)
+
+	bare := stateDir("acme-be.glean.com")
+	scheme := stateDir("https://acme-be.glean.com")
+	trailing := stateDir("https://acme-be.glean.com/")
+	mixedCase := stateDir("HTTPS://ACME-BE.GLEAN.COM")
+
+	assert.Equal(t, bare, scheme, "bare hostname and https URL must share a state dir")
+	assert.Equal(t, bare, trailing, "trailing slash must not change state dir")
+	assert.Equal(t, bare, mixedCase, "case must not change state dir")
+}
+
+// TestStateDir_DifferentHostsDiffer ensures distinct hosts still resolve to
+// distinct directories after canonicalization.
+func TestStateDir_DifferentHostsDiffer(t *testing.T) {
+	withTempHome(t)
+
+	a := stateDir("acme-be.glean.com")
+	b := stateDir("other-be.glean.com")
+	assert.NotEqual(t, a, b)
+}
+
+// TestTokensSurviveMigrationInputChange is the end-to-end guarantee: a token
+// saved under a legacy GLEAN_HOST value is recoverable when the caller later
+// passes the same tenant as a full GLEAN_SERVER_URL.
+func TestTokensSurviveMigrationInputChange(t *testing.T) {
+	withTempHome(t)
+	tok := &StoredTokens{AccessToken: "legacy-token"}
+	require.NoError(t, SaveTokens("acme-be.glean.com", tok))
+
+	got, err := LoadTokens("https://acme-be.glean.com")
+	require.NoError(t, err)
+	require.NotNil(t, got)
+	assert.Equal(t, "legacy-token", got.AccessToken)
+}

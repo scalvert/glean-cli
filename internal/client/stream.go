@@ -31,17 +31,15 @@ const streamTimeout = 10 * time.Minute
 // Only messages with messageType == "CONTENT" carry user-facing text; callers
 // should skip UPDATE, CONTROL, DEBUG, etc.
 func StreamChat(ctx context.Context, cfg *config.Config, req components.ChatRequest) (io.ReadCloser, error) {
-	host := cfg.GleanHost
-	if host == "" {
-		return nil, fmt.Errorf("glean host not configured")
+	serverURL := cfg.GleanServerURL
+	if serverURL == "" {
+		return nil, fmt.Errorf("glean server URL not configured")
 	}
 
 	token, authType := ResolveToken(cfg)
 	if token == "" {
 		return nil, fmt.Errorf("not authenticated — run 'glean auth login'")
 	}
-
-	host = config.NormalizeHost(host)
 
 	stream := true
 	req.Stream = &stream
@@ -61,7 +59,7 @@ func StreamChat(ctx context.Context, cfg *config.Config, req components.ChatRequ
 		return nil, fmt.Errorf("marshaling chat request: %w", err)
 	}
 
-	url := fmt.Sprintf("https://%s/rest/api/v1/chat", host)
+	url := serverURL + "/rest/api/v1/chat"
 	streamLog.Log("POST %s (%d bytes)", url, len(payload))
 	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(payload))
 	if err != nil {

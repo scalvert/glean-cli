@@ -24,13 +24,13 @@ func oauthToken() *auth.StoredTokens {
 	}
 }
 
-func TestOAuthLoginStateRequiresPersistedHostAfterEnvHostIsRemoved(t *testing.T) {
+func TestOAuthLoginStateRequiresPersistedServerURLAfterEnvIsRemoved(t *testing.T) {
 	authtest.IsolateAuthState(t)
 
-	const host = "acme-be.glean.com"
-	require.NoError(t, auth.SaveTokens(host, oauthToken()))
+	const serverURL = "https://acme-be.glean.com"
+	require.NoError(t, auth.SaveTokens(serverURL, oauthToken()))
 
-	t.Setenv("GLEAN_HOST", host)
+	t.Setenv("GLEAN_SERVER_URL", serverURL)
 	cfg, err := config.LoadConfig()
 	require.NoError(t, err)
 
@@ -38,63 +38,62 @@ func TestOAuthLoginStateRequiresPersistedHostAfterEnvHostIsRemoved(t *testing.T)
 	assert.Equal(t, "oauth-access-token", token)
 	assert.Equal(t, "OAUTH", authType)
 
-	// Simulate a fresh shell/session after login where GLEAN_HOST is no longer set.
-	t.Setenv("GLEAN_HOST", "")
+	// Simulate a fresh shell/session after login where GLEAN_SERVER_URL is no longer set.
+	t.Setenv("GLEAN_SERVER_URL", "")
 	cfg, err = config.LoadConfig()
 	require.NoError(t, err)
-	assert.Empty(t, cfg.GleanHost, "host was never persisted by login")
+	assert.Empty(t, cfg.GleanServerURL, "server URL was never persisted by login")
 
 	token, authType = gleanClient.ResolveToken(cfg)
 	assert.Empty(t, token)
 	assert.Empty(t, authType)
 }
 
-func TestOAuthTokenResolvesWhenHostIsPersisted(t *testing.T) {
+func TestOAuthTokenResolvesWhenServerURLIsPersisted(t *testing.T) {
 	authtest.IsolateAuthState(t)
 
-	const host = "acme-be.glean.com"
-	require.NoError(t, config.SaveHostToFile(host))
-	require.NoError(t, auth.SaveTokens(host, oauthToken()))
+	const serverURL = "https://acme-be.glean.com"
+	require.NoError(t, config.SaveServerURLToFile(serverURL))
+	require.NoError(t, auth.SaveTokens(serverURL, oauthToken()))
 
 	cfg, err := config.LoadConfig()
 	require.NoError(t, err)
-	require.Equal(t, host, cfg.GleanHost)
+	require.Equal(t, serverURL, cfg.GleanServerURL)
 
 	token, authType := gleanClient.ResolveToken(cfg)
 	assert.Equal(t, "oauth-access-token", token)
 	assert.Equal(t, "OAUTH", authType)
 }
 
-func TestShortFormHostNormalizesConsistently(t *testing.T) {
+// TestTokensResolveAcrossSchemeForms confirms the canonical-host-key
+// guarantee end-to-end at the auth layer: a token saved under a bare hostname
+// is loadable when the persisted config later hands us a full URL. This is
+// the behavior that lets existing OAuth sessions survive the migration to
+// GLEAN_SERVER_URL without forcing a re-login.
+func TestTokensResolveAcrossSchemeForms(t *testing.T) {
 	authtest.IsolateAuthState(t)
 
-	const shortHost = "acme"
-	const normalizedHost = "acme-be.glean.com"
+	// Tokens saved under the legacy bare-hostname shape.
+	require.NoError(t, auth.SaveTokens("acme-be.glean.com", oauthToken()))
 
-	// Simulate: GLEAN_HOST=acme (short form) was set during login.
-	// persistLoginState normalizes the host in the config file,
-	// and SaveTokens must use the same normalized value.
-	require.NoError(t, config.SaveHostToFile(shortHost))
-	require.NoError(t, auth.SaveTokens(config.NormalizeHost(shortHost), oauthToken()))
+	// Config has moved to the new full-URL shape.
+	require.NoError(t, config.SaveServerURLToFile("https://acme-be.glean.com"))
 
-	// Simulate next session: no env var, host loaded from config file.
 	cfg, err := config.LoadConfig()
 	require.NoError(t, err)
-	require.Equal(t, normalizedHost, cfg.GleanHost, "config file should contain normalized host")
 
-	// Token lookup must use the same normalized host.
 	token, authType := gleanClient.ResolveToken(cfg)
-	assert.Equal(t, "oauth-access-token", token, "tokens should be found via normalized host")
+	assert.Equal(t, "oauth-access-token", token, "tokens must be discoverable under the new server URL shape")
 	assert.Equal(t, "OAUTH", authType)
 }
 
 func TestStaleAPITokenClearedOnOAuthLogin(t *testing.T) {
 	authtest.IsolateAuthState(t)
 
-	const host = "acme-be.glean.com"
+	const serverURL = "https://acme-be.glean.com"
 
 	// Simulate a stale API token in config.
-	require.NoError(t, config.SaveConfig(host, "stale-api-token"))
+	require.NoError(t, config.SaveConfig(serverURL, "stale-api-token"))
 
 	cfg, err := config.LoadConfig()
 	require.NoError(t, err)
@@ -104,14 +103,14 @@ func TestStaleAPITokenClearedOnOAuthLogin(t *testing.T) {
 	// We can't call Login() directly since it requires a browser, but
 	// persistLoginState is the function that should clear stale tokens.
 	require.NoError(t, config.ClearTokenFromStorage())
-	require.NoError(t, config.SaveHostToFile(host))
-	require.NoError(t, auth.SaveTokens(host, oauthToken()))
+	require.NoError(t, config.SaveServerURLToFile(serverURL))
+	require.NoError(t, auth.SaveTokens(serverURL, oauthToken()))
 
 	// After OAuth login, the stale API token should be gone.
 	cfg, err = config.LoadConfig()
 	require.NoError(t, err)
 	assert.Empty(t, cfg.GleanToken, "stale API token should be cleared after OAuth login")
-	assert.Equal(t, host, cfg.GleanHost, "host should remain")
+	assert.Equal(t, serverURL, cfg.GleanServerURL, "server URL should remain")
 
 	// OAuth token should now be resolvable.
 	token, authType := gleanClient.ResolveToken(cfg)
@@ -119,26 +118,26 @@ func TestStaleAPITokenClearedOnOAuthLogin(t *testing.T) {
 	assert.Equal(t, "OAUTH", authType)
 }
 
-func TestLogoutClearsPersistedHostAndOAuthTokens(t *testing.T) {
+func TestLogoutClearsPersistedServerURLAndOAuthTokens(t *testing.T) {
 	authtest.IsolateAuthState(t)
 
-	const host = "acme-be.glean.com"
-	require.NoError(t, config.SaveHostToFile(host))
-	require.NoError(t, auth.SaveTokens(host, oauthToken()))
-	require.NoError(t, auth.SaveClient(host, &auth.StoredClient{ClientID: "cid-123"}))
+	const serverURL = "https://acme-be.glean.com"
+	require.NoError(t, config.SaveServerURLToFile(serverURL))
+	require.NoError(t, auth.SaveTokens(serverURL, oauthToken()))
+	require.NoError(t, auth.SaveClient(serverURL, &auth.StoredClient{ClientID: "cid-123"}))
 
 	require.NoError(t, auth.Logout(context.Background()))
 
 	cfg, err := config.LoadConfig()
 	require.NoError(t, err)
-	assert.Empty(t, cfg.GleanHost)
+	assert.Empty(t, cfg.GleanServerURL)
 	assert.Empty(t, cfg.GleanToken)
 
-	tok, err := auth.LoadTokens(host)
+	tok, err := auth.LoadTokens(serverURL)
 	require.NoError(t, err)
 	assert.Nil(t, tok)
 
-	cl, err := auth.LoadClient(host)
+	cl, err := auth.LoadClient(serverURL)
 	require.NoError(t, err)
 	assert.Nil(t, cl)
 }

@@ -35,7 +35,7 @@ glean auth status
 
 # CI/scripting (no interactive setup needed)
 export GLEAN_API_TOKEN=your-token
-export GLEAN_HOST=your-company-be.glean.com
+export GLEAN_SERVER_URL=<your Glean server URL>
 ```
 
 Credentials resolve in this order: environment variables → system keyring → ~/.glean/config.json.

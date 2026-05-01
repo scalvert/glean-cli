@@ -31,9 +31,9 @@ func ResolveToken(cfg *config.Config) (token, authType string) {
 		resolveLog.Log("using API token from env/config")
 		return cfg.GleanToken, ""
 	}
-	tok := auth.LoadOAuthToken(cfg.GleanHost)
+	tok := auth.LoadOAuthToken(cfg.GleanServerURL)
 	if tok != "" {
-		resolveLog.Log("using OAuth token for %s", cfg.GleanHost)
+		resolveLog.Log("using OAuth token for %s", cfg.GleanServerURL)
 		return tok, authTypeOAuth
 	}
 	resolveLog.Log("no credentials found")
@@ -49,8 +49,8 @@ func ValidateToken(ctx context.Context, cfg *config.Config) error {
 		return fmt.Errorf("no token available")
 	}
 
-	resolveLog.Log("validating token against %s", cfg.GleanHost)
-	url := "https://" + cfg.GleanHost + "/rest/api/v1/search"
+	resolveLog.Log("validating token against %s", cfg.GleanServerURL)
+	url := cfg.GleanServerURL + "/rest/api/v1/search"
 	body := strings.NewReader(`{"query":"","pageSize":1}`)
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, body)
 	if err != nil {
@@ -93,12 +93,11 @@ func ValidateToken(ctx context.Context, cfg *config.Config) error {
 //  2. System keyring / ~/.glean/config.json (via config.LoadConfig)
 //  3. OAuth token from local storage (via auth.LoadOAuthToken)
 //
-// The GleanHost value is accepted in two forms:
-//   - Full hostname: "linkedin-be.glean.com" → instance = "linkedin"
-//   - Short name:   "linkedin"              → passed as-is to WithInstance
+// GleanServerURL is expected to be a fully-qualified URL (e.g.
+// "https://acme-be.glean.com"), already normalized by config.NormalizeServerURL.
 func New(cfg *config.Config) (*glean.Glean, error) {
-	if cfg.GleanHost == "" {
-		return nil, fmt.Errorf("glean host not configured. Run 'glean auth login' or set GLEAN_HOST")
+	if cfg.GleanServerURL == "" {
+		return nil, fmt.Errorf("glean server URL not configured. Run 'glean auth login' or set GLEAN_SERVER_URL")
 	}
 
 	token, authType := ResolveToken(cfg)
@@ -106,11 +105,10 @@ func New(cfg *config.Config) (*glean.Glean, error) {
 		return nil, fmt.Errorf("not authenticated — run 'glean auth login' or set GLEAN_API_TOKEN")
 	}
 
-	instance := extractInstance(cfg.GleanHost)
-	resolveLog.Log("instance=%s authType=%s", instance, authType)
+	resolveLog.Log("server_url=%s authType=%s", cfg.GleanServerURL, authType)
 
 	opts := []glean.SDKOption{
-		glean.WithInstance(instance),
+		glean.WithServerURL(cfg.GleanServerURL),
 		glean.WithSecurity(token),
 		glean.WithClient(&http.Client{
 			Transport: httputil.NewTransport(http.DefaultTransport,
@@ -134,20 +132,4 @@ func NewFromConfig() (*glean.Glean, error) {
 		return nil, err
 	}
 	return NewFunc(cfg)
-}
-
-// extractInstance derives the Glean instance name from a host value.
-// "linkedin-be.glean.com" → "linkedin"
-// "linkedin"              → "linkedin"
-func extractInstance(host string) string {
-	if strings.HasSuffix(host, "-be.glean.com") {
-		return strings.TrimSuffix(host, "-be.glean.com")
-	}
-	if strings.Contains(host, ".") {
-		// Custom hostname — use as-is; SDK will accept a full URL via WithServerURL
-		// but WithInstance only sets the variable. Return the part before the first dot
-		// as a best-effort fallback.
-		return strings.SplitN(host, ".", 2)[0]
-	}
-	return host
 }

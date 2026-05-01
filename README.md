@@ -61,7 +61,7 @@ Pre-built binaries for macOS, Linux, and Windows are available on the [Releases]
 # 1. Authenticate
 glean auth login                          # OAuth via browser (recommended)
 # — OR set env vars for CI/CD:
-# export GLEAN_HOST=your-company-be.glean.com GLEAN_API_TOKEN=your-token
+# export GLEAN_SERVER_URL=https://your-server-url GLEAN_API_TOKEN=your-token
 
 # 2. Search
 glean search "vacation policy"
@@ -117,7 +117,7 @@ For non-interactive environments, set credentials via environment variables:
 
 ```bash snippet=readme/snippet-05.sh
 export GLEAN_API_TOKEN=your-token
-export GLEAN_HOST=your-company-be.glean.com
+export GLEAN_SERVER_URL=https://your-server-url
 glean search "test"
 ```
 
@@ -317,8 +317,8 @@ glean search "all docs" --output ndjson --page-size 50 | jq .title
 
 | Variable          | Description                                               |
 | ----------------- | --------------------------------------------------------- |
-| `GLEAN_API_TOKEN` | API token — overrides keyring and config file             |
-| `GLEAN_HOST`      | Glean backend hostname (e.g. `your-company-be.glean.com`) |
+| `GLEAN_API_TOKEN`  | API token — overrides keyring and config file             |
+| `GLEAN_SERVER_URL` | Full Glean server URL. See [developers.glean.com](https://developers.glean.com/get-started/authentication) for how to find yours. |
 
 Environment variables take precedence over stored configuration.
 

@@ -150,22 +150,12 @@ func NewCmdAPI() *cobra.Command {
 	return cmd
 }
 
-// apiBaseURL builds the base API URL from config.
-func apiBaseURL(cfg *config.Config) string {
-	host := cfg.GleanHost
-	// Expand short names (e.g., "linkedin" → "linkedin-be.glean.com")
-	if host != "" && !strings.Contains(host, ".") {
-		host += "-be.glean.com"
-	}
-	return fmt.Sprintf("https://%s", host)
-}
-
 // apiFullURL returns the full REST API URL for an endpoint path.
 func apiFullURL(cfg *config.Config, path string) string {
 	if !strings.HasPrefix(path, "/rest/api/v1/") {
 		path = "/rest/api/v1/" + strings.TrimPrefix(path, "/")
 	}
-	return strings.TrimRight(apiBaseURL(cfg), "/") + path
+	return cfg.GleanServerURL + path
 }
 
 // rawAPIRequest makes an authenticated HTTP request to the Glean API.

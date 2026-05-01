@@ -45,7 +45,7 @@ func TestAPICommand_Preview_WritesToCmdOut(t *testing.T) {
 func TestAPICommandPreviewShowsAuthHeader(t *testing.T) {
 	// Inject a test token via the env var that config.LoadConfig actually reads.
 	t.Setenv("GLEAN_API_TOKEN", "test-token-for-preview")
-	t.Setenv("GLEAN_HOST", "test.glean.com")
+	t.Setenv("GLEAN_SERVER_URL", "https://test.glean.com")
 
 	b := bytes.NewBufferString("")
 	cmd := NewCmdAPI()
