@@ -39,14 +39,6 @@ jobs:
       - name: Run tests
         run: gotestsum --format pkgname -- ./... -race -coverprofile=coverage.txt -covermode=atomic
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v6
-        with:
-          file: ./coverage.txt
-          fail_ci_if_error: false
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
   lint:
     name: Lint
     runs-on: ubuntu-latest
