@@ -61,7 +61,7 @@ func SetupMockClient(body []byte, err error) (*MockTransport, func()) {
 	origFunc := client.NewFunc
 	client.NewFunc = func(cfg *config.Config) (*glean.Glean, error) {
 		return glean.New(
-			glean.WithInstance("test-company"),
+			glean.WithServerURL("https://test-company-be.glean.com"),
 			glean.WithSecurity("test-token"),
 			glean.WithClient(mock),
 		), nil

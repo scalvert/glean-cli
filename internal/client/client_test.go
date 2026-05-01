@@ -58,7 +58,7 @@ func TestTransport_APITokenOmitsHeader(t *testing.T) {
 }
 
 func TestResolveToken_APIToken(t *testing.T) {
-	cfg := &config.Config{GleanHost: "test-be.glean.com", GleanToken: "api-token-123"}
+	cfg := &config.Config{GleanServerURL: "https://test-be.glean.com", GleanToken: "api-token-123"}
 	token, authType := ResolveToken(cfg)
 	assert.Equal(t, "api-token-123", token)
 	assert.Empty(t, authType)
@@ -66,65 +66,65 @@ func TestResolveToken_APIToken(t *testing.T) {
 
 func TestResolveToken_NoToken(t *testing.T) {
 	// auth.LoadOAuthToken returns "" for an unrecognized host, so token stays empty.
-	cfg := &config.Config{GleanHost: "nonexistent-be.glean.com", GleanToken: ""}
+	cfg := &config.Config{GleanServerURL: "https://nonexistent-be.glean.com", GleanToken: ""}
 	token, authType := ResolveToken(cfg)
 	assert.Empty(t, token)
 	assert.Empty(t, authType)
 }
 
-func TestExtractInstance(t *testing.T) {
-	tests := []struct {
-		host     string
-		expected string
-	}{
-		{"linkedin-be.glean.com", "linkedin"},
-		{"linkedin", "linkedin"},
-		{"custom.example.com", "custom"},
-		{"acme-corp-be.glean.com", "acme-corp"},
-		{"single", "single"},
-		{"deep.sub.domain.example.com", "deep"},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.host, func(t *testing.T) {
-			got := extractInstance(tt.host)
-			assert.Equal(t, tt.expected, got)
-		})
-	}
-}
-
 func TestValidateToken_NoToken(t *testing.T) {
-	cfg := &config.Config{GleanHost: "test-be.glean.com", GleanToken: ""}
+	cfg := &config.Config{GleanServerURL: "https://test-be.glean.com", GleanToken: ""}
 	err := ValidateToken(context.Background(), cfg)
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "no token available")
 }
 
 func TestValidateToken_Unreachable(t *testing.T) {
-	cfg := &config.Config{GleanHost: "localhost:1", GleanToken: "some-token"}
+	cfg := &config.Config{GleanServerURL: "http://localhost:1", GleanToken: "some-token"}
 	err := ValidateToken(context.Background(), cfg)
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "validating token")
 }
 
-func TestNew_EmptyHost(t *testing.T) {
-	cfg := &config.Config{GleanHost: "", GleanToken: "some-token"}
+func TestNew_EmptyServerURL(t *testing.T) {
+	cfg := &config.Config{GleanServerURL: "", GleanToken: "some-token"}
 	_, err := New(cfg)
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "host not configured")
+	assert.Contains(t, err.Error(), "server URL not configured")
 }
 
 func TestNew_EmptyToken(t *testing.T) {
-	// auth.LoadOAuthToken will return "" for a fake host, so token stays empty
-	cfg := &config.Config{GleanHost: "test-be.glean.com", GleanToken: ""}
+	// auth.LoadOAuthToken will return "" for a fake URL, so token stays empty
+	cfg := &config.Config{GleanServerURL: "https://test-be.glean.com", GleanToken: ""}
 	_, err := New(cfg)
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "not authenticated")
 }
 
 func TestNew_Success(t *testing.T) {
-	cfg := &config.Config{GleanHost: "test-be.glean.com", GleanToken: "valid-token"}
+	cfg := &config.Config{GleanServerURL: "https://test-be.glean.com", GleanToken: "valid-token"}
 	client, err := New(cfg)
 	require.NoError(t, err)
 	assert.NotNil(t, client)
+}
+
+// TestNew_FullHostnames verifies that custom-shape Glean server URLs (vanity
+// domains, non-"-be" suffixes, obfuscated subdomains) all produce a working
+// SDK client. Covers the bugs originally reported in #102.
+func TestNew_FullHostnames(t *testing.T) {
+	urls := []string{
+		"https://acmecorp-be.glean.com",
+		"https://acmecorp-pl.glean.com",
+		"https://sub.domain.acmecorp-be.glean.com",
+		"https://search.acmecorp.com",
+		"https://a7c3d91b-be.glean.com",
+	}
+	for _, u := range urls {
+		t.Run(u, func(t *testing.T) {
+			cfg := &config.Config{GleanServerURL: u, GleanToken: "valid-token"}
+			client, err := New(cfg)
+			require.NoError(t, err)
+			assert.NotNil(t, client)
+		})
+	}
 }

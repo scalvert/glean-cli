@@ -187,7 +187,7 @@ func persistLoginState(host string, tok *StoredTokens) error {
 	if err := config.ClearTokenFromStorage(); err != nil {
 		return fmt.Errorf("clearing stale API token: %w", err)
 	}
-	if err := config.SaveHostToFile(host); err != nil {
+	if err := config.SaveServerURLToFile(host); err != nil {
 		return fmt.Errorf("saving host: %w", err)
 	}
 	if err := SaveTokens(host, tok); err != nil {
@@ -200,19 +200,19 @@ func persistLoginState(host string, tok *StoredTokens) error {
 // config/keyring credentials for the current host.
 func Logout(ctx context.Context) error {
 	cfg, err := config.LoadConfig()
-	if err != nil || cfg.GleanHost == "" {
+	if err != nil || cfg.GleanServerURL == "" {
 		return fmt.Errorf("no Glean host configured")
 	}
-	if err := DeleteTokens(cfg.GleanHost); err != nil {
+	if err := DeleteTokens(cfg.GleanServerURL); err != nil {
 		return fmt.Errorf("removing tokens: %w", err)
 	}
-	if err := DeleteClient(cfg.GleanHost); err != nil {
+	if err := DeleteClient(cfg.GleanServerURL); err != nil {
 		return fmt.Errorf("removing oauth client: %w", err)
 	}
 	if err := config.ClearConfig(); err != nil {
 		return fmt.Errorf("clearing config: %w", err)
 	}
-	fmt.Printf("✓ Logged out from Glean (%s)\n", cfg.GleanHost)
+	fmt.Printf("✓ Logged out from Glean (%s)\n", cfg.GleanServerURL)
 	return nil
 }
 
@@ -224,7 +224,7 @@ type TokenValidator func(ctx context.Context, cfg *config.Config) error
 // validateToken is used to verify API tokens against the backend (typically client.ValidateToken).
 func Status(ctx context.Context, validateToken TokenValidator) error {
 	cfg, _ := config.LoadConfig()
-	if cfg == nil || cfg.GleanHost == "" {
+	if cfg == nil || cfg.GleanServerURL == "" {
 		fmt.Println("Not configured.")
 		fmt.Println("Run 'glean auth login' to authenticate.")
 		return nil
@@ -233,15 +233,15 @@ func Status(ctx context.Context, validateToken TokenValidator) error {
 	if cfg.GleanToken != "" {
 		masked := config.MaskToken(cfg.GleanToken)
 		if err := validateToken(ctx, cfg); err != nil {
-			fmt.Printf("✗ API token is invalid or expired\n  Host:  %s\n  Token: %s\n  Error: %v\n", cfg.GleanHost, masked, err)
+			fmt.Printf("✗ API token is invalid or expired\n  Server URL: %s\n  Token:      %s\n  Error:      %v\n", cfg.GleanServerURL, masked, err)
 			fmt.Println("Run 'glean auth login' to re-authenticate.")
 			return nil
 		}
-		fmt.Printf("✓ Authenticated via API token\n  Host:  %s\n  Token: %s\n", cfg.GleanHost, masked)
+		fmt.Printf("✓ Authenticated via API token\n  Server URL: %s\n  Token:      %s\n", cfg.GleanServerURL, masked)
 		return nil
 	}
 
-	tok, err := LoadTokens(cfg.GleanHost)
+	tok, err := LoadTokens(cfg.GleanServerURL)
 	if err != nil {
 		return fmt.Errorf("reading stored tokens: %w", err)
 	}
@@ -262,9 +262,9 @@ func Status(ctx context.Context, validateToken TokenValidator) error {
 		expStr = fmt.Sprintf("expires %s (in %v)", tok.Expiry.UTC().Format(time.RFC3339), remaining)
 	}
 	if tok.Email != "" {
-		fmt.Printf("✓ Authenticated as %s (%s)\n  Token %s\n", tok.Email, cfg.GleanHost, expStr)
+		fmt.Printf("✓ Authenticated as %s (%s)\n  Token %s\n", tok.Email, cfg.GleanServerURL, expStr)
 	} else {
-		fmt.Printf("✓ Authenticated with Glean (%s)\n  Token %s\n", cfg.GleanHost, expStr)
+		fmt.Printf("✓ Authenticated with Glean (%s)\n  Token %s\n", cfg.GleanServerURL, expStr)
 	}
 	return nil
 }
@@ -275,8 +275,8 @@ func EnsureAuth(ctx context.Context) error {
 	if err == nil && cfg.GleanToken != "" {
 		return nil
 	}
-	if err == nil && cfg.GleanHost != "" {
-		tok, _ := LoadTokens(cfg.GleanHost)
+	if err == nil && cfg.GleanServerURL != "" {
+		tok, _ := LoadTokens(cfg.GleanServerURL)
 		if tok != nil && !tok.IsExpired() {
 			return nil
 		}
@@ -366,17 +366,16 @@ func refreshOAuthToken(host string, tok *StoredTokens) (*StoredTokens, error) {
 	return stored, nil
 }
 
-// resolveHost returns the configured Glean host, prompting for email if needed.
-// The returned host is always normalized (e.g. "linkedin" → "linkedin-be.glean.com")
-// so that all downstream callers (token storage, config persistence) use a consistent value.
+// resolveHost returns the configured Glean server URL, prompting for email if needed.
+// The returned value is always normalized (full URL with scheme, no trailing slash)
+// so all downstream callers (token storage, config persistence) use a consistent value.
 func resolveHost(ctx context.Context) (string, error) {
 	cfg, _ := config.LoadConfig()
-	if cfg != nil && cfg.GleanHost != "" {
-		host := config.NormalizeHost(cfg.GleanHost)
-		hostLog.Log("using configured host: %s", host)
-		return host, nil
+	if cfg != nil && cfg.GleanServerURL != "" {
+		hostLog.Log("using configured server URL: %s", cfg.GleanServerURL)
+		return cfg.GleanServerURL, nil
 	}
-	hostLog.Log("no host configured, prompting for email")
+	hostLog.Log("no server URL configured, prompting for email")
 
 	fmt.Print("Enter your work email: ")
 	reader := bufio.NewReader(os.Stdin)
@@ -395,15 +394,13 @@ func resolveHost(ctx context.Context) (string, error) {
 	}
 	fmt.Println(" found.")
 
-	host := strings.TrimPrefix(backendURL, "https://")
-	host = strings.TrimPrefix(host, "http://")
-	host = strings.SplitN(host, "/", 2)[0]
-	hostLog.Log("discovered host: %s", host)
+	serverURL := config.NormalizeServerURL(backendURL)
+	hostLog.Log("discovered server URL: %s", serverURL)
 
-	if err := config.SaveHostToFile(host); err != nil {
-		hostLog.Log("best-effort host save failed: %v", err)
+	if err := config.SaveServerURLToFile(serverURL); err != nil {
+		hostLog.Log("best-effort server URL save failed: %v", err)
 	}
-	return host, nil
+	return serverURL, nil
 }
 
 // discoveryResult holds all OAuth metadata discovered for a Glean backend.

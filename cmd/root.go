@@ -90,14 +90,14 @@ func NewCmdRoot() *cobra.Command {
 			// Resolve identity: "email · host" or just host.
 			// Email comes from stored token or decoded from the JWT access token
 			// (Glean's RFC 8414 access tokens are JWTs containing the email claim).
-			identity := cfg.GleanHost
-			if tok, err := auth.LoadTokens(cfg.GleanHost); err == nil && tok != nil {
+			identity := cfg.GleanServerURL
+			if tok, err := auth.LoadTokens(cfg.GleanServerURL); err == nil && tok != nil {
 				email := tok.Email
 				if email == "" {
 					email = auth.EmailFromJWT(tok.AccessToken)
 				}
 				if email != "" {
-					identity = email + "  ·  " + cfg.GleanHost
+					identity = email + "  ·  " + cfg.GleanServerURL
 				}
 			}
 
@@ -183,8 +183,9 @@ func authError(err error) error {
 
 	suggestion := "Run:  glean auth login\n\n" +
 		"Or set environment variables:\n" +
-		"  export GLEAN_HOST=your-company-be.glean.com\n" +
-		"  export GLEAN_API_TOKEN=your-token"
+		"  export GLEAN_SERVER_URL=<your Glean server URL>\n" +
+		"  export GLEAN_API_TOKEN=your-token\n\n" +
+		"See https://developers.glean.com/get-started/authentication for how to find your server URL."
 	if !authErrLog.Enabled() {
 		suggestion += "\n\n  Tip: re-run with -v or GLEAN_DEBUG=auth:* for details"
 	}

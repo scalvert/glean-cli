@@ -15,7 +15,7 @@ import (
 )
 
 func TestDcrOrStaticClient_NoClientAvailable(t *testing.T) {
-	t.Setenv("GLEAN_HOST", "")
+	t.Setenv("GLEAN_SERVER_URL", "")
 	config.ConfigPath = t.TempDir() + "/config.json"
 
 	_, _, err := dcrOrStaticClient(context.Background(), "test-host", "", "http://127.0.0.1:9999/callback")
@@ -24,7 +24,7 @@ func TestDcrOrStaticClient_NoClientAvailable(t *testing.T) {
 }
 
 func TestDcrOrStaticClient_DCRFails_NoStaticClient(t *testing.T) {
-	t.Setenv("GLEAN_HOST", "")
+	t.Setenv("GLEAN_SERVER_URL", "")
 	config.ConfigPath = t.TempDir() + "/config.json"
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
@@ -42,10 +42,10 @@ func TestDcrOrStaticClient_DCRFails_NoStaticClient(t *testing.T) {
 func TestDcrOrStaticClient_DCRFails_StaticClientFallback(t *testing.T) {
 	dir := t.TempDir()
 	config.ConfigPath = dir + "/config.json"
-	t.Setenv("GLEAN_HOST", "test-host")
+	t.Setenv("GLEAN_SERVER_URL", "test-host")
 
 	cfgData, _ := json.Marshal(map[string]string{
-		"host":                "test-host",
+		"server_url":          "test-host",
 		"oauth_client_id":     "static-id",
 		"oauth_client_secret": "static-secret",
 	})

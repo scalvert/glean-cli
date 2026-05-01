@@ -133,42 +133,6 @@ func isolateAuthState(t *testing.T) {
 	keyring.MockInit()
 }
 
-func TestValidateAndTransformHost(t *testing.T) {
-	tests := []struct {
-		name        string
-		input       string
-		want        string
-		errContains string
-		wantErr     bool
-	}{
-		{
-			name:  "simple instance name",
-			input: "linkedin",
-			want:  "linkedin-be.glean.com",
-		},
-		{
-			name:  "full valid hostname",
-			input: "linkedin-be.glean.com",
-			want:  "linkedin-be.glean.com",
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := ValidateAndTransformHost(tt.input)
-			if tt.wantErr {
-				assert.Error(t, err)
-				if tt.errContains != "" {
-					assert.Contains(t, err.Error(), tt.errContains)
-				}
-			} else {
-				assert.NoError(t, err)
-				assert.Equal(t, tt.want, got)
-			}
-		})
-	}
-}
-
 func TestNormalizeServerURL(t *testing.T) {
 	tests := []struct {
 		name  string
@@ -285,14 +249,14 @@ func TestConfigOperations(t *testing.T) {
 
 	t.Run("save and load config with working keyring", func(t *testing.T) {
 		// Save config
-		err := SaveConfig("linkedin", "test-token")
+		err := SaveConfig("https://linkedin-be.glean.com", "test-token")
 		require.NoError(t, err)
 
 		// Load config
 		cfg, err := LoadConfig()
 		require.NoError(t, err)
 
-		assert.Equal(t, "linkedin-be.glean.com", cfg.GleanHost)
+		assert.Equal(t, "https://linkedin-be.glean.com", cfg.GleanServerURL)
 		assert.Equal(t, "test-token", cfg.GleanToken)
 
 		// Verify config file was also created
@@ -301,7 +265,7 @@ func TestConfigOperations(t *testing.T) {
 
 	t.Run("fallback to config file when keyring fails", func(t *testing.T) {
 		// First save config successfully
-		err := SaveConfig("linkedin", "test-token")
+		err := SaveConfig("https://linkedin-be.glean.com", "test-token")
 		require.NoError(t, err)
 
 		// Now simulate keyring failure
@@ -311,13 +275,13 @@ func TestConfigOperations(t *testing.T) {
 		cfg, err := LoadConfig()
 		require.NoError(t, err)
 
-		assert.Equal(t, "linkedin-be.glean.com", cfg.GleanHost)
+		assert.Equal(t, "https://linkedin-be.glean.com", cfg.GleanServerURL)
 		assert.Equal(t, "test-token", cfg.GleanToken)
 	})
 
 	t.Run("clear config removes from both storages", func(t *testing.T) {
 		// First save some config
-		err := SaveConfig("linkedin", "test-token")
+		err := SaveConfig("https://linkedin-be.glean.com", "test-token")
 		require.NoError(t, err)
 
 		// Reset mock error
@@ -328,7 +292,7 @@ func TestConfigOperations(t *testing.T) {
 		require.NoError(t, err)
 
 		// Verify keyring is cleared
-		_, err = keyringImpl.Get(ServiceName, hostKey)
+		_, err = keyringImpl.Get(ServiceName, serverURLKey)
 		assert.Equal(t, keyring.ErrNotFound, err)
 
 		// Verify config file is removed
@@ -338,7 +302,7 @@ func TestConfigOperations(t *testing.T) {
 		// Load config should return empty values
 		cfg, err := LoadConfig()
 		require.NoError(t, err)
-		assert.Empty(t, cfg.GleanHost)
+		assert.Empty(t, cfg.GleanServerURL)
 		assert.Empty(t, cfg.GleanToken)
 	})
 
@@ -365,7 +329,7 @@ func TestConfigOperations(t *testing.T) {
 			os.MkdirAll(configDir, 0700)
 		}()
 
-		err = SaveConfig("linkedin", "test-token")
+		err = SaveConfig("https://linkedin-be.glean.com", "test-token")
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "failed to save config")
 		assert.Contains(t, err.Error(), "keyring:")
@@ -379,8 +343,8 @@ func TestConfigOperations(t *testing.T) {
 func TestClearTokenFromStorage(t *testing.T) {
 	isolateAuthState(t)
 
-	t.Run("clears token but preserves host", func(t *testing.T) {
-		require.NoError(t, SaveConfig("linkedin", "stale-api-token"))
+	t.Run("clears token but preserves server URL", func(t *testing.T) {
+		require.NoError(t, SaveConfig("https://linkedin-be.glean.com", "stale-api-token"))
 
 		cfg, err := LoadConfig()
 		require.NoError(t, err)
@@ -391,21 +355,21 @@ func TestClearTokenFromStorage(t *testing.T) {
 		cfg, err = LoadConfig()
 		require.NoError(t, err)
 		assert.Empty(t, cfg.GleanToken, "token should be cleared")
-		assert.Equal(t, "linkedin-be.glean.com", cfg.GleanHost, "host should be preserved")
+		assert.Equal(t, "https://linkedin-be.glean.com", cfg.GleanServerURL, "server URL should be preserved")
 	})
 
 	t.Run("no-op when no token exists", func(t *testing.T) {
 		// Clear state from previous subtest.
 		_ = ClearConfig()
 
-		require.NoError(t, SaveHostToFile("acme"))
+		require.NoError(t, SaveServerURLToFile("https://acme-be.glean.com"))
 
 		require.NoError(t, ClearTokenFromStorage())
 
 		cfg, err := LoadConfig()
 		require.NoError(t, err)
 		assert.Empty(t, cfg.GleanToken)
-		assert.Equal(t, "acme-be.glean.com", cfg.GleanHost)
+		assert.Equal(t, "https://acme-be.glean.com", cfg.GleanServerURL)
 	})
 }
 
@@ -414,16 +378,16 @@ func TestLoadConfigEnvPriority(t *testing.T) {
 
 	t.Run("GLEAN_API_TOKEN overrides keyring", func(t *testing.T) {
 		t.Setenv("GLEAN_API_TOKEN", "env-token")
-		t.Setenv("GLEAN_HOST", "env-be.glean.com")
+		t.Setenv("GLEAN_SERVER_URL", "https://env-be.glean.com")
 
 		cfg, err := LoadConfig()
 		require.NoError(t, err)
 		assert.Equal(t, "env-token", cfg.GleanToken)
-		assert.Equal(t, "env-be.glean.com", cfg.GleanHost)
+		assert.Equal(t, "https://env-be.glean.com", cfg.GleanServerURL)
 	})
 
 	t.Run("falls through to keyring when env vars absent", func(t *testing.T) {
-		require.NoError(t, SaveConfig("linkedin", "keyring-token"))
+		require.NoError(t, SaveConfig("https://linkedin-be.glean.com", "keyring-token"))
 
 		cfg, err := LoadConfig()
 		require.NoError(t, err)
@@ -434,14 +398,14 @@ func TestLoadConfigEnvPriority(t *testing.T) {
 func TestLoadConfig_EnvTokenWithKeyringHost(t *testing.T) {
 	isolateAuthState(t)
 
-	err := SaveConfig("myhost.glean.com", "")
+	err := SaveConfig("https://myhost.glean.com", "")
 	require.NoError(t, err)
 	t.Setenv("GLEAN_API_TOKEN", "env-token")
 
 	result, err := LoadConfig()
 	require.NoError(t, err)
 	assert.Equal(t, "env-token", result.GleanToken)
-	assert.Equal(t, "myhost.glean.com", result.GleanHost, "host from keyring must be used even when token comes from env")
+	assert.Equal(t, "https://myhost.glean.com", result.GleanServerURL, "server URL from keyring must be used even when token comes from env")
 }
 
 func TestLoadConfig_EnvHostWithFileToken(t *testing.T) {
@@ -449,39 +413,39 @@ func TestLoadConfig_EnvHostWithFileToken(t *testing.T) {
 
 	err := saveToFile(&Config{GleanToken: "file-token"})
 	require.NoError(t, err)
-	t.Setenv("GLEAN_HOST", "envhost.glean.com")
+	t.Setenv("GLEAN_SERVER_URL", "https://envhost.glean.com")
 
 	result, err := LoadConfig()
 	require.NoError(t, err)
-	assert.Equal(t, "envhost.glean.com", result.GleanHost)
-	assert.Equal(t, "file-token", result.GleanToken, "token from file must be used even when host comes from env")
+	assert.Equal(t, "https://envhost.glean.com", result.GleanServerURL)
+	assert.Equal(t, "file-token", result.GleanToken, "token from file must be used even when server URL comes from env")
 }
 
-func TestSaveHostToFile_DoesNotTouchKeyring(t *testing.T) {
+func TestSaveServerURLToFile_DoesNotTouchKeyring(t *testing.T) {
 	mock, cleanupKeyring := setupTestKeyring(t)
 	_, cleanupConfig := setupTestConfig(t)
 	defer cleanupKeyring()
 	defer cleanupConfig()
 
 	mock.err = assert.AnError
-	require.NoError(t, SaveHostToFile("linkedin"))
+	require.NoError(t, SaveServerURLToFile("https://linkedin-be.glean.com"))
 
 	cfg, err := loadFromFile()
 	require.NoError(t, err)
-	assert.Equal(t, "linkedin-be.glean.com", cfg.GleanHost)
+	assert.Equal(t, "https://linkedin-be.glean.com", cfg.GleanServerURL)
 	assert.Empty(t, cfg.GleanToken)
 }
 
 func TestValidateConfigKeys(t *testing.T) {
 	t.Run("unknown key produces warning", func(t *testing.T) {
-		data := []byte(`{"host":"x.glean.com","toke":"bad"}`)
+		data := []byte(`{"server_url":"https://x.glean.com","toke":"bad"}`)
 		warnings := validateConfigKeys(data)
 		require.Len(t, warnings, 1)
 		assert.Contains(t, warnings[0], `unknown key "toke"`)
 	})
 
 	t.Run("all known keys produce no warnings", func(t *testing.T) {
-		data := []byte(`{"host":"x","token":"t","oauth_client_id":"id","oauth_client_secret":"s"}`)
+		data := []byte(`{"server_url":"https://x.glean.com","token":"t","oauth_client_id":"id","oauth_client_secret":"s"}`)
 		warnings := validateConfigKeys(data)
 		assert.Empty(t, warnings)
 	})
@@ -489,7 +453,7 @@ func TestValidateConfigKeys(t *testing.T) {
 	t.Run("unknown keys do not prevent loading", func(t *testing.T) {
 		isolateAuthState(t)
 
-		cfgData := []byte(`{"host":"test-be.glean.com","token":"tok","extra_field":"val"}`)
+		cfgData := []byte(`{"server_url":"https://test-be.glean.com","token":"tok","extra_field":"val"}`)
 		err := os.MkdirAll(filepath.Dir(ConfigPath), 0700)
 		require.NoError(t, err)
 		err = os.WriteFile(ConfigPath, cfgData, 0600)
@@ -497,7 +461,7 @@ func TestValidateConfigKeys(t *testing.T) {
 
 		cfg, err := loadFromFile()
 		require.NoError(t, err)
-		assert.Equal(t, "test-be.glean.com", cfg.GleanHost)
+		assert.Equal(t, "https://test-be.glean.com", cfg.GleanServerURL)
 		assert.Equal(t, "tok", cfg.GleanToken)
 	})
 
@@ -514,7 +478,7 @@ func TestLoadFromFile(t *testing.T) {
 	t.Run("load non-existent file returns empty config", func(t *testing.T) {
 		cfg, err := loadFromFile()
 		require.NoError(t, err)
-		assert.Empty(t, cfg.GleanHost)
+		assert.Empty(t, cfg.GleanServerURL)
 		assert.Empty(t, cfg.GleanToken)
 	})
 
@@ -529,8 +493,8 @@ func TestLoadFromFile(t *testing.T) {
 
 	t.Run("load valid config file", func(t *testing.T) {
 		cfg := Config{
-			GleanHost:  "test-be.glean.com",
-			GleanToken: "test-token",
+			GleanServerURL: "https://test-be.glean.com",
+			GleanToken:     "test-token",
 		}
 		data, err := json.MarshalIndent(cfg, "", "  ")
 		require.NoError(t, err)
