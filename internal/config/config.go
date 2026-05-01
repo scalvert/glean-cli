@@ -302,10 +302,24 @@ func init() {
 func loadFromKeyring() *Config {
 	cfg := &Config{}
 
-	if v, err := keyringImpl.Get(ServiceName, serverURLKey); err == nil {
+	v, err := keyringImpl.Get(ServiceName, serverURLKey)
+	if err == nil {
 		cfg.GleanServerURL = v
 	} else {
 		keyringLog.Log("get %s: %v", serverURLKey, err)
+		// Legacy migration: fall back to the pre-rename "host" key and
+		// migrate its value forward on successful read.
+		if legacy, legacyErr := keyringImpl.Get(ServiceName, "host"); legacyErr == nil && legacy != "" {
+			cfg.GleanServerURL = NormalizeServerURL(legacy)
+			keyringLog.Log("migrating legacy keyring key 'host' -> '%s' (%s)", serverURLKey, cfg.GleanServerURL)
+			if setErr := keyringImpl.Set(ServiceName, serverURLKey, cfg.GleanServerURL); setErr == nil {
+				if delErr := keyringImpl.Delete(ServiceName, "host"); delErr != nil && delErr != keyring.ErrNotFound {
+					keyringLog.Log("best-effort delete of legacy 'host' key failed: %v", delErr)
+				}
+			} else {
+				keyringLog.Log("best-effort rewrite of migrated keyring value failed: %v", setErr)
+			}
+		}
 	}
 
 	if token, err := keyringImpl.Get(ServiceName, tokenKey); err == nil {
@@ -319,6 +333,7 @@ func loadFromKeyring() *Config {
 
 var knownConfigKeys = map[string]bool{
 	"server_url":          true,
+	"host":                true, // legacy; migrated to "server_url" on load
 	"token":               true,
 	"oauth_client_id":     true,
 	"oauth_client_secret": true,
@@ -361,6 +376,25 @@ func loadFromFile() (*Config, error) {
 	var cfg Config
 	if err := json.Unmarshal(data, &cfg); err != nil {
 		return nil, fmt.Errorf("error parsing config file: %w", err)
+	}
+
+	// Legacy migration: if the file has the pre-rename "host" key but no
+	// "server_url", copy the value (normalized) into GleanServerURL and
+	// rewrite the file so subsequent loads see only the new shape.
+	if cfg.GleanServerURL == "" {
+		var raw map[string]json.RawMessage
+		if err := json.Unmarshal(data, &raw); err == nil {
+			if legacyHostBytes, ok := raw["host"]; ok {
+				var legacyHost string
+				if err := json.Unmarshal(legacyHostBytes, &legacyHost); err == nil && legacyHost != "" {
+					cfg.GleanServerURL = NormalizeServerURL(legacyHost)
+					cfgLog.Log("migrating legacy config key 'host' -> 'server_url' (%s)", cfg.GleanServerURL)
+					if err := saveToFile(&cfg); err != nil {
+						cfgLog.Log("best-effort rewrite of migrated config failed: %v", err)
+					}
+				}
+			}
+		}
 	}
 
 	return &cfg, nil

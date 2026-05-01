@@ -471,6 +471,73 @@ func TestSaveServerURLToFile_DoesNotTouchKeyring(t *testing.T) {
 	assert.Empty(t, cfg.GleanToken)
 }
 
+// TestLoadFromFile_MigratesLegacyHostKey verifies that a config file produced
+// by the pre-rename CLI (which wrote `"host": "acme-be.glean.com"`) is read
+// correctly on first load under the new code, has its value normalized to a
+// full URL, and is rewritten so the legacy key does not linger.
+func TestLoadFromFile_MigratesLegacyHostKey(t *testing.T) {
+	isolateAuthState(t)
+
+	legacy := []byte(`{"host":"acme-be.glean.com","token":"tok"}`)
+	require.NoError(t, os.MkdirAll(filepath.Dir(ConfigPath), 0700))
+	require.NoError(t, os.WriteFile(ConfigPath, legacy, 0600))
+
+	cfg, err := loadFromFile()
+	require.NoError(t, err)
+	assert.Equal(t, "https://acme-be.glean.com", cfg.GleanServerURL, "legacy host value must migrate to normalized server URL")
+	assert.Equal(t, "tok", cfg.GleanToken)
+
+	// File on disk should now use the new key and drop the legacy one.
+	rewritten, err := os.ReadFile(ConfigPath)
+	require.NoError(t, err)
+	var raw map[string]any
+	require.NoError(t, json.Unmarshal(rewritten, &raw))
+	assert.Contains(t, raw, "server_url")
+	assert.NotContains(t, raw, "host", "legacy 'host' key should be dropped after migration")
+
+	// Second load must be idempotent.
+	cfg2, err := loadFromFile()
+	require.NoError(t, err)
+	assert.Equal(t, cfg.GleanServerURL, cfg2.GleanServerURL)
+}
+
+// TestLoadFromFile_ServerURLTakesPrecedenceOverLegacyHost covers a config
+// file that has both keys (unlikely in practice, but possible from manual
+// edits during a transition). The new key wins; the legacy one is ignored.
+func TestLoadFromFile_ServerURLTakesPrecedenceOverLegacyHost(t *testing.T) {
+	isolateAuthState(t)
+
+	both := []byte(`{"server_url":"https://acme-be.glean.com","host":"ignored-be.glean.com","token":"tok"}`)
+	require.NoError(t, os.MkdirAll(filepath.Dir(ConfigPath), 0700))
+	require.NoError(t, os.WriteFile(ConfigPath, both, 0600))
+
+	cfg, err := loadFromFile()
+	require.NoError(t, err)
+	assert.Equal(t, "https://acme-be.glean.com", cfg.GleanServerURL)
+}
+
+// TestLoadFromKeyring_MigratesLegacyHostKey verifies the keyring-side
+// counterpart of the file migration: a value stored under the legacy "host"
+// key is surfaced as GleanServerURL and moved to the new "server_url" key,
+// with the legacy one removed.
+func TestLoadFromKeyring_MigratesLegacyHostKey(t *testing.T) {
+	mock, cleanup := setupTestKeyring(t)
+	defer cleanup()
+
+	require.NoError(t, mock.Set(ServiceName, "host", "acme-be.glean.com"))
+
+	cfg := loadFromKeyring()
+	assert.Equal(t, "https://acme-be.glean.com", cfg.GleanServerURL)
+
+	// New key populated, legacy key gone.
+	newVal, err := mock.Get(ServiceName, "server_url")
+	require.NoError(t, err)
+	assert.Equal(t, "https://acme-be.glean.com", newVal)
+
+	_, err = mock.Get(ServiceName, "host")
+	assert.ErrorIs(t, err, keyring.ErrNotFound, "legacy keyring 'host' key should be deleted after migration")
+}
+
 func TestValidateConfigKeys(t *testing.T) {
 	t.Run("unknown key produces warning", func(t *testing.T) {
 		data := []byte(`{"server_url":"https://x.glean.com","toke":"bad"}`)
