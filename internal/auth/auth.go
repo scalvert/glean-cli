@@ -200,8 +200,11 @@ func persistLoginState(host string, tok *StoredTokens) error {
 // config/keyring credentials for the current host.
 func Logout(ctx context.Context) error {
 	cfg, err := config.LoadConfig()
-	if err != nil || cfg.GleanServerURL == "" {
-		return fmt.Errorf("no Glean host configured")
+	if err != nil {
+		return err
+	}
+	if cfg.GleanServerURL == "" {
+		return fmt.Errorf("no Glean server URL configured")
 	}
 	if err := DeleteTokens(cfg.GleanServerURL); err != nil {
 		return fmt.Errorf("removing tokens: %w", err)
@@ -223,7 +226,10 @@ type TokenValidator func(ctx context.Context, cfg *config.Config) error
 // Status prints the current authentication state.
 // validateToken is used to verify API tokens against the backend (typically client.ValidateToken).
 func Status(ctx context.Context, validateToken TokenValidator) error {
-	cfg, _ := config.LoadConfig()
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		return err
+	}
 	if cfg == nil || cfg.GleanServerURL == "" {
 		fmt.Println("Not configured.")
 		fmt.Println("Run 'glean auth login' to authenticate.")
@@ -272,10 +278,13 @@ func Status(ctx context.Context, validateToken TokenValidator) error {
 // EnsureAuth returns nil if the client has usable credentials.
 func EnsureAuth(ctx context.Context) error {
 	cfg, err := config.LoadConfig()
-	if err == nil && cfg.GleanToken != "" {
+	if err != nil {
+		return err
+	}
+	if cfg.GleanToken != "" {
 		return nil
 	}
-	if err == nil && cfg.GleanServerURL != "" {
+	if cfg.GleanServerURL != "" {
 		tok, _ := LoadTokens(cfg.GleanServerURL)
 		if tok != nil && !tok.IsExpired() {
 			return nil
@@ -419,10 +428,9 @@ type discoveryResult struct {
 //  2. Try OIDC discovery (oidc.NewProvider) for full OIDC support
 //  3. Fall back to RFC 8414 auth server metadata when OIDC is unavailable
 //     (Glean uses RFC 8414 but does not serve /.well-known/openid-configuration)
-func discover(ctx context.Context, host string) (*discoveryResult, error) {
-	baseURL := "https://" + host
-	discoveryLog.Log("fetching protected resource metadata: %s", baseURL)
-	meta, err := fetchProtectedResource(ctx, baseURL)
+func discover(ctx context.Context, serverURL string) (*discoveryResult, error) {
+	discoveryLog.Log("fetching protected resource metadata: %s", serverURL)
+	meta, err := fetchProtectedResource(ctx, serverURL)
 	if err != nil {
 		discoveryLog.Log("protected resource metadata failed: %v", err)
 		return nil, err
