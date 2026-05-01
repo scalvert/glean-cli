@@ -60,5 +60,12 @@ signs:
 checksum:
   name_template: 'checksums.txt'
 
+release:
+  # release-please creates the GitHub release with the CHANGELOG body.
+  # GoReleaser attaches binaries, SBOMs, and signatures to it.
+  mode: append
+
 changelog:
-  use: github-native
+  # CHANGELOG content is managed by release-please; suppress GoReleaser's
+  # own changelog generation so the release body isn't overwritten.
+  disable: true
