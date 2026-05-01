@@ -49,7 +49,7 @@ Pushing code that breaks CI is unacceptable. No exceptions.
 mise run build          # build glean binary
 mise run test           # run tests
 mise run test:all       # lint + test + build (CI equivalent)
-./glean                 # run TUI (requires valid GLEAN_HOST + token)
+./glean                 # run TUI (requires valid GLEAN_SERVER_URL + token)
 ```
 
 ## Architecture
