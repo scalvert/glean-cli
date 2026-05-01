@@ -57,6 +57,15 @@ jobs:
       contents: write
       id-token: write  # required for cosign keyless signing via Sigstore/Fulcio
     steps:
+      - name: Mint token for homebrew-tap
+        id: homebrew-tap-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.HOMEBREW_TAP_APP_ID }}
+          private-key: ${{ secrets.HOMEBREW_TAP_APP_PRIVATE_KEY }}
+          owner: gleanwork
+          repositories: homebrew-tap
+
       - name: Checkout
         uses: actions/checkout@v6
         with:
@@ -83,4 +92,4 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
+          HOMEBREW_TAP_GITHUB_TOKEN: ${{ steps.homebrew-tap-token.outputs.token }}
