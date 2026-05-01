@@ -82,11 +82,29 @@ func NormalizeServerURL(s string) string {
 	return s
 }
 
+// legacyHostEnvError is returned when the caller has the retired GLEAN_HOST
+// environment variable set without a matching GLEAN_SERVER_URL. It surfaces
+// the rename in a single message rather than letting the user hit a generic
+// "not configured" error downstream.
+const legacyHostEnvError = `the GLEAN_HOST environment variable is no longer supported. Use GLEAN_SERVER_URL instead.
+
+  export GLEAN_SERVER_URL=<your Glean server URL>
+
+See https://developers.glean.com/get-started/authentication for how to find your server URL.`
+
 // LoadConfig retrieves configuration using the following priority order:
 //  1. Environment variables (GLEAN_API_TOKEN, GLEAN_SERVER_URL)
 //  2. System keyring
 //  3. ~/.glean/config.json
+//
+// If GLEAN_HOST is set without GLEAN_SERVER_URL, LoadConfig returns an error
+// describing the rename rather than falling through to a "not configured"
+// message from a downstream caller.
 func LoadConfig() (*Config, error) {
+	if os.Getenv("GLEAN_SERVER_URL") == "" && os.Getenv("GLEAN_HOST") != "" {
+		return nil, fmt.Errorf("%s", legacyHostEnvError)
+	}
+
 	cfg := loadFromEnv()
 	cfgLog.Log("env: server_url=%t token=%t", cfg.GleanServerURL != "", cfg.GleanToken != "")
 

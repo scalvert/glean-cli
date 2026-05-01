@@ -68,7 +68,7 @@ func TestOAuthTokenResolvesWhenServerURLIsPersisted(t *testing.T) {
 // TestTokensResolveAcrossSchemeForms confirms the canonical-host-key
 // guarantee end-to-end at the auth layer: a token saved under a bare hostname
 // is loadable when the persisted config later hands us a full URL. This is
-// the behaviour that lets existing OAuth sessions survive the migration to
+// the behavior that lets existing OAuth sessions survive the migration to
 // GLEAN_SERVER_URL without forcing a re-login.
 func TestTokensResolveAcrossSchemeForms(t *testing.T) {
 	authtest.IsolateAuthState(t)

@@ -421,6 +421,41 @@ func TestLoadConfig_EnvHostWithFileToken(t *testing.T) {
 	assert.Equal(t, "file-token", result.GleanToken, "token from file must be used even when server URL comes from env")
 }
 
+func TestLoadConfig_LegacyHostEnv_Errors(t *testing.T) {
+	isolateAuthState(t)
+
+	t.Setenv("GLEAN_SERVER_URL", "")
+	t.Setenv("GLEAN_HOST", "acme-be.glean.com")
+
+	_, err := LoadConfig()
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "GLEAN_HOST environment variable is no longer supported")
+	assert.Contains(t, err.Error(), "GLEAN_SERVER_URL")
+	assert.Contains(t, err.Error(), "https://developers.glean.com/get-started/authentication")
+}
+
+func TestLoadConfig_LegacyHostEnv_IgnoredWhenNewIsSet(t *testing.T) {
+	isolateAuthState(t)
+
+	t.Setenv("GLEAN_SERVER_URL", "https://acme-be.glean.com")
+	t.Setenv("GLEAN_HOST", "ignored-be.glean.com")
+
+	cfg, err := LoadConfig()
+	require.NoError(t, err)
+	assert.Equal(t, "https://acme-be.glean.com", cfg.GleanServerURL)
+}
+
+func TestLoadConfig_NeitherEnvSet_NoError(t *testing.T) {
+	isolateAuthState(t)
+
+	t.Setenv("GLEAN_SERVER_URL", "")
+	t.Setenv("GLEAN_HOST", "")
+
+	cfg, err := LoadConfig()
+	require.NoError(t, err)
+	assert.Empty(t, cfg.GleanServerURL)
+}
+
 func TestSaveServerURLToFile_DoesNotTouchKeyring(t *testing.T) {
 	mock, cleanupKeyring := setupTestKeyring(t)
 	_, cleanupConfig := setupTestConfig(t)
