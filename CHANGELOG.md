@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.0](https://github.com/gleanwork/glean-cli/compare/v0.15.0...v0.16.0) (2026-05-02)
+
+
+### Features
+
+* **ci:** automate releases via release-please ([#106](https://github.com/gleanwork/glean-cli/issues/106)) ([fd4b3c0](https://github.com/gleanwork/glean-cli/commit/fd4b3c05344f51da195534e5d2868fef85e56ef4))
+
+
+### Continuous Integration
+
+* mint homebrew-tap token via GitHub App instead of PAT ([#105](https://github.com/gleanwork/glean-cli/issues/105)) ([adbcb9c](https://github.com/gleanwork/glean-cli/commit/adbcb9c1a02475da3a4022bbddb5dd581c220c8b))
+
 ## [0.5.5] - 2026-03-17
 
 ### Fixed
