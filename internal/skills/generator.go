@@ -121,14 +121,7 @@ type SubcommandInfo struct {
 	Description string
 }
 
-var skillTmpl = template.Must(template.New("skill").Parse(`---
-name: {{ .Prefix }}{{ .Command }}
-description: "{{ .Description }}"
----
-
-# glean {{ .Command }}
-
-> **PREREQUISITE:** Read ` + "`../{{ .RootSkill }}/SKILL.md`" + ` for auth, global flags, and security rules.
+var referenceTmpl = template.Must(template.New("reference").Parse(`# glean {{ .Command }}
 
 {{ .SchemaDesc }}
 
@@ -249,8 +242,21 @@ Exit code 0 = success, non-zero = error.
 | Command | Description |
 |---------|-------------|
 {{ range .Commands -}}
-| [glean {{ .Name }}](../{{ $.Prefix }}{{ .Name }}/SKILL.md) | {{ .Description }} |
+| [glean {{ .Name }}](reference/{{ .Name }}.md) | {{ .Description }} |
 {{ end }}
+
+## Previously installed per-command skills?
+
+Earlier versions of this project shipped one skill per command (` + "`glean-cli-search`" + `, ` + "`glean-cli-pins`" + `, etc.). Those are superseded by this consolidated skill. If you still have them installed, remove them with:
+
+` + "```bash" + `
+npx -y skills remove -g -y \
+  glean-cli-activity glean-cli-agents glean-cli-announcements \
+  glean-cli-answers glean-cli-api glean-cli-chat glean-cli-collections \
+  glean-cli-documents glean-cli-entities glean-cli-insights \
+  glean-cli-messages glean-cli-pins glean-cli-search glean-cli-shortcuts \
+  glean-cli-tools glean-cli-verification
+` + "```" + `
 `))
 
 // CommandEntry is used by the shared skill template.
@@ -266,6 +272,12 @@ var skipCommands = map[string]bool{
 
 // Generate writes SKILL.md files to outputDir for all registered schemas.
 func Generate(outputDir string) error {
+	// Remove any legacy per-command skill directories from earlier versions
+	// of this project so the generator output is always idempotent.
+	if err := cleanStaleSkillDirs(outputDir); err != nil {
+		return fmt.Errorf("cleaning stale skill dirs: %w", err)
+	}
+
 	// Generate shared skill
 	commands := schema.List()
 	var entries []CommandEntry
@@ -285,7 +297,7 @@ func Generate(outputDir string) error {
 	}
 	fmt.Fprintf(os.Stderr, "  wrote %s/SKILL.md\n", rootSkillName)
 
-	// Generate per-command skills
+	// Generate per-command reference files under the root skill.
 	for _, name := range commands {
 		if skipCommands[name] {
 			continue
@@ -294,13 +306,41 @@ func Generate(outputDir string) error {
 		if err != nil {
 			continue
 		}
-		if err := writeCommandSkill(outputDir, name, s); err != nil {
-			return fmt.Errorf("writing skill for %s: %w", name, err)
+		if err := writeCommandReference(outputDir, name, s); err != nil {
+			return fmt.Errorf("writing reference for %s: %w", name, err)
 		}
-		fmt.Fprintf(os.Stderr, "  wrote %s%s/SKILL.md\n", skillPrefix, name)
+		fmt.Fprintf(os.Stderr, "  wrote %s/reference/%s.md\n", rootSkillName, name)
 	}
 
 	fmt.Fprintf(os.Stderr, "\nDone. Skills written to %s/\n", outputDir)
+	return nil
+}
+
+// cleanStaleSkillDirs removes any per-command skill directories from earlier
+// layouts of this project (skills/glean-cli-<cmd>/) while leaving the root
+// skill directory and anything unrelated intact.
+func cleanStaleSkillDirs(outputDir string) error {
+	entries, err := os.ReadDir(outputDir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return err
+	}
+	for _, e := range entries {
+		if !e.IsDir() {
+			continue
+		}
+		name := e.Name()
+		// Match legacy "glean-cli-<cmd>" directories only. Root "glean-cli"
+		// has no trailing hyphen after the rootSkillName, so it's safe.
+		if !strings.HasPrefix(name, skillPrefix) {
+			continue
+		}
+		if err := os.RemoveAll(filepath.Join(outputDir, name)); err != nil {
+			return fmt.Errorf("removing legacy skill dir %s: %w", name, err)
+		}
+	}
 	return nil
 }
 
@@ -323,19 +363,19 @@ func writeRootSkill(outputDir string, commands []CommandEntry) error {
 	return rootTmpl.Execute(f, data)
 }
 
-func writeCommandSkill(outputDir, name string, s schema.CommandSchema) error {
-	dir := filepath.Join(outputDir, skillPrefix+name)
+func writeCommandReference(outputDir, name string, s schema.CommandSchema) error {
+	dir := filepath.Join(outputDir, rootSkillName, "reference")
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return err
 	}
-	f, err := os.Create(filepath.Join(dir, "SKILL.md"))
+	f, err := os.Create(filepath.Join(dir, name+".md"))
 	if err != nil {
 		return err
 	}
 	defer f.Close()
 
 	data := buildSkillData(name, s)
-	return skillTmpl.Execute(f, data)
+	return referenceTmpl.Execute(f, data)
 }
 
 func buildSkillData(name string, s schema.CommandSchema) SkillData {

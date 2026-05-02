@@ -1,11 +1,4 @@
----
-name: glean-cli-search
-description: "Search across company knowledge with the Glean CLI. Use when finding documents, policies, engineering docs, or any information across enterprise data sources."
----
-
 # glean search
-
-> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Search for content in your Glean instance. Results are JSON.
 

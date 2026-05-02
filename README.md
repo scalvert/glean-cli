@@ -38,7 +38,7 @@ Search across your company's knowledge, chat with Glean Assistant, manage the fu
   - [Shell Completions](#shell-completions)
   - [Agent Skills](#agent-skills)
     - [Install](#install)
-    - [Available Skills](#available-skills)
+    - [Migrating from per-command skills](#migrating-from-per-command-skills)
   - [Contributing](#contributing)
   - [Acknowledgments](#acknowledgments)
   - [License](#license)
@@ -341,45 +341,31 @@ glean completion fish   # Fish
 
 ## Agent Skills
 
-The `skills/` directory contains [Agent Skills](https://agentskills.io) — structured instructions that teach AI coding agents how to use the Glean CLI effectively. Skills are supported by Claude Code, Cursor, GitHub Copilot, VS Code, Gemini CLI, OpenAI Codex, Goose, Amp, Roo Code, Junie, and [many others](https://agentskills.io).
+The `skills/` directory contains a single [Agent Skill](https://agentskills.io) — `glean-cli` — that teaches AI coding agents how to use the Glean CLI effectively. Skills are supported by Claude Code, Cursor, GitHub Copilot, VS Code, Gemini CLI, OpenAI Codex, Goose, Amp, Roo Code, Junie, and [many others](https://agentskills.io).
 
-Each skill covers a specific command: flags, output formats, `--json` request shapes, and composition patterns.
+The root `SKILL.md` is a navigation hub; per-command details (flags, subcommands, examples) live under `skills/glean-cli/reference/<command>.md` and are loaded on demand.
 
 ### Install
 
 Use [`npx skills`](https://github.com/agentskills/agentskills) to install into your agent:
 
 ```bash snippet=readme/snippet-13.sh
-# Install all skills at once
 npx skills add https://github.com/gleanwork/glean-cli
-
-# Or pick only what you need
-npx skills add https://github.com/gleanwork/glean-cli/tree/main/skills/glean-cli-search
-npx skills add https://github.com/gleanwork/glean-cli/tree/main/skills/glean-cli-chat
 ```
 
-### Available Skills
+### Migrating from per-command skills
 
-| Skill                     | Description                                            |
-| ------------------------- | ------------------------------------------------------ |
-| `glean-cli`               | Root skill: discovery, auth, global flags, output formatting |
-| `glean-cli-search`        | Search across company knowledge                        |
-| `glean-cli-chat`          | Chat with Glean Assistant                              |
-| `glean-cli-schema`        | Runtime JSON schema introspection                      |
-| `glean-cli-agents`        | List, inspect, and run Glean AI agents                 |
-| `glean-cli-documents`     | Retrieve and summarize documents                       |
-| `glean-cli-collections`   | Manage curated document collections                    |
-| `glean-cli-entities`      | Look up people, teams, and entities                    |
-| `glean-cli-answers`       | Manage curated Q&A pairs                               |
-| `glean-cli-shortcuts`     | Manage go-links                                        |
-| `glean-cli-pins`          | Manage promoted search results                         |
-| `glean-cli-announcements` | Manage company announcements                           |
-| `glean-cli-api`           | Raw authenticated API access                           |
-| `glean-cli-activity`      | Report user activity and feedback                      |
-| `glean-cli-verification`  | Document verification workflows                        |
-| `glean-cli-tools`         | List and run platform tools                            |
-| `glean-cli-messages`      | Retrieve indexed messages                              |
-| `glean-cli-insights`      | Search and usage analytics                             | 545db25 (refactor: namespace skills as glean-cli-* via generator)
+Earlier versions of this project shipped a separate skill per command (`glean-cli-search`, `glean-cli-pins`, etc.). If you previously installed any of them, remove the orphans in one go:
+
+```bash
+npx -y skills remove -g -y \
+  glean-cli-activity glean-cli-agents glean-cli-announcements \
+  glean-cli-answers glean-cli-api glean-cli-chat glean-cli-collections \
+  glean-cli-documents glean-cli-entities glean-cli-insights \
+  glean-cli-messages glean-cli-pins glean-cli-search glean-cli-shortcuts \
+  glean-cli-tools glean-cli-verification
+npx -y skills add https://github.com/gleanwork/glean-cli
+```
 
 ## Contributing
 

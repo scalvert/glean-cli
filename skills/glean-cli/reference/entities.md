@@ -1,11 +1,4 @@
----
-name: glean-cli-entities
-description: "Look up people, teams, and custom entities in Glean. Use when finding employees, org structure, team members, or expertise."
----
-
 # glean entities
-
-> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 List and read Glean entities and people. Subcommands: list, read-people.
 

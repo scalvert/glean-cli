@@ -1,11 +1,4 @@
----
-name: glean-cli-answers
-description: "Manage curated Q&A pairs in Glean. Use when creating, updating, or listing company-approved answers to common questions."
----
-
 # glean answers
-
-> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Manage Glean answers. Subcommands: list, get, create, update, delete.
 
