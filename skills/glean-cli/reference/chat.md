@@ -1,11 +1,4 @@
----
-name: glean-cli-chat
-description: "Chat with Glean Assistant from the command line. Use when asking questions, summarizing documents, or getting AI-powered answers about company knowledge."
----
-
 # glean chat
-
-> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Have a conversation with Glean AI. Streams response to stdout.
 

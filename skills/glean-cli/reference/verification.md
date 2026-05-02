@@ -1,11 +1,4 @@
----
-name: glean-cli-verification
-description: "Manage document verification and review workflows in Glean. Use when verifying document accuracy, listing pending verifications, or sending review reminders."
----
-
 # glean verification
-
-> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Manage document verification. Subcommands: list, verify, remind.
 

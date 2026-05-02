@@ -1,11 +1,4 @@
----
-name: glean-cli-messages
-description: "Retrieve indexed messages from Slack, Teams, and other messaging platforms via Glean. Use when searching for or reading specific messages."
----
-
 # glean messages
-
-> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Retrieve Glean messages. Subcommands: get.
 
