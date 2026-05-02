@@ -13,7 +13,24 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
+      # Mint an App-installation token so the tag/release created when the
+      # release PR merges triggers .github/workflows/release.yml. Tags pushed
+      # via the default GITHUB_TOKEN do NOT fire downstream workflows (GitHub
+      # anti-loop protection); App-minted tokens bypass that.
+      #
+      # Secrets are reused from the homebrew-tap App — same App, installed on
+      # both gleanwork/homebrew-tap and gleanwork/glean-cli.
+      - name: Mint token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.HOMEBREW_TAP_APP_ID }}
+          private-key: ${{ secrets.HOMEBREW_TAP_APP_PRIVATE_KEY }}
+          owner: gleanwork
+          repositories: glean-cli
+
       - uses: googleapis/release-please-action@v4
         with:
+          token: ${{ steps.app-token.outputs.token }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
