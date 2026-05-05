@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.0](https://github.com/gleanwork/glean-cli/compare/v0.16.1...v0.17.0) (2026-05-05)
+
+
+### Features
+
+* consolidate 17 Agent Skills into one skill with reference files ([#110](https://github.com/gleanwork/glean-cli/issues/110)) ([adf1913](https://github.com/gleanwork/glean-cli/commit/adf1913e22d302498bd2e8c1d2570f3b237e6c96))
+
+
+### Continuous Integration
+
+* **deps:** bump actions/create-github-app-token from 1 to 3 ([#111](https://github.com/gleanwork/glean-cli/issues/111)) ([8d4f10c](https://github.com/gleanwork/glean-cli/commit/8d4f10c3b9a2c30369d62913f4572f68a9d7e2d9))
+* **deps:** bump googleapis/release-please-action from 4 to 5 ([#112](https://github.com/gleanwork/glean-cli/issues/112)) ([04358a2](https://github.com/gleanwork/glean-cli/commit/04358a2c920e897ec01e31b0106be669af7bca78))
+
 ## [0.16.1](https://github.com/gleanwork/glean-cli/compare/v0.16.0...v0.16.1) (2026-05-02)
 
 
