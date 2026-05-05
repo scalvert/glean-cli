@@ -1,11 +1,4 @@
----
-name: glean-cli-api
-description: "Make raw authenticated HTTP requests to any Glean REST API endpoint. Use when no dedicated command exists or for advanced API access."
----
-
 # glean api
-
-> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Make a raw authenticated HTTP request to any Glean REST API endpoint.
 

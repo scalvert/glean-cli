@@ -1,11 +1,4 @@
----
-name: glean-cli-collections
-description: "Manage curated document collections in Glean. Use when creating, updating, or organizing themed sets of documents."
----
-
 # glean collections
-
-> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Manage Glean collections. Subcommands: create, delete, update, add-items, delete-item.
 

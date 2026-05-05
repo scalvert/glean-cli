@@ -1,11 +1,4 @@
----
-name: glean-cli-shortcuts
-description: "Manage Glean go-links (shortcuts). Use when creating, listing, updating, or deleting short URL aliases like go/wiki."
----
-
 # glean shortcuts
-
-> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Manage Glean shortcuts (go-links). Subcommands: list, get, create, update, delete.
 

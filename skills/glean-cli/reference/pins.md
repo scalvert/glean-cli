@@ -1,11 +1,4 @@
----
-name: glean-cli-pins
-description: "Manage promoted search results (pins) in Glean. Use when pinning specific documents to appear first for certain queries."
----
-
 # glean pins
-
-> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Manage Glean pins. Subcommands: list, get, create, update, remove.
 

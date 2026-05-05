@@ -1,11 +1,4 @@
----
-name: glean-cli-tools
-description: "List and run Glean platform tools. Use when discovering available platform tools or executing them programmatically."
----
-
 # glean tools
-
-> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 List and run Glean tools. Subcommands: list, run.
 

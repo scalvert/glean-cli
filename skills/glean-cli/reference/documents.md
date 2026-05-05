@@ -1,11 +1,4 @@
----
-name: glean-cli-documents
-description: "Retrieve, summarize, and inspect documents indexed by Glean. Use when getting document content, summaries, permissions, or metadata by URL."
----
-
 # glean documents
-
-> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Retrieve and summarize Glean documents. Subcommands: get, get-by-facets, get-permissions, summarize.
 

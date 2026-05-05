@@ -79,20 +79,33 @@ Exit code 0 = success, non-zero = error.
 
 | Command | Description |
 |---------|-------------|
-| [glean activity](../glean-cli-activity/SKILL.md) | Report user activity and feedback. Subcommands: report, feedback. |
-| [glean agents](../glean-cli-agents/SKILL.md) | Manage and run Glean agents. Subcommands: list, get, schemas, run. |
-| [glean announcements](../glean-cli-announcements/SKILL.md) | Manage Glean announcements. Subcommands: create, update, delete. |
-| [glean answers](../glean-cli-answers/SKILL.md) | Manage Glean answers. Subcommands: list, get, create, update, delete. |
-| [glean api](../glean-cli-api/SKILL.md) | Make a raw authenticated HTTP request to any Glean REST API endpoint. |
-| [glean chat](../glean-cli-chat/SKILL.md) | Have a conversation with Glean AI. Streams response to stdout. |
-| [glean collections](../glean-cli-collections/SKILL.md) | Manage Glean collections. Subcommands: create, delete, update, add-items, delete-item. |
-| [glean documents](../glean-cli-documents/SKILL.md) | Retrieve and summarize Glean documents. Subcommands: get, get-by-facets, get-permissions, summarize. |
-| [glean entities](../glean-cli-entities/SKILL.md) | List and read Glean entities and people. Subcommands: list, read-people. |
-| [glean insights](../glean-cli-insights/SKILL.md) | Retrieve Glean usage insights. Subcommands: get. |
-| [glean messages](../glean-cli-messages/SKILL.md) | Retrieve Glean messages. Subcommands: get. |
-| [glean pins](../glean-cli-pins/SKILL.md) | Manage Glean pins. Subcommands: list, get, create, update, remove. |
-| [glean search](../glean-cli-search/SKILL.md) | Search for content in your Glean instance. Results are JSON. |
-| [glean shortcuts](../glean-cli-shortcuts/SKILL.md) | Manage Glean shortcuts (go-links). Subcommands: list, get, create, update, delete. |
-| [glean tools](../glean-cli-tools/SKILL.md) | List and run Glean tools. Subcommands: list, run. |
-| [glean verification](../glean-cli-verification/SKILL.md) | Manage document verification. Subcommands: list, verify, remind. |
+| [glean activity](reference/activity.md) | Report user activity and feedback. Subcommands: report, feedback. |
+| [glean agents](reference/agents.md) | Manage and run Glean agents. Subcommands: list, get, schemas, run. |
+| [glean announcements](reference/announcements.md) | Manage Glean announcements. Subcommands: create, update, delete. |
+| [glean answers](reference/answers.md) | Manage Glean answers. Subcommands: list, get, create, update, delete. |
+| [glean api](reference/api.md) | Make a raw authenticated HTTP request to any Glean REST API endpoint. |
+| [glean chat](reference/chat.md) | Have a conversation with Glean AI. Streams response to stdout. |
+| [glean collections](reference/collections.md) | Manage Glean collections. Subcommands: create, delete, update, add-items, delete-item. |
+| [glean documents](reference/documents.md) | Retrieve and summarize Glean documents. Subcommands: get, get-by-facets, get-permissions, summarize. |
+| [glean entities](reference/entities.md) | List and read Glean entities and people. Subcommands: list, read-people. |
+| [glean insights](reference/insights.md) | Retrieve Glean usage insights. Subcommands: get. |
+| [glean messages](reference/messages.md) | Retrieve Glean messages. Subcommands: get. |
+| [glean pins](reference/pins.md) | Manage Glean pins. Subcommands: list, get, create, update, remove. |
+| [glean search](reference/search.md) | Search for content in your Glean instance. Results are JSON. |
+| [glean shortcuts](reference/shortcuts.md) | Manage Glean shortcuts (go-links). Subcommands: list, get, create, update, delete. |
+| [glean tools](reference/tools.md) | List and run Glean tools. Subcommands: list, run. |
+| [glean verification](reference/verification.md) | Manage document verification. Subcommands: list, verify, remind. |
 
+
+## Previously installed per-command skills?
+
+Earlier versions of this project shipped one skill per command (`glean-cli-search`, `glean-cli-pins`, etc.). Those are superseded by this consolidated skill. If you still have them installed, remove them with:
+
+```bash
+npx -y skills remove -g -y \
+  glean-cli-activity glean-cli-agents glean-cli-announcements \
+  glean-cli-answers glean-cli-api glean-cli-chat glean-cli-collections \
+  glean-cli-documents glean-cli-entities glean-cli-insights \
+  glean-cli-messages glean-cli-pins glean-cli-search glean-cli-shortcuts \
+  glean-cli-tools glean-cli-verification
+```

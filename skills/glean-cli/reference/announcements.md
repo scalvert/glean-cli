@@ -1,23 +1,18 @@
----
-name: glean-cli-insights
-description: "Retrieve search and usage analytics from Glean. Use when analyzing search patterns, popular queries, or platform adoption metrics."
----
+# glean announcements
 
-# glean insights
-
-> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
-
-Retrieve Glean usage insights. Subcommands: get.
+Manage Glean announcements. Subcommands: create, update, delete.
 
 ```bash
-glean insights <subcommand> [flags]
+glean announcements <subcommand> [flags]
 ```
 
 ## Subcommands
 
 | Subcommand | Description |
 |------------|-------------|
-| `get` | Get analytics data |
+| `create` | Create a new announcement |
+| `delete` | Delete an announcement |
+| `update` | Update an existing announcement |
 
 ## Flags
 
@@ -30,14 +25,14 @@ glean insights <subcommand> [flags]
 ## Examples
 
 ```bash
-glean insights get --json '{"insightTypes":["SEARCH"]}' | jq .
+glean announcements create --json '{"title":"Company Update","body":"..."}'
 ```
 
 ## Discovering Commands
 
 ```bash
 # Show machine-readable schema for this command
-glean schema insights
+glean schema announcements
 
 # List all available commands
 glean schema | jq '.commands'

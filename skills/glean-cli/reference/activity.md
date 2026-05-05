@@ -1,11 +1,4 @@
----
-name: glean-cli-activity
-description: "Report user activity and submit feedback to Glean. Use when logging user interactions or providing relevance feedback on search results."
----
-
 # glean activity
-
-> **PREREQUISITE:** Read `../glean-cli/SKILL.md` for auth, global flags, and security rules.
 
 Report user activity and feedback. Subcommands: report, feedback.
 
