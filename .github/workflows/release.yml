@@ -59,7 +59,7 @@ jobs:
     steps:
       - name: Mint token for homebrew-tap
         id: homebrew-tap-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ secrets.HOMEBREW_TAP_APP_ID }}
           private-key: ${{ secrets.HOMEBREW_TAP_APP_PRIVATE_KEY }}
