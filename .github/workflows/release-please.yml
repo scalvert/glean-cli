@@ -29,7 +29,7 @@ jobs:
           owner: gleanwork
           repositories: glean-cli
 
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v5
         with:
           token: ${{ steps.app-token.outputs.token }}
           config-file: release-please-config.json
