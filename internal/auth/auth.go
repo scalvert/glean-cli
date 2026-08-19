@@ -43,14 +43,25 @@ var successHTML string
 // timeouts or the user closing their browser).
 var errNoOAuthClient = errors.New("no OAuth client available")
 
+// LoginOptions controls the authentication flow used by Login.
+type LoginOptions struct {
+	// Headless prints the authorization URL instead of opening a browser locally.
+	Headless bool
+	// CallbackPort fixes the loopback callback port. Zero selects a free port.
+	CallbackPort int
+}
+
 // Login performs the full OAuth 2.0 login flow for the configured Glean host.
 //
 // Strategy (in order):
 //  1. Authorization Code + PKCE via DCR or static client
 //  2. Device Authorization Grant (RFC 8628) using the Glean-advertised client ID
 //  3. Inline API token prompt when OAuth is not available at all
-func Login(ctx context.Context) error {
-	loginLog.Log("starting login flow")
+//
+// When Headless is set, Login prints the authorization URL instead of opening
+// it. CallbackPort can be combined with SSH port forwarding for remote login.
+func Login(ctx context.Context, opts LoginOptions) error {
+	loginLog.Log("starting login flow (headless=%t)", opts.Headless)
 
 	host, err := resolveHost(ctx)
 	if err != nil {
@@ -66,9 +77,11 @@ func Login(ctx context.Context) error {
 	}
 	loginLog.Log("OAuth discovery succeeded: auth=%s token=%s registration=%s", disc.Endpoint.AuthURL, disc.Endpoint.TokenURL, disc.RegistrationEndpoint)
 
+	canDeviceFlow := disc.DeviceFlowClientID != "" && disc.DeviceAuthEndpoint != ""
+
 	// Try DCR / static client first (standard authorization code flow).
 	loginLog.Log("attempting authorization code + PKCE flow")
-	authCodeErr := tryAuthCodeLogin(ctx, host, disc)
+	authCodeErr := tryAuthCodeLogin(ctx, host, disc, opts)
 	if authCodeErr == nil {
 		return nil
 	}
@@ -78,19 +91,18 @@ func Login(ctx context.Context) error {
 	// OAuth client could be obtained (DCR unsupported + no static client).
 	// Transient failures (network, user closing browser, port conflicts) should
 	// not silently switch to a different grant type.
-	canDeviceFlow := disc.DeviceFlowClientID != "" && disc.DeviceAuthEndpoint != ""
 	if errors.Is(authCodeErr, errNoOAuthClient) && canDeviceFlow {
 		loginLog.Log("falling back to device authorization grant (client_id=%s)", disc.DeviceFlowClientID)
 		fmt.Fprintf(os.Stderr, "\nYour SSO provider requires device-based login.\n")
-		return deviceFlowLogin(ctx, host, disc)
+		return deviceFlowLogin(ctx, host, disc, !opts.Headless)
 	}
 
 	return fmt.Errorf("authentication failed: %w", authCodeErr)
 }
 
 // tryAuthCodeLogin attempts the Authorization Code + PKCE flow via DCR or static client.
-func tryAuthCodeLogin(ctx context.Context, host string, disc *discoveryResult) error {
-	port, err := findFreePort()
+func tryAuthCodeLogin(ctx context.Context, host string, disc *discoveryResult, opts LoginOptions) error {
+	port, err := findCallbackPort(opts.CallbackPort)
 	if err != nil {
 		return fmt.Errorf("finding callback port: %w", err)
 	}
@@ -120,12 +132,16 @@ func tryAuthCodeLogin(ctx context.Context, host string, disc *discoveryResult) e
 	go func() {
 		select {
 		case localURL := <-readyChan:
-			fmt.Printf("Opening your browser to authenticate with Glean…\n")
-			fmt.Printf("If your browser doesn't open, visit:\n  %s\n\n", authURL)
-			fmt.Printf("Waiting for you to complete login in the browser…\n")
-			if err := browser.OpenURL(localURL); err != nil {
-				fmt.Printf("(Could not open browser automatically: %v)\n", err)
+			if opts.Headless {
+				fmt.Printf("Open this URL in a browser on your local machine:\n  %s\n\n", authURL)
+			} else {
+				fmt.Printf("Opening your browser to authenticate with Glean…\n")
+				fmt.Printf("If your browser doesn't open, visit:\n  %s\n\n", authURL)
+				if err := browser.OpenURL(localURL); err != nil {
+					fmt.Printf("(Could not open browser automatically: %v)\n", err)
+				}
 			}
+			fmt.Printf("Waiting for you to complete login in the browser…\n")
 		case <-ctx.Done():
 		}
 	}()
@@ -565,14 +581,22 @@ func resolveScopes(provider *oidc.Provider) []string {
 	}
 }
 
-// findFreePort finds an available TCP port on localhost.
-func findFreePort() (int, error) {
-	l, err := net.Listen("tcp", "127.0.0.1:0")
+// findCallbackPort verifies a requested loopback port is available, or finds a
+// free port when preferred is zero.
+func findCallbackPort(preferred int) (int, error) {
+	if preferred < 0 || preferred > 65535 {
+		return 0, fmt.Errorf("port must be between 1 and 65535")
+	}
+	address := "127.0.0.1:0"
+	if preferred != 0 {
+		address = fmt.Sprintf("127.0.0.1:%d", preferred)
+	}
+	listener, err := net.Listen("tcp", address)
 	if err != nil {
 		return 0, err
 	}
-	defer l.Close()
-	return l.Addr().(*net.TCPAddr).Port, nil
+	defer listener.Close()
+	return listener.Addr().(*net.TCPAddr).Port, nil
 }
 
 // fetchAuthServerMetadata fetches RFC 8414 Authorization Server Metadata.

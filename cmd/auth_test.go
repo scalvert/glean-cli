@@ -31,6 +31,20 @@ func TestAuthCmd_HasSubcommands(t *testing.T) {
 	assert.Contains(t, subNames, "status")
 }
 
+func TestAuthLoginCmd_HasHeadlessFlags(t *testing.T) {
+	cmd := newAuthLoginCmd()
+
+	headlessFlag := cmd.Flags().Lookup("headless")
+	require.NotNil(t, headlessFlag)
+	assert.Equal(t, "false", headlessFlag.DefValue)
+	assert.Contains(t, headlessFlag.Usage, "authorization URL")
+
+	callbackPortFlag := cmd.Flags().Lookup("callback-port")
+	require.NotNil(t, callbackPortFlag)
+	assert.Equal(t, "0", callbackPortFlag.DefValue)
+	assert.Contains(t, callbackPortFlag.Usage, "callback port")
+}
+
 func TestAuthStatusCmd_NoConfig(t *testing.T) {
 	authtest.IsolateAuthState(t)
 

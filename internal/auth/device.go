@@ -38,7 +38,7 @@ type deviceTokenError struct {
 }
 
 // deviceFlowLogin performs the OAuth 2.0 Device Authorization Grant (RFC 8628).
-func deviceFlowLogin(ctx context.Context, host string, disc *discoveryResult) error {
+func deviceFlowLogin(ctx context.Context, host string, disc *discoveryResult, openBrowser bool) error {
 	scopes := resolveScopes(disc.Provider)
 	deviceLog.Log("requesting device code from %s (client_id=%s)", disc.DeviceAuthEndpoint, disc.DeviceFlowClientID)
 
@@ -69,7 +69,9 @@ func deviceFlowLogin(ctx context.Context, host string, disc *discoveryResult) er
 	}
 	fmt.Printf("Waiting for you to complete login in the browser…\n")
 
-	_ = browser.OpenURL(verificationURL)
+	if openBrowser {
+		_ = browser.OpenURL(verificationURL)
+	}
 
 	deviceLog.Log("polling token endpoint %s (interval=%ds)", disc.Endpoint.TokenURL, authResp.Interval)
 	token, err := pollForToken(ctx, disc.Endpoint.TokenURL, disc.DeviceFlowClientID, authResp)

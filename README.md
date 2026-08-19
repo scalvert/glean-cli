@@ -96,9 +96,10 @@ glean search "engineering docs" --output ndjson | jq .title
 ## Authentication
 
 ```bash snippet=readme/snippet-04.sh
-glean auth login    # interactive login (detects the best method automatically)
-glean auth status   # verify credentials, host, and token expiry
-glean auth logout   # remove all stored credentials
+glean auth login                                  # interactive login (detects the best method automatically)
+glean auth login --headless --callback-port 49152 # remote login over an SSH port forward
+glean auth status                                 # verify credentials, host, and token expiry
+glean auth logout                                 # remove all stored credentials
 ```
 
 `glean auth login` detects the right authentication method for your environment automatically:
@@ -110,6 +111,14 @@ glean auth logout   # remove all stored credentials
 | **API token** | Instances without OAuth support | Prompts you to paste a token from Glean Admin |
 
 You don't need to choose — `auth login` tries each method in order and uses the first one that works. Tokens are stored securely in the system keyring and refreshed automatically.
+
+For SSH and other remote sessions, forward a fixed callback port when connecting from your local machine:
+
+```bash
+ssh -L 49152:127.0.0.1:49152 user@remote-host
+```
+
+Then run `glean auth login --headless --callback-port 49152` on the remote host and open the printed URL in your local browser. The CLI does not try to launch a browser remotely, and the SSH tunnel delivers the OAuth callback to the remote CLI.
 
 ### API Token (CI/CD)
 

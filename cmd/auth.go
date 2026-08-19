@@ -24,11 +24,17 @@ func NewCmdAuth() *cobra.Command {
 }
 
 func newAuthLoginCmd() *cobra.Command {
-	return &cobra.Command{
+	var headless bool
+	var callbackPort int
+	cmd := &cobra.Command{
 		Use:   "login",
 		Short: "Authenticate with Glean via your browser",
 		Long: heredoc.Doc(`
 			Opens your browser to authenticate with Glean using OAuth 2.0 + PKCE.
+
+			Use --headless on remote machines to print the authorization URL without
+			opening a local browser. Combine it with --callback-port and SSH local
+			port forwarding so the browser callback reaches the remote CLI.
 
 			If your Glean instance supports OAuth with Dynamic Client Registration
 			(most instances), no additional configuration is needed.
@@ -37,12 +43,19 @@ func newAuthLoginCmd() *cobra.Command {
 
 			Examples:
 			  glean auth login
+			  glean auth login --headless --callback-port 49152
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return auth.Login(cmd.Context())
+			return auth.Login(cmd.Context(), auth.LoginOptions{
+				Headless:     headless,
+				CallbackPort: callbackPort,
+			})
 		},
 		SilenceUsage: true,
 	}
+	cmd.Flags().BoolVar(&headless, "headless", false, "Print the authorization URL instead of opening a browser")
+	cmd.Flags().IntVar(&callbackPort, "callback-port", 0, "Use a fixed localhost OAuth callback port")
+	return cmd
 }
 
 func newAuthLogoutCmd() *cobra.Command {
